@@ -169,5 +169,7 @@ const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent, t }) => {
 };
 
 export default withTranslation([
-  "Common, DataReassignmentDialog, PeopleTranslations",
+  "Common",
+  "DataReassignmentDialog",
+  "PeopleTranslations",
 ])(Progress);

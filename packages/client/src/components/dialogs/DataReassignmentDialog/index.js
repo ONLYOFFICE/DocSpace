@@ -3,28 +3,11 @@ import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
-import Checkbox from "@docspace/components/checkbox";
-import Button from "@docspace/components/button";
-import Avatar from "@docspace/components/avatar";
 import ModalDialog from "@docspace/components/modal-dialog";
-import Text from "@docspace/components/text";
-import Link from "@docspace/components/link";
-import CatalogSpamIcon from "PUBLIC_DIR/images/catalog.spam.react.svg";
-import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import toastr from "@docspace/components/toast/toastr";
-import SelectorAddButton from "@docspace/components/selector-add-button";
 import { useNavigate } from "react-router-dom";
-import {
-  StyledOwnerInfo,
-  StyledPeopleSelectorInfo,
-  StyledPeopleSelector,
-  StyledAvailableList,
-  StyledFooterWrapper,
-  StyledSelectedOwnerContainer,
-  StyledSelectedOwner,
-} from "../ChangePortalOwnerDialog/StyledDialog";
-import Progress from "./sub-components/Progress/Progress";
-import Loader from "./sub-components/Loader/Loader";
+import Body from "./sub-components/Body";
+import Footer from "./sub-components/Footer";
 import api from "@docspace/common/api";
 const { Filter } = api;
 
@@ -42,15 +25,6 @@ const StyledModalDialog = styled(ModalDialog)`
   .list-container {
     gap: 6px;
   }
-`;
-
-const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: #f21c0e;
-  }
-
-  padding-left: 8px;
 `;
 
 let timerId = null;
@@ -102,14 +76,6 @@ const DataReassignmentDialog = ({
   };
 
   useEffect(() => {
-    if (percent === 100) {
-      clearInterval(timerId);
-
-      isDeleteProfile && updateAccountsAfterDeleteUser();
-    }
-  }, [percent, isDeleteProfile]);
-
-  useEffect(() => {
     //If click Delete user
     if (dataReassignmentDeleteAdministrator) onReassign();
 
@@ -133,10 +99,6 @@ const DataReassignmentDialog = ({
     setSelectedUser({ ...item[0] });
   };
 
-  const firstLetterToUppercase = (str) => {
-    return str[0].toUpperCase() + str.slice(1);
-  };
-
   const checkReassignCurrentUser = () => {
     setIsReassignCurrentUser(idCurrentUser === selectedUser.id);
   };
@@ -145,6 +107,11 @@ const DataReassignmentDialog = ({
     dataReassignmentProgress(id)
       .then((res) => {
         setPercent(res.percentage);
+
+        if (res.percentage !== 100) return;
+
+        clearInterval(timerId);
+        isDeleteProfile && updateAccountsAfterDeleteUser();
       })
       .catch((error) => {
         toastr.error(error?.response?.data?.error?.message);
@@ -195,153 +162,32 @@ const DataReassignmentDialog = ({
       <ModalDialog.Header>
         {t("DataReassignmentDialog:DataReassignment")}
       </ModalDialog.Header>
-
       <ModalDialog.Body>
-        {!tReady && <Loader />}
-
-        {tReady && showProgress && (
-          <Progress
-            isReassignCurrentUser={isReassignCurrentUser}
-            fromUser={user.displayName}
-            toUser={selectedUser.label}
-            percent={percent}
-          />
-        )}
-
-        {tReady && !showProgress && (
-          <>
-            <StyledOwnerInfo>
-              <Avatar
-                className="avatar"
-                role="user"
-                source={user.avatar}
-                size={"big"}
-                hideRoleIcon
-              />
-              <div className="info">
-                <div className="avatar-name">
-                  <Text
-                    className="display-name"
-                    noSelect
-                    title={user.displayName}
-                  >
-                    {user.displayName}
-                  </Text>
-                  {user.statusType === "disabled" && (
-                    <StyledCatalogSpamIcon size="small" />
-                  )}
-                </div>
-
-                <Text className="status" noSelect>
-                  {firstLetterToUppercase(user.statusType)}
-                </Text>
-              </div>
-            </StyledOwnerInfo>
-
-            <StyledPeopleSelectorInfo>
-              <Text className="new-owner" noSelect>
-                {t("DataReassignmentDialog:NewDataOwner")}
-              </Text>
-              <Text className="description" noSelect>
-                {t("DataReassignmentDialog:UserToWhomTheDataWillBeTransferred")}
-              </Text>
-            </StyledPeopleSelectorInfo>
-            {selectedUser ? (
-              <StyledSelectedOwnerContainer>
-                <StyledSelectedOwner currentColorScheme={currentColorScheme}>
-                  <Text className="text">{selectedUser.label}</Text>
-                </StyledSelectedOwner>
-
-                <Link
-                  type={"action"}
-                  isHovered
-                  fontWeight={600}
-                  onClick={onTogglePeopleSelector}
-                >
-                  {t("ChangePortalOwner:ChangeUser")}
-                </Link>
-              </StyledSelectedOwnerContainer>
-            ) : (
-              <StyledPeopleSelector>
-                <SelectorAddButton
-                  className="selector-add-button"
-                  onClick={onTogglePeopleSelector}
-                />
-                <Text
-                  className="label"
-                  noSelect
-                  title={t("Translations:ChooseFromList")}
-                >
-                  {t("Translations:ChooseFromList")}
-                </Text>
-              </StyledPeopleSelector>
-            )}
-            <StyledAvailableList className="list-container">
-              <Text className="list-item" noSelect>
-                {t("DataReassignmentDialog:DescriptionDataReassignment")}
-              </Text>
-              <Text className="list-item" noSelect>
-                {t("DataReassignmentDialog:NoteDataReassignment")}
-              </Text>
-
-              <Link
-                type={"action"}
-                isHovered
-                fontWeight={600}
-                style={{ textDecoration: "underline" }}
-              >
-                {t("DataReassignmentDialog:MoreAboutDataTransfer")}
-              </Link>
-            </StyledAvailableList>
-          </>
-        )}
+        <Body
+          t={t}
+          tReady={tReady}
+          showProgress={showProgress}
+          isReassignCurrentUser={isReassignCurrentUser}
+          user={user}
+          selectedUser={selectedUser}
+          percent={percent}
+          currentColorScheme={currentColorScheme}
+          onTogglePeopleSelector={onTogglePeopleSelector}
+        />
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        <StyledFooterWrapper>
-          {!showProgress && (
-            <div className="delete-profile-container">
-              <Checkbox
-                className="delete-profile-checkbox"
-                isChecked={isDeleteProfile}
-                onClick={onToggleDeleteProfile}
-              />
-              <Text className="info" noSelect>
-                {t("DataReassignmentDialog:DeleteProfileIsFinished")}
-              </Text>
-            </div>
-          )}
-
-          <div className="button-wrapper">
-            {!showProgress && (
-              <Button
-                label={t("DataReassignmentDialog:Reassign")}
-                size="normal"
-                primary
-                scale
-                isDisabled={!selectedUser}
-                onClick={onReassign}
-                isLoading={isLoadingReassign}
-              />
-            )}
-            {!(showProgress && percent === 100) && (
-              <Button
-                label={t("Common:CancelButton")}
-                size="normal"
-                scale
-                onClick={onClose}
-              />
-            )}
-            {percent === 100 && (
-              <Button
-                label={t("Common:OkButton")}
-                size="normal"
-                scale
-                onClick={onClose}
-              />
-            )}
-          </div>
-        </StyledFooterWrapper>
+        <Footer
+          t={t}
+          showProgress={showProgress}
+          isDeleteProfile={isDeleteProfile}
+          onToggleDeleteProfile={onToggleDeleteProfile}
+          selectedUser={selectedUser}
+          onReassign={onReassign}
+          isLoadingReassign={isLoadingReassign}
+          percent={percent}
+          onClose={onClose}
+        />
       </ModalDialog.Footer>
     </StyledModalDialog>
   );
@@ -380,7 +226,10 @@ export default inject(({ auth, peopleStore, setup }) => {
 })(
   observer(
     withTranslation([
-      "Common,DataReassignmentDialog,Translations,ChangePortalOwner",
+      "Common",
+      "DataReassignmentDialog",
+      "Translations",
+      "ChangePortalOwner",
     ])(DataReassignmentDialog)
   )
 );
