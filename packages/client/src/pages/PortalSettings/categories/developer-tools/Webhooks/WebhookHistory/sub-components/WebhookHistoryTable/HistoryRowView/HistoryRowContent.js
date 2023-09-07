@@ -28,12 +28,17 @@ const StatusHeader = styled.div`
 `;
 
 export const HistoryRowContent = ({ sectionWidth, historyItem }) => {
-  const formattedDelivery = moment(historyItem.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC";
+  const formattedDelivery =
+    moment(historyItem.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC";
   return (
     <StyledRowContent sectionWidth={sectionWidth}>
       <ContentWrapper>
         <StatusHeader>
-          <Text fontWeight={600} fontSize="14px" style={{ marginRight: "8px" }}>
+          <Text
+            fontWeight={600}
+            fontSize="14px"
+            style={{ marginInlineEnd: "8px" }}
+          >
             {historyItem.id}
           </Text>
           <StatusBadge status={historyItem.status} />
