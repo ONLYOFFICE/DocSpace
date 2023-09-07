@@ -59,8 +59,13 @@ curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/sc
 curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | os=centos dist=$REV bash
 
 #add nodejs repo
-[ "$REV" = "7" ] && NODE_VERSION="16" || NODE_VERSION="18"
-yum install -y https://rpm.nodesource.com/pub_${NODE_VERSION}.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm
+if [ "$REV" != "8" ]; then
+	[ "$REV" = "7" ] && NODE_VERSION="16" || NODE_VERSION="18"
+	yum install -y https://rpm.nodesource.com/pub_${NODE_VERSION}.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm
+else
+	curl -sL https://rpm.nodesource.com/setup_18.x | bash - || true
+	rpm --import http://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL
+fi
 
 #add dotnet repo
 if [ $REV = "7" ] || [[ $DIST != "redhat" && $REV = "8" ]]; then
@@ -94,7 +99,7 @@ END
 rpm --import https://openresty.org/package/pubkey.gpg
 OPENRESTY_REPO_FILE=$( [[ "$REV" -ge 9 ]] && echo "openresty2.repo" || echo "openresty.repo" )
 curl -o /etc/yum.repos.d/openresty.repo "https://openresty.org/package/centos/${OPENRESTY_REPO_FILE}"
-systemctl is-active nginx | grep -q "^active" && systemctl stop nginx
+systemctl list-units --type=service | grep -q nginx && systemctl stop nginx && systemctl disable nginx
 
 ${package_manager} -y install epel-release \
 			python3 \

@@ -6,12 +6,11 @@ pid /tmp/nginx.pid;
 
 
 events {
-    worker_connections  $COUNT_WORKER_CONNECTIONS;
+    worker_connections  1024;
 }
 
 
 http {
-    $MAP_HASH_BUCKET_SIZE
     client_body_temp_path /tmp/client_temp;
     proxy_temp_path /tmp/proxy_temp_path;
     fastcgi_temp_path /tmp/fastcgi_temp;
