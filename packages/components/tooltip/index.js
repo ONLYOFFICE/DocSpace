@@ -80,7 +80,7 @@ Tooltip.propTypes = {
   afterHide: PropTypes.func,
   /** A function to be called after the tooltip is shown */
   afterShow: PropTypes.func,
-  /** Sets the top offset for all the tooltips on the page */
+  /** Space between the tooltip element and anchor element (arrow not included in calculation) */
   offset: PropTypes.number,
   /** Child elements */
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -92,11 +92,15 @@ Tooltip.propTypes = {
   color: PropTypes.string,
   /** Maximum width of the tooltip */
   maxWidth: PropTypes.string,
-
+  /** The tooltip can be controlled or uncontrolled, this attribute cannot be used to handle show and hide tooltip outside tooltip */
   isOpen: PropTypes.bool,
+  /** Allow interaction with elements inside the tooltip */
   clickable: PropTypes.bool,
+  /** Controls whether the tooltip should open when clicking (true) or hovering (false) the anchor element */
   openOnClick: PropTypes.bool,
+  /** Tooltip will follow the mouse position when it moves inside the anchor element */
   float: PropTypes.bool,
+  /** The selector for the anchor elements */
   anchorSelect: PropTypes.string,
 };
 
