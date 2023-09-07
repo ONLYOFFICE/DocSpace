@@ -1760,4 +1760,31 @@ ONLYOFFICE™- tukitiimi
 
 ^Muuttaaksesi ilmoitustyyppiä, ole hyvä ja mene "tilauksen hallintaan" :"$RecipientSubscriptionConfigURL".^</value>
   </data>
+  <data name="pattern_migration_error" xml:space="preserve">
+    <value>h1. Toisen alueportaalin siirtovirhe
+
+Virhe siirrettäessä alueeseen $RegionName. Ole hyvä ja yritä myöhemmin uudelleen.
+
+Portaalisi on nyt käytössä vanhassa osoitteessa "$PortalUrl":"$PortalUrl"
+
+Jos sinulla on kysyttävää tai tarvitset apua ole hyvä ja ota yhteyttä "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+Ystävällisin terveisin,
+ONLYOFFICE™-tukitiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Muuttaaksesi ilmoitustyyppiä, ole hyvä ja hallitse "tilausasetuksia":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_migration_start" xml:space="preserve">
+    <value>h1. Toisen alueportaalin siirto aloitettu
+
+Portaalin siirto $RegionName- alueeseen on aloitettu. Toimenpide voi viedä jonkin aikaa riippuen tiedon määrästä.
+
+*Huom*: Portaali ei ole käytettävissä siirron aikana. Kun siirto on valmis, portaalin URL vaihtuu ja jaettuihin asiakirjoihin ei enää pääse.
+
+Jos sinulla on kysyttävää tai tarvitset apua, ole hyvä ja ota yhteyttä "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Ystävällisin terveisin,
+ONLYOFFICE™-tukitiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
 </root>

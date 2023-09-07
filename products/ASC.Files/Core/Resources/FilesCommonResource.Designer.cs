@@ -394,7 +394,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can not select this user.
+        ///   Looks up a localized string similar to You cannot select this user.
         /// </summary>
         public static string ErrorMassage_ChangeOwner {
             get {
