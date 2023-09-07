@@ -217,7 +217,7 @@
     <value>Bad request.</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
-    <value>You can not select this user</value>
+    <value>You cannot select this user</value>
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
     <value>Conversion takes too much time.</value>

@@ -1,20 +1,12 @@
 ﻿import CheckWhiteSvgUrl from "PUBLIC_DIR/images/check.white.svg?url";
-
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { withTranslation } from "react-i18next";
+import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
-import { isMobileOnly, isDesktop } from "react-device-detect";
-import { ReactSVG } from "react-svg";
-import hexToRgba from "hex-to-rgba";
-
 import Button from "@docspace/components/button";
 import Tooltip from "@docspace/components/tooltip";
 import Text from "@docspace/components/text";
 import TabContainer from "@docspace/components/tabs-container";
-import toastr from "@docspace/components/toast/toastr";
-
-import { useIsSmallWindow } from "@docspace/common/utils/useIsSmallWindow";
-
 import Preview from "./Appearance/preview";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import ColorSchemeDialog from "./sub-components/colorSchemeDialog";
@@ -23,12 +15,14 @@ import DropDownItem from "@docspace/components/drop-down-item";
 import DropDownContainer from "@docspace/components/drop-down";
 
 import HexColorPickerComponent from "./sub-components/hexColorPicker";
+import { isMobileOnly, isDesktop } from "react-device-detect";
 
 import Loader from "./sub-components/loaderAppearance";
 
 import { StyledComponent, StyledTheme } from "./Appearance/StyledApperance.js";
-import BreakpointWarning from "../../../../components/BreakpointWarning/index";
+import { ReactSVG } from "react-svg";
 import ModalDialogDelete from "./sub-components/modalDialogDelete";
+import hexToRgba from "hex-to-rgba";
 
 const Appearance = (props) => {
   const {
@@ -82,6 +76,8 @@ const Appearance = (props) => {
     false
   );
 
+  const [isSmallWindow, setIsSmallWindow] = useState(false);
+
   const [showSaveButtonDialog, setShowSaveButtonDialog] = useState(false);
 
   const [isEditDialog, setIsEditDialog] = useState(false);
@@ -111,8 +107,6 @@ const Appearance = (props) => {
   const [visibleDialog, setVisibleDialog] = useState(false);
 
   const [theme, setTheme] = useState(appearanceTheme);
-
-  const isSmallWindow = useIsSmallWindow(600);
 
   const array_items = useMemo(
     () => [
@@ -167,6 +161,15 @@ const Appearance = (props) => {
   useEffect(() => {
     saveToSessionStorage("selectColorId", selectThemeId);
   }, [selectThemeId]);
+
+  useEffect(() => {
+    onCheckView();
+    window.addEventListener("resize", onCheckView);
+
+    return () => {
+      window.removeEventListener("resize", onCheckView);
+    };
+  }, []);
 
   useEffect(() => {
     if (!currentColorScheme) return;
@@ -287,6 +290,14 @@ const Appearance = (props) => {
     },
     [appearanceTheme]
   );
+
+  const onCheckView = () => {
+    if (isDesktop && window.innerWidth < 600) {
+      setIsSmallWindow(true);
+    } else {
+      setIsSmallWindow(false);
+    }
+  };
 
   const onColorSelection = useCallback(
     (e) => {
@@ -618,13 +629,6 @@ const Appearance = (props) => {
     );
   };
 
-  if (isSmallWindow)
-    return (
-      <BreakpointWarning sectionName={t("Settings:Appearance")} isSmallWindow />
-    );
-  if (isMobileOnly)
-    return <BreakpointWarning sectionName={t("Settings:Appearance")} />;
-
   return !tReady ? (
     <Loader />
   ) : (
@@ -635,7 +639,10 @@ const Appearance = (props) => {
         onClickDelete={onClickDeleteModal}
       />
 
-      <StyledComponent colorCheckImg={colorCheckImg}>
+      <StyledComponent
+        colorCheckImg={colorCheckImg}
+        isShowDeleteButton={isShowDeleteButton}
+      >
         <div className="header">{t("Common:Color")}</div>
 
         <div className="theme-standard-container">
@@ -718,7 +725,7 @@ const Appearance = (props) => {
           visible={showColorSchemeDialog}
           onClose={onCloseColorSchemeDialog}
           header={headerColorSchemeDialog}
-          viewMobile={isMobileOnly}
+          // viewMobile={isMobileOnly}
           openHexColorPickerButtons={openHexColorPickerButtons}
           openHexColorPickerAccent={openHexColorPickerAccent}
           showSaveButtonDialog={showSaveButtonDialog}
