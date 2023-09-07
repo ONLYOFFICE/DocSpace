@@ -147,8 +147,8 @@ const DataReassignmentDialog = ({
             onAccept={onAccept}
             onCancel={onClose}
             onBackClick={onTogglePeopleSelector}
-            withCancelButton
-            withAbilityCreateRoomUsers
+            withCancelButton={true}
+            withAbilityCreateRoomUsers={true}
           />
         </ModalDialog.Container>
       )}
