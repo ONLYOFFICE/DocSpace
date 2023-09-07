@@ -89,6 +89,8 @@ class FileInput extends Component {
         break;
     }
 
+    const onClickProp = fromStorage ? { onClick: rest.onClick } : {};
+
     return (
       <Dropzone
         onDrop={this.onDrop}
@@ -116,10 +118,7 @@ class FileInput extends Component {
               hasError={hasError}
               hasWarning={hasWarning}
               scale={scale}
-              {...(fromStorage && {
-                isReadOnly: true,
-                onClick: rest.onClick,
-              })}
+              {...onClickProp}
             />
             {!fromStorage && (
               <input
@@ -138,7 +137,7 @@ class FileInput extends Component {
                 size={buttonSize}
               />
             ) : (
-              <div className="icon">
+              <div className="icon" {...onClickProp}>
                 {isLoading ? (
                   <Loader className="loader" size="20px" type="track" />
                 ) : (
