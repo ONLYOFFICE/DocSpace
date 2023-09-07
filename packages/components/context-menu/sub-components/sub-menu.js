@@ -33,7 +33,7 @@ const SubMenu = (props) => {
   const theme = useTheme();
 
   const onItemMouseEnter = (e, item) => {
-    if (item.disabled) {
+    if (item.disabled || isMobileOnly) {
       e.preventDefault();
       return;
     }
