@@ -11,7 +11,7 @@ import Checkbox from "@docspace/components/checkbox";
 import ComboBox from "@docspace/components/combobox";
 import TabContainer from "@docspace/components/tabs-container";
 import SelectFolderInput from "client/SelectFolderInput";
-import { tablet } from "@docspace/components/utils/device";
+import { hugeMobile, tablet } from "@docspace/components/utils/device";
 import { objectToGetParams, loadScript } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import { isMobileOnly } from "react-device-detect";
@@ -30,7 +30,6 @@ const SDKContainer = styled(Box)`
 `;
 
 const Controls = styled(Box)`
-  min-width: 350px;
   max-width: 350px;
   display: flex;
   flex-direction: column;
@@ -64,6 +63,12 @@ const CategorySubHeader = styled.div`
 
   @media ${tablet} {
     margin-bottom: 0;
+  }
+
+  @media ${hugeMobile} {
+    &:first-of-type {
+      margin-top: 0;
+    }
   }
 `;
 
@@ -483,7 +488,7 @@ const PortalIntegration = (props) => {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "8px",
+                gap: "4px",
               }}
             >
               <Label className="label" text={t("RoomOrFolder")} />

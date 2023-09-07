@@ -19,12 +19,22 @@ const CategoryHeader = styled.div`
 `;
 
 const Container = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
   margin-bottom: 16px;
 
+  &.description-holder {
+    display: block;
+  }
+
+  &.description-holder > div {
+    display: inline-block;
+    margin-left: 4px;
+    transform: translateY(1px);
+  }
+
   &.input-holder {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     @media ${tablet} {
       margin-bottom: 8px;
     }
@@ -99,9 +109,10 @@ const CSP = ({ t, cspDomains, getCSPSettings, setCSPSettings }) => {
   return (
     <>
       <CategoryHeader>{t("CSPHeader")}</CategoryHeader>
-      <Container>
+      <Container className="description-holder">
         {t("CSPDescription")}
         <HelpButton
+          className="csp-helpbutton"
           offsetRight={0}
           size={12}
           tooltipContent={<Text fontSize="12px">{t("CSPHelp")}</Text>}
