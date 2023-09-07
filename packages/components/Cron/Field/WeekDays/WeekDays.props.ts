@@ -1,7 +1,7 @@
-import { Dispatch, SetStateAction } from "react";
-import { PeriodType } from "../../types";
+import type { Dispatch, SetStateAction } from "react";
+import type { PeriodType, FieldProps } from "../../types";
 
-interface WeekDaysProps {
+interface WeekDaysProps extends FieldProps {
   isWeek: boolean;
   period: PeriodType;
   weekDays: number[];

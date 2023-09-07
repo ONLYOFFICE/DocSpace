@@ -1,6 +1,7 @@
-import { Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import type { FieldProps } from "../../types";
 
-interface HoursProps {
+interface HoursProps extends FieldProps {
   hours: number[];
   setHours: Dispatch<SetStateAction<number[]>>;
 }

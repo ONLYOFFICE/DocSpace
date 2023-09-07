@@ -1,16 +1,20 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 
 import { MonthDays, Months, Period, WeekDays, Hours, Minutes } from "./Field";
 
 import { getCronStringFromValues, stringToArray } from "./part";
 import { defaultCronString, defaultPeriod } from "./constants";
-import { getPeriodFromCronParts } from "./util";
+import { getPeriodFromCronParts, getUnits } from "./util";
 
-import CronProps from "./Cron.props";
-import { PeriodType } from "./types";
 import { CronWrapper, Suffix } from "./Cron.styled";
 
+import type CronProps from "./Cron.props";
+import type { PeriodType } from "./types";
+
 function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
+  const { t } = useTranslation("Common");
+
   const valueRef = useRef<string>(value);
 
   const [period, setPeriod] = useState<PeriodType>(defaultPeriod);
@@ -86,12 +90,18 @@ function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
     };
   }, [period]);
 
+  const units = useMemo(() => getUnits(t), []);
+
   return (
     <CronWrapper>
-      <Period period={period} setPeriod={setPeriod} />
-      {isYear && <Months months={months} setMonths={setMonths} />}
+      <Period t={t} period={period} setPeriod={setPeriod} />
+      {isYear && (
+        <Months unit={units[3]} t={t} months={months} setMonths={setMonths} />
+      )}
       {(isYear || isMonth) && (
         <MonthDays
+          t={t}
+          unit={units[2]}
           weekDays={weekDays}
           monthDays={monthDays}
           setMonthDays={setMonthDays}
@@ -99,6 +109,8 @@ function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
       )}
       {(isYear || isMonth || isWeek) && (
         <WeekDays
+          t={t}
+          unit={units[4]}
           isWeek={isWeek}
           period={period}
           monthDays={monthDays}
@@ -106,10 +118,18 @@ function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
           setWeekDays={setWeekDays}
         />
       )}
-      {!isHour && !isMinute && <Hours hours={hours} setHours={setHours} />}
+      {!isHour && !isMinute && (
+        <Hours unit={units[1]} t={t} hours={hours} setHours={setHours} />
+      )}
 
       {!isMinute && (
-        <Minutes period={period} minutes={minutes} setMinutes={setMinutes} />
+        <Minutes
+          t={t}
+          unit={units[0]}
+          period={period}
+          minutes={minutes}
+          setMinutes={setMinutes}
+        />
       )}
       <Suffix>UTC</Suffix>
     </CronWrapper>

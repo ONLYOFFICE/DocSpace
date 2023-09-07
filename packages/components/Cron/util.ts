@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Options, PeriodType, Unit } from "./types";
+import { Options, PeriodType, TFunction, Unit } from "./types";
 
 export const parseNumber = (value: unknown) => {
   if (typeof value === "string") {
@@ -401,4 +401,89 @@ export const findDate = (arr: number[][], date: DateTime) => {
     throw new Error("Unable to find execution time for schedule");
   }
   return date.set({ second: 0, millisecond: 0 });
+};
+
+export const getUnits = (t?: TFunction) => {
+  const units: ReadonlyArray<Unit> = Object.freeze([
+    {
+      name: "minute",
+      min: 0,
+      max: 59,
+      total: 60,
+    },
+    {
+      name: "hour",
+      min: 0,
+      max: 23,
+      total: 24,
+    },
+    {
+      name: "day",
+      min: 1,
+      max: 31,
+      total: 31,
+    },
+    {
+      name: "month",
+      min: 1,
+      max: 12,
+      total: 12,
+      alt: [
+        "JAN",
+        "FEB",
+        "MAR",
+        "APR",
+        "MAY",
+        "JUN",
+        "JUL",
+        "AUG",
+        "SEP",
+        "OCT",
+        "NOV",
+        "DEC",
+      ],
+      altWithTranslation: t
+        ? [
+            t("JAN"),
+            t("FEB"),
+            t("MAR"),
+            t("APR"),
+            t("MAY"),
+            t("JUN"),
+            t("JUL"),
+            t("AUG"),
+            t("SEP"),
+            t("OCT"),
+            t("NOV"),
+            t("DEC"),
+          ]
+        : undefined,
+      fullLabel: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ],
+    },
+    {
+      name: "weekday",
+      min: 0,
+      max: 6,
+      total: 7,
+      alt: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
+      altWithTranslation: t
+        ? [t("SUN"), t("MON"), t("TUE"), t("WED"), t("THU"), t("FRI"), t("SAT")]
+        : undefined,
+    },
+  ]);
+
+  return units;
 };

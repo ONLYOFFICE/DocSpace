@@ -7,7 +7,6 @@ interface SelectProps {
   setValue: Dispatch<SetStateAction<number[]>>;
   prefix: string;
   dropDownMaxHeight?: number;
-  withTranslationPrefix?: boolean;
 }
 
 export default SelectProps;

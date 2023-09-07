@@ -1,12 +1,15 @@
 import { DateTime } from "luxon";
 import { Options, PeriodType } from "./types";
-import { defaultOptions, units } from "./constants";
+import { defaultOptions } from "./constants";
 import {
   arrayToStringPart,
   assertValidArray,
   findDate,
   stringToArrayPart,
+  getUnits,
 } from "./util";
+
+const units = getUnits();
 
 export const stringToArray = (str: string, full = false) => {
   if (typeof str !== "string") {

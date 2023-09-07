@@ -1,18 +1,17 @@
 import React from "react";
 
 import Select from "../../Select";
-import { units } from "../../constants";
 
-import MonthsProps from "./Months.props";
+import type MonthsProps from "./Months.props";
 
-function Months({ months, setMonths }: MonthsProps) {
+function Months({ months, unit, setMonths, t }: MonthsProps) {
   return (
     <Select
       value={months}
       setValue={setMonths}
-      placeholder="EveryMonth"
-      unit={units[3]}
-      prefix="In"
+      placeholder={t("EveryMonth")}
+      unit={unit}
+      prefix={t("In")}
       dropDownMaxHeight={300}
     />
   );

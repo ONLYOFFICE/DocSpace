@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { useTranslation } from "react-i18next";
 
 import ComboBox from "../../combobox";
 import { Option } from "../types";
@@ -14,20 +13,17 @@ function Select({
   setValue,
   prefix,
   dropDownMaxHeight,
-  withTranslationPrefix = true,
 }: SelectProps) {
-  const { t } = useTranslation("Cron");
-
   const options = useMemo(() => {
-    const { alt } = unit;
+    const { altWithTranslation } = unit;
 
-    if (alt) {
-      return alt.map((item, index) => {
+    if (altWithTranslation) {
+      return altWithTranslation.map((item, index) => {
         const number = unit.min === 0 ? index : index + 1;
 
         return {
           key: number,
-          label: t(item),
+          label: item,
         };
       });
     }
@@ -48,9 +44,9 @@ function Select({
     return {
       key: isEmpty ? -1 : value[0],
       label: isEmpty
-        ? t(placeholder)
-        : unit.alt
-        ? t(unit.alt[value[0] - unit.min])
+        ? placeholder
+        : unit.altWithTranslation
+        ? unit.altWithTranslation[value[0] - unit.min]
         : fixFormatValue(value[0]),
     };
   }, [value, placeholder]);
@@ -67,7 +63,7 @@ function Select({
 
   return (
     <SelectWrapper>
-      <span>{withTranslationPrefix ? t(prefix) : prefix}</span>
+      <span>{prefix}</span>
       <ComboBox
         scaledOptions
         size="content"

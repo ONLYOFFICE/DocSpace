@@ -1,16 +1,16 @@
 import React from "react";
 import Select from "../../Select";
-import { units } from "../../constants";
-import HoursProps from "./Hours.props";
 
-function Hours({ hours, setHours }: HoursProps) {
+import type HoursProps from "./Hours.props";
+
+function Hours({ hours, setHours, unit, t }: HoursProps) {
   return (
     <Select
       value={hours}
       setValue={setHours}
-      placeholder="EveryHour"
-      unit={units[1]}
-      prefix="at"
+      placeholder={t("EveryHour")}
+      unit={unit}
+      prefix={t("at")}
       dropDownMaxHeight={300}
     />
   );

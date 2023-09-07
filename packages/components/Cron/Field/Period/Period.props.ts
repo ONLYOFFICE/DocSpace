@@ -1,7 +1,8 @@
-import { Dispatch, SetStateAction } from "react";
-import { PeriodType } from "../../types";
+import type { Dispatch, SetStateAction } from "react";
+import type { PeriodType, TFunction } from "../../types";
 
 interface PeriodProps {
+  t: TFunction;
   period?: PeriodType;
   setPeriod: Dispatch<SetStateAction<PeriodType>>;
 }

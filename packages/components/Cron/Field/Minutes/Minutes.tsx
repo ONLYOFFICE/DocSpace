@@ -1,21 +1,20 @@
 import React from "react";
 import Select from "../../Select";
-import { units } from "../../constants";
-import MinutesProps from "./Minutes.props";
 
-function Minutes({ minutes, setMinutes, period }: MinutesProps) {
+import type MinutesProps from "./Minutes.props";
+
+function Minutes({ minutes, setMinutes, period, t, unit }: MinutesProps) {
   const isHour = period === "Hour";
-  const prefix = isHour ? "At" : ":";
+  const prefix = isHour ? t("At") : ":";
 
   return (
     <Select
       value={minutes}
       setValue={setMinutes}
-      placeholder="EveryMinute"
-      unit={units[0]}
+      placeholder={t("EveryMinute")}
+      unit={unit}
       prefix={prefix}
       dropDownMaxHeight={300}
-      withTranslationPrefix={isHour}
     />
   );
 }

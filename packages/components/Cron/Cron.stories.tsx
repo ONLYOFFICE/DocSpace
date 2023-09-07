@@ -9,7 +9,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 i18n.use(initReactI18next).init({
   resources: {
     en: {
-      Cron: {
+      Common: {
         EveryYear: "Every year",
         EveryMonth: "Every month",
         EveryDay: "Every day",

@@ -1,21 +1,18 @@
 import React, { useMemo } from "react";
-import { useTranslation } from "react-i18next";
 
 import ComboBox from "../../../combobox";
-import { getOptions } from "./Period.helper";
+import { getLabel, getOptions } from "./Period.helper";
 
-import PeriodProps, { PeriodOptionType } from "./Period.props";
+import PeriodProps, { type PeriodOptionType } from "./Period.props";
 
-function Period({ period = "Hour", setPeriod }: PeriodProps) {
-  const { t } = useTranslation("Cron");
-
+function Period({ period = "Hour", setPeriod, t }: PeriodProps) {
   const onSelect = (arg: PeriodOptionType) => {
     setPeriod(arg.key);
   };
 
   const options = useMemo(() => getOptions(t), []);
   const selectedOption = useMemo(
-    () => ({ key: period, label: t(`Every${period}`) }),
+    () => ({ key: period, label: getLabel(period, t) }),
     [period]
   );
 

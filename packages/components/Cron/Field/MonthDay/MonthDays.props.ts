@@ -1,6 +1,7 @@
-import { Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import type { FieldProps } from "../../types";
 
-interface MonthDaysProps {
+interface MonthDaysProps extends FieldProps {
   monthDays: number[];
   weekDays: number[];
   setMonthDays: Dispatch<SetStateAction<number[]>>;

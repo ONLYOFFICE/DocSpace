@@ -1,13 +1,19 @@
 import React, { useMemo } from "react";
 import Select from "../../Select";
-import { units } from "../../constants";
-import MonthDaysProps from "./MonthDays.props";
 
-function MonthDays({ weekDays, monthDays, setMonthDays }: MonthDaysProps) {
+import type MonthDaysProps from "./MonthDays.props";
+
+function MonthDays({
+  weekDays,
+  monthDays,
+  unit,
+  setMonthDays,
+  t,
+}: MonthDaysProps) {
   const placeholder = useMemo(() => {
     const isEmpty = weekDays.length === 0;
 
-    return isEmpty ? "EveryDayOfTheMonth" : "DayOfTheMonth";
+    return isEmpty ? t("EveryDayOfTheMonth") : t("DayOfTheMonth");
   }, [weekDays.length]);
 
   return (
@@ -15,8 +21,8 @@ function MonthDays({ weekDays, monthDays, setMonthDays }: MonthDaysProps) {
       value={monthDays}
       setValue={setMonthDays}
       placeholder={placeholder}
-      unit={units[2]}
-      prefix="On"
+      unit={unit}
+      prefix={t("On")}
       dropDownMaxHeight={300}
     />
   );

@@ -1,21 +1,24 @@
 import React, { useMemo } from "react";
+
 import Select from "../../Select";
-import { units } from "../../constants";
-import WeekDaysProps from "./WeekDays.props";
+
+import type WeekDaysProps from "./WeekDays.props";
 
 function WeekDays({
   setWeekDays,
+  unit,
   isWeek,
   weekDays,
   monthDays,
   period,
+  t,
 }: WeekDaysProps) {
-  const prefix = period === "Week" ? "On" : "And";
+  const prefix = period === "Week" ? t("On") : t("And");
 
   const placeholder = useMemo(() => {
     const isEmpty = monthDays.length === 0;
 
-    return isEmpty || isWeek ? "EveryDayOfTheWeek" : "DayOfTheWeek";
+    return isEmpty || isWeek ? t("EveryDayOfTheWeek") : t("DayOfTheWeek");
   }, [monthDays.length, isWeek]);
 
   return (
@@ -23,7 +26,7 @@ function WeekDays({
       value={weekDays}
       setValue={setWeekDays}
       placeholder={placeholder}
-      unit={units[4]}
+      unit={unit}
       prefix={prefix}
       dropDownMaxHeight={300}
     />
