@@ -475,4 +475,7 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>Ֆայլն ապակողպված է</value>
   </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>Արտաքին հղում</value>
+  </data>
 </root>
