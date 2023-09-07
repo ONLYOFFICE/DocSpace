@@ -64,6 +64,12 @@ const StyledComponent = styled(ModalDialog)`
     border-radius: 8px;
     cursor: pointer;
   }
+
+  .drop-down-item-hex {
+    :hover {
+      background-color: unset;
+    }
+  }
 `;
 
 const ColorSchemeDialog = props => {
