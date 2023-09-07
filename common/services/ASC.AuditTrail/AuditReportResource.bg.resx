@@ -718,4 +718,10 @@
   <data name="StartStorageEncryption" xml:space="preserve">
     <value>Стартирайте криптирането на хранилището</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Град</value>
+  </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>Държава</value>
+  </data>
 </root>

@@ -9,10 +9,12 @@
   "ExternalLink": "Внешняя ссылка",
   "FormFilling": "Заполнение форм",
   "InternalLink": "Внутренняя ссылка",
+  "LinkName": "Имя ссылки",
   "Notify users": "Уведомить пользователей",
   "ReadOnly": "Только чтение",
   "ShareEmailBody": "Вам предоставлен доступ к документу {{itemName}}. Нажмите на ссылку ниже, чтобы открыть документ прямо сейчас: {{shareLink}}.",
   "ShareEmailSubject": "Вам предоставлен доступ к документу {{itemName}}",
   "ShareVia": "Отправить по",
-  "SharingSettingsTitle": "Настройки доступа"
+  "SharingSettingsTitle": "Настройки доступа",
+  "Shorten": "Сократить"
 }

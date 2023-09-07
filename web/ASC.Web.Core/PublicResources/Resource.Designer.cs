@@ -1870,7 +1870,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The tenant domain can not be empty..
+        ///   Looks up a localized string similar to The tenant domain cannot be empty..
         /// </summary>
         public static string ErrorTenantTooShort {
             get {
