@@ -22,6 +22,8 @@ const StyledBody = styled.div`
   }
   .conversion-input {
     width: 100%;
+    text-align: ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `right` : `left`};
   }
 `;
 const SimulatePassword = memo(
@@ -44,8 +46,9 @@ const SimulatePassword = memo(
 
       const oldPassword = password;
       const oldPasswordLength = oldPassword.length;
-      const caretPosition = document.getElementById("conversion-password")
-        .selectionStart;
+      const caretPosition = document.getElementById(
+        "conversion-password"
+      ).selectionStart;
 
       setCaretPosition(caretPosition);
       const newCharactersUntilCaret = newPassword.substring(0, caretPosition);
@@ -54,8 +57,8 @@ const SimulatePassword = memo(
         .split("")
         .filter((el) => el === bulletsFont).length;
 
-      const unchangedEndingCharacters = newPassword.substring(caretPosition)
-        .length;
+      const unchangedEndingCharacters =
+        newPassword.substring(caretPosition).length;
       const addedCharacters = newCharactersUntilCaret.substring(
         unchangedStartCharacters
       );
@@ -98,9 +101,7 @@ const SimulatePassword = memo(
     const bullets = copyPassword.replace(/(.)/g, bulletsFont);
 
     const iconName =
-      inputType === "password"
-        ? EyeOffReactSvgUrl
-        : EyeReactSvgUrl;
+      inputType === "password" ? EyeOffReactSvgUrl : EyeReactSvgUrl;
 
     useEffect(() => {
       onChange && onChange(password);

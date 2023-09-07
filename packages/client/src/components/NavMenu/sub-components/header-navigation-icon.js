@@ -14,7 +14,10 @@ const StyledContainer = styled.div`
   align-items: center;
   justify-content: center;
 
-  margin-right: 22px;
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-left: 22px;`
+      : `margin-right: 22px;`}
 
   .navigation-item__svg {
     height: 20px;
@@ -40,7 +43,9 @@ const StyledContainer = styled.div`
   .navigation-item__badge {
     position: absolute;
     top: -8px;
-    right: -8px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `left: -8px;` : `right: -8px;`}
 
     width: 12px;
     height: 12px;

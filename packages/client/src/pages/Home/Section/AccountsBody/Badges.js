@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -23,7 +23,14 @@ const StyledBadgesContainer = styled.div`
 `;
 
 const StyledPaidBadge = styled(Badge)`
-  margin-right: 8px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: 8px;
+        `
+      : css`
+          margin-right: 8px;
+        `}
 `;
 
 const StyledSendClockIcon = styled(SendClockIcon)`

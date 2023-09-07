@@ -9,7 +9,7 @@
     frameId: "ds-frame",
     mode: "manager", //TODO: ["manager", "editor", "viewer","room-selector", "file-selector", "system"]
     id: null,
-    locale: "en-US",
+    locale: null,
     theme: "Base",
     editorType: "embedded", //TODO: ["desktop", "embedded"]
     editorGoBack: true,
@@ -46,6 +46,7 @@
       onCloseCallback: null,
       onAppReady: null,
       onAppError: null,
+      onEditorCloseCallback: null,
     },
   };
 
@@ -124,12 +125,30 @@
         }
 
         case "editor": {
-          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&editorGoBack=${config.editorGoBack}`;
+          let goBack = config.editorGoBack;
+
+          if (
+            config.events.onEditorCloseCallback &&
+            typeof config.events.onEditorCloseCallback === "function"
+          ) {
+            goBack = "event";
+          }
+
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&editorGoBack=${goBack}`;
           break;
         }
 
         case "viewer": {
-          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&action=view&editorGoBack=${config.editorGoBack}`;
+          let goBack = config.editorGoBack;
+
+          if (
+            config.events.onEditorCloseCallback &&
+            typeof config.events.onEditorCloseCallback === "function"
+          ) {
+            goBack = "event";
+          }
+
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&action=view&editorGoBack=${goBack}`;
           break;
         }
 

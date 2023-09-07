@@ -7,6 +7,7 @@
   "InvalidUsernameOrPassword": "Invalid username or password",
   "LoginWithAccountNotFound": "Can't find associated third-party account.  You need to connect your social networking account at the profile editing page first.",
   "LoginWithBruteForce": "Authorization temporarily blocked",
+  "LoginWithBruteForceCaptcha": "Confirm that you are not a robot",
   "RecaptchaInvalid": "Invalid Recaptcha",
   "SsoAttributesNotFound": "Authentication failed (assertion attributes not found)",
   "SsoAuthFailed": "Authentication failed",

@@ -111,7 +111,10 @@ const CreateEvent = ({
     }
 
     let tab =
-      !isDesktop && extension && open
+      !isDesktop &&
+      window.DocSpaceConfig?.editor?.openOnNewPage &&
+      extension &&
+      open
         ? window.open(
             combineUrl(
               window.DocSpaceConfig?.proxy?.url,

@@ -1292,7 +1292,7 @@ public class S3Storage : BaseStorage
         var metadataResponse = await client.GetObjectMetadataAsync(metadataRequest);
         var objectSize = metadataResponse.ContentLength;
 
-        if (objectSize >= 100 * 1024 * 1024L) //100 megabytes
+        if (objectSize >= 1000 * 1024 * 1024L) //1000 megabytes
         {
             var copyResponses = new List<CopyPartResponse>();
 

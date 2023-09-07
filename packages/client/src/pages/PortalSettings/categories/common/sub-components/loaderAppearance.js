@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Loaders from "@docspace/common/components/Loaders";
 
 const StyledLoader = styled.div`
@@ -18,7 +18,14 @@ const StyledLoader = styled.div`
   }
 
   .padding-right {
-    padding-right: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 12px;
+          `
+        : css`
+            padding-right: 12px;
+          `}
   }
 
   .preview-title {
