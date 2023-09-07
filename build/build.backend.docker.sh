@@ -16,7 +16,7 @@ echo "LOCAL IP: $local_ip"
 doceditor=${local_ip}:5013
 login=${local_ip}:5011
 client=${local_ip}:5001
-portal_url="http://$local_ip:8092"
+portal_url="http://$local_ip"
 
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
@@ -55,6 +55,10 @@ else
     echo "Error: Unknown CPU Type: ${arch_name}."
     exit 1
 fi
+
+echo "Run local dns server"
+ROOT_DIR=$dir \
+docker compose -f $dockerDir/dnsmasq.yml up -d
 
 echo "Clear publish folder"
 rm -rf $dir/publish
