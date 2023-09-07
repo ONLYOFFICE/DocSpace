@@ -66,6 +66,7 @@ while [ "$1" != "" ]; do
 		-esh | --elastichost )
 			if [ "$2" != "" ]; then
 				ELK_HOST=$2
+				EXTERNAL_ELK_FLAG="true"
 				shift
 			fi
 		;;
@@ -115,6 +116,7 @@ while [ "$1" != "" ]; do
 		-rdh | --redishost )
 			if [ "$2" != "" ]; then
 				REDIS_HOST=$2
+				EXTERNAL_REDIS_FLAG="true"
 				shift
 			fi
 		;;
@@ -129,6 +131,7 @@ while [ "$1" != "" ]; do
 		-rbh | --rabbitmqhost )
 			if [ "$2" != "" ]; then
 				RABBITMQ_HOST=$2
+				EXTERNAL_RABBITMQ_FLAG="true"
 				shift
 			fi
 		;;
@@ -740,7 +743,7 @@ check_connection_external_services() {
 	HOST_RESPONCE=$?
 
 	if [[ $HOST_RESPONCE -ne 0 ]]; then
-		echo -e "Host is not responding: $1:$2"
+		echo -e "$3 external server is not responding: $1:$2"
 		return $HOST_RESPONCE
 	fi
 
@@ -767,41 +770,38 @@ if $PACKAGE_MANAGER mysql-client >/dev/null 2>&1 || $PACKAGE_MANAGER mysql-commu
     establish_mysql_conn || exit $?
 fi 
 
-if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
+if [[ ! -z $DOCUMENT_SERVER_URL_EXTERNAL ]]; then
+    parse_external_docs_url "$DOCUMENT_SERVER_URL_EXTERNAL"
+    check_connection_external_services "$DOCUMENT_SERVER_HOST" "$DOCUMENT_SERVER_PORT" "ONLYOFFICE Docs"
+    setup_docs "EXTERNAL_DOCS_SERVER"
+elif $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
     setup_docs "LOCAL_DOCS_SERVER"
     setup_enterprise
-elif [[ ! -z $DOCUMENT_SERVER_URL_EXTERNAL ]]; then
-    parse_external_docs_url "$DOCUMENT_SERVER_URL_EXTERNAL"
-    check_connection_external_services "$DOCUMENT_SERVER_HOST" "$DOCUMENT_SERVER_PORT" || { echo "ONLYOFFICE Docs host is not responding"; }
-    setup_docs "EXTERNAL_DOCS_SERVER"
 fi
 
 if $PACKAGE_MANAGER openresty >/dev/null 2>&1; then
     setup_openresty
 fi
 
-if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
+if [[ ! -z $EXTERNAL_ELK_FLAG ]]; then
+	check_connection_external_services "$ELK_HOST" "$ELK_PORT" "Elasticsearch"
+	setup_elasticsearch "EXTERNAL_ELASTIC_SERVER" 
+elif $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
     setup_elasticsearch "LOCAL_ELASTIC_SERVER"
-elif check_connection_external_services "$ELK_HOST" "$ELK_PORT"; then
-    setup_elasticsearch "EXTERNAL_ELASTIC_SERVER"
-else 
-    echo "Elasticsearch host is not responding" 
 fi
 
-if $PACKAGE_MANAGER $REDIS_PACKAGE >/dev/null 2>&1 >/dev/null 2>&1; then
+if [[ ! -z $EXTERNAL_REDIS_FLAG ]]; then
+	check_connection_external_services "$REDIS_HOST" "$REDIS_PORT" "Redis"
+	setup_redis "EXTERNAL_REDIS_SERVER"
+elif $PACKAGE_MANAGER $REDIS_PACKAGE >/dev/null 2>&1; then
     setup_redis "LOCAL_REDIS_SERVER"
-elif check_connection_external_services "$REDIS_HOST" "$REDIS_PORT"; then
-    setup_redis "EXTERNAL_REDIS_SERVER"
-else 
-    echo "Redis host is not responding" 
 fi
 
-if $PACKAGE_MANAGER rabbitmq-server >/dev/null 2>&1; then
-    setup_rabbitmq "LOCAL_RABBITMQ_SERVER"
-elif check_connection_external_services "$RABBITMQ_HOST" "$RABBITMQ_PORT"; then
+if [[ ! -z $EXTERNAL_RABBITMQ_FLAG ]]; then
+	check_connection_external_services "$RABBITMQ_HOST" "$RABBITMQ_PORT" "RabbitMQ"
     setup_rabbitmq "EXTERNAL_RABBITMQ_SERVER"
-else 
-    echo "Rabbitmq host is not responding"
+elif $PACKAGE_MANAGER rabbitmq-server >/dev/null 2>&1; then
+    setup_rabbitmq "LOCAL_RABBITMQ_SERVER"
 fi
 
 restart_services
