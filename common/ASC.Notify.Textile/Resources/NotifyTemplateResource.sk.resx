@@ -192,4 +192,9 @@
             &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>Tento e-mail je generovaný automaticky a nemusíte na to odpovedať. &lt;br /&gt;Tento e-mail dostanete pretože ste registrovaným používateľom&lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;
+&lt;br /&gt; Ak sa chcete odhlásiť z odberu notifikačných e-mailov DocSpace, kliknite sem: &lt;a href="{1}"  target="_blank"&gt;Odhlásiť sa&lt;/a&gt;
+&lt;br /&gt;</value>
+  </data>
 </root>

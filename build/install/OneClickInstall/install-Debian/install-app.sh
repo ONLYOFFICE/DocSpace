@@ -31,7 +31,7 @@ if [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
 			
 			RECONFIGURE_PRODUCT="true"
 		else
-			systemctl is-active openresty | grep -q "^active" && systemctl stop openresty
+			systemctl list-units --type=service | grep -q openresty && systemctl stop openresty
 			apt-get install -y --only-upgrade ${ds_pkg_name};	
 		fi				
 	fi
@@ -62,7 +62,7 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	echo ${package_sysname}-documentserver $DS_COMMON_NAME/jwt-secret select ${DS_JWT_SECRET} | sudo debconf-set-selections
 	echo ${package_sysname}-documentserver $DS_COMMON_NAME/jwt-header select ${DS_JWT_HEADER} | sudo debconf-set-selections
 		
-	systemctl is-active openresty | grep -q "^active" && systemctl stop openresty
+	systemctl list-units --type=service | grep -q openresty && systemctl stop openresty
 	
 	if [ "$INSTALLATION_TYPE" = "COMMUNITY" ]; then
 		apt-get install -yq ${package_sysname}-documentserver

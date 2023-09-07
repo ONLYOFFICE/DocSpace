@@ -336,7 +336,9 @@ class ContextOptionsStore {
       : null;
 
     let tab =
-      !isDesktopClient && fileExst
+      !isDesktopClient &&
+      window.DocSpaceConfig?.editor?.openOnNewPage &&
+      fileExst
         ? window.open(
             combineUrl(
               window.DocSpaceConfig?.proxy?.url,

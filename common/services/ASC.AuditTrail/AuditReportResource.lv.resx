@@ -718,4 +718,10 @@
   <data name="UserUpdatedEmail" xml:space="preserve">
     <value>E-pasta adrese ir atjaunināta</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Pilsēta</value>
+  </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>Valsts</value>
+  </data>
 </root>

@@ -147,4 +147,111 @@ $GreenButton
 
 비밀번호를 변경하고 싶지 않으신가요? 그러시다면 이 메시지를 무시해주세요.</value>
   </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>ONLYOFFICE Personal에 오신 것을 환영합니다</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. 이메일 주소를 활성화해주세요</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>적절한 액세스 권한으로 문서와 공유 문서를 생성 및 편집|다른 사용자에게 문서 및 폴더에 대한 읽기/편집 권한 부여|'내 문서' 섹션에서 Dropbox, Box 및 기타 계정 연결</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>사용자와 동일한 작업|'공통' 섹션에서 Dropbox, Box 및 기타 계정 연결|'공통' 섹션에서 문서 및 폴더에 대한 액세스 권한 설정</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>ONLYOFFICE Personal 계정 해지</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. 사용자 데이터 삭제가 완료되었습니다</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>새로운 포털이 등록되었습니다</value>
+  </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.ONLYOFFICE Personal에 오신 것을 환영합니다
+
+고객님께서는 Personal 클라우드에 개인 오피스를 생성하셨습니다.
+
+h3.문서를 편집하고 저장할 수 있는 가상 작업 공간으로, 친구나 동료에게 액세스를 제공하여 어디서나 함께 작업할 수 있습니다.
+
+h3.ONLYOFFICE에서 다음과 같은 작업을 할 수 있습니다.
+
+- 텍스트 문서, 스프레드시트, 프레젠테이션을 생성하고 확인하고 편집할 수 있습니다.
+
+- 대중적인 모든 형식의 파일을 작업할 수 있습니다. MS Office 파일과 가장 잘 호환됩니다.
+
+- "바로 작성할 수 있는 양식":"https://www.onlyoffice.com/form-creator.aspx" 을 생성하고 공동으로 편집할 수 있습니다.
+
+- 온라인으로 문서를 공유하고 공동으로 작업할 수 있습니다.
+
+- 다양한 플러그인을 사용하여 추가 기능을 적용할 수 있습니다.
+
+- "Chrome 확장 프로그램":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US" 을 통해Personal 클라우드에 손쉽게 액세스할 수 있습니다.
+
+무료 "데스크탑 편집기":"https://www.onlyoffice.com/download-desktop.aspx" 를 이용해 오프라인으로 문서 작업을 하거나 "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" 또는 "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" 장치에 모바일 편집 앱을 다운로드할 수 있습니다.
+
+감사합니다,
+ONLYOFFICE 팀</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>클라우드 오피스 계정의 이메일을 변경하고 싶으세요?
+
+클라우드에 로그인*하려면 아래 버튼을 클릭하세요.
+
+$GreenButton
+
+링크는 7일 동안만 유효합니다.
+
+*이 브라우저에서 클라우드 오피스에 로그인하지 않은 경우 인증을 위해 이전 이메일을 사용해야 합니다.
+
+비밀번호를 변경하고 싶지 않으신가요? 그러시다면 이 메시지를 무시해주세요.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>안녕하세요.
+
+개인용 ONLYOFFICE 솔루션에 계정을 등록하셨습니다. "여기":"$InviteLink" 를 클릭하여 등록을 확인하고 비밀번호를 생성하세요.
+
+링크를 열 수 없는 경우 "$InviteLink":"$InviteLink" 를 복사하여 브라우저 주소창에 붙여넣으세요.
+
+감사합니다,
+ONLYOFFICE 팀</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>personal.onlyoffice.com에서 계정 해지를 요청하셨습니다. 다음 링크를 따라 요청 프로세스를 완료하세요(이 링크는 7일 동안만 유효합니다).
+
+계정 해지 확인
+
+*알림*: 삭제 후에는 저희의 "개인 정보 보호 정책":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" 에 따라 고객님의 계정 및 모든 관련 데이터가 영구적으로 삭제됩니다.
+
+"계정 해지에 대해 더 보기":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+계속 진행하고 싶지 않은 경우 이 이메일을 무시해주세요. 
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+감사합니다,
+ONLYOFFICE 팀</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>$UserName님,
+
+"$FromUserName":"$FromUserLink" 사용자의 데이터 삭제 프로세스가 성공적으로 완료되었습니다.
+
+무료로 허용된 개인 데이터 삭제:
+
+# 문서 - $DocsSpace
+# 메일 - $MailSpace
+# 토크 - $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.새로운 포털이 등록되었습니다
+
+# 포털 URL: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# 이름: $UserName
+# 성: $UserLastName
+# 이메일: $UserEmail
+# 휴대폰: $Phone
+# 생성일: $Date</value>
+  </data>
 </root>
