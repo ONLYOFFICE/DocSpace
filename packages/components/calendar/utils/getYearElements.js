@@ -16,7 +16,8 @@ export const getYearElements = (
   setSelectedScene,
   selectedDate,
   minDate,
-  maxDate
+  maxDate,
+  isMobile
 ) => {
   const onClick = (year) =>
     onDateClick(year, setObservedDate, setSelectedScene);
@@ -33,6 +34,7 @@ export const getYearElements = (
         moment(year.toString()).endOf("year").endOf("month") < minDate ||
         moment(year.toString()) > maxDate
       }
+      isMobile={isMobile}
     >
       {year}
     </ColorTheme>
@@ -50,6 +52,7 @@ export const getYearElements = (
           moment(years[i].toString()).endOf("year").endOf("month") < minDate ||
           moment(years[i].toString()) > maxDate
         }
+        isMobile={isMobile}
       >
         {years[i]}
       </ColorTheme>
@@ -73,6 +76,7 @@ export const getYearElements = (
             .endOf("month") < minDate ||
           moment(years[selectedYearIndex].toString()) > maxDate
         }
+        isMobile={isMobile}
       >
         {years[selectedYearIndex]}
       </ColorTheme>
@@ -93,6 +97,7 @@ export const getYearElements = (
             .endOf("month") < minDate ||
           moment(years[currentYearIndex].toString()) > maxDate
         }
+        isMobile={isMobile}
       >
         {years[currentYearIndex]}
       </ColorTheme>

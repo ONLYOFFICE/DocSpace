@@ -18,6 +18,7 @@ export const Years = ({
         setObservedDate={setObservedDate}
         minDate={minDate}
         maxDate={maxDate}
+        isMobile={isMobile}
       />
       <YearsBody
         observedDate={observedDate}

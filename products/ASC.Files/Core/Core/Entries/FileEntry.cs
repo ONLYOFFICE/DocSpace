@@ -181,7 +181,7 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return HashCode.Combine(Id, FileEntryType);
     }
 
     public override string ToString()

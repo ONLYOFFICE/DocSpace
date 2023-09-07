@@ -48,6 +48,7 @@ class DropDown extends React.PureComponent {
       manualY: props.manualY,
       borderOffset: props.theme.isBase ? 0 : 2, // need to remove the difference in width with the parent in a dark theme
       isDropdownReady: false, // need to avoid scrollbar appearing during dropdown position calculation
+      borderOffset: props.theme.isBase ? 0 : 2, // need to remove the difference in width with the parent in a dark theme
     };
 
     this.dropDownRef = React.createRef();

@@ -60,7 +60,14 @@ const StyledInvitePanel = styled.div`
       props.hasInvitedUsers ? "calc(100% - 55px - 73px)" : "calc(100% - 55px)"};
 
     .scroll-body {
-      padding-right: 0px !important;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding-left: 0px !important;
+            `
+          : css`
+              padding-right: 0px !important;
+            `}
     }
 
     ${(props) =>
@@ -145,7 +152,14 @@ const StyledRow = styled.div`
   gap: 8px;
 
   min-height: 41px;
-  margin-left: 16px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 16px;
+        `
+      : css`
+          margin-left: 16px;
+        `}
   box-sizing: border-box;
   border-bottom: none;
 
@@ -156,16 +170,33 @@ const StyledRow = styled.div`
   }
 
   .invite-panel_access-selector {
-    margin-left: auto;
-    margin-right: 0;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+            margin-left: 0;
+          `
+        : css`
+            margin-left: auto;
+            margin-right: 0;
+          `}
   }
 `;
 
 const StyledInviteInput = styled.div`
   ${fillAvailableWidth}
-  margin-left: 16px;
-  margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
-
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 16px;
+          margin-left: ${(props) => (props.hideSelector ? "16px" : "8px")};
+        `
+      : css`
+          margin-left: 16px;
+          margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
+        `}
+  
+  
   .input-link {
     height: 32px;
 
@@ -176,7 +207,14 @@ const StyledInviteInput = styled.div`
 `;
 
 const StyledAccessSelector = styled.div`
-  margin-right: 16px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: 16px;
+        `
+      : css`
+          margin-right: 16px;
+        `}
 `;
 
 const StyledEditInput = styled(TextInput)`
@@ -184,7 +222,14 @@ const StyledEditInput = styled(TextInput)`
 `;
 
 const StyledComboBox = styled(ComboBox)`
-  margin-left: auto;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: auto;
+        `
+      : css`
+          margin-left: auto;
+        `}
 
   .combo-button-label,
   .combo-button-label:hover {
@@ -196,7 +241,14 @@ const StyledComboBox = styled(ComboBox)`
   justify-content: center;
 
   .combo-buttons_arrow-icon {
-    margin-left: 2px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 2px;
+          `
+        : css`
+            margin-left: 2px;
+          `}
   }
 
   padding: 0px;
@@ -274,7 +326,14 @@ const StyledCrossIcon = styled(CrossIcon)`
 StyledCrossIcon.defaultProps = { theme: Base };
 
 const StyledDeleteIcon = styled(DeleteIcon)`
-  margin-left: auto;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: auto;
+        `
+      : css`
+          margin-left: auto;
+        `}
 
   ${iconStyles}
 `;
@@ -282,11 +341,18 @@ const StyledDeleteIcon = styled(DeleteIcon)`
 StyledDeleteIcon.defaultProps = { theme: Base };
 
 const StyledHelpButton = styled(HelpButton)`
-  margin-right: 8px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: 8px;
+        `
+      : css`
+          margin-right: 8px;
+        `}
 `;
 
 const StyledButtons = styled(Box)`
-  padding: 16px 16px 16px 16px;
+  padding: 16px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -299,13 +365,21 @@ const StyledButtons = styled(Box)`
 `;
 
 const StyledLink = styled(Link)`
-  float: right;
+  float: ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `left` : `right`};
 `;
 
 StyledButtons.defaultProps = { theme: Base };
 
 const StyledToggleButton = styled(ToggleButton)`
-  right: 8px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: 8px;
+        `
+      : css`
+          right: 8px;
+        `}
   margin-top: -4px;
 `;
 

@@ -136,8 +136,14 @@ const StyledSectionHeader = styled.div`
         }
       `}
   `}
-
-  padding-right: 20px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding-left: 20px;
+        `
+      : css`
+          padding-right: 20px;
+        `}
 
   box-sizing: border-box;
 
@@ -154,26 +160,55 @@ const StyledSectionHeader = styled.div`
   }
 
   @media ${tablet} {
-    padding-right: 16px;
-    margin-right: 0px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 16px;
+            margin-left: 0px;
+          `
+        : css`
+            padding-right: 16px;
+            margin-right: 0px;
+          `}
   }
 
   ${isMobile &&
   css`
-    padding-right: 0 !important;
-    margin-right: -16px !important;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 0 !important;
+            margin-left: -16px !important;
+          `
+        : css`
+            padding-right: 0 !important;
+            margin-right: -16px !important;
+          `}
   `}
 
   @media ${mobile} {
-    margin-right: 0px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 0px;
+          `
+        : css`
+            margin-right: 0px;
+          `}
   }
 
   ${isMobileOnly &&
   css`
     width: 100vw !important;
     max-width: 100vw !important;
-
-    padding-right: 16px !important;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 16px !important;
+          `
+        : css`
+            padding-right: 16px !important;
+          `}
 
     margin-bottom: ${(props) =>
       props.settingsStudio ? "8px !important" : "0"};

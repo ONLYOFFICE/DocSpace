@@ -17,59 +17,103 @@ import {
 
 const settingsStudioStyles = css`
   ${({ settingsStudio }) =>
-    settingsStudio
-      ? css`
-          padding: 0 7px 16px 20px;
+    settingsStudio &&
+    css`
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding: 0 20px 16px 7px;
+            `
+          : css`
+              padding: 0 7px 16px 20px;
+            `}
 
-          @media ${tablet} {
-            padding: 0 0 16px 24px;
-          }
+      @media ${tablet} {
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding: 0 24px 16px 0;
+              `
+            : css`
+                padding: 0 0 16px 24px;
+              `}
+      }
 
-          @media ${smallTablet} {
-            padding: 8px 0 16px 24px;
-          }
+      @media ${smallTablet} {
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding: 8px 24px 16px 0;
+              `
+            : css`
+                padding: 8px 0 16px 24px;
+              `}
+      }
 
-          @media ${mobile} {
-            padding: 0 0 16px 24px;
-          }
-        `
-      : css`
-          @media ${tablet} {
-            padding: 19px 0 16px 24px;
-          }
-        `}
+      @media ${mobile} {
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding: 0 24px 16px 0;
+              `
+            : css`
+                padding: 0 0 16px 24px;
+              `}
+      }
+    `}
 `;
 
 const paddingStyles = css`
-  padding: 19px 3px 16px 20px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding: 19px 20px 16px 3px;
+        `
+      : css`
+          padding: 19px 3px 16px 20px;
+        `}
   outline: none;
 
   ${settingsStudioStyles};
 
   ${isMobile &&
   css`
-    padding: 0 0 16px 23px !important;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 0 23px 16px 0 !important;
+          `
+        : css`
+            padding: 0 0 16px 23px !important;
+          `}
   `};
 
   ${isMobileOnly &&
   css`
-    padding: 0px 0 16px 24px !important;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 0px 24px 16px 0 !important;
+          `
+        : css`
+            padding: 0px 0 16px 24px !important;
+          `}
   `};
 `;
 
 const commonStyles = css`
   flex-grow: 1;
 
-  ${(props) => (props.isDesktop ? "height: auto" : "height: 100%")};
+  ${props => (props.isDesktop ? "height: auto" : "height: 100%")};
 
-  ${(props) => !props.withScroll && `height: 100%;`}
+  ${props => !props.withScroll && `height: 100%;`}
   border-left: none;
   border-right: none;
   border-top: none;
 
   .section-wrapper {
     height: 100%;
-    ${(props) =>
+    ${props =>
       !props.withScroll &&
       css`
         display: flex;
@@ -77,20 +121,27 @@ const commonStyles = css`
         height: 100%;
         box-sizing: border-box;
       `};
-    ${(props) => !props.withScroll && paddingStyles}
+    ${props => !props.withScroll && paddingStyles}
   }
 
   .section-wrapper-content {
     ${paddingStyles}
     flex: 1 0 auto;
     outline: none;
-    ${(props) =>
+    ${props =>
       props.viewAs == "tile" &&
       css`
-        padding-left: 20px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding-right: 20px;
+              `
+            : css`
+                padding-left: 20px;
+              `}
       `}
 
-    ${(props) =>
+    ${props =>
       (props.viewAs == "settings" || props.viewAs == "profile") &&
       css`
         padding-top: 0;
@@ -120,7 +171,7 @@ const commonStyles = css`
       `}
 
       @media ${desktop} {
-        ${(props) =>
+        ${props =>
           props.viewAs === "row" &&
           css`
             margin-top: -15px;
@@ -136,19 +187,40 @@ const StyledSectionBody = styled.div`
 
   ${commonStyles};
 
-  ${(props) =>
+  ${props =>
     props.withScroll &&
     css`
-      margin-left: -20px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: -20px;
+            `
+          : css`
+              margin-left: -20px;
+            `}
 
       @media ${tablet} {
-        margin-left: -24px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: -24px;
+              `
+            : css`
+                margin-left: -24px;
+              `}
       }
     `}
 
   ${isMobile &&
   css`
-    margin-left: -24px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: -24px;
+          `
+        : css`
+            margin-left: -24px;
+          `}
   `}
 
     .additional-scroll-height {
@@ -170,18 +242,39 @@ const StyledDropZoneBody = styled(DragAndDrop)`
     height: 100%;
   }
 
-  ${(props) =>
+  ${props =>
     props.withScroll &&
     css`
-      margin-left: -20px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: -20px;
+            `
+          : css`
+              margin-left: -20px;
+            `}
 
       @media ${tablet} {
-        margin-left: -24px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: -24px;
+              `
+            : css`
+                margin-left: -24px;
+              `}
       }
 
       ${isMobile &&
       css`
-        margin-left: -24px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: -24px;
+              `
+            : css`
+                margin-left: -24px;
+              `}
       `}
     `}
 `;
@@ -246,15 +339,13 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
-        className="section-body"
-      >
+        className="section-body">
         {withScroll ? (
           !isMobileOnly ? (
             <Scrollbar
               id="sectionScroll"
               scrollclass="section-scroll"
-              stype="mediumBlack"
-            >
+              stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
@@ -283,15 +374,13 @@ class SectionBody extends React.Component {
         withScroll={withScroll}
         isLoaded={isLoaded}
         isDesktop={isDesktop}
-        settingsStudio={settingsStudio}
-      >
+        settingsStudio={settingsStudio}>
         {withScroll ? (
           !isMobileOnly ? (
             <Scrollbar
               id="sectionScroll"
               scrollclass="section-scroll"
-              stype="mediumBlack"
-            >
+              stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}

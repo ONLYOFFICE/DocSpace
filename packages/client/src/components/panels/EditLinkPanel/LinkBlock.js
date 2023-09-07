@@ -19,11 +19,6 @@ const LinkBlock = (props) => {
     setLinkNameValue(e.target.value);
   };
 
-  const onShortenClick = () => {
-    alert("api in progress");
-    // setLinkValue
-  };
-
   return (
     <div className="edit-link_link-block">
       <Text className="edit-link-text" fontSize="13px" fontWeight={600}>
@@ -55,17 +50,6 @@ const LinkBlock = (props) => {
         value={linkValue}
         placeholder={t("ExternalLink")}
       />
-
-      <Link
-        fontSize="13px"
-        fontWeight={600}
-        isHovered
-        type="action"
-        isDisabled={isLoading}
-        onClick={onShortenClick}
-      >
-        {t("Shorten")}
-      </Link>
     </div>
   );
 };
