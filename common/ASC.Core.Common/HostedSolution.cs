@@ -164,6 +164,8 @@ public class HostedSolution
         // save tenant owner
         tenant.OwnerId = user.Id;
 
+        await _tenantService.SaveTenantAsync(_coreSettings, tenant);
+
         await _settingsManager.SaveAsync(new TenantAccessSpaceSettings { LimitedAccessSpace = registrationInfo.LimitedAccessSpace }, tenant.Id);
 
         return tenant;
