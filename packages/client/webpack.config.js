@@ -301,12 +301,8 @@ module.exports = (env, argv) => {
         "./utils": "./src/helpers/filesUtils.js",
         "./SelectFileDialog":
           "./src/components/FilesSelector/FilesSelectorWrapper",
-        "./SelectFileInput":
-          "./src/components/panels/SelectFileInput/SelectFileInputWrapper",
         "./SelectFolderDialog":
           "./src/components/FilesSelector/FilesSelectorWrapper",
-        "./SelectFolderInput":
-          "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",

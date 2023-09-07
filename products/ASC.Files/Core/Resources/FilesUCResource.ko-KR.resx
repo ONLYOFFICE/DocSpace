@@ -82,4 +82,19 @@
   <data name="Personal" xml:space="preserve">
     <value>개인</value>
   </data>
+  <data name="Recent" xml:space="preserve">
+    <value>재전송</value>
+  </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>프라이빗 룸</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>파일은 {0}.zip 파일{1}로 압축됩니다</value>
+  </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>파일은 {0}.tar.gz 파일{1}로 압축됩니다</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>즐겨찾기</value>
+  </data>
 </root>

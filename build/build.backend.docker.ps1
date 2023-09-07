@@ -13,7 +13,7 @@ $LocalIp = (Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration | Where
 $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
-$PortalUrl = ("http://" + $LocalIp + ":8092")
+$PortalUrl = ("http://" + $LocalIp)
 $ProxyVersion="v1.0.0"
 
 # Stop all backend services"
@@ -37,6 +37,10 @@ if (-not $ExistsNetwork) {
 
 Write-Host "Run MySQL" -ForegroundColor Green
 docker compose -f "$DockerDir\db.yml" up -d
+
+Write-Host "Run local dns server" -ForegroundColor Green
+$Env:ROOT_DIR=$RootDir
+docker compose -f "$DockerDir\dnsmasq.yml" up -d
 
 Write-Host "Build backend services (to `publish/` folder)" -ForegroundColor Green
 & "$PSScriptRoot\install\common\build-services.ps1"

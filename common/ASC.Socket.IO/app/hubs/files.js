@@ -171,9 +171,17 @@
     filesIO.to(room).emit("s:markasnew-file", { fileId, count });
   }
 
+  function markAsNewFiles(items = []) {
+    items.forEach(markAsNewFile);
+  }
+
   function markAsNewFolder({ folderId, count, room } = {}) {
     logger.info(`markAsNewFolder ${folderId} in room ${room}:${count}`);
     filesIO.to(room).emit("s:markasnew-folder", { folderId, count });
+  }
+
+  function markAsNewFolders(items = []) {
+    items.forEach(markAsNewFolder);
   }
 
   function changeQuotaUsedValue({ featureId, value, room } = {}) {
@@ -195,9 +203,9 @@
     deleteFolder,
     updateFile,
     updateFolder,
-    markAsNewFile,
-    markAsNewFolder,
     changeQuotaUsedValue,
     changeQuotaFeatureValue,
+    markAsNewFiles,
+    markAsNewFolders
   };
 };
