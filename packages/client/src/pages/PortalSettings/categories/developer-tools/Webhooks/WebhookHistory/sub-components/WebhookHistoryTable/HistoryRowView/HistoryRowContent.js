@@ -6,6 +6,7 @@ import Text from "@docspace/components/text";
 import RowContent from "@docspace/components/row-content";
 
 import StatusBadge from "../../../../sub-components/StatusBadge";
+import { useTranslation } from "react-i18next";
 
 const StyledRowContent = styled(RowContent)`
   display: flex;
@@ -28,8 +29,14 @@ const StatusHeader = styled.div`
 `;
 
 export const HistoryRowContent = ({ sectionWidth, historyItem }) => {
+  const { t, i18n } = useTranslation("Webhooks");
+
   const formattedDelivery =
-    moment(historyItem.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC";
+    moment(historyItem.delivery)
+      .locale(i18n.language)
+      .format("MMM D, YYYY, h:mm:ss A") +
+    " " +
+    t("UTC");
   return (
     <StyledRowContent sectionWidth={sectionWidth}>
       <ContentWrapper>
