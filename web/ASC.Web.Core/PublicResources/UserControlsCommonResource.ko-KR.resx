@@ -70,4 +70,13 @@
   <data name="UnknownFirstName" xml:space="preserve">
     <value>이름</value>
   </data>
+  <data name="LicenseKeyNotFound" xml:space="preserve">
+    <value>라이선스 키를 입력해야 합니다</value>
+  </data>
+  <data name="LicenseKeyNotCorrect" xml:space="preserve">
+    <value>라이선스 키가 올바르지 않습니다</value>
+  </data>
+  <data name="LicenseException" xml:space="preserve">
+    <value>라이선스가 만료되었거나 사용자 할당량이 라이선스와 일치하지 않습니다. 라이선스 키가 올바르지 않습니다</value>
+  </data>
 </root>

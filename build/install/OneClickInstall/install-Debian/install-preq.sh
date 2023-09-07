@@ -105,7 +105,7 @@ echo "deb [signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/pac
 chmod 644 /usr/share/keyrings/openresty.gpg
 #Temporary fix for missing openresty repository for debian bookworm
 [ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DISTRIB_CODENAME/bullseye/g" /etc/apt/sources.list.d/openresty.list
-systemctl is-active nginx | grep -q "^active" && systemctl stop nginx
+systemctl list-units --type=service | grep -q nginx && systemctl stop nginx && systemctl disable nginx
 
 # setup msttcorefonts
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections

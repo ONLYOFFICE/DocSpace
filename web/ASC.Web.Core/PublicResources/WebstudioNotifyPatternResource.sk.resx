@@ -1255,4 +1255,559 @@ tím ONLYOFFICE
   <data name="subject_saas_user_welcome_v1" xml:space="preserve">
     <value>Vitajte v ONLYOFFICE DocSpace!</value>
   </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Konfigurácia aplikácie autentifikátora</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Potvrďte zrušenie účtu</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Obnoviť teraz</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Využiť zľavu</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>Potvrďte zmenu svojho e-mailu</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Potvrďte zmenu svojho hesla</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Bezpečnostné oznámenia</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Získajte bezplatné aplikácie ONLYOFFICE</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Získajte bezplatné aplikácie ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Získajte bezplatné aplikácie ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Niekoľko tipov pre efektívnu prácu na vašich dokumentoch</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Niekoľko tipov pre efektívnu prácu na vašich dokumentoch</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Niekoľko tipov pre efektívnu prácu na vašich dokumentoch</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Niekoľko tipov pre efektívnu prácu na vašich dokumentoch</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Objavte biznis predplatné ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Objavte biznis predplatné ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Objavte biznis predplatné ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Objavte biznis predplatné ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Pripojte sa k ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Pripojte sa k ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Pripojte sa k ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Pripojte sa k ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Pripojte sa k ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Pripojte sa k ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Pripojte sa k ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Pripojte sa k ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Pripojte sa k ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Pripojte sa k ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Žiadosť obchodného oddelenia</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Vytvorenie poštovej schránky</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Zmena hesla poštovej schránky</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Prihláste sa do svojho účtu ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>Vypovedanie účtu ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace bol deaktivovaný</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Používateľ vymazal svoj profil</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Nastavte si svoj ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Váš ONLYOFFICE DocSpace bude vymazaný</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Dodatočná lehota pre váš ONLYOFFICE DocSpace bola aktivovaná</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Vaše predplatné ONLYOFFICE DocSpace čoskoro vyprší</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Dodatočná lehota pre vaše predplatné ONLYOFFICE DocSpace vypršala</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Dodatočná lehota pre váš ONLYOFFICE DocSpace vyprší zajtra</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Proces dešifrovania zlyhal</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Proces dešifrovania sa začal</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Proces dešifrovania ukončený</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Proces šifrovania zlyhal</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Proces šifrovania sa začal</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Proces šifrovania ukončený</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Ste pozvaní pripojiť sa k ${__VirtualRootPath}</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) vytvorená záloha portálu
+
+Vážený / Vážená $OwnerName,
+
+Záložný súbor obsahujúci údaje z vášho portálu [${__VirtualRootPath}](${__VirtualRootPath}) bol vytvorený.
+
+Viac informácií o postupe zálohovania nájdete v našej [Data backup](${__HelpLink}/tipstricks/data-backup-restore.aspx) príručke pre používateľov.
+
+Ak máte akékoľvek otázky alebo potrebujete pomoc, neváhajte nás kontaktovať na adrese [support.onlyoffice.com](http://support.onlyoffice.com)
+
+S pozdravom,
+Tím podpory ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Chcete zmeniť e-mail na svojom ${LetterLogoText} účte?
+
+Kliknite na tlačidlo nižšie a prihláste sa* do svojho cloudu.
+
+$GreenButton
+
+Odkaz bude platný 7 dní.
+
+*Ak nie ste prihlásený ${LetterLogoText} v tomto prehliadači, budete musieť na potvrdenie použiť svoj starý e-mail. Ak si ho nepamätáte, obráťte sa na správcu portálu.
+
+Nechcete meniť svoj e-mail? Jednoducho ignorujte túto správu.</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Boli ste pozvaní, aby ste sa pripojili k "${__VirtualRootPath}":"${__VirtualRootPath}" ako pozvaný používateľ. Pozvanie prijmite kliknutím na odkaz:
+
+$GreenButton
+
+Odkaz je platný len 7 dní.
+
+Získate ďalšie tipy, ako používať vašu web-kanceláriu. Odber môžete kedykoľvek zrušiť na stránke svojho profilu alebo ho potom znovu povoliť.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+$__AuthorName vás pozval ako pozvaného používateľa na "${__VirtualRootPath}":"${__VirtualRootPath}". Pozvanie prijmite kliknutím na odkaz:
+
+$GreenButton
+
+Odkaz je platný len 7 dní.
+
+Získate ďalšie tipy, ako používať vašu web-kanceláriu. Odber môžete kedykoľvek zrušiť na stránke svojho profilu alebo ho potom znovu povoliť.</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Správa z portálu [${__VirtualRootPath}](${__VirtualRootPath})
+
+E-mail: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Vážený / Vážená $UserName,
+
+      Administrátor pre vás vytvoril novú poštovú schránku &lt;b&gt;$Address&lt;/b&gt; na portáli "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Pre ďalších e-mailových klientov použite nasledujúce nastavenia:
+      Login: &lt;b&gt;$Login&lt;/b&gt;
+      Heslo: "&lt;b&gt;nastavte heslo &lt;/b&gt;":"$MyStaffLink"
+
+      Prichádzajúca pošta (IMAP): 
+      Server: &lt;b&gt;$Server&lt;/b&gt;
+      Port: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Odchádzajúca pošta (SMTP): 
+      Server: &lt;b&gt;$Server&lt;/b&gt;
+      Port: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      Vyžaduje overenie: &lt;b&gt; Áno &lt;/b&gt;
+
+Ak ste tento e-mail dostali omylom, ignorujte ho alebo kontaktujte administrátora portálu a zistite podrobnosti.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Vážený / Vážená $UserName,
+
+Heslo pre poštovú schránku &lt;b&gt;$Address&lt;/b&gt; bolo zmenené.
+
+Ak ste tento e-mail dostali omylom, ignorujte ho alebo kontaktujte administrátora portálu a zistite podrobnosti.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Vážený / Vážená $UserName,
+
+      Administrátor pre vás vytvoril novú poštovú schránku &lt;b&gt;$Address&lt;/b&gt; na portáli "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Ak ste tento e-mail dostali omylom, ignorujte ho alebo kontaktujte administrátora portálu a zistite podrobnosti.</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1. Migrácia portálu
+h1."$PortalUrl":"$PortalUrl"
+
+Váš portál bol prenesený na novú doménu. Prosím, zadajte heslo, ktoré sa bude používať na prihlásenie, aby ste obnovili svoj prístup k portálu.
+
+Prosím, prejdite na tento odkaz, aby ste nastavili svoje heslo pre účet:
+$GreenButton
+
+*Poznámka*: tento odkaz je platný len 7 dní. Prosíme, aby ste v tomto termíne dokončili proces obnovenia prístupu.
+
+Ak ste tento e-mail dostali omylom, ignorujte ho alebo sa obráťte na administrátora portálu "$PortalUrl":"$PortalUrl" a zistite podrobnosti.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Dobrý deň!
+
+Boli ste pozvaní, aby ste sa pripojili k "${__VirtualRootPath}":"${__VirtualRootPath}" ako pozvaný používateľ. Pozvanie prijmite kliknutím na odkaz:
+
+$GreenButton
+
+Odkaz je platný len 7 dní.
+
+Získate ďalšie tipy, ako používať vašu web-kanceláriu. Odber môžete kedykoľvek zrušiť na stránke svojho profilu alebo ho potom znovu povoliť.</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+Úspešne ste sa zaregistrovali v ONLYOFFICE Personal "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Pripojte svoje obľúbené cloudové úložisko: Dropbox, Disk Google, OneDrive alebo Box a vytvorte si tak jednotný pracovný priestor pre svoje dokumenty prístupný odkiaľkoľvek.
+
+Viac informácií o ONLYOFFICE Personal nájdete na "našom blogu":"$TagBlogLink".
+
+Sme radi, že ste tu. Zostaňte naladení!
+
+S úctou,
+Tím ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.Vitajte v ONLYOFFICE Personal
+
+Práve ste si vytvorili svoju osobnú kanceláriu v cloude.
+
+h3.Je to virtuálny pracovný priestor, kde môžete upravovať a ukladať dokumenty, pracovať s nimi odkiaľkoľvek a umožniť k nim prístup svojim kamarátom alebo kolegom.
+
+h3.Na rýchly začiatok vám ponúkame prehľad toho, čo môžete v ONLYOFFICE robiť:
+
+- Vytvárajte, prezerajte a upravujte textové dokumenty, tabuľky, prezentácie.
+
+- Pracujte so všetkými populárnymi formátmi. Najvyššia kompatibilita so súbormi MS Office.
+
+- Vytvárajte a spoločne upravujte "formuláre pripravené na vyplnenie":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Zdieľajte dokumenty a spolupracujte na nich online.
+
+- Aplikujte rôzne rozšírenia na používanie ďalších funkcií.
+
+- Jednoduchý prístup k osobnému cloudu prostredníctvom "rozšírenia Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Dokumenty môžete upravovať aj offline pomocou nášho bezplatného "editora pre počítače":"https://www.onlyoffice.com/download-desktop.aspx" alebo si nainštalujte balík na úpravu dokumentov pre mobilné zariadenia so systémom "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" alebo "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+S pozdravom,
+Tím ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Chcete zmeniť e-mail na svojom účte ONLYOFFICE?
+
+Kliknite na tlačidlo nižšie a prihláste sa* do svojho cloudu.
+
+$GreenButton
+
+Odkaz bude platný 7 dní.
+
+*Ak nie ste prihlásený do ONLYOFFICE v tomto prehliadači, budete musieť na potvrdenie použiť svoj starý e-mail.
+
+Nechcete meniť svoj e-mail? Jednoducho ignorujte túto správu.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Dobrý deň.
+
+Práve ste si zaregistrovali účet ONLYOFFICE na osobné použitie. Kliknite "tu":"$InviteLink", aby ste potvrdili registráciu a vytvorili heslo.
+
+Ak sa vám nepodarí otvoriť odkaz, skopírujte nasledujúci odkaz "$InviteLink":"$InviteLink" a vložte ho do adresného riadka prehliadača.
+
+S úctou,
+Tím ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>Požiadali ste o zrušenie svojho účtu na personal.onlyoffice.com. Pre dokončenie žiadosti prejdite na odkaz (odkaz je platný 7 dní): 
+
+$GreenButton
+
+*Poznámka*: Po vymazaní bude váš účet a všetky údaje s ním spojené natrvalo vymazané v súlade s naším "Vyhlásením o ochrane osobných údajov":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Prečítajte si viac o zrušení účtu":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Ak nechcete pokračovať, ignorujte tento e-mail. 
+
+Ak máte akékoľvek otázky, kontaktujte nás na adrese "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+S úctou,
+Tím ONLYOFFICE</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>Deaktivácia portálu [${__VirtualRootPath}](${__VirtualRootPath})
+
+Vážený / Vážená $OwnerName,
+
+požiadali ste o dočasnú deaktiváciu vášho portálu [${__VirtualRootPath}](${__VirtualRootPath}). Aby ste operáciu potvrdili, kliknite na nižšie uvedený odkaz:
+
+$GreenButton
+
+_Poznámka_: tento odkaz je platný len 7 dní. V tomto termíne dokončite proces deaktivácie portálu.
+
+Svoj portál môžete kedykoľvek opätovne aktivovať kliknutím na nasledujúci odkaz:
+[Reactivate Portal]($ActivateUrl) (tento odkaz nemá časové obmedzenie)
+
+Ak máte akékoľvek otázky alebo potrebujete pomoc, neváhajte nás kontaktovať na adrese [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+S pozdravom,
+Tím podpory ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>Vymazanie portálu [${__VirtualRootPath}](${__VirtualRootPath})
+
+Vážený / Vážená $OwnerName,
+
+požiadali ste o trvalé vymazanie vášho portálu [${__VirtualRootPath}](${__VirtualRootPath}).
+
+_Dôležité! Všetky údaje uložené na vašom portáli, ako aj vaše registračné údaje budú stratené a nebude možné ich obnoviť._
+
+#if($AutoRenew == "True")
+Pred vymazaním portálu sa uistite, že je vypnutá automatická fakturácia. Stav automatickej fakturácie si môžete skontrolovať vo svojom [Avangate account](https://secure.avangate.com/myaccount/").
+#end
+
+Ak aj napriek tomu chcete vymazať svoj portál [${__VirtualRootPath}](${__VirtualRootPath}), prejdite na nižšie uvedený odkaz a potvrďte operáciu:
+
+$GreenButton
+
+_Upozornenie_: tento odkaz je platný len 7 dní. Prosím, dokončite dovtedy proces vymazania portálu.
+
+Ak máte akékoľvek otázky alebo potrebujete pomoc, neváhajte nás kontaktovať na adrese [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+S pozdravom,
+Tím podpory ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Používateľ "$FromUserName":"$FromUserLink" vymazal svoj profil a teraz je tento profil zablokovaný. Všetky súbory používateľa sú mu / jej stále priradené a zaberajú miesto na disku. 
+
+Dokumenty používateľa zdieľané s ostatnými používateľmi môžete priradiť inému aktívnemu používateľovi alebo ich odstrániť, aby ste uvoľnili miesto na disku portálu.
+
+Prejdite na profil používateľa pomocou "tohto odkazu ":"$FromUserLink", aby ste dokumenty priradili inému používateľovi alebo odstránili údaje.</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>Váš profil na [${__VirtualRootPath}](${__VirtualRootPath}) bol zmenený
+
+Vážený / Vážená $UserName,
+
+Údaje vášho používateľského profilu na [${__VirtualRootPath}](${__VirtualRootPath}}) zmenil [$__AuthorName]($__AuthorUrl).
+
+Ak chcete vidieť svoj profil, prejdite na nižšie uvedený odkaz:
+[$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>Vážený / Vážená $UserName,
+
+Proces priradenia údajov od používateľa "$FromUserName":"$FromUserLink" k používateľovi "$ToUserName":"$ToUserLink" zlyhal.
+
+Správa o chybe: $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>Vážený / Vážená $UserName,
+
+Proces odstránenia údajov od používateľa "$FromUserName":"$FromUserLink" bol úspešne dokončený.
+
+Odstránenie osobných údajov umožnilo uvoľniť:
+
+# Dokumenty - $DocsSpace
+# CRM - $CrmSpace
+# Mail - $MailSpace
+# Talk - $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>Vážený / Vážená $UserName,
+
+Proces odstránenia údajov pre používateľa "$FromUserName":"$FromUserLink" zlyhal.
+
+Správa o chybe: $Message</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.SAAS Žiadosť o tarify pre "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3. Meno
+$UserName
+
+h3. Priezvisko
+$UserLastName
+
+h3. Pozícia
+$Position
+
+h3. E-mail
+"$UserEmail":"mailto:$UserEmail"
+
+h3. Číslo telefónu
+$Phone
+
+h3.Webová stránka spoločnosti
+$Website
+
+h3.Názov spoločnosti
+$CompanyTitle
+
+h3. Veľkosť spoločnosti
+$CompanySize
+
+h3. Obsah žiadosti
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1. Obnovenie portálu
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Váš portál bol obnovený. Aby ste sa k nemu dostali, musíte nastaviť nové heslo:
+
+$GreenButton
+
+*Poznámka*: tento odkaz je platný len 7 dní.
+
+Ak ste tento e-mail dostali omylom, ignorujte ho alebo sa obráťte na správcu portálu "${__VirtualRootPath}":"${__VirtualRootPath}" a zistite podrobnosti.</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Dobrý deň!
+
+Boli ste pozvaní, aby ste sa pripojili k "${__VirtualRootPath}":"${__VirtualRootPath}" ako pozvaný používateľ. Pozvanie prijmite kliknutím na odkaz:
+
+$GreenButton
+
+Odkaz je platný len 7 dní.
+
+Raz za čas vám budeme posielať užitočné tipy a najnovšie správy ONLYOFFICE. Odber môžete kedykoľvek zrušiť na stránke svojho profilu alebo ho potom znovu povoliť.
+
+Srdečne pozdravujeme,
+Tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) oznámenie o zmene profilu na portáli
+
+[$__AuthorName]($__AuthorUrl) zmenil údaje svojho profilu na portáli [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Proces dešifrovania súboru na vašom portáli "${PortalUrl}":"${PortalUrl}" bol neúspešný.
+
+Niektoré súbory sa nepodarilo dešifrovať. Ďalšie podrobnosti nájdete v časti "Ovládací panel":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Na vašom portáli "${PortalUrl}":"${PortalUrl}" bol spustený proces dešifrovania súboru.
+
+Dešifrovanie môže trvať určitý čas, preto bude portál dočasne nedostupný. Hneď ako sa dešifrovanie skončí, budete môcť opäť pracovať so svojimi údajmi.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Dešifrovanie súboru na vašom portáli "${PortalUrl}":"${PortalUrl}" bol úspešne dokončený.
+
+Váš portál je opäť k dispozícii.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Proces šifrovania súborov na portáli "${PortalUrl}":"${PortalUrl}" zlyhal.
+
+Niektoré súbory sa nepodarilo šifrovať. Ďalšie podrobnosti nájdete v časti "Ovládací panel":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Na vašom portáli "${PortalUrl}":"${PortalUrl}" bol spustený proces šifrovania súborov.
+
+Šifrovanie môže chvíľu trvať, preto bude portál dočasne nedostupný. Hneď ako sa šifrovanie skončí, budete môcť opäť pracovať so svojimi údajmi.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Šifrovanie súboru na vašom portáli "${PortalUrl}":"${PortalUrl}" bolo úspešne dokončené.
+
+Váš portál je opäť k dispozícii.</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>Nový používateľ pridaný na portál [${__VirtualRootPath}](${__VirtualRootPath})
+[$__AuthorName]($__AuthorUrl) sa pripojil k vášmu portálu na adrese [${__VirtualRootPath}](${__VirtualRootPath}}).</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Vážený / Vážená $UserName,
+
+Boli ste pozvaní do bezpečnej web-kancelárie vašej spoločnosti, ktorá by zlepšila vašu spoluprácu. Jej adresa je "${__VirtualRootPath}":"${__VirtualRootPath}". Pridať tento odkaz do záložiek je dobrý nápad, pravdepodobne ho budete často používať.
+
+Prijmite pozvánku kliknutím na nasledujúci odkaz. Na prihlásenie použite svoje prihlasovacie meno a heslo k firemnému účtu. 
+
+$GreenButton
+
+Odkaz je platný len 7 dní.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Bezpečnostné oznámenie
+
+Konfigurácia aplikácie autentifikátora, ktorú používate na vstup do portálu ${LetterLogoText}, bola vrátená do pôvodných nastavení.
+
+Kliknite na tlačidlo nižšie, aby ste prešli na stránku prihlásenia do portálu a nakonfigurovali aplikáciu autentifikátora:
+
+$GreenButton</value>
+  </data>
 </root>

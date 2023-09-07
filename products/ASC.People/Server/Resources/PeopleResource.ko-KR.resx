@@ -79,4 +79,7 @@
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>프로필 및 그룹 보기</value>
   </data>
+  <data name="ProductAdminOpportunities" xml:space="preserve">
+    <value>사용자와 동일한 작업|프로필 및 그룹 생성|프로필 가져오기|사용자 초대</value>
+  </data>
 </root>

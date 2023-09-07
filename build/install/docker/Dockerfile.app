@@ -126,7 +126,7 @@ EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
 ## Nginx image ##
-FROM openresty/openresty:focal AS proxy
+FROM openresty/openresty:focal AS router
 ARG SRC_PATH
 ARG BUILD_PATH
 ARG COUNT_WORKER_CONNECTIONS=1024
@@ -150,7 +150,7 @@ COPY /config/nginx/docker-entrypoint.sh /docker-entrypoint.sh
 COPY /config/nginx/docker-entrypoint.d /docker-entrypoint.d
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
-COPY prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
+COPY prepare-nginx-router.sh /docker-entrypoint.d/prepare-nginx-router.sh
 
 # changes for upstream configure
 RUN sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
@@ -165,7 +165,9 @@ RUN sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.
     sed -i 's/127.0.0.1:5011/$service_login/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5033/$service_healthchecks/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/http:\/\/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
+    sed -i 's/http:\/\/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i '/client_body_temp_path/ i \ \ \ \ $MAP_HASH_BUCKET_SIZE' /etc/nginx/nginx.conf.template && \
+    sed -i 's/\(worker_connections\).*;/\1 $COUNT_WORKER_CONNECTIONS;/' /etc/nginx/nginx.conf.template 
 
 ENTRYPOINT  [ "/docker-entrypoint.sh" ]
 

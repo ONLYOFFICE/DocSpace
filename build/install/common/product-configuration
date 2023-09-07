@@ -459,8 +459,8 @@ change_mysql_config(){
 setup_openresty(){
 	echo -n "Configuring openresty... "
 	
-	if systemctl is-active nginx | grep -q "active"; then
-		systemctl disable nginx && systemctl stop nginx 
+	if systemctl list-units --type=service | grep -q nginx; then
+		systemctl stop nginx && systemctl disable nginx 
 	fi
 
 	cp -rf ${APP_DIR}/nginx/nginx.conf.template /usr/local/openresty/nginx/conf/nginx.conf
@@ -468,9 +468,27 @@ setup_openresty(){
 	# Remove default nginx website
 	rm -f ${NGINX_DIR}/conf.d/default.conf ${NGINX_DIR}/sites-enabled/default 
 
-	sed -i "s_\(listen\).*;_\1 $APP_PORT;_" ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf
+	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${APP_PORT}'\3\4/' -i ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}-proxy.conf
 	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_CONF}
 	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i ${NGINX_CONF}
+
+	# Check for old configuration files
+	if [ -f "${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.dpkg-old" ]; then
+		PROXY_CONF="${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.dpkg-old"
+	elif [ -f "${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.rpmsave" ]; then
+		PROXY_CONF="${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.rpmsave"
+	fi
+
+	# If the configuration file is found, extract the paths to the certificate and key
+	if [ ! -z "${PROXY_CONF}" ]; then
+		CERTIFICATE_PATH=$(grep -oP 'ssl_certificate\s+\K\S+' "${PROXY_CONF}" | tr -d ';')
+		CERTIFICATE_KEY_PATH=$(grep -oP 'ssl_certificate_key\s+\K\S+' "${PROXY_CONF}" | tr -d ';')
+		
+		# If both values are found, start SSL configuration
+		if [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
+			/usr/bin/${PRODUCT}-ssl-setup -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
+		fi
+	fi
 
 	if [ "$DIST" = "RedHat" ]; then
 		shopt -s nocasematch
@@ -663,8 +681,14 @@ setup_redis() {
 	sed -i "s~\(redis_port =\).*~\1 $REDIS_PORT~" "${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf"
 
 	if [ $1 == "LOCAL_REDIS_SERVER" ]; then
-		sed "s_\(^bind\).*_\1 ${REDIS_HOST}_" -i /etc/redis/redis.conf
-		sed -r "/^save\s[0-9]+/d" -i /etc/redis/redis.conf
+		if [ -f "/etc/redis/redis.conf" ]; then
+			REDIS_CONF="/etc/redis/redis.conf"
+		elif [ -f "/etc/redis.conf" ]; then
+			REDIS_CONF="/etc/redis.conf"
+		fi
+		
+		sed "s_\(^bind\).*_\1 ${REDIS_HOST}_" -i ${REDIS_CONF}
+		sed -r "/^save\s[0-9]+/d" -i ${REDIS_CONF}
 
 		systemctl enable $REDIS_PACKAGE >/dev/null 2>&1
 		systemctl restart $REDIS_PACKAGE
