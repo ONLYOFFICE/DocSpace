@@ -56,7 +56,7 @@ x-service: &x-service-base
     RABBIT_VIRTUAL_HOST: ${RABBIT_VIRTUAL_HOST}
     RABBIT_USER_NAME: ${RABBIT_USER_NAME}
     RABBIT_PASSWORD: ${RABBIT_PASSWORD}
-    PROXY_HOST: ${PROXY_HOST}
+    ROUTER_HOST: ${ROUTER_HOST}
   volumes:
     - ${ROOT_DIR}/Data:/app/onlyoffice/data
     - files_data:/var/www/products/ASC.Files/server/
@@ -239,10 +239,10 @@ services:
     expose:
       - "5011"
 
-  onlyoffice-proxy:
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
+  onlyoffice-router:
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-router:${DOCKER_TAG}"
     profiles: ["prod", "backend", frontend]
-    container_name: ${PROXY_HOST}
+    container_name: ${ROUTER_HOST}
     restart: always
     healthcheck:
       <<: *x-healthcheck
@@ -252,7 +252,7 @@ services:
       - "8099"
       - "8092"
     ports:
-      - 8092:8092
+      - 80:8092
     environment:
       - SERVICE_BACKUP=${SERVICE_BACKUP}
       - SERVICE_FILES=${SERVICE_FILES}
@@ -276,7 +276,7 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:
-      - proxy_log:/var/log/nginx
+      - router_log:/var/log/nginx
 
   onlyoffice-migration-runner:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${DOCKER_TAG}"
@@ -297,7 +297,7 @@ networks:
 
 volumes:
   es_data:
-  proxy_log:
+  router_log:
   app_data:
   files_data:
   people_data:

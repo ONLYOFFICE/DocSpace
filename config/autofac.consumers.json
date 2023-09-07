@@ -533,6 +533,37 @@
 			"private_container" : ""
 		  }
 	  }
-    }
+    },
+	{
+		"type": "ASC.FederatedLogin.LoginProviders.ZoomLoginProvider, ASC.FederatedLogin",
+		"services": [
+		  {
+			"type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		  },
+		  {
+			"type": "ASC.FederatedLogin.LoginProviders.ZoomLoginProvider, ASC.FederatedLogin"
+		  },
+		  {
+			"key": "zoom",
+			"type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		  },
+		  {
+			"key": "zoom",
+			"type": "ASC.FederatedLogin.LoginProviders.ZoomLoginProvider, ASC.FederatedLogin"
+		  }
+		],
+		"instanceScope": "perlifetimescope",
+		"parameters": {
+			"name": "zoom",
+			"order": "24",
+			"props": {
+			  "zoomClientId": "",
+			  "zoomClientSecret": ""
+			},
+			"additional": {
+			  "zoomRedirectUrl": "https://service.teamlab.info/oauth2.aspx"
+			}
+		}
+	}
   ]
 }

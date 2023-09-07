@@ -40,4 +40,5 @@ public static class ProviderConstants
     public const string Encryption = "e2e";
     public const string AppleId = "appleid";
     public const string Microsoft = "microsoft";
+    public const string Zoom = "zoom";
 }

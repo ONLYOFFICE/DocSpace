@@ -444,7 +444,10 @@ export default inject(
 
     const fileIcon = getIconSrc(ext, 32);
 
-    const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
+    const downloadInCurrentTab =
+      window.DocSpaceConfig?.editor?.openOnNewPage === false ||
+      isArchive(ext) ||
+      !canViewedDocs(ext);
 
     return {
       isPersonal: personal,

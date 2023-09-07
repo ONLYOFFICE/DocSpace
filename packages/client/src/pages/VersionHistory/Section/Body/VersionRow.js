@@ -95,7 +95,11 @@ const VersionRow = (props) => {
     setCommentValue(info.comment);
     setShowEditPanel(!showEditPanel);
   };
-  const onOpenFile = () => window.open(info.webUrl);
+  const onOpenFile = () =>
+    window.open(
+      info.webUrl,
+      window.DocSpaceConfig?.editor?.openOnNewPage ? "_blank" : "_self"
+    );
 
   const onRestoreClick = () => {
     onSetRestoreProcess(true);
