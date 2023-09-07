@@ -718,4 +718,10 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Теги удалены: {0}</value>
   </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>Страна</value>
+  </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Город</value>
+  </data>
 </root>
