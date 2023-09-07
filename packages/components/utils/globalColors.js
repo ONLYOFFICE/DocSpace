@@ -56,6 +56,9 @@ const globalColors = {
   hoverError: "#F7CDBE",
   hoverInfo: "#F8F7BF",
   hoverWarning: "#F7E6BE",
+
+  lightErrorStatus: "#F24724",
+  darkErrorStatus: "#E06451",
 };
 
 export default globalColors;

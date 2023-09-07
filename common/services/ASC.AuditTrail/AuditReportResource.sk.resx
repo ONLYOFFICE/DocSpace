@@ -652,4 +652,76 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Tagy vymazaný: {0}</value>
   </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>Údaje používateľa pre {0} boli odstránené</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>Nastavenia dvojfaktorového overovania aktualizované: dvojfaktorové overovanie vypnuté</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>Nastavenia dvojfaktorového overovania aktualizované: potvrdzovanie prostredníctvom SMS povolené</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>Nastavenia dvojfaktorového overovania aktualizované: povolená aplikácia na overovanie</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Úspešné prihlásenie prostredníctvom sociálnej aplikácie</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Úspešné prihlásenie prostredníctvom aplikácie autentifikátora</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Úspešné prihlásenie prostredníctvom API a aplikácie autentifikátora</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Nastavenia Forcesave pre úložisko aktualizované</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Spustiť šifrovanie úložiska</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Spustiť dešifrovanie úložiska</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Súkromná miestnosť je zapnutá</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Súkromná miestnosť je vypnutá</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Boli vytvorené nové záložné kódy</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Prihlásenie cez aplikáciu autentifikátora zlyhalo</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Prihlásenie zlyhalo. Príliš veľa pokusov</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Prihlásenie zlyhalo. Recaptcha je neplatná</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Nastavenia Forcesave aktualizované</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Prihlásenie cez API a aplikáciu autentifikátora zlyhalo</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>E-mail aktualizovaný</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>Vlastné nastavenia navigácie aktualizované</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Aplikácia autentifikátora odpojená: {0}</value>
+  </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Nastavenia auditu životnosti aktualizované</value>
+  </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Mesto</value>
+  </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>Krajina</value>
+  </data>
 </root>

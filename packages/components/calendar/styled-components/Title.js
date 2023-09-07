@@ -5,8 +5,8 @@ export const Title = styled.h2`
   position: relative;
   font-family: "Open Sans", sans-serif, Arial;
   font-weight: 700;
-  font-size: 21px;
-  line-height: 28px;
+  font-size: ${(props) => (props.isMobile ? "21px" : "18px")};
+  line-height: ${(props) => (props.isMobile ? "28px" : "24px")};
   color: ${(props) => props.theme.calendar.titleColor};
   border-bottom: 1px dashed transparent;
   margin: 0;

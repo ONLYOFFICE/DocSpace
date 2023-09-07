@@ -1519,6 +1519,51 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zoom.
+        /// </summary>
+        public static string ConsumersZoom {
+            get {
+                return ResourceManager.GetString("ConsumersZoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom client id.
+        /// </summary>
+        public static string ConsumersZoomClientId {
+            get {
+                return ResourceManager.GetString("ConsumersZoomClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom client secret.
+        /// </summary>
+        public static string ConsumersZoomClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersZoomClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using a Zoom account..
+        /// </summary>
+        public static string ConsumersZoomDescription {
+            get {
+                return ResourceManager.GetString("ConsumersZoomDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their Zoom accounts. {0}Go to the Zoom Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersZoomInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersZoomInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password recovery operation is prohibited for an LDAP user.
         /// </summary>
         public static string CouldNotRecoverPasswordForLdapUser {
@@ -1825,7 +1870,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The tenant domain can not be empty..
+        ///   Looks up a localized string similar to The tenant domain cannot be empty..
         /// </summary>
         public static string ErrorTenantTooShort {
             get {
@@ -1839,6 +1884,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string ErrorTenantTooShortFormat {
             get {
                 return ResourceManager.GetString("ErrorTenantTooShortFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many login attempts. Please try again later.
+        /// </summary>
+        public static string ErrorTooManyLoginAttempts {
+            get {
+                return ResourceManager.GetString("ErrorTooManyLoginAttempts", resourceCulture);
             }
         }
         

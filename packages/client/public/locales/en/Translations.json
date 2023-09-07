@@ -27,6 +27,7 @@
   "FolderTitleYandex": "Yandex Directory",
   "FormTemplates": "Form templates",
   "LinkCopySuccess": "Link has been copied to the clipboard",
+  "LinkHasExpiredAndHasBeenDisabled": "The link has expired and has been disabled",
   "LinkValidTime": "This link is valid for {{days_count}} days only.",
   "MobileAndroid": "Get ONLYOFFICE Documents on Google Play",
   "MobileIos": "Download ONLYOFFICE Documents on the App Store",
@@ -39,6 +40,7 @@
   "Other": "Other",
   "OwnerChange": "Change owner",
   "Presentations": "Presentations",
+  "PublicRoomLinkValidTime": "This link is valid until {{date}}. Once it expires, it will be impossible to access the room via this link.",
   "Remove": "Remove",
   "RoleCommentator": "Сommenter",
   "RoleCommentatorDescription": "Operations with existing files: viewing, commenting.",
@@ -70,7 +72,5 @@
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk",
-  "PublicRoomLinkValidTime": "This link is valid until {{date}} Once it expires, it will be impossible to access the room via this link.",
-  "LinkHasExpiredAndHasBeenDisabled": "The link has expired and has been disabled"
+  "TypeTitleYandex": "Yandex.Disk"
 }

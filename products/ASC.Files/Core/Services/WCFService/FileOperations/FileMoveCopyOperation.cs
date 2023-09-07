@@ -461,6 +461,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                         await _semaphore.WaitAsync();
                                         await countRoomChecker.CheckAppend();
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                        await socketManager.DeleteFolder(folder);
 
                                         var (name, value) = await tenantQuotaFeatureStatHelper.GetStatAsync<CountRoomFeature, int>();
                                         _ = quotaSocketManager.ChangeQuotaUsedValueAsync(name, value);
@@ -618,10 +619,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 newFile = await FileDao.CopyFileAsync(file.Id, toFolderId); //Stream copy will occur inside dao
                                 _ = filesMessageService.SendAsync(newFile, toFolder, _headers, MessageAction.FileCopied, newFile.Title, parentFolder.Title, toFolder.Title);
 
-                                if (Equals(newFile.ParentId.ToString(), _daoFolderId))
-                                {
-                                    needToMark.Add(newFile);
-                                }
+                                needToMark.Add(newFile);
 
                                 await socketManager.CreateFileAsync(newFile);
 

@@ -120,4 +120,7 @@
   <data name="ButtonSetPassword" xml:space="preserve">
     <value>비밀번호 설정</value>
   </data>
+  <data name="BackupNotFound" xml:space="preserve">
+    <value>백업 파일이 유효하지 않습니다. ONLYOFFICE v11.5 이상에서 생성된 파일을 사용해주세요.</value>
+  </data>
 </root>

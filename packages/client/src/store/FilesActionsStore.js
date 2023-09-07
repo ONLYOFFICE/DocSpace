@@ -824,7 +824,7 @@ class FilesActionStore {
       return removeFiles(items, [], false, true)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
-          const data = res ? res : null;
+          const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
           this.updateCurrentFolder(null, [itemId], null, operationId);
         })
@@ -2041,7 +2041,7 @@ class FilesActionStore {
   onMarkAsRead = (item) => this.markAsRead([], [`${item.id}`], item);
 
   openFileAction = (item) => {
-    const { openDocEditor, isPrivacyFolder } = this.filesStore;
+    const { openDocEditor, isPrivacyFolder, setSelection } = this.filesStore;
 
     const { isLoading } = this.clientLoadingStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
@@ -2084,6 +2084,8 @@ class FilesActionStore {
 
       const state = { title, isRoot: false, rootFolderType, isRoom };
 
+      setSelection([]);
+
       window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
     } else {
       if (canConvert) {
@@ -2097,7 +2099,9 @@ class FilesActionStore {
 
       if (canWebEdit || canViewedDocs) {
         let tab =
-          !this.authStore.settingsStore.isDesktopClient && !isFolder
+          !this.authStore.settingsStore.isDesktopClient &&
+          window.DocSpaceConfig?.editor?.openOnNewPage &&
+          !isFolder
             ? window.open(
                 combineUrl(
                   window.DocSpaceConfig?.proxy?.url,
