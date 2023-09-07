@@ -17,7 +17,6 @@ class HotkeyStore {
   selectedFolderStore;
 
   elemOffset = 0;
-  hotkeysClipboard = [];
   hotkeysClipboardAction = null;
 
   constructor(
@@ -531,18 +530,17 @@ class HotkeyStore {
   };
 
   copyToClipboard = (t, isCut) => {
-    const canCopy = this.filesStore.selection.every((s) => s.security?.Copy);
-    const canMove = this.filesStore.selection.every((s) => s.security?.Move);
+    const { selection, setHotkeysClipboard } = this.filesStore;
 
-    if (!canCopy || (isCut && !canMove) || !this.filesStore.selection.length)
-      return;
+    const canCopy = selection.every((s) => s.security?.Copy);
+    const canMove = selection.every((s) => s.security?.Move);
 
-    this.hotkeysClipboard = this.filesStore.selection;
+    if (!canCopy || (isCut && !canMove) || !selection.length) return;
+
+    setHotkeysClipboard();
     this.hotkeysClipboardAction = isCut ? "move" : "copy";
 
-    const copyText = `${t("AddedToClipboard")}: ${
-      this.filesStore.selection.length
-    }`;
+    const copyText = `${t("AddedToClipboard")}: ${selection.length}`;
     toastr.success(copyText);
   };
 
@@ -551,7 +549,7 @@ class HotkeyStore {
     let folderIds = [];
 
     const { id: selectedItemId, roomType, security } = this.selectedFolderStore;
-    const { activeFiles, activeFolders } = this.filesStore;
+    const { activeFiles, activeFolders, hotkeysClipboard } = this.filesStore;
     const { checkFileConflicts, setSelectedItems, setConflictDialogData } =
       this.filesActionsStore;
     const { itemOperationToFolder, clearActiveOperations } =
@@ -559,8 +557,8 @@ class HotkeyStore {
 
     const isCopy = this.hotkeysClipboardAction === "copy";
     const selections = isCopy
-      ? this.hotkeysClipboard
-      : this.hotkeysClipboard.filter((f) => f && !f?.isEditing);
+      ? hotkeysClipboard
+      : hotkeysClipboard.filter((f) => f && !f?.isEditing);
 
     if (!selections.length) return;
 
@@ -599,8 +597,8 @@ class HotkeyStore {
         return;
       }
 
-      const fileTitle = this.hotkeysClipboard.find((f) => f.title)?.title;
-      setSelectedItems(fileTitle, this.hotkeysClipboard.length);
+      const fileTitle = hotkeysClipboard.find((f) => f.title)?.title;
+      setSelectedItems(fileTitle, hotkeysClipboard.length);
       checkFileConflicts(selectedItemId, folderIds, fileIds)
         .then(async (conflicts) => {
           if (conflicts.length) {
