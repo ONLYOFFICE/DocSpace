@@ -39,6 +39,7 @@
   "BackupCreatedSuccess": "De back-up kopie is succesvol aangemaakt.",
   "BackupList": "Back-up lijst",
   "BackupListWarningText": "Als u items uit de lijst verwijdert, worden hun bijbehorende bestanden ook verwijderd. Deze actie kan niet ongedaan gemaakt worden. Om alle bestanden te verwijderen, gebruik de link:",
+  "BetaLabel": "BETA",
   "Branding": "Branding",
   "BrandingSectionDescription": "Specificeer uw bedrijfsinformatie, voeg links toe naar externe bronnen en e-mailadressen die in de DocSpace interface worden weergegeven.",
   "BrandingSubtitle": "Gebruik deze optie om gebruikers een on-brand ervaring te bieden.",

@@ -1,4 +1,3 @@
-import React from "react";
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
 import { inject, observer } from "mobx-react";
@@ -12,7 +11,7 @@ const UsefulTipsContainer = ({
   textProps,
   textDescriptionsProps,
 }) => {
-  const onChangeEmailSubscription = async (e) => {
+  const onChangeEmailSubscription = async e => {
     const checked = e.currentTarget.checked;
     try {
       await changeSubscription(NotificationsType.UsefulTips, checked);

@@ -25,6 +25,7 @@ const MoveToPublicRoomComponent = (props) => {
     setMovingInProgress,
     itemOperationToFolder,
     clearActiveOperations,
+    setSelectedItems,
   } = props;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -69,6 +70,7 @@ const MoveToPublicRoomComponent = (props) => {
         setIsLoading(true);
       }, 500);
 
+    setSelectedItems();
     checkFileConflicts(destFolderId, folderIds, fileIds)
       .then(async (conflicts) => {
         if (conflicts.length) {
@@ -153,7 +155,8 @@ export default inject(
       moveToPublicRoomData,
     } = dialogsStore;
 
-    const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
+    const { setConflictDialogData, checkFileConflicts, setSelectedItems } =
+      filesActionsStore;
     const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
 
     return {
@@ -169,6 +172,7 @@ export default inject(
       setMovingInProgress,
       itemOperationToFolder,
       clearActiveOperations,
+      setSelectedItems,
     };
   }
 )(observer(MoveToPublicRoomDialog));

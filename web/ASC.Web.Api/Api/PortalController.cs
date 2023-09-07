@@ -44,7 +44,6 @@ public class PortalController : ControllerBase
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly IUrlShortener _urlShortener;
     private readonly AuthContext _authContext;
-    private readonly WebItemSecurity _webItemSecurity;
     protected readonly SecurityContext _securityContext;
     private readonly SettingsManager _settingsManager;
     private readonly IMobileAppInstallRegistrator _mobileAppInstallRegistrator;
@@ -69,6 +68,7 @@ public class PortalController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly QuotaHelper _quotaHelper;
+    private readonly CspSettingsHelper _cspSettingsHelper;
     private readonly IEventBus _eventBus;
 
     public PortalController(
@@ -80,7 +80,6 @@ public class PortalController : ControllerBase
         CommonLinkUtility commonLinkUtility,
         IUrlShortener urlShortener,
         AuthContext authContext,
-        WebItemSecurity webItemSecurity,
         SecurityContext securityContext,
         SettingsManager settingsManager,
         IMobileAppInstallRegistrator mobileAppInstallRegistrator,
@@ -104,7 +103,8 @@ public class PortalController : ControllerBase
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
         QuotaHelper quotaHelper,
-        IEventBus eventBus)
+        IEventBus eventBus,
+        CspSettingsHelper cspSettingsHelper)
     {
         _log = logger;
         _apiContext = apiContext;
@@ -114,7 +114,6 @@ public class PortalController : ControllerBase
         _commonLinkUtility = commonLinkUtility;
         _urlShortener = urlShortener;
         _authContext = authContext;
-        _webItemSecurity = webItemSecurity;
         _securityContext = securityContext;
         _settingsManager = settingsManager;
         _mobileAppInstallRegistrator = mobileAppInstallRegistrator;
@@ -138,6 +137,7 @@ public class PortalController : ControllerBase
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
         _quotaHelper = quotaHelper;
+        _cspSettingsHelper = cspSettingsHelper;
         _eventBus = eventBus;
     }
 
@@ -189,7 +189,10 @@ public class PortalController : ControllerBase
     [HttpGet("users/invite/{employeeType}")]
     public async Task<object> GeInviteLinkAsync(EmployeeType employeeType)
     {
-        if (!await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(Guid.Empty, employeeType), ASC.Core.Users.Constants.Action_AddRemoveUser))
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
+
+        if ((employeeType == EmployeeType.DocSpaceAdmin && !currentUser.IsOwner(await _tenantManager.GetCurrentTenantAsync()))
+            || !await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(Guid.Empty, employeeType), ASC.Core.Users.Constants.Action_AddRemoveUser))
         {
             return string.Empty;
         }
@@ -257,7 +260,7 @@ public class PortalController : ControllerBase
             result.LicenseAccept = _settingsManager.LoadForDefaultTenant<TariffSettings>().LicenseAcceptSetting;
             result.DocServerUserQuota = await _documentServiceLicense.GetLicenseQuotaAsync();
             result.DocServerLicense = await _documentServiceLicense.GetLicenseAsync();
-    }
+        }
 
         return result;
     }
@@ -538,9 +541,12 @@ public class PortalController : ControllerBase
                 await _apiSystemHelper.AddTenantToCacheAsync(newAlias, user.Id);
             }
 
+            var oldDomain = tenant.GetTenantDomain(_coreSettings);
             tenant.Alias = alias;
             tenant = await _tenantManager.SaveTenantAsync(tenant);
             _tenantManager.SetCurrentTenant(tenant);
+
+            await _cspSettingsHelper.RenameDomain(oldDomain, tenant.GetTenantDomain(_coreSettings));
 
             if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
             {

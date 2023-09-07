@@ -22,6 +22,7 @@ const compareFunction = (prevProps: ItemProps, nextProps: ItemProps) => {
 
   return (
     prevItem?.id === nextItem?.id &&
+    prevItem?.label === nextItem?.label &&
     prevItem?.isSelected === nextItem?.isSelected
   );
 };

@@ -7,7 +7,14 @@ const StyledHeadline = styled(Headline)`
   font-weight: 700;
   font-size: ${isMobile ? "21px !important" : "18px"};
   line-height: ${isMobile ? "28px !important" : "24px"};
-  margin-right: 18px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 18px;
+        `
+    : css`
+          margin-left: 18px;
+        `}
 
   @media ${tablet} {
     font-size: 21px;
@@ -23,8 +30,16 @@ const StyledContainer = styled.div`
   align-items: center;
 
   .public-room-header_separator {
-    border-left: 1px solid #dfe2e3;
-    margin: 0 16px 0 15px;
+    ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+            margin: 0 15px 0 16px;
+            border-right: 1px solid #dfe2e3;
+          `
+      : css`
+            margin: 0 16px 0 15px;
+            border-left: 1px solid #dfe2e3;
+          `}
     height: 21px;
   }
 

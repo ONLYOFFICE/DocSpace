@@ -555,10 +555,15 @@ public class FileSharing
                 FileShareOptions = r.Options,
             };
 
-            w.CanEditAccess = _authContext.CurrentAccount.ID != w.Id && w.SubjectType == SubjectType.UserOrGroup && canEditAccess;
+            w.CanEditAccess = _authContext.CurrentAccount.ID != w.Id && w.SubjectType is SubjectType.User or SubjectType.Group && canEditAccess;
 
             if (isRoom && r.IsLink)
             {
+                if (!canEditAccess)
+                {
+                    continue;
+                }
+                
                 w.Link = r.SubjectType == SubjectType.InvitationLink ?
                     _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) :
                     await _externalShare.GetLinkAsync(r.Subject);
@@ -579,7 +584,7 @@ public class FileSharing
             result.Add(w);
         }
 
-        if (isRoom && !withoutTemplates)
+        if (isRoom && canEditAccess&& !withoutTemplates)
         {
             var invitationId = Guid.NewGuid();
 
@@ -627,7 +632,7 @@ public class FileSharing
             result.Add(w);
         }
 
-        if (!result.Any(w => w.Owner) && (subjectsTypes == null || subjectsTypes.Contains(SubjectType.UserOrGroup)))
+        if (!result.Any(w => w.Owner) && (subjectsTypes == null || subjectsTypes.Contains(SubjectType.User) || subjectsTypes.Contains(SubjectType.Group)))
         {
             var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootCreateBy : entry.CreateBy;
             var w = new AceWrapper

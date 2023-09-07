@@ -206,6 +206,10 @@ const StyledTableGroupMenu = styled.div`
       }
     }
   }
+
+  .scroll-body {
+    display: flex;
+  }
 `;
 
 StyledTableGroupMenu.defaultProps = { theme: Base };
@@ -242,6 +246,11 @@ const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
 
   .info-panel-toggle-bg {
     margin-bottom: 1px;
+  }
+
+  .info-panel-toggle svg {
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" && `transform: scaleX(-1);`}
   }
 `;
 StyledInfoPanelToggleColorThemeWrapper.defaultProps = {

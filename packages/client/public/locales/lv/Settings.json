@@ -22,7 +22,7 @@
   "AmazonServiceTip": "Šis ir neobligāts rekvizīts. Mainiet to tikai tad, ja vēlaties izmēģināt citu pakalpojuma galapunktu.",
   "AmazonSSE": "Servera puses šifrēšana",
   "AmazonSSETip": "Servera puses šifrēšanas algoritms, ko izmanto, glabājot šo objektu S3.",
-  "Api": "Api",
+  "Api": "API",
   "ApiPageDescription": "Izveidojiet savu produktivitātes platformu, pamatojoties uz ONLYOFFICE DocSpace, un sadarbojieties ar dokumentiem ar komandām, klientiem un partneriem.",
   "ApiPageHeader": "Izveidojiet savu sadarbības platformu",
   "Appearance": "Izskats",

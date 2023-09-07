@@ -174,12 +174,12 @@ public class MessagesRepository : IDisposable
                 // messages with action code < 2000 are related to login-history
                 if ((int)message.Action < 2000)
                 {
-                    var loginEvent = _mapper.Map<EventMessage, LoginEvent>(message);
+                    var loginEvent = _mapper.Map<EventMessage, DbLoginEvent>(message);
                     await ef.LoginEvents.AddAsync(loginEvent);
                 }
                 else
                 {
-                    var auditEvent = _mapper.Map<EventMessage, AuditEvent>(message);
+                    var auditEvent = _mapper.Map<EventMessage, DbAuditEvent>(message);
                     await ef.AuditEvents.AddAsync(auditEvent);
                 }
             }
@@ -230,12 +230,12 @@ public class MessagesRepository : IDisposable
                 // messages with action code < 2000 are related to login-history
                 if ((int)message.Action < 2000)
                 {
-                    var loginEvent = _mapper.Map<EventMessage, LoginEvent>(message);
+                    var loginEvent = _mapper.Map<EventMessage, DbLoginEvent>(message);
                     ef.LoginEvents.Add(loginEvent);
                 }
                 else
                 {
-                    var auditEvent = _mapper.Map<EventMessage, AuditEvent>(message);
+                    var auditEvent = _mapper.Map<EventMessage, DbAuditEvent>(message);
                     ef.AuditEvents.Add(auditEvent);
                 }
             }
@@ -245,7 +245,7 @@ public class MessagesRepository : IDisposable
 
     private async Task<int> AddLoginEventAsync(EventMessage message, MessagesContext dbContext)
     {
-        var loginEvent = _mapper.Map<EventMessage, LoginEvent>(message);
+        var loginEvent = _mapper.Map<EventMessage, DbLoginEvent>(message);
 
         await dbContext.LoginEvents.AddAsync(loginEvent);
         await dbContext.SaveChangesAsync();
@@ -255,7 +255,7 @@ public class MessagesRepository : IDisposable
 
     private async Task<int> AddAuditEventAsync(EventMessage message, MessagesContext dbContext)
     {
-        var auditEvent = _mapper.Map<EventMessage, AuditEvent>(message);
+        var auditEvent = _mapper.Map<EventMessage, DbAuditEvent>(message);
 
         await dbContext.AuditEvents.AddAsync(auditEvent);
         await dbContext.SaveChangesAsync();

@@ -187,6 +187,15 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to City.
+        /// </summary>
+        public static string CityCol {
+            get {
+                return ResourceManager.GetString("CityCol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color Theme Changed.
         /// </summary>
         public static string ColorThemeChanged {
@@ -210,6 +219,15 @@ namespace ASC.AuditTrail {
         public static string CopyActionType {
             get {
                 return ResourceManager.GetString("CopyActionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Country.
+        /// </summary>
+        public static string CountryCol {
+            get {
+                return ResourceManager.GetString("CountryCol", resourceCulture);
             }
         }
         
@@ -1267,7 +1285,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Products: [{0}]. Groups [{1}].  Access Opened.
+        ///   Looks up a localized string similar to Products: [{0}]. Groups [{1}]. Access Opened.
         /// </summary>
         public static string ProductAccessOpenedForGroups {
             get {
@@ -1276,7 +1294,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Products: [{0}]. Users [{1}].  Access Opened.
+        ///   Looks up a localized string similar to Products: [{0}]. Users [{1}]. Access Opened.
         /// </summary>
         public static string ProductAccessOpenedForUsers {
             get {

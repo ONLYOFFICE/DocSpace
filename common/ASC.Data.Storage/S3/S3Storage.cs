@@ -55,7 +55,7 @@ public class S3Storage : BaseStorage
     private bool _cdnEnabled;
     private string _cdnKeyPairId;
     private string _cdnPrivateKeyPath;
-    private string _cdnDistributionDomain;
+    public string CdnDistributionDomain { get; private set; }
     private string _subDir = "";
 
     private EncryptionMethod _encryptionMethod = EncryptionMethod.None;
@@ -164,7 +164,7 @@ public class S3Storage : BaseStorage
 
         var proto = SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? "https" : "http";
 
-        var baseUrl = $"{proto}://{_cdnDistributionDomain}/{MakePath(domain, path)}";
+        var baseUrl = $"{proto}://{CdnDistributionDomain}/{MakePath(domain, path)}";
 
         var uriBuilder = new UriBuilder(baseUrl)
         {
@@ -1051,7 +1051,7 @@ public class S3Storage : BaseStorage
             {
                 _cdnKeyPairId = props["cdn_keyPairId"];
                 _cdnPrivateKeyPath = props["cdn_privateKeyPath"];
-                _cdnDistributionDomain = props["cdn_distributionDomain"];
+                CdnDistributionDomain = props["cdn_distributionDomain"];
             }
         }
 
@@ -1109,7 +1109,7 @@ public class S3Storage : BaseStorage
 
     private async ValueTask InvalidateCloudFrontAsync(params string[] paths)
     {
-        if (!_cdnEnabled || string.IsNullOrEmpty(_cdnDistributionDomain))
+        if (!_cdnEnabled || string.IsNullOrEmpty(CdnDistributionDomain))
         {
             return;
         }
@@ -1117,7 +1117,7 @@ public class S3Storage : BaseStorage
         using var cfClient = GetCloudFrontClient();
         var invalidationRequest = new CreateInvalidationRequest
         {
-            DistributionId = _cdnDistributionDomain,
+            DistributionId = CdnDistributionDomain,
             InvalidationBatch = new InvalidationBatch
             {
                 CallerReference = Guid.NewGuid().ToString(),
@@ -1276,7 +1276,7 @@ public class S3Storage : BaseStorage
         var metadataResponse = await client.GetObjectMetadataAsync(metadataRequest);
         var objectSize = metadataResponse.ContentLength;
 
-        if (objectSize >= 100 * 1024 * 1024L) //100 megabytes
+        if (objectSize >= 1000 * 1024 * 1024L) //1000 megabytes
         {
             var copyResponses = new List<CopyPartResponse>();
 
@@ -1304,7 +1304,7 @@ public class S3Storage : BaseStorage
 
             var uploadId = initResponse.UploadId;
 
-            var partSize = GetChunkSize();
+            var partSize = 500 * 1024 * 1024L;//500 megabytes
 
             var uploadTasks = new List<Task<CopyPartResponse>>();
 
@@ -1545,18 +1545,6 @@ public class S3Storage : BaseStorage
         var el = await client.GetObjectMetadataAsync(getObjectMetadataRequest);
 
         return el.ETag;
-    }
-
-    private long GetChunkSize()
-    {
-        var configSetting = _configuration["files:uploader:chunk-size"];
-        if (!string.IsNullOrEmpty(configSetting))
-        {
-            configSetting = configSetting.Trim();
-            return long.Parse(configSetting);
-        }
-        long defaultValue = 10 * 1024 * 1024;
-        return defaultValue;
     }
 
     private enum EncryptionMethod

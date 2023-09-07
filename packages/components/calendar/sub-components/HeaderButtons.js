@@ -8,19 +8,22 @@ export const HeaderButtons = ({
   onRightClick,
   isLeftDisabled,
   isRightDisabled,
+  isMobile,
 }) => {
   const theme = useTheme();
   const isRtl = theme.interfaceDirection === "rtl";
+  const marginSize = isMobile ? "12px" : "8px";
   return (
     <ButtonsContainer>
       <ColorTheme
         className="arrow-previous"
         themeId={ThemeType.RoundButton}
-        style={isRtl ? { marginLeft: "12px" } : { marginRight: "12px" }}
+        style={isRtl ? { marginLeft: marginSize } : { marginRight: marginSize }}
         onClick={onLeftClick}
         disabled={isLeftDisabled}
+        isMobile={isMobile}
       >
-        <ArrowIcon previous />
+        <ArrowIcon previous isMobile={isMobile} />
       </ColorTheme>
 
       <ColorTheme
@@ -28,8 +31,9 @@ export const HeaderButtons = ({
         themeId={ThemeType.RoundButton}
         onClick={onRightClick}
         disabled={isRightDisabled}
+        isMobile={isMobile}
       >
-        <ArrowIcon next />
+        <ArrowIcon next isMobile={isMobile} />
       </ColorTheme>
     </ButtonsContainer>
   );

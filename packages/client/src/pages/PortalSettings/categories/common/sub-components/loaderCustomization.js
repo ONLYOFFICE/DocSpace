@@ -5,8 +5,8 @@ import { isTablet } from "react-device-detect";
 
 const tabletStyles = css`
   .header {
-    display: ${(props) => !props.dnsSettings && "block"};
-    width: ${(props) =>
+    display: ${props => !props.dnsSettings && "block"};
+    width: ${props =>
       props.lngTZSettings
         ? "283px"
         : props.welcomePage
@@ -23,7 +23,7 @@ const tabletStyles = css`
 
   .title {
     display: block;
-    width: ${(props) =>
+    width: ${props =>
       props.lngTZSettings
         ? "61px"
         : props.welcomePage
@@ -47,7 +47,7 @@ const tabletStyles = css`
   .save-cancel-buttons {
     display: block;
     position: static;
-    width: ${(props) => (props.welcomePage ? "274px" : "197px")};
+    width: ${props => (props.welcomePage ? "274px" : "197px")};
     padding: 8px 0 0;
   }
 
@@ -73,7 +73,7 @@ const StyledLoader = styled.div`
   }
 
   .title {
-    width: ${(props) => (props.portalRenaming ? "109px" : "61px")};
+    width: ${props => (props.portalRenaming ? "109px" : "61px")};
   }
 
   .title-long {
@@ -97,9 +97,17 @@ const StyledLoader = styled.div`
     display: block;
     position: absolute;
     bottom: 0;
-    left: 0;
     width: calc(100% - 32px);
-    padding: 0 0 16px 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            right: 0;
+            padding: 0 16px 16px 0;
+          `
+        : css`
+            left: 0;
+            padding: 0 0 16px 16px;
+          `}
   }
 
   .flex {
@@ -113,7 +121,14 @@ const StyledLoader = styled.div`
   }
 
   .padding-right {
-    padding-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 8px;
+          `
+        : css`
+            padding-right: 8px;
+          `}
   }
 
   .dns-field {
@@ -131,7 +146,7 @@ const StyledLoader = styled.div`
 
   @media (min-width: 1024px) {
     .save-cancel-buttons {
-      width: ${(props) => (props.welcomePage ? "264px" : "192px")};
+      width: ${props => (props.welcomePage ? "264px" : "192px")};
     }
   }
 `;
@@ -178,8 +193,7 @@ const LoaderCustomization = ({
       portalRenaming={portalRenaming}
       welcomePage={welcomePage}
       dnsSettings={dnsSettings}
-      className="category-item-wrapper"
-    >
+      className="category-item-wrapper">
       <Loaders.Rectangle height="22px" className="header" />
 
       {portalRenaming && (
