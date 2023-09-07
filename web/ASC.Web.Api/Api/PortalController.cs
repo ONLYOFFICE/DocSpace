@@ -189,7 +189,10 @@ public class PortalController : ControllerBase
     [HttpGet("users/invite/{employeeType}")]
     public async Task<object> GeInviteLinkAsync(EmployeeType employeeType)
     {
-        if (!await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(Guid.Empty, employeeType), ASC.Core.Users.Constants.Action_AddRemoveUser))
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
+
+        if ((employeeType == EmployeeType.DocSpaceAdmin && !currentUser.IsOwner(await _tenantManager.GetCurrentTenantAsync()))
+            || !await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(Guid.Empty, employeeType), ASC.Core.Users.Constants.Action_AddRemoveUser))
         {
             return string.Empty;
         }
@@ -257,7 +260,7 @@ public class PortalController : ControllerBase
             result.LicenseAccept = _settingsManager.LoadForDefaultTenant<TariffSettings>().LicenseAcceptSetting;
             result.DocServerUserQuota = await _documentServiceLicense.GetLicenseQuotaAsync();
             result.DocServerLicense = await _documentServiceLicense.GetLicenseAsync();
-    }
+        }
 
         return result;
     }
