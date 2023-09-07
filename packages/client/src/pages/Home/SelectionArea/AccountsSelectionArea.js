@@ -10,8 +10,6 @@ const SelectionArea = (props) => {
     setSelections(added, removed, clear);
   };
 
-  const itemHeight = viewAs === "table" ? 49 : 59;
-
   return isMobile ? (
     <></>
   ) : (
@@ -23,7 +21,6 @@ const SelectionArea = (props) => {
       itemClass="user-item"
       onMove={onMove}
       viewAs={viewAs}
-      itemHeight={itemHeight}
     />
   );
 };
