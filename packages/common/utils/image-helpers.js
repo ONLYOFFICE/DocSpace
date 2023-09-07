@@ -57,6 +57,7 @@ import VkSvgUrl from "PUBLIC_DIR/images/thirdparties/vk.svg?url";
 import WordpressSvgUrl from "PUBLIC_DIR/images/thirdparties/wordpress.svg?url";
 import YahooSvgUrl from "PUBLIC_DIR/images/thirdparties/yahoo.svg?url";
 import YandexSvgUrl from "PUBLIC_DIR/images/thirdparties/yandex.svg?url";
+import ZoomSvgUrl from "PUBLIC_DIR/images/thirdparties/zoom.svg?url";
 
 import AviSvg24Url from "PUBLIC_DIR/images/icons/24/avi.svg?url";
 import CsvSvg24Url from "PUBLIC_DIR/images/icons/24/csv.svg?url";
@@ -592,6 +593,7 @@ export const thirdpartiesLogo = new Map([
   ["wordpress.svg", WordpressSvgUrl],
   ["yahoo.svg", YahooSvgUrl],
   ["yandex.svg", YandexSvgUrl],
+  ["zoom.svg", ZoomSvgUrl],
 ]);
 
 export const flagsIcons = new Map([

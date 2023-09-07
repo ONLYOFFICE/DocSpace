@@ -49,7 +49,7 @@ x-service: &x-service-base
     RABBIT_VIRTUAL_HOST: ${RABBIT_VIRTUAL_HOST}
     RABBIT_USER_NAME: ${RABBIT_USER_NAME}
     RABBIT_PASSWORD: ${RABBIT_PASSWORD}
-    PROXY_HOST: ${PROXY_HOST}
+    ROUTER_HOST: ${ROUTER_HOST}
     LOG_LEVEL: ${LOG_LEVEL}
     DEBUG_INFO: ${DEBUG_INFO}
   volumes:
@@ -174,9 +174,9 @@ services:
      <<: *x-healthcheck
      test: curl --fail http://${SERVICE_LOGIN}/health || exit 1
 
-  onlyoffice-proxy:
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
-    container_name: ${PROXY_HOST}
+  onlyoffice-router:
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-router:${DOCKER_TAG}"
+    container_name: ${ROUTER_HOST}
     restart: always
     healthcheck:
      <<: *x-healthcheck
@@ -185,8 +185,6 @@ services:
       - "8081"
       - "8099"
       - "8092"
-    ports:
-      - 8092:8092
     depends_on:
       - onlyoffice-backup-background-tasks
       - onlyoffice-backup
@@ -225,7 +223,7 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:
-      - proxy_log:/var/log/nginx
+      - router_log:/var/log/nginx
 
 networks:
   default:
@@ -233,7 +231,7 @@ networks:
     external: true
 
 volumes:
-  proxy_log:
+  router_log:
   app_data:
   files_data:
   people_data:
