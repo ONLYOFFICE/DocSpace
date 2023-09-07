@@ -220,6 +220,8 @@ public interface IFolderDao<T>
             CommonChunkedUploadSessionHolder sessionHolder);
     
 
+    Task<string> GetBackupExtensionAsync(T folderId);
+
     #region Only for TMFolderDao
 
     /// <summary>
