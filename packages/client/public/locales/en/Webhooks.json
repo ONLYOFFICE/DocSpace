@@ -56,5 +56,5 @@
   "WebhookRemoved": "Webhook removed",
   "Webhooks": "Webhooks",
   "WebhooksGuide": "Webhooks Guide",
-  "WebhooksInfo": "Use webhooks to perform custom actions on the side of any application or website you are using based on various events in ONLYOFFICE Docspace.\nHere, you can create and manage all your webhooks, configure them, and browse history of every webhook to audit their performance."
+  "WebhooksInfo": "Use webhooks to perform custom actions on the side of any application or website you are using based on various events in ONLYOFFICE DocSpace.\nHere, you can create and manage all your webhooks, configure them, and browse history of every webhook to audit their performance."
 }
