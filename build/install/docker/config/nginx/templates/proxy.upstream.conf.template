@@ -1,0 +1,32 @@
+resolver 127.0.0.11 valid=30s;
+
+map $http_host $this_host {
+  "" $host;
+  default $http_host;
+}
+
+map $http_x_forwarded_proto $the_scheme {
+  default $http_x_forwarded_proto;
+  "" $scheme;
+}
+
+map $http_x_forwarded_host $the_host {
+  default $http_x_forwarded_host;
+  "" $host;
+}
+
+map $http_x_forwarded_port $proxy_x_forwarded_port {
+  default $http_x_forwarded_port;
+  '' $server_port;
+}
+
+map $http_upgrade $proxy_connection {
+  default upgrade;
+  "" close;
+}
+
+map $ROUTER_HOST $router_host {
+    volatile;
+    default onlyoffice-router;
+    ~^(.*)$ $1;
+}

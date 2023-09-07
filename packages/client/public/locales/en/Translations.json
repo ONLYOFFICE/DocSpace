@@ -40,7 +40,7 @@
   "Other": "Other",
   "OwnerChange": "Change owner",
   "Presentations": "Presentations",
-  "PublicRoomLinkValidTime": "This link is valid until {{date}} Once it expires, it will be impossible to access the room via this link.",
+  "PublicRoomLinkValidTime": "This link is valid until {{date}}. Once it expires, it will be impossible to access the room via this link.",
   "Remove": "Remove",
   "RoleCommentator": "Сommenter",
   "RoleCommentatorDescription": "Operations with existing files: viewing, commenting.",

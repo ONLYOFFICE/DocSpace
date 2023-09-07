@@ -241,4 +241,754 @@
   <data name="LastName" xml:space="preserve">
     <value>성</value>
   </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10자리 개발자 계정 팀 ID</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Sign in with Apple 개인 키용으로 생성된 10자리 키 식별자</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>보다 안전한 인증 유형이 필요합니다. 암호화된 연결을 사용하거나 서버에서 일반 인증을 활성화하세요.</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>프로필이 정지되었습니다</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>계정이 LDAP 디렉터리에 연결되어 있지 않으며 LDAP 비밀번호가 더 이상 활성화 상태가 아닙니다. 프로필 설정 페이지에서 계정 비밀번호를 변경 또는 설정하세요.</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>너무 많은 문자 메시지를 보냈습니다. 나중에 다시 시도해주세요.</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>너무 많은 문자 메시지를 보냈습니다. 나중에 다시 시도해주세요.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>본인의 관리자 권한을 박탈하려고 시도했으나, 관리자 권한은 영향을 받지 않았습니다.</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress 시크릿</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress 키</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Yandex 애플리케이션을 추가하면 프로필 페이지에서 Yandex 계정을 사용하여 포털에 로그인할 수 있습니다.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>VK 애플리케이션 추가 시 프로필 페이지에서 VK 계정을 이용하여 포털에 로그인할 수 있습니다.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Mail.ru 애플리케이션 추가 시 프로필 페이지에서 Mail.ru 계정을 이용하여 포털에 로그인할 수 있습니다.</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>웹 API 키</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>인증 코드란은 비워둘 수 없습니다</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>사용자를 생성할 수 없으며 수신된 데이터가 올바르지 않습니다.</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>SMS 센터 서비스를 이용한 이중 인증을 활성화하려면 이 앱을 사용하세요. {0}SMSC 계정 로그인과 비밀번호(또는 비밀번호MD5 해시)를 소문자로 입력하세요:</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Clickatell 서비스를 이용한 이중 인증을 활성화하려면 이 앱을 사용하세요. {0}SMS 플랫폼 계정에 로그인한 뒤 ONLYOFFICE에 대한 새 통합을 생성하세요. API 키를 복사하여 아래에 입력하세요:</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>미국 서부(오리건) 리전</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>성공적으로 업로드되었습니다. {0}{2}이후로 이 라이선스에 대한 지원을 이용할 수 없습니다.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>성공적으로 업로드되었습니다. {0}{2} 이후로 이 라이선스에 대한 지원 및 업데이트를 이용할 수 없습니다.{1}</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>성공적으로 업로드되었습니다</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>사용자 액세스 권한 업데이트 중</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>사용자 사진 업데이트 중</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>알 수 없는 이미지 파일 형식입니다</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>알 수 없는 오류입니다.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>사용자/그룹 객체의 고유 ID를 가져올 수 없습니다. 기본적으로 시스템은 다음 식별자 중 하나와 매치를 시도합니다: entryUUID, nsuniqueid, GUID, objectSid. LDAP 서버에 해당하는 속성이 없는 경우 web.appsettings.config 파일의 ldap.unique.id 설정에 필요한 속성을 지정하세요.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>LDAP 서버에 연결할 수 없습니다. 서버 주소와 포트 번호가 올바른지 확인해주세요.</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>LDAP 작업이 너무 많습니다.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Telegram을 통해 포털 알림을 받으려면 Telegram 봇을 활성화하세요. Telegram 데스크탑에서BotFather를 이용하여 새 봇을 생성할 수 있습니다. 이 봇을 이용하려면 포털 사용자가 프로필 페이지에서 Telegram 알림을 활성화해야 합니다. {0}수신한 봇의 사용자명과 토큰을 아래에 붙여넣으세요.</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>휴대폰 번호를 변경하려면 현재 휴대폰 번호를 삭제해야 합니다</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>코드 사용 시간이 만료되었습니다. 새 문자 메시지를 요청하세요.</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>제3자 통합</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>테넌트 도메인은 비워 둘 수 없습니다.</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>서버가 설정을 저장할 수 없습니다.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>서버가 설정을 가져올 수 없습니다.</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>사용자 수가 라이선스가 허용하는 사용자 수를 초과합니다</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>포털 수가 라이선스가 허용하는 포털 수를 초과합니다</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>라이선스가 이 포털 버전에 유효하지 않습니다.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>도메인 이름은 {0}~{1}글자여야 합니다.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>현재 요금제 사용자 한도에 도달했습니다</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>포털에 대한 액세스가 제한되어 있습니다.</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>포털에 대한 액세스가 제한되어 있습니다</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>TFA 애플리케이션 설정을 이용할 수 없습니다</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>사용자 동기화 중</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>현재 LDAP 서버에서는 StartTLS가 지원되지 않습니다.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>SMS 설정을 이용할 수 없습니다</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS 센터</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>설정은 null일 수 없습니다</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>{0} 사용자를 {1} 관리자로 설정 중</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>서버 키</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>서버 내부 오류입니다.</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>발신자 ID</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel 클라우드 스토리지</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel 인증 사용자</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel 인증 비밀번호</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>보안 키</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>시크릿 키</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>사용자 저장 중</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>설정 저장 중</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>사진 저장 중</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>그룹 저장 중</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 시크릿 액세스 키</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 액세스 키</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>LDAP 서버에서 사용자 목록 검색 중</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>LDAP 서버에서 그룹 목록 검색 중</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>요청 한도를 초과합니다</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>사용자 삭제 중</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>이전에 LDAP를 통해 로드된 오래된 그룹 삭제 중</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>이전에 LDAP를 통해 로드된 오래된 액세스 권한 삭제 중</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>리전</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>리전</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspace 사용자명</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace 클라우드 스토리지</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace API 키</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>퍼블릭 컨테이너</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>퍼블릭 컨테이너</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>프로젝트 ID</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Apple 개발자에서 다운로드한 개인 키</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>프라이빗 컨테이너</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>프라이빗 컨테이너</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>포털 액세스</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Twilio의 휴대폰 번호 (SMS 인증을 위해 필요)</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>스토리지에 액세스하기 위한 비밀번호</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>SSO 사용자의 비밀번호 복구 작업은 금지되어 있습니다</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>LDAP 사용자의 비밀번호 복구 작업은 금지되어 있습니다</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>비밀번호 또는 비밀번호MD5 해시를 소문자로</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>비밀번호</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>소유자</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG 리전</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>라틴 문자만</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>사용자를 찾을 수 없습니다.</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>공백 없음</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>그룹을 찾을 수 없습니다.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>일반 포털 사용자에서 LDAP 사용자 수정 중</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>메시지 텍스트가 비어 있습니다</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>로그인</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>로그인</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>LDAP 기반 정보 로드 중</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>LinkedIn 키</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>LinkedIn ID</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>Linkedin</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>라이선스가 올바르지 않습니다</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP 도메인을 찾을 수 없습니다.</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP 연결 해제 중</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>사용자 필터 값이 유효하지 않습니다.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>유효하지 않은Recaptcha</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>유효하지 않은 필드 매핑입니다</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>유효하지 않은 엔티티 ID입니다</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>유효하지 않은 바인딩입니다: {0}</value>
+  </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>잘못된 로그인 또는 비밀번호입니다.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>잘못된 인스턴스 ID입니다.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>잘못된 그룹 필터입니다.</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>잘못된 이름 또는 성입니다</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>잘못된 코드입니다</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>이미지 크기가 허용된 한도를 초과합니다</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>{0} 이메일을 가진 사용자가 존재하는 경우 비밀번호 변경 지침이 해당 이메일 주소로 발송되었습니다.</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google 키</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google 클라우드 스토리지</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>{0}~{1}글자</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook 키</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>EU(프랑크푸르트) 리전</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>백업을 저장하기 위한 Rackspace 퍼블릭 컨테이너 이름을 입력하세요.</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>백업을 저장하기 위한 Rackspace 프라이빗 컨테이너 이름을 입력하세요.</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>백업을 저장하기 위한 Amazon 버킷의 고유한 이름을 입력하세요.</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Rackspace 컨테이너가 위치한 리전을 입력하세요.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>백업을 저장하기 위한 Selectel 퍼블릭 컨테이너의 이름을 입력하세요.</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>백업을 저장하기 위한 Selectel 프라이빗 컨테이너의 이름을 입력하세요.</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>백업을 저장하기 위한 Google 클라우드 버킷의 이름을 입력하세요.</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Amazon 버킷이 위치한 AWS 리전을 입력하세요.</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>사용자 추가 중</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>계정 SID</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>SMS로</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>인증 앱으로</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>버킷</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>버킷</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box 키</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box ID</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>봇 사용자명</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>봇 토큰</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>잘못된 키</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>인증 사용자</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>인증 토큰</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>아시아 태평양(싱가포르)</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>애플리케이션ID</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>애플리케이션ID</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>애플리케이션 클라이언트 ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>애플리케이션 클라이언트 ID</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>앱 토큰</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>앱 키</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>API 키</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>API 키</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API 키 시크릿</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API 키</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>{0}에 대한 데이터 재할당 프로세스가 완료되지 않았습니다.</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>DropBox 키</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign 시크릿</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign 키</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign 인증 엔드포인트</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>디스크 공간 할당량을 초과했습니다</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>이전에 LDAP를 통해 로드된 오래된 사용자 프로필 비활성화 중</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>설정을 저장할 수 없습니다</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>오피스 문서를 위한 클라우드 공간</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>클라이언트 시크릿</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>클라이언트 시크릿</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>클라이언트 시크릿</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>클라이언트 시크릿</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>클라이언트ID</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>클라이언트ID</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>LDAP 지원 설정 확인 중</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>인증서 확인</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>한 명 이상의 사용자에 대한 그룹 이름 속성을 가져올 수 없습니다.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>한 명 이상의 사용자에 대한 사용자 속성을 가져올 수 없습니다.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>한 명 이상의 사용자에 대한 로그인 속성을 가져올 수 없습니다.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>한 명 이상의 사용자에 대한 그룹 속성을 가져올 수 없습니다.</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>연결 오류</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Google 계정을 사용하여 포털에 로그인하고 Google Drive 파일 및 폴더를 관리하려면 프로젝트를 연결하세요.</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Google 계정을 사용하여 포털에 로그인하고 Google Drive 파일 및 폴더를 관리하려면 프로젝트를 연결하세요.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>포털의 데이터를 백업하고 저장하려면 Selectel 클라우드 스토리지를 연결하세요. {0} 백업을 저장하려는 컨테이너에 대한 읽기/쓰기 권한이 있는 사용자의 액세스 데이터를 가져와 아래에 붙여넣으세요:</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>포털의 데이터를 백업하고 저장하려면 Selectel 클라우드 스토리지를 연결하세요.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>포털의 데이터를 백업하고 저장하려면 Rackspace 클라우드 스토리지 서비스를 연결하세요. {0}Rackspace 클라우드 제어판의 보안 설정에서 Rackspace API 키 옆의 링크 표시를 클릭하세요. 수신한 데이터를 아래에 붙여넣으세요:</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>포털의 데이터를 백업하고 저장하려면 Rackspace 클라우드 스토리지 서비스를 연결하세요.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>포털의 데이터를 백업하고 저장하려면 Google 클라우드 스토리지 서비스를 연결하세요. {0}Google 클라우드 플랫폼 콘솔로 이동하여 ONLYOFFICE를 위한 새 서비스 계정을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>포털의 데이터를 백업하고 저장하려면 Google 클라우드 스토리지 서비스를 연결하세요.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>포털의 데이터를 백업하고 저장하려면 Amazon AWS S3를 연결하세요. {0}AWS 관리 콘솔로 이동하여 ONLYOFFICE를 위한 액세스 키를 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>포털의 데이터를 백업하고 저장하려면 Amazon AWS S3를 연결하세요.</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Bitly 서비스를 이용한 문서 모듈의 포털 초대 링크 및 공유 링크를 줄이려면 이 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Firebase 클라우드 메시징을 이용하여 수신한 메시지에 대한 알림을 받으려면 이 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>EasyBib을 이용하여 문서에 참고 문헌 목록을 생성하려면 이 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Twilio를 사용하여 CRM 연락처에 전화하려면 이 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>초대 링크 및 문서 링크를 줄이려면 이 앱을 활성화하세요. {0}아래에 Bitly 로그인 및 API 키를 입력하세요:</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>DocuSign을 이용하여 문서에 디지털 서명하려면 이 앱을 활성화하세요. {0}DocuSign 관리 콘솔로 이동하여 ONLYOFFICE 통합을 추가하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>ONLYOFFICE 편집기에서 참고 문헌을 생성하려면 이 앱을 활성화하세요. {0}EasyBib 로그인 페이지로 이동하여 양식을 작성하고 ONLYOFFICE 통합을 추가하세요. 수신한 앱 키를 아래에 붙여넣으세요:</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>OneDrive 계정을 문서 모듈에 연결하려면 이 앱을 활성화하세요. ONLYOFFICE 사용자와 함께 OneDrive의 파일을 관리, 편집 및 공유할 수 있습니다. {0}Microsoft Azure 계정에 로그인한 뒤 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Google Drive 계정을 문서 모듈에 연결하려면 이 앱을 활성화하세요. ONLYOFFICE 사용자와 함께 Google Drive의 파일을 관리, 편집 및 공유할 수 있습니다. {0}Google API 콘솔로 이동하여 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>DropBox 계정을 문서 모듈에 연결하려면 이 앱을 활성화하세요. ONLYOFFICE 사용자와 함께 DropBox의 파일을 관리, 편집 및 공유할 수 있습니다. {0}DropBox 개발자 페이지에서 계정에 로그인한 뒤 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Box 계정을 문서 모듈에 연결하려면 이 앱을 활성화하세요. ONLYOFFICE 사용자와 함께 Box의 파일을 관리, 편집 및 공유할 수 있습니다. {0}Box 개발자 페이지에서 계정에 로그인한 뒤 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>사용자가 Twitter를 사용하여 ONLYOFFICE에 로그인하고 고객의 Twitter 계정을 CRM 모듈에 연결할 수 있도록 하려면 이 앱을 활성화하세요. {0}Twitter 개발자 포털로 이동하여 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>사용자가 LinkedIn 계정을 사용하여 ONLYOFFICE에 로그인하도록 하려면 이 앱을 활성화하세요. {0}LinkedIn 개발자 포털로 이동하여 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>사용자가 Microsoft를 사용하여 포털에 로그인할 수 있도록 하려면 이 앱을 활성화하세요. {0}Microsoft Azure로 이동하여 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>사용자가 Facebook을 사용하여 ONLYOFFICE에 로그인하고 고객의 Facebook 계정을 CRM 모듈에 연결할 수 있도록 하려면 이 앱을 활성화하세요. {0}Facebook 개발자 포털로 이동하여 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>사용자가 Apple ID를 사용하여 ONLYOFFICE에 로그인할 수 있도록 하려면 이 앱을 활성화하세요. {0}Apple 개발자 포털로 이동하여 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>사용자가 오프라인 상태에서도 메시지에 대한 알림을 받을 수 있도록 하려면 이 앱을 활성화하세요.{0}Firebase 콘솔로 이동하여 ONLYOFFICE 통합을 위한 새 프로젝트를 추가하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>사용자가 Twilio를 사용하여 CRM 모듈에서 연락처에 전화할 수 있도록 하려면 이 앱을 활성화하세요. {0}Twilio 콘솔로 이동하여 아래의 데이터를 붙여넣으세요:</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Yahoo 연락처 목록에서 새 포털 사용자를 추가하려면 이 앱을 활성화하세요. {0}Yahoo 개발자 네트워크에서 애플리케이션 생성 페이지로 이동하여 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Apple ID 계정을 사용하여 포털에 로그인하도록 하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Yandex 계정을 사용하여 포털에 로그인하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>VK 계정을 사용하여 포털에 로그인하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Twitter 계정을 사용하여 포털에 로그인하고 연락처를 검색하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Microsoft 계정을 사용하여 포털에 로그인하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Microsoft 계정을 사용하여 포털에 로그인하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>LinkedIn 계정을 사용하여 포털에 로그인하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Facebook 계정을 사용하여 포털에 로그인하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>WordPress에 직접 문서를 게시하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>OneDrive 파일 및 폴더를 관리하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>DropBox 파일 및 폴더를 관리하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Box 파일 및 폴더를 관리하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Yahoo 서비스에서 사용자를 가져오려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>WordPress 웹사이트에 쉽게 문서를 게시하려면 애플리케이션을 활성화하세요. {0}Wordpress 개발자 페이지에서 ONLYOFFICE 통합을 위한 새 앱을 생성하세요. 수신한 데이터를 아래에 입력하세요:</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>DocuSign을 이용하여 문서에 디지털 서명하려면 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>SMS 센터를 통한 이중 인증을 위해 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Clickatell을 통한 이중 인증을 위해 애플리케이션을 활성화하세요.</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>이 도메인의 이메일은 등록할 수 없습니다</value>
+  </data>
 </root>
