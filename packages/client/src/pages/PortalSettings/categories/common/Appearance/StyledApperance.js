@@ -80,27 +80,26 @@ const StyledComponent = styled.div`
           : css`
               margin-right: 8px;
             `}
-
-      @media ${smallTablet} {
-        .button {
-          width: 100%;
-        }
-      }
-
-      ${({ isShowDeleteButton }) =>
-        isShowDeleteButton &&
-        css`
-          @media ${smallTablet} {
-            flex-direction: column;
-            gap: 8px;
-            margin: 0;
-
-            .button:not(:last-child) {
-              margin-right: 0px;
-            }
-          }
-        `}
     }
+    @media ${smallTablet} {
+      .button {
+        width: 100%;
+      }
+    }
+
+    ${({ isShowDeleteButton }) =>
+      isShowDeleteButton &&
+      css`
+        @media ${smallTablet} {
+          flex-direction: column;
+          gap: 8px;
+          margin: 0;
+
+          .button:not(:last-child) {
+            margin-right: 0px;
+          }
+        }
+      `}
   }
 
   .check-img {
