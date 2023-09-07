@@ -1276,7 +1276,7 @@ public class S3Storage : BaseStorage
         var metadataResponse = await client.GetObjectMetadataAsync(metadataRequest);
         var objectSize = metadataResponse.ContentLength;
 
-        if (objectSize >= 100 * 1024 * 1024L) //100 megabytes
+        if (objectSize >= 1000 * 1024 * 1024L) //1000 megabytes
         {
             var copyResponses = new List<CopyPartResponse>();
 
@@ -1304,7 +1304,7 @@ public class S3Storage : BaseStorage
 
             var uploadId = initResponse.UploadId;
 
-            var partSize = GetChunkSize();
+            var partSize = 500 * 1024 * 1024L;//500 megabytes
 
             var uploadTasks = new List<Task<CopyPartResponse>>();
 
@@ -1545,18 +1545,6 @@ public class S3Storage : BaseStorage
         var el = await client.GetObjectMetadataAsync(getObjectMetadataRequest);
 
         return el.ETag;
-    }
-
-    private long GetChunkSize()
-    {
-        var configSetting = _configuration["files:uploader:chunk-size"];
-        if (!string.IsNullOrEmpty(configSetting))
-        {
-            configSetting = configSetting.Trim();
-            return long.Parse(configSetting);
-        }
-        long defaultValue = 10 * 1024 * 1024;
-        return defaultValue;
     }
 
     private enum EncryptionMethod
