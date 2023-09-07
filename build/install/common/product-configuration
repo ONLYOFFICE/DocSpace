@@ -593,7 +593,7 @@ setup_enterprise() {
 		LICENCE_PATH="/var/www/$PACKAGE_SYSNAME/Data/license.lic"
 	fi
 
-	save_undefined_param "${USER_CONF}" "license.file.path" ${LICENCE_PATH} "rewrite"
+	save_undefined_param "${USER_CONF}" "license.file.path" "${LICENCE_PATH}" "rewrite"
 }
 
 change_elasticsearch_config(){
