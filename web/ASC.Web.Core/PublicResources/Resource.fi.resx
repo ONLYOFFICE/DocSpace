@@ -985,4 +985,10 @@
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Olet lähettänyt liian monta tekstiviestiä. Ole hyvä ja yritä uudelleen.</value>
   </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Poistetaan vanhentuneet pääsyoikeudet, jotka on ladattu aiemmin LDAP:in kautta</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Asetetaan käyttäjä {0} järjestelmänvalvojaksi {1}</value>
+  </data>
 </root>

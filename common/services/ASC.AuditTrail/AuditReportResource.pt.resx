@@ -199,7 +199,7 @@
     <value>Anexar</value>
   </data>
   <data name="AuditSettingsUpdated" xml:space="preserve">
-    <value>As Configurações da Auditoria de Vida Útil Foram Atualizadas</value>
+    <value>As Configurações de Retenção de Registos da Auditoria Foram Atualizadas</value>
   </data>
   <data name="AuditTrailReportDownloaded" xml:space="preserve">
     <value>Relatório de Auditoria do Rastro Descarregado</value>
@@ -770,5 +770,14 @@
   </data>
   <data name="UserUpdatedPassword" xml:space="preserve">
     <value>Palavra-chave Atualizada</value>
+  </data>
+  <data name="ThirdPartyCreated" xml:space="preserve">
+    <value>Foi Criado um Terceiro: {0}. Fornecedor: {1}</value>
+  </data>
+  <data name="ThirdPartyDeleted" xml:space="preserve">
+    <value>Terceiro Eliminado {0}. Fornecedor: {1}</value>
+  </data>
+  <data name="ThirdPartyUpdated" xml:space="preserve">
+    <value>Terceiro Atualizado: {0}. Fornecedor: {1}</value>
   </data>
 </root>
