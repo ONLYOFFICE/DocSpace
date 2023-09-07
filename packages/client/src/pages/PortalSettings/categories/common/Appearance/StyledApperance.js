@@ -72,34 +72,35 @@ const StyledComponent = styled.div`
     padding-top: 24px;
 
     .button:not(:last-child) {
-          ${(props) =>
-            props.theme.interfaceDirection === "rtl"
-              ? css`
-                  margin-left: 8px;
-                `
-              : css`
-                  margin-right: 8px;
-                `}
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 8px;
+            `
+          : css`
+              margin-right: 8px;
+            `}
 
-    @media ${smallTablet} {
-      .button {
-        width: 100%;
-      }
-    }
-
-    ${({ isShowDeleteButton }) =>
-      isShowDeleteButton &&
-      css`
-        @media ${smallTablet} {
-          flex-direction: column;
-          gap: 8px;
-          margin: 0;
-
-          .button:not(:last-child) {
-            margin-right: 0px;
-          }
+      @media ${smallTablet} {
+        .button {
+          width: 100%;
         }
-      `}
+      }
+
+      ${({ isShowDeleteButton }) =>
+        isShowDeleteButton &&
+        css`
+          @media ${smallTablet} {
+            flex-direction: column;
+            gap: 8px;
+            margin: 0;
+
+            .button:not(:last-child) {
+              margin-right: 0px;
+            }
+          }
+        `}
+    }
   }
 
   .check-img {
