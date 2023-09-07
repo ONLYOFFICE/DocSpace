@@ -152,7 +152,8 @@
     <value>Criar, editar, salvar e partilhar documentos directamente no seu portal. Associe também as suas contas Google Drive, Dropbox e Box e tenha todos os documentos no mesmo lugar.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Crie, edite, guarde e partilhe documentos. Associe as suas contas Google Drive, Dropbox e Box e tenha todos os documentos num só lugar.</value>
+    <value>Edite, partilhe e colabore em documentos do Office em tempo real. Crie e gerencie documentos comuns a que toda a equipa pode aceder.
+Alta compatibilidade com docx, xlsx, pptx.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Documentos</value>
@@ -255,5 +256,167 @@
   </data>
   <data name="AceStatusEnum_Restrict" xml:space="preserve">
     <value>Negar acesso</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>Ligação externa</value>
+  </data>
+  <data name="AceShareLink" xml:space="preserve">
+    <value>Portal externo</value>
+  </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Comentar</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Preenchimento de Formulários</value>
+  </data>
+  <data name="AceStatusEnum_Review" xml:space="preserve">
+    <value>Rever</value>
+  </data>
+  <data name="AppAccessDenied" xml:space="preserve">
+    <value>Para trabalhar no ficheiro tem de conceder acesso ao mesmo</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Guardado Automaticamente</value>
+  </data>
+  <data name="CommentChangeOwner" xml:space="preserve">
+    <value>Mudou de proprietário</value>
+  </data>
+  <data name="CommentConvert" xml:space="preserve">
+    <value>Convertido de {0}</value>
+  </data>
+  <data name="CommentCopy" xml:space="preserve">
+    <value>Copiado</value>
+  </data>
+  <data name="CommentCreate" xml:space="preserve">
+    <value>Criado</value>
+  </data>
+  <data name="CommentCreateByDocuSign" xml:space="preserve">
+    <value>Criado pelo DocuSign</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Criado para preencher o formulário</value>
+  </data>
+  <data name="CommentEdit" xml:space="preserve">
+    <value>Editado</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Editado com encriptação</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Encriptado</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Guardado</value>
+  </data>
+  <data name="CommentOverwrite" xml:space="preserve">
+    <value>Substituído</value>
+  </data>
+  <data name="CommentRevert" xml:space="preserve">
+    <value>Restaurado a partir da revisão de {0}</value>
+  </data>
+  <data name="CommentRevertChanges" xml:space="preserve">
+    <value>Restaurado a partir da alteração ao documento de {0}</value>
+  </data>
+  <data name="CommentUpload" xml:space="preserve">
+    <value>Carregado</value>
+  </data>
+  <data name="DocuSignStatusDeclined" xml:space="preserve">
+    <value>Recusado</value>
+  </data>
+  <data name="DocuSignStatusError" xml:space="preserve">
+    <value>Ocorreu um erro durante a operação de envio</value>
+  </data>
+  <data name="DocuSignStatusNotSended" xml:space="preserve">
+    <value>O envio do documento através do DocuSign foi cancelado</value>
+  </data>
+  <data name="DocuSignStatusSended" xml:space="preserve">
+    <value>O documento foi enviado para ser assinado via DocuSign</value>
+  </data>
+  <data name="DocuSignStatusVoided" xml:space="preserve">
+    <value>Anulado</value>
+  </data>
+  <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
+    <value>Não pode selecionar este utilizador</value>
+  </data>
+  <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
+    <value>A conversão demora demasiado tempo.</value>
+  </data>
+  <data name="ErrorMassage_DocServiceException" xml:space="preserve">
+    <value>Um erro ocorreu no Serviço de Documentos</value>
+  </data>
+  <data name="ErrorMassage_EditingMobile" xml:space="preserve">
+    <value>O ficheiro foi aberto para edição numa aplicação móvel por {0}</value>
+  </data>
+  <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
+    <value>O ficheiro foi aberto para edição por {0}. Atualmente, a função de coedição não é suportada para este formato de ficheiro.</value>
+  </data>
+  <data name="ErrorMassage_FileSizeConvert" xml:space="preserve">
+    <value>Ficheiro maior que {0}, não será convertido</value>
+  </data>
+  <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
+    <value>O ficheiro é maior que {0}, ele não será copiado</value>
+  </data>
+  <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
+    <value>O ficheiro é maior que {0}, ele não será editado</value>
+  </data>
+  <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
+    <value>O ficheiro é maior que {0}, ele não será movido</value>
+  </data>
+  <data name="ErrorMassage_InvalidTitle" xml:space="preserve">
+    <value>Título incorreto</value>
+  </data>
+  <data name="ErrorMassage_LockedFile" xml:space="preserve">
+    <value>O ficheiro está atualmente bloqueado por outro utilizador</value>
+  </data>
+  <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
+    <value>Pelo menos {0} mensagens de email não puderam ser enviadas. Por favor, visite o módulo E-mail para ver qual pode ser a razão da falha.</value>
+  </data>
+  <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
+    <value>O autor da última gravação é desconhecido</value>
+  </data>
+  <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
+    <value>O ficheiro foi corrompido quando tentou guardá-lo</value>
+  </data>
+  <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
+    <value>Falha ao tentar obter o ficheiro a ser guardado</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
+    <value>Não é possível autorizar fornecedor {0} com as credenciais fornecidas.</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>Não tem permissão suficiente para mover o ficheiro</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>Não tem permissão suficiente para mover a pasta</value>
+  </data>
+  <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
+    <value>O conteúdo da pasta de terceiros não está disponível. Tente voltar a ligar a conta.</value>
+  </data>
+  <data name="ErrorMassage_StartEditing" xml:space="preserve">
+    <value>Erro no início da edição de ficheiros</value>
+  </data>
+  <data name="ErrorMassage_UserNotFound" xml:space="preserve">
+    <value>O utilizador não foi encontrado</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Pesquisa no conteúdo dos documentos</value>
+  </data>
+  <data name="MessageFileCreated" xml:space="preserve">
+    <value>Ficheiro criado na pasta "{0}"</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>O documento preenchível OFORM está pronto. Está guardado no ficheiro {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>A cópia OFORM foi criada na pasta {0}. Preencha o formulário e descarregue o resultado como ficheiro PDF ou DOCX.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>O ficheiro já não é um rascunho para preencher o formulário.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Ver e transferir documentos partilhados. Carregue ficheiros para pastas partilhadas. Compatibilidade máxima com docx, xlsx, pptx garantida.</value>
+  </data>
+  <data name="UnlockComment" xml:space="preserve">
+    <value>O ficheiro está desbloqueado</value>
   </data>
 </root>

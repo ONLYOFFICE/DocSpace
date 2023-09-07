@@ -1,9 +1,9 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SelectFolderInput from "client/SelectFolderInput";
 import Button from "@docspace/components/button";
 import { getFromLocalStorage } from "../../../../../utils";
 import { BackupStorageType } from "@docspace/common/constants";
+import FilesSelectorInput from "SRC_DIR/components/FilesSelectorInput";
 
 let folder = "";
 const Documents = "Documents";
@@ -20,7 +20,6 @@ class RoomsModule extends React.Component {
     this.state = {
       isStartCopy: false,
       selectedFolder: selectedFolder,
-      isPanelVisible: false,
     };
 
     this._isMount = false;
@@ -37,18 +36,6 @@ class RoomsModule extends React.Component {
       this.setState({
         selectedFolder: folderId,
       });
-  };
-
-  onClickInput = () => {
-    this.setState({
-      isPanelVisible: true,
-    });
-  };
-
-  onClose = () => {
-    this.setState({
-      isPanelVisible: false,
-    });
   };
 
   onMakeCopy = async () => {
@@ -68,21 +55,18 @@ class RoomsModule extends React.Component {
   };
   render() {
     const { isMaxProgress, t, buttonSize } = this.props;
-    const { isPanelVisible, isStartCopy, selectedFolder } = this.state;
+    const { isStartCopy, selectedFolder } = this.state;
 
     const isModuleDisabled = !isMaxProgress || isStartCopy;
     return (
       <>
         <div className="manual-backup_folder-input">
-          <SelectFolderInput
+          <FilesSelectorInput
             onSelectFolder={this.onSelectFolder}
-            onClose={this.onClose}
-            onClickInput={this.onClickInput}
-            isPanelVisible={isPanelVisible}
-            isDisabled={isModuleDisabled}
-            filteredType="exceptSortedByTags"
             {...(selectedFolder && { id: selectedFolder })}
-            withoutBasicSelection={selectedFolder ? false : true}
+            withoutInitPath={!selectedFolder}
+            isDisabled={isModuleDisabled}
+            isRoomsOnly
           />
         </div>
         <div className="manual-backup_buttons">

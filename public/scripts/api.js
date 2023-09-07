@@ -9,7 +9,7 @@
     frameId: "ds-frame",
     mode: "manager", //TODO: ["manager", "editor", "viewer","room-selector", "file-selector", "system"]
     id: null,
-    locale: "en-US",
+    locale: null,
     theme: "Base",
     editorType: "embedded", //TODO: ["desktop", "embedded"]
     editorGoBack: true,

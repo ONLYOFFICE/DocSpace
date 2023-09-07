@@ -718,4 +718,10 @@
   <data name="UserUpdatedEmail" xml:space="preserve">
     <value>Email được cập nhật</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Thành phố</value>
+  </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>Quốc gia</value>
+  </data>
 </root>

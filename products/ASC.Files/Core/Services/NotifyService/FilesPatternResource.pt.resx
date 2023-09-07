@@ -135,4 +135,21 @@ $__AuthorName eliminou a sala: $RoomTitle</value>
   <data name="subject_MailMergeEnd_push" xml:space="preserve">
     <value>O envio foi concluído.</value>
   </data>
+  <data name="pattern_DocuSignComplete" xml:space="preserve">
+    <value>h1. Todos os subscritores completaram o $DocumentTitle
+
+Este é um e-mail de notificação para o informar que todos os subscritores completaram o "$DocumentTitle":"$DocumentURL".</value>
+  </data>
+  <data name="pattern_DocuSignStatus" xml:space="preserve">
+    <value>h1. $Message: $DocumentTitle
+
+Inicie sessão na sua conta DocuSign para obter mais informações.</value>
+  </data>
+  <data name="pattern_MailMergeEnd" xml:space="preserve">
+    <value>h1. Envio completo
+
+Esta é uma notificação por correio eletrónico para o informar de que solicitou o envio de mensagens $MailsCount e que o processo está agora concluído. $Message
+
+As mensagens de e-mail que foram enviadas com êxito podem ser encontradas na pasta "Enviadas":"$__VirtualRootPath/addons/mail/#sent" do Módulo E-mail.</value>
+  </data>
 </root>

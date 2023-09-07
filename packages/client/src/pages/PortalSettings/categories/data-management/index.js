@@ -13,21 +13,13 @@ import Box from "@docspace/components/box";
 import HelpButton from "@docspace/components/help-button";
 import { combineUrl } from "@docspace/common/utils";
 import AppLoader from "@docspace/common/components/AppLoader";
-import { removeLocalStorage } from "../../utils";
 import config from "../../../../../package.json";
 import ManualBackup from "./backup/manual-backup";
 import AutoBackup from "./backup/auto-backup";
 
-const DataManagementWrapper = props => {
-  const {
-    dataBackupUrl,
-    automaticBackupUrl,
-    buttonSize,
-    t,
-
-    isNotPaidPeriod,
-    toDefault,
-  } = props;
+const DataManagementWrapper = (props) => {
+  const { dataBackupUrl, automaticBackupUrl, buttonSize, t, isNotPaidPeriod } =
+    props;
 
   const navigate = useNavigate();
 
@@ -36,12 +28,6 @@ const DataManagementWrapper = props => {
 
   const { interfaceDirection } = useTheme();
   const directionTooltip = interfaceDirection === "rtl" ? "left" : "right";
-  useEffect(() => {
-    return () => {
-      removeLocalStorage("LocalCopyStorageType");
-      toDefault();
-    };
-  }, []);
 
   const renderTooltip = (helpInfo, className) => {
     const isAutoBackupPage = window.location.pathname.includes(
@@ -68,7 +54,8 @@ const DataManagementWrapper = props => {
                   href={isAutoBackupPage ? automaticBackupUrl : dataBackupUrl}
                   target="_blank"
                   isBold
-                  isHovered>
+                  isHovered
+                >
                   {t("Common:LearnMore")}
                 </Link>
               </Box>
@@ -99,13 +86,13 @@ const DataManagementWrapper = props => {
   useEffect(() => {
     const path = location.pathname;
 
-    const currentTab = data.findIndex(item => path.includes(item.id));
+    const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) setCurrentTab(currentTab);
 
     setIsLoading(true);
   }, []);
 
-  const onSelect = e => {
+  const onSelect = (e) => {
     navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
@@ -120,15 +107,19 @@ const DataManagementWrapper = props => {
   return isNotPaidPeriod ? (
     <ManualBackup buttonSize={buttonSize} renderTooltip={renderTooltip} />
   ) : (
-    <Submenu data={data} startSelect={currentTab} onSelect={e => onSelect(e)} />
+    <Submenu
+      data={data}
+      startSelect={currentTab}
+      onSelect={(e) => onSelect(e)}
+    />
   );
 };
 
-export default inject(({ auth, setup, backup }) => {
+export default inject(({ auth, setup }) => {
   const { initSettings } = setup;
   const { settingsStore, currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
-  const { toDefault } = backup;
+
   const {
     dataBackupUrl,
     automaticBackupUrl,
@@ -146,6 +137,5 @@ export default inject(({ auth, setup, backup }) => {
     buttonSize,
     isNotPaidPeriod,
     currentColorScheme,
-    toDefault,
   };
 })(withTranslation(["Settings", "Common"])(observer(DataManagementWrapper)));

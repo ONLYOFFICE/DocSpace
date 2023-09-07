@@ -377,4 +377,46 @@
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Administrátor miestnosti</value>
   </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>Externý odkaz</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Hľadať v obsahu dokumentov</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Uložené</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>Nemáte dostatočné oprávnenie na presunutie priečinka</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>Nemáte dostatočné oprávnenie na presunutie súboru</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Môžete si prezerať a sťahovať zdieľané dokumenty. Nahrávajte súbory do zdieľaných priečinkov. Zaručená najvyššia kompatibilita s formátmi docx, xlsx, pptx.</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Kópia dokumentu OFORM je vytvorená v priečinku {0}. Vyplňte formulár a stiahnite si výsledok ako súbor PDF alebo DOCX.</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Vyplniteľný dokument OFORM je pripravený. Je uložený v priečinku {0}</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>bor už nie je návrhom na vyplnenie formulára.</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Vyplňovanie formulárov</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Zašifrované</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Upravené pomocou šifrovania</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Vytvorené na vyplnenie formulára</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Automaticky ukladané</value>
+  </data>
 </root>

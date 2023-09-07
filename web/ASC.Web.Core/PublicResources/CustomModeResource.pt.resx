@@ -147,4 +147,110 @@ O link é válido por 7 dias.
 
 Não quer alterar a sua palavra-passe? Simplesmente ignore esta mensagem.</value>
   </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Faça o mesmo como utilizador|Associe o Dropbox, Box e outras contas na Secção ‘comum’|Configure os direitos de acesso aos documentos e pastas na Secção ‘Comum’</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Crie e edite os seus próprios documentos, bem como os documentos partilhados, com os direitos de acesso adequados|Conceder a outros utilizadores acesso de leitura/edição aos documentos e pastas|Ligar o Dropbox, Box e outras contas na secção 'Os meus documentos'</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Bem-vindo ao ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Por favor, ative o seu endereço de e-mail</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Cancelamento da conta de ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. A eliminação dos dados do utilizador foi concluída</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Um novo portal foi registado</value>
+  </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.Seja bem-vindo(a) ao ONLYOFFICE Personal
+
+Acabaste de criar o teu escritório pessoal na nuvem.
+
+h3.É um espaço de trabalho virtual onde podes editar e armazenar documentos, trabalhar neles a partir de qualquer lugar, e pode ainda conceder acesso aos seus amigos e colegas.
+h3.De forma resumida aqui está o que pode fazer no ONLYOFFICE:
+
+- Criar, ver, e editar documentos de texto, folhas de cálculo, apresentações.
+
+- Trabalhar com todos os formatos mais populares. Tem máxima compatibilidade com os ficheiros do MS Office.
+
+- Criar e coeditar "formulários-prontos-a-preencher":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Partilhar e colaborar em documentos online.
+
+- Utilizar vários plugins para aplicar funcionalidades extra.
+
+- Aceda facilmente à sua nuvem através da "Extensão do Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Também pode editar documentos offline de graça com o nosso "desktop editors":"https://www.onlyoffice.com/download-desktop.aspx" ou obtenha uma suite de edição móvel para "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" ou para "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Com os melhores cumprimentos,
+A Equipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Deseja alterar o e-mail da sua conta do cloud office?
+
+Clique no botão abaixo e inicie sessão* na sua nuvem. 
+
+$GreenButton
+
+O link é válido por 7 dias. 
+
+*Se não estiver ligado ao seu escritório na nuvem neste navegador, será necessário usar o e-mail antigo para confirmar. 
+
+Não quer mudar o seu email? Basta ignorar esta mensagem.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Olá,
+
+Acabou de registar uma conta na solução da ONLYOFFICE para uso pessoal. Clique "aqui":"$InviteLink" para confirmar o seu registo e criar uma palavra-passe.
+
+Se não consegue abrir o link, por favor copie o seguinte link de convite "$InviteLink":"$InviteLink" e cole-o na barra de endereços do seu browser.
+
+Atenciosamente,
+A Equipa da ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Solicitou o cancelamento da sua conta em personal.onlyoffice.com. Siga o link para concluir o pedido (o link está ativo durante um período de 7 dias):
+
+Confirmar o cancelamento da sua conta
+
+*Nota*: Após cancelar a sua conta, todos os dados que lhe estão associados serão eliminados permanentemente de acordo com a nossa "Declaração de Privacidade":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Leia mais sobre o cancelamento de contas":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Ignore este e-mail se não deseja prosseguir.
+
+Se tiver alguma questão, por favor contacte-nos através do "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Cumprimentos,
+A Equipa da ONLYOFFICE</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Caro $UserName,
+
+O processo de remover os dados de "$FromUserName":"$FromUserLink" foi concluído com êxito.
+
+A eliminação dos seus dados pessoais libertou:
+
+# Documents - $DocsSpace
+# Mail - $MailSpace
+# Talk - $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Um novo portal foi registado
+
+# Portal url: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Primeiro nome: $UserName
+# Último nome: $UserLastName
+# E-mail: $UserEmail
+# Telemóvel: $Phone
+# Data da Criação: $Date</value>
+  </data>
 </root>

@@ -260,7 +260,7 @@ services:
       - "8099"
       - "8092"
     ports:
-      - 8092:8092
+      - 80:8092
     environment:
       - SERVICE_BACKUP=${SERVICE_BACKUP}
       - SERVICE_FILES=${SERVICE_FILES}
