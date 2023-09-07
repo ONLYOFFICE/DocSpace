@@ -718,4 +718,10 @@
   <data name="RoomRemoveUser" xml:space="preserve">
     <value>Usuario eliminado: {0}</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Ciudad</value>
+  </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>País</value>
+  </data>
 </root>

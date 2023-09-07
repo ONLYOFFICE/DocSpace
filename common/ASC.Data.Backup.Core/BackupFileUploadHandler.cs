@@ -35,61 +35,114 @@ public class BackupFileUploadHandler
 
     public async Task Invoke(HttpContext context,
         PermissionContext permissionContext,
-        BackupAjaxHandler backupAjaxHandler)
+        BackupAjaxHandler backupAjaxHandler,
+        ICache cache,
+        TenantManager tenantManager,
+        IConfiguration configuration)
     {
-        FileUploadResult result;
+        BackupFileUploadResult result = null;
         try
         {
-            if (context.Request.Form.Files.Count == 0)
-            {
-                result = Error("No files.");
-            }
-
             if (!await permissionContext.CheckPermissionsAsync(SecutiryConstants.EditPortalSettings))
             {
-                result = Error("Access denied.");
+                throw new ArgumentException("Access denied.");
             }
-
-            var file = context.Request.Form.Files[0];
-
-            var filePath = await backupAjaxHandler.GetTmpFilePathAsync();
-
-            if (File.Exists(filePath))
+            var tenantId = tenantManager.GetCurrentTenant().Id;
+            var path = await backupAjaxHandler.GetTmpFilePathAsync();
+            if (context.Request.Query["Init"].ToString() == "true")
             {
-                File.Delete(filePath);
-            }
+                long.TryParse(context.Request.Query["totalSize"], out var size);
+                if (size <= 0)
+                {
+                    throw new ArgumentException("Total size must be greater than 0.");
+                }
 
-            await using (var fileStream = File.Create(filePath))
+                var maxSize = (await tenantManager.GetCurrentTenantQuotaAsync()).MaxTotalSize;
+                if (size > maxSize)
+                {
+                    throw new ArgumentException(BackupResource.LargeBackup);
+                }
+
+                try
+                {
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+                    cache.Insert($"{tenantId} backupTotalSize", size.ToString(), TimeSpan.FromMinutes(10));
+
+                    int.TryParse(configuration["files:uploader:chunk-size"], out var chunkSize);
+                    chunkSize = chunkSize == 0 ? 10 * 1024 * 1024 : chunkSize;
+
+                    result = Success(chunkSize);
+                }
+                catch
+                {
+                    throw new ArgumentException("Can't start upload.");
+                }
+            }
+            else
             {
-                await file.CopyToAsync(fileStream);
-            }
+                long.TryParse(cache.Get<string>($"{tenantId} backupTotalSize"), out var totalSize);
+                if (totalSize <= 0)
+                {
+                    throw new ArgumentException("Need init upload.");
+                }
 
-            result = Success();
+                var file = context.Request.Form.Files[0];
+                using var stream = file.OpenReadStream();
+
+                using var fs = File.Open(path, FileMode.Append);
+                await stream.CopyToAsync(fs);
+
+                if (fs.Length >= totalSize)
+                {
+                    cache.Remove($"{tenantId} backupTotalSize");
+                    result = Success(endUpload: true);
+                }
+                else
+                {
+                    result = Success();
+                }
+            }
         }
         catch (Exception error)
         {
             result = Error(error.Message);
         }
 
-        await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(result));
+        await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(result, new System.Text.Json.JsonSerializerOptions()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        }));
     }
 
-    private FileUploadResult Success()
+    private BackupFileUploadResult Success(int chunk = 0, bool endUpload = false)
     {
-        return new FileUploadResult
+        return new BackupFileUploadResult
         {
-            Success = true
+            Success = true,
+            ChunkSize = chunk,
+            EndUpload = endUpload
         };
     }
 
-    private FileUploadResult Error(string messageFormat, params object[] args)
+    private BackupFileUploadResult Error(string messageFormat, params object[] args)
     {
-        return new FileUploadResult
+        return new BackupFileUploadResult
         {
             Success = false,
             Message = string.Format(messageFormat, args)
         };
     }
+}
+
+internal class BackupFileUploadResult
+{
+    public bool Success { get; set; }
+    public string Message { get; set; }
+    public int ChunkSize { get; set; }
+    public bool EndUpload { get; set; }
 }
 
 public static class BackupFileUploadHandlerExtensions

@@ -56,7 +56,7 @@ const CSP = ({ t, cspDomains, getCSPSettings, setCSPSettings }) => {
         <SelectedItem
           key={`${item}-${index}`}
           isInline
-          text={item}
+          label={item}
           onClose={() => deleteDomain(item)}
         />
       ))

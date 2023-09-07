@@ -251,4 +251,9 @@
             &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>이 이메일은 자동으로 생성된 이메일로 답장하실 필요가 없습니다.&lt;br /&gt;고객님께서 &lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt; 의 등록된 사용자이기 때문에 이 이메일이 발송되었습니다.
+&lt;br /&gt; DocSpace 알림 이메일을 수신하지 않으려면 &lt;a href="{1}"  target="_blank"&gt;수신 거부&lt;/a&gt;
+&lt;br /&gt;를 클릭하세요</value>
+  </data>
 </root>

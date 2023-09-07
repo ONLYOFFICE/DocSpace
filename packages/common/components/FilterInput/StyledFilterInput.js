@@ -34,7 +34,14 @@ const StyledFilterInput = styled.div`
     margin-bottom: 8px;
 
     .clear-all-link {
-      margin-left: 12px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 12px;
+            `
+          : css`
+              margin-left: 12px;
+            `}
     }
   }
 `;

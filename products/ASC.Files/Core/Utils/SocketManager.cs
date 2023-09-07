@@ -110,18 +110,32 @@ public class SocketManager : SocketServiceClient
         await MakeRequest("delete-folder", new { room, folderId = folder.Id });
     }
 
-    public async Task ExecMarkAsNewFileAsync(object fileId, int count, Guid owner)
+    public async Task ExecMarkAsNewFilesAsync(IEnumerable<Tag> tags)
     {
-        var room = await GetFileRoomAsync(fileId, owner);
+        var result = await tags.ToAsyncEnumerable()
+            .SelectAwait(async tag => new
+            {
+                room = await GetFileRoomAsync(tag.EntryId, tag.Owner),
+                fileId = tag.EntryId,
+                count = tag.Count
+            })
+            .ToListAsync();
 
-        await MakeRequest("markasnew-file", new { room, fileId, count });
+        SendNotAwaitableRequest("markasnew-file", result);
     }
-
-    public async Task ExecMarkAsNewFolderAsync(object folderId, int count, Guid owner)
+    
+    public async Task ExecMarkAsNewFoldersAsync(IEnumerable<Tag> tags)
     {
-        var room = await GetFolderRoomAsync(folderId, owner);
+        var result = await tags.ToAsyncEnumerable()
+            .SelectAwait(async tag => new
+            {
+                room = await GetFolderRoomAsync(tag.EntryId, tag.Owner),
+                folderId = tag.EntryId,
+                count = tag.Count
+            })
+            .ToListAsync();
 
-        await MakeRequest("markasnew-folder", new { room, folderId, count });
+        SendNotAwaitableRequest("markasnew-folder", result);
     }
 
     private async Task<string> GetFileRoomAsync<T>(T fileId, Guid? owner = null)

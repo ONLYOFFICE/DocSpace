@@ -3,10 +3,11 @@ import { setWithCredentialsStatus } from "../api/client";
 export async function login(
   user: string,
   hash: string,
-  session = true
+  session = true,
+  captchaToken: string
 ): Promise<string | object> {
   try {
-    const response = await api.user.login(user, hash, session);
+    const response = await api.user.login(user, hash, session, captchaToken);
 
     if (!response || (!response.token && !response.tfa))
       throw response.error.message;

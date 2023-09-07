@@ -515,7 +515,9 @@ class UploadDataStore {
 
           if (!error && isOpen && data && data[0]) {
             let tab =
-              !this.authStore.settingsStore.isDesktopClient && fileInfo.fileExst
+              !this.authStore.settingsStore.isDesktopClient &&
+              window.DocSpaceConfig?.editor?.openOnNewPage &&
+              fileInfo.fileExst
                 ? window.open(
                     combineUrl(
                       window.DocSpaceConfig?.proxy?.url,

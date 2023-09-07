@@ -91,7 +91,10 @@ const StyledDownloadContent = styled.div`
     .download-dialog-actions {
       .download-dialog-link {
         a {
-          padding-right: 0;
+          ${({ theme }) =>
+            theme.interfaceDirection === "rtl"
+              ? `padding-left: 0;`
+              : `padding-right: 0;`}
           text-underline-offset: 1px;
         }
       }

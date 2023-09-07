@@ -1,6 +1,6 @@
 ﻿import DarkGeneralPngUrl from "PUBLIC_DIR/images/dark_general.png";
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import Button from "@docspace/components/button";
@@ -44,7 +44,10 @@ const StyledPrivacyPage = styled.div`
   }
 
   .privacy-rooms-install-text {
-    text-align: left;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `text-align: right;`
+        : `text-align: left;`}
 
     @media ${smallTablet} {
       text-align: center;
@@ -61,7 +64,10 @@ const StyledPrivacyPage = styled.div`
   }
 
   .privacy-rooms-link {
-    margin-left: 4px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 4px;`
+        : `margin-left: 4px;`}
     color: ${(props) => props.theme.filesPrivateRoom.linkColor};
   }
 
@@ -74,11 +80,22 @@ const StyledPrivacyPage = styled.div`
   }
 
   .privacy-rooms-avatar {
-    text-align: left;
-    padding-left: 66px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? css`
+            text-align: right;
+            padding-right: 66px;
+          `
+        : css`
+            text-align: left;
+            padding-left: 66px;
+          `}
 
     @media ${tablet} {
-      padding-left: 74px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `padding-right: 74px;`
+          : `padding-left: 74px;`}
     }
 
     @media ${smallTablet} {
