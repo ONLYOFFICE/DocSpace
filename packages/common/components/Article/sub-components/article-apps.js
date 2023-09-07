@@ -21,14 +21,7 @@ const StyledArticleApps = styled.div`
   gap: 8px;
   position: relative;
   margin-top: auto;
-  margin-bottom: 76px;
-
-  @media ${desktop} {
-    ${!isTablet &&
-    css`
-      margin-bottom: 16px;
-    `}
-  }
+  margin-bottom: 16px;
 
   @media ${tablet} {
     ${(props) =>

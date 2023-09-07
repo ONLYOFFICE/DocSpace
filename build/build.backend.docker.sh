@@ -58,6 +58,10 @@ else
     exit 1
 fi
 
+echo "Run local dns server"
+ROOT_DIR=$dir \
+docker compose -f $dockerDir/dnsmasq.yml up -d
+
 echo "Clear publish folder"
 rm -rf $dir/publish
 
