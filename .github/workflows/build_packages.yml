@@ -63,10 +63,12 @@ jobs:
           wget https://packages.microsoft.com/config/$(lsb_release -is | \
           tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
-          echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-          curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nodesource.gpg --import
-          chmod 644 /usr/share/keyrings/nodesource.gpg
-          apt-get -y update
+          echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | \
+          sudo tee /etc/apt/sources.list.d/nodesource.list
+          wget -O - https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | \
+          sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nodesource.gpg --import
+          sudo chmod 644 /usr/share/keyrings/nodesource.gpg
+          sudo apt-get -y update
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename dpkg-sig lintian
           sudo npm install -g json
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
@@ -136,10 +138,12 @@ jobs:
           wget https://packages.microsoft.com/config/$(lsb_release -is | \
           tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
-          echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-          curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nodesource.gpg --import
-          chmod 644 /usr/share/keyrings/nodesource.gpg
-          apt-get -y update
+          echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | \
+          sudo tee /etc/apt/sources.list.d/nodesource.list
+          wget -O - https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | \
+          sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nodesource.gpg --import
+          sudo chmod 644 /usr/share/keyrings/nodesource.gpg
+          sudo apt-get -y update
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename python3-pip python3-rpm
           sudo npm install -g json
           sudo pip install rpmlint

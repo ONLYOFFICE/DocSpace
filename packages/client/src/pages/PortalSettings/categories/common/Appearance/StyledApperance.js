@@ -1,4 +1,5 @@
-﻿import PlusThemeSvgUrl from "PUBLIC_DIR/images/plus.theme.svg?url";
+﻿import { smallTablet } from "@docspace/components/utils/device";
+import PlusThemeSvgUrl from "PUBLIC_DIR/images/plus.theme.svg?url";
 import styled, { css } from "styled-components";
 
 const StyledComponent = styled.div`
@@ -38,7 +39,7 @@ const StyledComponent = styled.div`
   .theme-add {
     width: 46px;
     height: 46px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 12px;
@@ -48,14 +49,14 @@ const StyledComponent = styled.div`
           `}
     border-radius: 8px;
     cursor: pointer;
-    background: ${props => (props.theme.isBase ? "#eceef1" : "#474747")}
+    background: ${(props) => (props.theme.isBase ? "#eceef1" : "#474747")}
       url(${PlusThemeSvgUrl}) no-repeat center;
   }
 
   .add-theme {
     background: #d0d5da;
     padding-top: 16px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-right: 16px;
@@ -67,22 +68,42 @@ const StyledComponent = styled.div`
   }
 
   .buttons-container {
+    display: flex;
     padding-top: 24px;
-  }
 
-  .button:not(:last-child) {
-    ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            margin-left: 8px;
-          `
-        : css`
-            margin-right: 8px;
-          `}
+    .button:not(:last-child) {
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 8px;
+            `
+          : css`
+              margin-right: 8px;
+            `}
+    }
+    @media ${smallTablet} {
+      .button {
+        width: 100%;
+      }
+    }
+
+    ${({ isShowDeleteButton }) =>
+      isShowDeleteButton &&
+      css`
+        @media ${smallTablet} {
+          flex-direction: column;
+          gap: 8px;
+          margin: 0;
+
+          .button:not(:last-child) {
+            margin-right: 0px;
+          }
+        }
+      `}
   }
 
   .check-img {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding: 16px 15px 0 0;
@@ -91,7 +112,7 @@ const StyledComponent = styled.div`
             padding: 16px 0 0 15px;
           `}
     svg path {
-      fill: ${props => props.colorCheckImg};
+      fill: ${(props) => props.colorCheckImg};
     }
   }
 `;
@@ -99,7 +120,7 @@ const StyledComponent = styled.div`
 const StyledTheme = styled.div`
   width: 46px;
   height: 46px;
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-left: 12px;
@@ -116,7 +137,7 @@ const StyledTheme = styled.div`
 
   &:hover {
     .check-hover {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               padding: 16px 15px 0 0;
@@ -127,7 +148,7 @@ const StyledTheme = styled.div`
       visibility: visible;
       opacity: 0.5;
       svg path {
-        fill: ${props => props.colorCheckImgHover};
+        fill: ${(props) => props.colorCheckImgHover};
       }
     }
   }

@@ -55,7 +55,10 @@ const ConvertPasswordDialogComponent = (props) => {
     if (hasError) return;
 
     tab =
-      !isDesktop && formCreationInfo.fileInfo.fileExst && formCreationInfo.open
+      !isDesktop &&
+      window.DocSpaceConfig?.editor?.openOnNewPage &&
+      formCreationInfo.fileInfo.fileExst &&
+      formCreationInfo.open
         ? window.open(
             combineUrl(
               window.DocSpaceConfig?.proxy?.url,
