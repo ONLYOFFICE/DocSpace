@@ -903,7 +903,11 @@ read_continue_installation () {
 
 domain_check () {
 	if ! command_exists dig; then
-		install_service dig dnsutils
+		if command_exists apt-get; then
+			install_service dig dnsutils
+		elif command_exists yum; then
+			install_service dig bind-utils
+		fi
 	fi
 
 	if ! command_exists ping; then
@@ -1088,7 +1092,7 @@ set_mysql_params () {
 	MYSQL_PASSWORD="${MYSQL_PASSWORD:-$(get_env_parameter "MYSQL_PASSWORD" "${CONTAINER_NAME}")}"
 	MYSQL_PASSWORD="${MYSQL_PASSWORD:-$(get_random_str 20)}"
 
-	MYSQL_ROOT_PASSWORD="${MYSMYSQL_ROOT_PASSWORDQL_PASSWORD:-$(get_env_parameter "MYSQL_ROOT_PASSWORD" "${CONTAINER_NAME}")}"
+	MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-$(get_env_parameter "MYSQL_ROOT_PASSWORD" "${CONTAINER_NAME}")}"
 	MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-$(get_random_str 20)}"
 
 	MYSQL_DATABASE="${MYSQL_DATABASE:-$(get_env_parameter "MYSQL_DATABASE" "${CONTAINER_NAME}")}"
