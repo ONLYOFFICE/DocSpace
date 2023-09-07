@@ -22,11 +22,6 @@ export const StyledSubmenu = styled.div`
     top: 0;
     background: ${(props) => props.theme.submenu.backgroundColor};
     z-index: 1;
-    ${(props) =>
-      !props.isFullLength &&
-      css`
-        max-width: fit-content;
-      `};
   }
 
   ${isMobileOnly &&
@@ -85,12 +80,12 @@ export const StyledSubmenuItem = styled.div.attrs((props) => ({
   ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
+          margin-left: 17px;
+        `
+      : css`
           &:not(:last-child) {
             margin-right: 17px;
           }
-        `
-      : css`
-          margin-right: 17px;
         `}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
@@ -133,6 +128,13 @@ export const SubmenuScroller = styled.div`
   }
   overflow-x: auto;
   overflow-y: hidden;
+
+  ${(props) =>
+    !props.scale &&
+    css`
+      display: grid;
+      flex: 0 1 auto;
+    `}
 `;
 
 export const SubmenuRoot = styled.div`
