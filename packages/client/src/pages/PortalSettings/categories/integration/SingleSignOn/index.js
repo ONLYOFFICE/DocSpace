@@ -10,6 +10,8 @@ import ProviderMetadata from "./ProviderMetadata";
 import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
 import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
 import ToggleSSO from "./sub-components/ToggleSSO";
+import SSOLoader from "./sub-components/ssoLoader";
+
 import MobileView from "./MobileView";
 import { useIsMobileView } from "../../../utils/useIsMobileView";
 
@@ -23,6 +25,7 @@ const SingleSignOn = (props) => {
     spMetadata,
     isSSOAvailable,
     setDocumentTitle,
+    isInit,
   } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
   const isMobileView = useIsMobileView();
@@ -31,6 +34,8 @@ const SingleSignOn = (props) => {
     isSSOAvailable && init();
     setDocumentTitle(t("Settings:SingleSignOn"));
   }, []);
+
+  if (!isInit) return <SSOLoader />;
 
   return (
     <StyledSsoPage
@@ -75,7 +80,7 @@ export default inject(({ auth, ssoStore }) => {
   const { currentQuotaStore, setDocumentTitle } = auth;
   const { isSSOAvailable } = currentQuotaStore;
 
-  const { init, serviceProviderSettings, spMetadata } = ssoStore;
+  const { init, serviceProviderSettings, spMetadata, isInit } = ssoStore;
 
   return {
     init,
@@ -83,5 +88,6 @@ export default inject(({ auth, ssoStore }) => {
     spMetadata,
     isSSOAvailable,
     setDocumentTitle,
+    isInit,
   };
 })(observer(SingleSignOn));

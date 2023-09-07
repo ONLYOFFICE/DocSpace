@@ -9,14 +9,10 @@ import config from "PACKAGE_FILE";
 import SSO from "./SingleSignOn";
 import ThirdParty from "./ThirdPartyServicesSettings";
 
-import AppLoader from "@docspace/common/components/AppLoader";
-import SSOLoader from "./sub-components/ssoLoader";
 import SMTPSettings from "./SMTPSettings";
 
 const IntegrationWrapper = (props) => {
   const { t, tReady, enablePlugins, toDefault, isSSOAvailable } = props;
-  const [currentTab, setCurrentTab] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,13 +41,13 @@ const IntegrationWrapper = (props) => {
     },
   ];
 
-  useEffect(() => {
+  const getCurrentTab = () => {
     const path = location.pathname;
     const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) setCurrentTab(currentTab);
+    return currentTab !== -1 ? currentTab : 0;
+  };
 
-    setIsLoading(true);
-  }, []);
+  const currentTab = getCurrentTab();
 
   const onSelect = (e) => {
     navigate(
@@ -62,9 +58,6 @@ const IntegrationWrapper = (props) => {
       )
     );
   };
-
-  if (!isLoading && !tReady)
-    return currentTab === 1 ? <SSOLoader /> : <AppLoader />;
 
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
