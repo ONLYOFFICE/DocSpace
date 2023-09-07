@@ -22,10 +22,9 @@ const StyledModal = styled(ModalDialogContainer)`
   .cancel-btn {
     display: inline-block;
     ${({ theme }) =>
-    theme.interfaceDirection === "rtl"
-      ? `margin-right: 8px;`
-      : `margin-left: 8px;`}
-
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 8px;`
+        : `margin-left: 8px;`}
   }
 
   .create-docspace-checkbox {
@@ -69,7 +68,10 @@ const CreatePortalDialog = () => {
       limitedAccessSpace: false,
     };
     try {
-      await createNewPortal(data);
+      const res = await createNewPortal(data);
+      if (visit) {
+        return window.open(res?.reference, "_self");
+      }
       await authStore.settingsStore.getAllPortals();
     } catch (error) {
       toastr.error(t("PortalExists"));
