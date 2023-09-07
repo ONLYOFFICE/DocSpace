@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import Button from "@docspace/components/button";
 import { HexColorPicker, HexColorInput } from "react-colorful";
+import { isMobile } from "react-device-detect";
 
 const StyledComponent = styled.div`
   .save-button {
@@ -85,6 +86,11 @@ const StyledComponent = styled.div`
     flex-direction: column;
     padding-bottom: 16px;
     width: 195px;
+
+    ${isMobile &&
+    css`
+      width: calc(100vw - 60px);
+    `}
   }
 
   .hex-value-container {
