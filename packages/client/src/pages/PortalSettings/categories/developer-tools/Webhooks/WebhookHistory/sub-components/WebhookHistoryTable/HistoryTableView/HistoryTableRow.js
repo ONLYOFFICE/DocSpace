@@ -17,6 +17,8 @@ import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 
 import { useTranslation } from "react-i18next";
+import { getCookie } from "../../../../../../../../../../../common/utils";
+import { LANGUAGE } from "@docspace/common/constants";
 
 const StyledTableRow = styled(TableRow)`
   .textOverflow {
@@ -61,7 +63,7 @@ const HistoryTableRow = (props) => {
     formatFilters,
     isRetryPending,
   } = props;
-  const { t } = useTranslation(["Webhooks", "Common"]);
+  const { t, i18n } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -98,7 +100,11 @@ const HistoryTableRow = (props) => {
   ];
 
   const formattedDelivery =
-    moment(item.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC";
+    moment(item.delivery)
+      .locale(i18n.language)
+      .format("MMM D, YYYY, h:mm:ss A") +
+    " " +
+    t("UTC");
 
   const onChange = (e) => {
     if (
