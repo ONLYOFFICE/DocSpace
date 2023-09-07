@@ -37,8 +37,8 @@ const DataReassignmentDialog = ({
   dataReassignmentProgress,
   currentColorScheme,
   idCurrentUser,
-  dataReassignmentDeleteProfile,
-  dataReassignmentDeleteAdministrator,
+  deleteProfile,
+  deleteAdministrator,
   t,
   tReady,
   setFilter,
@@ -46,18 +46,12 @@ const DataReassignmentDialog = ({
 }) => {
   const [selectorVisible, setSelectorVisible] = useState(false);
 
-  if (dataReassignmentDeleteAdministrator) {
-    dataReassignmentDeleteAdministrator.label =
-      dataReassignmentDeleteAdministrator.displayName;
-  }
+  if (deleteAdministrator)
+    deleteAdministrator.label = deleteAdministrator.displayName;
 
-  const [selectedUser, setSelectedUser] = useState(
-    dataReassignmentDeleteAdministrator
-  );
+  const [selectedUser, setSelectedUser] = useState(deleteAdministrator);
   const [isLoadingReassign, setIsLoadingReassign] = useState(false);
-  const [isDeleteProfile, setIsDeleteProfile] = useState(
-    dataReassignmentDeleteProfile
-  );
+  const [isDeleteProfile, setIsDeleteProfile] = useState(deleteProfile);
   const [showProgress, setShowProgress] = useState(false);
   const [isReassignCurrentUser, setIsReassignCurrentUser] = useState(false);
 
@@ -77,10 +71,10 @@ const DataReassignmentDialog = ({
 
   useEffect(() => {
     //If click Delete user
-    if (dataReassignmentDeleteAdministrator) onReassign();
+    if (deleteAdministrator) onReassign();
 
     return () => setDataReassignmentDeleteAdministrator(null);
-  }, [dataReassignmentDeleteAdministrator]);
+  }, [deleteAdministrator]);
 
   const onToggleDeleteProfile = () => {
     setIsDeleteProfile((remove) => !remove);
@@ -195,7 +189,6 @@ const DataReassignmentDialog = ({
 
 export default inject(({ auth, peopleStore, setup }) => {
   const {
-    dataReassignmentDialogVisible,
     setDataReassignmentDialogVisible,
     dataReassignmentDeleteProfile,
     dataReassignmentDeleteAdministrator,
@@ -209,18 +202,15 @@ export default inject(({ auth, peopleStore, setup }) => {
   const { setFilterParams: setFilter } = peopleStore.filterStore;
 
   return {
-    dataReassignmentDialogVisible,
     setDataReassignmentDialogVisible,
     theme: auth.settingsStore.theme,
     currentColorScheme,
     dataReassignment,
     idCurrentUser,
     dataReassignmentProgress,
-    dataReassignmentDeleteProfile,
-
+    deleteProfile: dataReassignmentDeleteProfile,
     setFilter,
-
-    dataReassignmentDeleteAdministrator,
+    deleteAdministrator: dataReassignmentDeleteAdministrator,
     setDataReassignmentDeleteAdministrator,
   };
 })(
