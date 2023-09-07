@@ -15,8 +15,7 @@ import SSOLoader from "./sub-components/ssoLoader";
 import SMTPSettings from "./SMTPSettings";
 
 const IntegrationWrapper = (props) => {
-  const { t, tReady, enablePlugins, toDefault, isSSOAvailable } =
-    props;
+  const { t, tReady, enablePlugins, toDefault, isSSOAvailable } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();

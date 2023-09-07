@@ -62,7 +62,7 @@ if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
 		   MYSQL="mysql --connect-expired-password -u$MYSQL_SERVER_USER -D mysql";
 		else
 		   MYSQL="mysql --connect-expired-password -u$MYSQL_SERVER_USER -p${MYSQL_TEMPORARY_ROOT_PASS} -D mysql";
-		   MYSQL_ROOT_PASS=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12);
+		   MYSQL_ROOT_PASS=$(echo $MYSQL_TEMPORARY_ROOT_PASS | sed -e 's/;/%/g' -e 's/=/%/g');
 		fi
 
 		MYSQL_AUTHENTICATION_PLUGIN=$($MYSQL -e "SHOW VARIABLES LIKE 'default_authentication_plugin';" -s | awk '{print $2}')

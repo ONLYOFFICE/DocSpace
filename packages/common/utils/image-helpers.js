@@ -1,3 +1,4 @@
+import ArSAReactSvgUrl from "PUBLIC_DIR/images/flags/ar-SA.react.svg?url";
 import AzReactSvgUrl from "PUBLIC_DIR/images/flags/az.react.svg?url";
 import BgReactSvgUrl from "PUBLIC_DIR/images/flags/bg.react.svg?url";
 import CsReactSvgUrl from "PUBLIC_DIR/images/flags/cs.react.svg?url";
@@ -56,6 +57,7 @@ import VkSvgUrl from "PUBLIC_DIR/images/thirdparties/vk.svg?url";
 import WordpressSvgUrl from "PUBLIC_DIR/images/thirdparties/wordpress.svg?url";
 import YahooSvgUrl from "PUBLIC_DIR/images/thirdparties/yahoo.svg?url";
 import YandexSvgUrl from "PUBLIC_DIR/images/thirdparties/yandex.svg?url";
+import ZoomSvgUrl from "PUBLIC_DIR/images/thirdparties/zoom.svg?url";
 
 import AviSvg24Url from "PUBLIC_DIR/images/icons/24/avi.svg?url";
 import CsvSvg24Url from "PUBLIC_DIR/images/icons/24/csv.svg?url";
@@ -591,9 +593,11 @@ export const thirdpartiesLogo = new Map([
   ["wordpress.svg", WordpressSvgUrl],
   ["yahoo.svg", YahooSvgUrl],
   ["yandex.svg", YandexSvgUrl],
+  ["zoom.svg", ZoomSvgUrl],
 ]);
 
 export const flagsIcons = new Map([
+  ["ar-SA.react.svg", ArSAReactSvgUrl],
   ["az.react.svg", AzReactSvgUrl],
   ["bg.react.svg", BgReactSvgUrl],
   ["cs.react.svg", CsReactSvgUrl],

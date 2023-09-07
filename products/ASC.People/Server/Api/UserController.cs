@@ -351,9 +351,12 @@ public class UserController : PeopleControllerBase
     [HttpPost("invite")]
     public async Task<List<EmployeeDto>> InviteUsersAsync(InviteUsersRequestDto inDto)
     {
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
+
         foreach (var invite in inDto.Invitations)
         {
-            if (!await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
+            if ((invite.Type == EmployeeType.DocSpaceAdmin && !currentUser.IsOwner(await _tenantManager.GetCurrentTenantAsync())) ||
+                !await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
             {
                 continue;
             }
@@ -1440,17 +1443,17 @@ public class UserController : PeopleControllerBase
             var isUser = inDto.IsUser.Value;
             if (isUser && !await _userManager.IsUserAsync(user) && canBeGuestFlag)
             {
-            await _countUserChecker.CheckAppend();
-            await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupUser.ID);
-            _webItemSecurityCache.ClearCache(Tenant.Id);
-        }
+                await _countUserChecker.CheckAppend();
+                await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupUser.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+            }
 
             if (!self && !isUser && await _userManager.IsUserAsync(user))
-        {
-            await _countPaidUserChecker.CheckAppend();
-            await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupUser.ID);
-            _webItemSecurityCache.ClearCache(Tenant.Id);
-        }
+            {
+                await _countPaidUserChecker.CheckAppend();
+                await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupUser.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+            }
         }
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 

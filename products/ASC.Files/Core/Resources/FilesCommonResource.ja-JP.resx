@@ -299,7 +299,8 @@
     <value>文書を作成したり、編集したり及び共有したりすることができます。同時での共同制作可能もあります。MS Office形式の100%互換性が保証されています。</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>文書を作成したり、編集したり及び共有したりすることができます。チーム全体がアクセスできる共通のドキュメントをご作成およびご管理になれます。docx、xlsx、pptxとの100％の互換性が保証されています。</value>
+    <value>文書を作成したり、編集したり及び共有したりすることができます。チーム全体がアクセスできる共通のドキュメントをご作成およびご管理になれます。
+docx、xlsx、pptxとの100％の互換性が保証されています。</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>共有ドキュメントを表示およびダウンロードできます。または、共有フォルダにファイルをアップロードできます。docx、xlsx、pptxとの100％の互換性が保証されています。</value>
@@ -414,5 +415,8 @@
   </data>
   <data name="MessageFillFormDraftDiscard" xml:space="preserve">
     <value>このファイルは、もはや記入用の下書きではありません。</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>外部のリンク</value>
   </data>
 </root>

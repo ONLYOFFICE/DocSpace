@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled, { css, useTheme } from "styled-components";
 
 import { VariableSizeList } from "react-window";
 import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-scrollbars-virtual-list";
@@ -26,13 +26,17 @@ import { Base } from "@docspace/components/themes";
 const StyledBox = styled.div`
   position: absolute;
   top: 0px;
-  left: ${isMobile ? "-16px" : "-20px"};
-  ${({ withLogo }) =>
-    withLogo &&
-    css`
-      left: 207px;
-    `};
 
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: ${isMobile ? "-16px" : "-20px"};
+          ${props.withLogo && `right: 207px;`};
+        `
+      : css`
+          left: ${isMobile ? "-16px" : "-20px"};
+          ${props.withLogo && `left: 207px;`};
+        `}
   padding: ${isMobile ? "0 16px " : "0 20px"};
   padding-top: 18px;
 
@@ -58,7 +62,14 @@ const StyledBox = styled.div`
 
   @media ${tablet} {
     width: ${({ dropBoxWidth }) => dropBoxWidth + "px"};
-    left: -16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            right: -16px;
+          `
+        : css`
+            left: -16px;
+          `}
     padding: 0 16px;
     padding-top: 14px;
   }
@@ -75,7 +86,15 @@ const StyledBox = styled.div`
 
   ${isMobileOnly &&
   css`
-    margin-left: 16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 16px;
+          `
+        : css`
+            margin-left: 16px;
+          `}
+
     padding: 0 16px !important;
     padding-top: 14px !important;
     max-height: ${(props) => props.maxHeight};
@@ -137,6 +156,7 @@ const DropBox = React.forwardRef(
       return isMobile || isMobileUtils() || isTabletUtils() ? 36 : 30;
     };
 
+    const { interfaceDirection } = useTheme();
     React.useEffect(() => {
       const itemsHeight = navigationItems.map((item, index) =>
         getItemSize(index)
@@ -230,6 +250,7 @@ const DropBox = React.forwardRef(
           </StyledContainer>
 
           <VariableSizeList
+            direction={interfaceDirection}
             height={dropBoxHeight}
             width={"auto"}
             itemCount={countItems}

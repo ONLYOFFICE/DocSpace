@@ -155,7 +155,9 @@ class SettingsStore {
   cspDomains = [];
   publicRoomKey = "";
 
-  interfaceDirection = localStorage.getItem("interfaceDirection") || "ltr";
+  numberAttempt = null;
+  blockingTime = null;
+  checkPeriod = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -275,6 +277,10 @@ class SettingsStore {
 
   get trustedMailDomainSettingsUrl() {
     return `${this.helpLink}/administration/docspace-settings.aspx#TrustedDomain`;
+  }
+
+  get bruteForceProtectionUrl() {
+    return `${this.helpLink}/administration/configuration.aspx#loginsettings`;
   }
 
   get administratorMessageSettingsUrl() {
@@ -817,6 +823,26 @@ class SettingsStore {
     return res;
   };
 
+  setBruteForceProtectionSettings = (settings) => {
+    this.numberAttempt = settings.attemptCount;
+    this.blockingTime = settings.blockTime;
+    this.checkPeriod = settings.checkPeriod;
+  };
+
+  getBruteForceProtection = async () => {
+    const res = await api.settings.getBruteForceProtection();
+
+    this.setBruteForceProtectionSettings(res);
+  };
+
+  setBruteForceProtection = async (AttemptCount, BlockTime, CheckPeriod) => {
+    return api.settings.setBruteForceProtection(
+      AttemptCount,
+      BlockTime,
+      CheckPeriod
+    );
+  };
+
   setIsBurgerLoading = (isBurgerLoading) => {
     this.isBurgerLoading = isBurgerLoading;
   };
@@ -901,11 +927,6 @@ class SettingsStore {
     } catch (e) {
       toastr.error(e);
     }
-  };
-
-  setInterfaceDirection = (direction) => {
-    this.interfaceDirection = direction;
-    localStorage.setItem("interfaceDirection", direction);
   };
 }
 

@@ -8,14 +8,36 @@ import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
   align-self: center;
-  margin-left: auto;
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: auto;
+          transform: scaleX(-1);
+        `
+      : css`
+          margin-left: auto;
+        `}
 
   margin-bottom: 1px;
   padding: 0;
 
+  ${(props) =>
+    props.isInfoPanelVisible &&
+    css`
+      display: none;
+    `}
+
   @media ${tablet} {
     display: none;
-    margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: ${props.isRootFolder ? "auto" : "0"};
+          `
+        : css`
+            margin-left: ${props.isRootFolder ? "auto" : "0"};
+          `}
   }
 `;
 StyledInfoPanelToggleColorThemeWrapper.defaultProps = { theme: Base };

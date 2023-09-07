@@ -19,7 +19,8 @@ export const YearsBody = ({
     setSelectedScene,
     selectedDate,
     minDate,
-    maxDate
+    maxDate,
+    isMobile
   );
 
   return (

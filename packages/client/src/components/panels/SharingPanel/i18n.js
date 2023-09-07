@@ -3,15 +3,18 @@ import { initReactI18next } from "react-i18next";
 import Backend from "@docspace/common/utils/i18next-http-backend";
 import { LANGUAGE } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
-import { getCookie } from "@docspace/common/utils";
+import { getCookie, getLtrLanguageForEditor } from "@docspace/common/utils";
 import { loadLanguagePath } from "SRC_DIR/helpers/utils";
 const newInstance = i18n.createInstance();
+
+const userLng = getCookie(LANGUAGE) || "en";
+const portalLng = window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings.culture;
 
 newInstance
   .use(Backend)
   .use(initReactI18next)
   .init({
-    lng: getCookie(LANGUAGE) || "en",
+    lng: getLtrLanguageForEditor(userLng, portalLng),
     fallbackLng: "en",
     load: "currentOnly",
     //debug: true,

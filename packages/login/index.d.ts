@@ -35,6 +35,8 @@ declare global {
     size: number;
   };
 
+  type CaptchaPublicKeyType = string | undefined;
+
   interface IEmailValid {
     value: string;
     isValid: boolean;
@@ -60,6 +62,7 @@ declare global {
     version: string;
     standalone: boolean;
     trustedDomains: string[];
+    recaptchaPublicKey: CaptchaPublicKeyType;
   }
 
   interface IBuildInfo {
@@ -85,7 +88,7 @@ declare global {
   type TThemeObj = {
     accent: string;
     buttons: string;
-  }
+  };
 
   interface ITheme {
     id: number;
@@ -165,13 +168,13 @@ declare global {
   type TLogoPath = {
     light: string;
     dark?: string;
-  }
+  };
 
   type TLogoSize = {
     width: number;
     height: number;
     isEmpty: boolean;
-  }
+  };
 
   interface ILogoUrl {
     name: string;

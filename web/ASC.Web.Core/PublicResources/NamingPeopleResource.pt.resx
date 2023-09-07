@@ -145,4 +145,16 @@
   <data name="EducationUserTitle" xml:space="preserve">
     <value>Título</value>
   </data>
+  <data name="EducationAddUsers" xml:space="preserve">
+    <value>Adicionar Docentes/Estudantes</value>
+  </data>
+  <data name="EducationSchemaName" xml:space="preserve">
+    <value>Instituição de Ensino</value>
+  </data>
+  <data name="EducationUser" xml:space="preserve">
+    <value>Docente/Estudante</value>
+  </data>
+  <data name="EducationUsers" xml:space="preserve">
+    <value>Docentes/Estudantes</value>
+  </data>
 </root>
