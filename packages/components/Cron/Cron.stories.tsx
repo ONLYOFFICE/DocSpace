@@ -63,6 +63,18 @@ type Story = StoryObj<CronType>;
 const meta: Meta<CronType> = {
   title: "Components/Cron",
   component: Cron,
+  argTypes: {
+    value: {
+      description: "Cron value",
+    },
+    setValue: {
+      description: "Set the cron value, similar to onChange.",
+    },
+    onError: {
+      description:
+        "Triggered when the cron component detects an error with the value.",
+    },
+  },
 };
 
 export default meta;
