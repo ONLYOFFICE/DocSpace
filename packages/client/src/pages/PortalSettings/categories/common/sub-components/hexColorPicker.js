@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import Button from "@docspace/components/button";
 import { HexColorPicker, HexColorInput } from "react-colorful";
-import { isMobile } from "react-device-detect";
+import { isMobileOnly } from "react-device-detect";
 
 const StyledComponent = styled.div`
   .save-button {
@@ -30,6 +30,11 @@ const StyledComponent = styled.div`
 
   .hex-color-picker .react-colorful__interactive {
     width: 183px;
+
+    ${isMobileOnly &&
+    css`
+      width: calc(100vw - 76px);
+    `}
   }
 
   .hex-color-picker .react-colorful__saturation-pointer {
@@ -87,9 +92,9 @@ const StyledComponent = styled.div`
     padding-bottom: 16px;
     width: 195px;
 
-    ${isMobile &&
+    ${isMobileOnly &&
     css`
-      width: calc(100vw - 60px);
+      width: calc(100vw - 64px);
     `}
   }
 

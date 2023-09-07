@@ -4,6 +4,7 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import styled, { css } from "styled-components";
 import Button from "@docspace/components/button";
 import { withTranslation } from "react-i18next";
+import { isMobileOnly } from "react-device-detect";
 
 const StyledComponent = styled(ModalDialog)`
   .modal-dialog-aside-footer {
@@ -65,7 +66,19 @@ const StyledComponent = styled(ModalDialog)`
     cursor: pointer;
   }
 
+  .drop-down-container-hex {
+    ${isMobileOnly &&
+    css`
+      width: 100%;
+    `}
+  }
+
   .drop-down-item-hex {
+    ${isMobileOnly &&
+    css`
+      width: calc(100vw - 32px);
+    `}
+
     :hover {
       background-color: unset;
     }
@@ -102,7 +115,8 @@ const ColorSchemeDialog = props => {
       displayType="aside"
       currentColorAccent={currentColorAccent}
       currentColorButtons={currentColorButtons}
-      withFooterBorder={showSaveButtonDialog}>
+      withFooterBorder={showSaveButtonDialog}
+    >
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         <div>
