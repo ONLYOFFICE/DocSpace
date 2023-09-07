@@ -1,0 +1,96 @@
+#!/bin/bash
+
+set -e
+
+PRODUCT="docspace"
+DIR="/usr/bin"
+LETSENCRYPT="/etc/letsencrypt/live";
+NGINX="/etc/nginx/conf.d"
+DHPARAM_FILE="/etc/ssl/certs/dhparam.pem"
+
+if [ "$#" -ge "2" ]; then
+  if [ "$1" != "-f" ]; then 
+    MAIL=$1
+    DOMAIN=$2
+    LETSENCRYPT_ENABLE="true"
+
+    # Install certbot if not already installed
+    if ! type "certbot" &> /dev/null; then
+      if type "apt-get" &> /dev/null; then
+        apt-get -y update -qq
+        apt-get -y -q install certbot
+      elif type "yum" &> /dev/null; then
+        yum -y install certbot
+      fi
+    fi
+
+    echo "Generating Let's Encrypt SSL Certificates..."
+
+    # Request and generate Let's Encrypt SSL certificate
+    echo certbot certonly --expand --webroot --noninteractive --agree-tos --email ${MAIL} -d ${DOMAIN} > /var/log/le-start.log
+    certbot certonly --expand --webroot --noninteractive --agree-tos --email ${MAIL} -d ${DOMAIN} > /var/log/le-new.log
+  else
+    echo "Using specified files to configure SSL..."
+  
+    CERTIFICATE_FILE=$2
+    PRIVATEKEY_FILE=$3
+  fi
+
+  [[ ! -f "${DHPARAM_FILE}" ]] && openssl dhparam -out ${DHPARAM_FILE} 4096
+
+  CERTIFICATE_FILE="${CERTIFICATE_FILE:-"${LETSENCRYPT}/${DOMAIN}/fullchain.pem"}"
+  PRIVATEKEY_FILE="${PRIVATEKEY_FILE:-"${LETSENCRYPT}/${DOMAIN}/privkey.pem"}"
+
+  if [ -f "${CERTIFICATE_FILE}" -a -f ${PRIVATEKEY_FILE} ]; then
+    if [ -f "${NGINX}/onlyoffice-proxy-ssl.conf.template" ]; then
+      cp -f ${NGINX}/onlyoffice-proxy-ssl.conf.template ${NGINX}/onlyoffice-proxy.conf
+
+      ENVIRONMENT=$(grep -oP 'ENVIRONMENT=\K.*' /usr/lib/systemd/system/${PRODUCT}-api.service)
+      sed -i "s/\(\"portal\":\).*/\1 \"https:\/\/${DOMAIN:-$(hostname --fqdn)}\"/" /etc/onlyoffice/docspace/appsettings.$ENVIRONMENT.json
+      sed -i "s~\(ssl_certificate \).*;~\1${CERTIFICATE_FILE};~g" ${NGINX}/onlyoffice-proxy.conf
+      sed -i "s~\(ssl_certificate_key \).*;~\1${PRIVATEKEY_FILE};~g" ${NGINX}/onlyoffice-proxy.conf
+      sed -i "s~\(ssl_dhparam \).*;~\1${DHPARAM_FILE};~g" ${NGINX}/onlyoffice-proxy.conf
+
+      if [[ "${LETSENCRYPT_ENABLE}" = "true" ]]; then
+        # Create and set permissions for ${PRODUCT}-renew-letsencrypt
+        echo '#!/bin/bash' > ${DIR}/${PRODUCT}-renew-letsencrypt
+        echo "certbot renew >> /var/log/le-renew.log" >> ${DIR}/${PRODUCT}-renew-letsencrypt
+        if [ $(pgrep -x ""systemd"" | wc -l) -gt 0 ]; then
+          echo 'systemctl reload openresty' >> ${DIR}/${PRODUCT}-renew-letsencrypt
+        else 
+          echo 'service openresty reload' >> ${DIR}/${PRODUCT}-renew-letsencrypt
+        fi
+
+        chmod a+x ${DIR}/${PRODUCT}-renew-letsencrypt
+
+        # Add cron job if /etc/cron.d directory exists
+        if [ -d /etc/cron.d ]; then
+          echo -e "@weekly root ${DIR}/${PRODUCT}-renew-letsencrypt" | tee /etc/cron.d/${PRODUCT}-letsencrypt
+        fi
+      fi
+
+      [ $(pgrep -x ""systemd"" | wc -l) -gt 0 ] && systemctl reload openresty || service openresty reload
+
+      echo "OK"
+    else
+      echo "Error: proxy configuration file not found." && exit 1
+    fi
+  else
+    echo "Error: certificate or private key file not found." && exit 1
+  fi
+else
+  echo ""
+  echo "This script provided to automatically setup SSL Certificates for DocSpace"
+  echo "Automatically get Let's Encrypt SSL Certificates:"
+  echo "  docspace-ssl-setup EMAIL DOMAIN"
+  echo "    EMAIL         Email used for registration and recovery contact."
+  echo "                  Use comma to register multiple emails, ex:"
+  echo "                  u1@example.com,u2@example.com."
+  echo "    DOMAIN        Domain name to apply"
+  echo ""
+  echo "Using your own certificates via the -f parameter:"
+  echo "  docspace-ssl-setup -f CERTIFICATE PRIVATEKEY"
+  echo "    CERTIFICATE   Path to the certificate file for the domain."
+  echo "    PRIVATEKEY    Path to the private key file for the certificate."
+  echo ""
+fi

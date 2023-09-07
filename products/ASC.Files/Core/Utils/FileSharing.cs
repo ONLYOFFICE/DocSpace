@@ -559,6 +559,11 @@ public class FileSharing
 
             if (isRoom && r.IsLink)
             {
+                if (!canEditAccess)
+                {
+                    continue;
+                }
+                
                 w.Link = r.SubjectType == SubjectType.InvitationLink ?
                     _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) :
                     await _externalShare.GetLinkAsync(r.Subject);
@@ -579,7 +584,7 @@ public class FileSharing
             result.Add(w);
         }
 
-        if (isRoom && !withoutTemplates)
+        if (isRoom && canEditAccess&& !withoutTemplates)
         {
             var invitationId = Guid.NewGuid();
 
