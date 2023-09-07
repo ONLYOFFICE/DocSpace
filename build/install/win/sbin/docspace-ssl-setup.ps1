@@ -42,7 +42,7 @@ if ( $args.Count -ge 2 )
   if ($args[0] -eq "-f") {
     $ssl_cert = $args[1]
     $ssl_key = $args[2]
-    }
+  }
 
   else {
     $letsencrypt_mail = $args[0]
@@ -57,7 +57,7 @@ if ( $args.Count -ge 2 )
         $ssl_cert = (Resolve-Path -Path (Get-Item "${letsencrypt_root_dir}\${letsencrypt_domain}\fullchain.pem").Target).ToString().Replace('\', '/')
         $ssl_key = (Resolve-Path -Path (Get-Item "${letsencrypt_root_dir}\${letsencrypt_domain}\privkey.pem").Target).ToString().Replace('\', '/')
     popd
-    }
+  }
 
   if ( [System.IO.File]::Exists($ssl_cert) -and [System.IO.File]::Exists($ssl_key) -and [System.IO.File]::Exists("${nginx_conf_dir}\${nginx_tmpl}"))
   {
