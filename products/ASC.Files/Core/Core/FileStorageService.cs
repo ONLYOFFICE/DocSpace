@@ -614,7 +614,7 @@ public class FileStorageService //: IFileStorageService
             newFolder.ParentId = parent.Id;
             newFolder.FolderType = folderType;
             newFolder.Private = parent.Private ? parent.Private : privacy;
-
+            newFolder.Color = GetRandomColour();
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
 
@@ -633,6 +633,13 @@ public class FileStorageService //: IFileStorageService
         catch (Exception e)
         {
             throw GenerateException(e);
+        }
+
+        string GetRandomColour()
+        {
+            var rand = new Random();
+            var result = Color.FromRgb((byte)rand.Next(256), (byte)rand.Next(256), (byte)rand.Next(256)).ToHex();
+            return result.Substring(0, result.Length - 2);//without opacity
         }
     }
 

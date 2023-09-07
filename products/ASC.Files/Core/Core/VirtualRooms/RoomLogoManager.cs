@@ -58,8 +58,8 @@ public class RoomLogoManager
         FileSecurity fileSecurity,
         ILogger<RoomLogoManager> logger,
         FilesMessageService filesMessageService,
-        IHttpContextAccessor httpContextAccessor, 
-        EmailValidationKeyProvider emailValidationKeyProvider, 
+        IHttpContextAccessor httpContextAccessor,
+        EmailValidationKeyProvider emailValidationKeyProvider,
         SecurityContext securityContext)
     {
         _storageFactory = storageFactory;
@@ -178,6 +178,7 @@ public class RoomLogoManager
                 Large = string.Empty,
                 Medium = string.Empty,
                 Small = string.Empty,
+                Color = room.Color
             };
         }
 
@@ -275,7 +276,7 @@ public class RoomLogoManager
             {
                 data = CommonPhotoManager.SaveToBytes(img);
             }
-            
+
             var fileName = string.Format(LogosPath, ProcessFolderId(id), size.Item1.ToStringLowerFast());
 
             using var stream2 = new MemoryStream(data);
@@ -293,7 +294,7 @@ public class RoomLogoManager
         var headers = secure ? new[] { SecureHelper.GenerateSecureKeyHeader(fileName, _emailValidationKeyProvider) } : null;
 
         var store = await GetDataStoreAsync();
-        
+
         var uri = await store.GetPreSignedUriAsync(string.Empty, fileName, TimeSpan.MaxValue, headers);
 
         return uri + (secure ? "&" : "?") + $"hash={hash}";
