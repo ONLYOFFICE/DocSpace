@@ -10,7 +10,6 @@ const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
   path {
     fill: #f21c0e;
   }
-
   padding-left: 8px;
 `;
 
@@ -19,6 +18,12 @@ const AccountInfo = ({ user }) => {
     return str[0].toUpperCase() + str.slice(1);
   };
 
+  const StatusNode = (
+    <Text className="status" noSelect>
+      {firstLetterToUppercase(user.statusType)}
+    </Text>
+  );
+
   return (
     <StyledOwnerInfo>
       <Avatar
@@ -26,7 +31,7 @@ const AccountInfo = ({ user }) => {
         role="user"
         source={user.avatar}
         size={"big"}
-        hideRoleIcon
+        hideRoleIcon={true}
       />
       <div className="info">
         <div className="avatar-name">
@@ -38,9 +43,7 @@ const AccountInfo = ({ user }) => {
           )}
         </div>
 
-        <Text className="status" noSelect>
-          {firstLetterToUppercase(user.statusType)}
-        </Text>
+        {StatusNode}
       </div>
     </StyledOwnerInfo>
   );
