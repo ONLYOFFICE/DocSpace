@@ -48,16 +48,21 @@ const SpacesRoomRow = ({ item }: TRow) => {
     <ReactSVG id={item.key} src={DefaultLogoUrl} />
   );
 
+  const protocol = window?.location?.protocol;
+
   const contextOptionsProps = [
     {
       label: t("Files:Open"),
       key: "space_open",
       icon: ExternalLinkIcon,
+      onClick: () => window.open(`${protocol}//${item.domain}/`, "_blank"),
     },
     {
       label: t("Common:SettingsDocSpace"),
       key: "space_settings",
       icon: CatalogSettingsReactSvgUrl,
+      onClick: () =>
+        window.open(`${protocol}//${item.domain}/portal-settings/`, "_blank"),
     },
     {
       key: "separator",
@@ -67,7 +72,7 @@ const SpacesRoomRow = ({ item }: TRow) => {
       label: t("Common:Delete"),
       key: "space_delete",
       icon: DeleteReactSvgUrl,
-      onClick: () => deletePortal(item.portalName, item.tenantId),
+      //    onClick: () => deletePortal(item.portalName, item.tenantId),
     },
   ];
 
