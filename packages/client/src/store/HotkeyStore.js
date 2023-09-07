@@ -530,7 +530,7 @@ class HotkeyStore {
     }
   };
 
-  setHotkeysClipboard = (isCut) => {
+  copyToClipboard = (t, isCut) => {
     const canCopy = this.filesStore.selection.every((s) => s.security?.Copy);
     const canMove = this.filesStore.selection.every((s) => s.security?.Move);
 
@@ -539,6 +539,11 @@ class HotkeyStore {
 
     this.hotkeysClipboard = this.filesStore.selection;
     this.hotkeysClipboardAction = isCut ? "move" : "copy";
+
+    const copyText = `${t("AddedToClipboard")}: ${
+      this.filesStore.selection.length
+    }`;
+    toastr.success(copyText);
   };
 
   moveFilesFromClipboard = (t) => {
@@ -594,7 +599,8 @@ class HotkeyStore {
         return;
       }
 
-      setSelectedItems();
+      const fileTitle = this.hotkeysClipboard.find((f) => f.title)?.title;
+      setSelectedItems(fileTitle, this.hotkeysClipboard.length);
       checkFileConflicts(selectedItemId, folderIds, fileIds)
         .then(async (conflicts) => {
           if (conflicts.length) {
