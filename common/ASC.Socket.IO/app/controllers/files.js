@@ -42,12 +42,12 @@
   });
 
   router.post("/markasnew-file", (req, res) => {
-    files.markAsNewFile(req.body);
+    files.markAsNewFiles(req.body);
     res.end();
   });
 
   router.post("/markasnew-folder", (req, res) => {
-    files.markAsNewFolder(req.body);
+    files.markAsNewFolders(req.body);
     res.end();
   });
 
