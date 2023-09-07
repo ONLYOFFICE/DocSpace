@@ -154,8 +154,9 @@ class ProfileActionsStore {
   };
 
   onSupportClick = () => {
-    const supportUrl = this.authStore.settingsStore.additionalResourcesData
-      ?.feedbackAndSupportUrl;
+    const supportUrl =
+      this.authStore.settingsStore.additionalResourcesData
+        ?.feedbackAndSupportUrl;
 
     window.open(supportUrl, "_blank");
   };
@@ -228,11 +229,13 @@ class ProfileActionsStore {
         }
       : null;
 
+    const protocol = window?.location?.protocol;
+
     const managementItems = portals.map((portal) => {
       return {
         key: portal.tenantId,
         label: portal.domain,
-        onClick: () => {},
+        onClick: () => window.open(`${protocol}//${portal.domain}/`, "_self"),
         disabled: false,
       };
     });
@@ -400,12 +403,13 @@ class ProfileActionsStore {
       return actionsArray;
     }
 
-    const feedbackAndSupportEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.feedbackAndSupportEnabled;
-    const videoGuidesEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.videoGuidesEnabled;
-    const helpCenterEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.helpCenterEnabled;
+    const feedbackAndSupportEnabled =
+      this.authStore.settingsStore.additionalResourcesData
+        ?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled =
+      this.authStore.settingsStore.additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled =
+      this.authStore.settingsStore.additionalResourcesData?.helpCenterEnabled;
 
     if (!feedbackAndSupportEnabled) {
       const index = actionsArray.findIndex(
