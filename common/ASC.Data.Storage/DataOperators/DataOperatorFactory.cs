@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,13 +24,32 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup.Storage;
+namespace ASC.Data.Storage.DataOperators;
 
-public interface IBackupStorage
+public static class DataOperatorFactory
 {
-    Task<bool> IsExistsAsync(string storagePath);
-    Task<string> GetPublicLinkAsync(string storagePath);
-    Task<string> UploadAsync(string storageBasePath, string localPath, Guid userId);
-    Task DeleteAsync(string storagePath);
-    Task<string> DownloadAsync(string storagePath, string targetLocalPath);
+    public static async Task<IDataWriteOperator> GetWriteOperatorAsync(TempStream tempStream, string storageBasePath, string title, string tempFolder, Guid userId, IGetterWriteOperator getter)
+    {
+        var writer = await getter.GetWriteOperatorAsync(storageBasePath, title, userId);
+
+        return writer ?? new ZipWriteOperator(tempStream, Path.Combine(tempFolder, title));
+    }
+
+    public static IDataWriteOperator GetDefaultWriteOperator(TempStream tempStream, string backupFilePath)
+    {
+        return new ZipWriteOperator(tempStream, backupFilePath);
+    }
+
+    public static IDataReadOperator GetReadOperator(string targetFile)
+    {
+        if (targetFile.EndsWith("tar.gz")) 
+        {
+            return new ZipReadOperator(targetFile);
+        }
+        else
+        {
+            return new TarReadOperator(targetFile);
+        }
+    }
 }
+ 
