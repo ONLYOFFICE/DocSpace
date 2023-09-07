@@ -33,11 +33,12 @@ import useSocketHelper from "./helpers/useSocketHelper";
 
 const FilesSelector = ({
   isPanelVisible = false,
-  withoutBasicSelection = false,
-  withoutImmediatelyClose = false,
+  // withoutImmediatelyClose = false,
   isThirdParty = false,
+  isRoomsOnly = false,
   isEditorDialog = false,
 
+  rootThirdPartyId,
   filterParam,
 
   onClose,
@@ -70,7 +71,7 @@ const FilesSelector = ({
 
   onSelectFolder,
   onSetBaseFolderPath,
-  onSetNewFolderPath,
+  //onSetNewFolderPath,
   onSelectTreeNode,
   onSave,
   onSelectFile,
@@ -159,6 +160,8 @@ const FilesSelector = ({
     isFirstLoad,
     setIsRoot,
     searchValue,
+    isRoomsOnly,
+    onSetBaseFolderPath,
   });
 
   const { getFileList } = useFilesHelper({
@@ -179,6 +182,11 @@ const FilesSelector = ({
     setSelectedTreeNode,
     filterParam,
     getRootData,
+    onSetBaseFolderPath,
+    isRoomsOnly,
+    rootThirdPartyId,
+    getRoomList,
+    t,
   });
 
   const onSelectAction = (item: Item) => {
@@ -218,26 +226,36 @@ const FilesSelector = ({
   }, [selectedItemId, isRoot]);
 
   React.useEffect(() => {
-    if (!withoutBasicSelection) {
-      onSelectFolder && onSelectFolder(currentFolderId);
-      onSetBaseFolderPath && onSetBaseFolderPath(currentFolderId);
+    const getRoomSettings = () => {
+      setSelectedItemType("rooms");
+      getRoomList(0, true);
+    };
+
+    const needRoomList = isRoomsOnly && !currentFolderId;
+
+    if (needRoomList) {
+      getRoomSettings();
+      return;
     }
+
     if (!currentFolderId) {
       getRootData();
-    } else {
-      setSelectedItemId(currentFolderId);
-      if (
-        parentId === 0 &&
-        rootFolderType === FolderType.Rooms &&
-        !isThirdParty
-      ) {
-        setSelectedItemType("rooms");
-        getRoomList(0, true);
-      } else {
-        setSelectedItemType("files");
-        getFileList(0, currentFolderId, true);
-      }
+      return;
     }
+
+    setSelectedItemId(currentFolderId);
+
+    if (
+      needRoomList ||
+      (!isThirdParty && parentId === 0 && rootFolderType === FolderType.Rooms)
+    ) {
+      getRoomSettings();
+
+      return;
+    }
+
+    setSelectedItemType("files");
+    getFileList(0, currentFolderId, true);
   }, []);
 
   const onClickBreadCrumb = (item: BreadCrumb) => {
@@ -276,15 +294,17 @@ const FilesSelector = ({
   const onCloseAction = () => {
     if (onClose) {
       onClose();
+
+      return;
+    }
+
+    if (isCopy) {
+      setCopyPanelVisible(false);
+      setIsFolderActions(false);
+    } else if (isRestoreAll) {
+      setRestoreAllPanelVisible(false);
     } else {
-      if (isCopy) {
-        setCopyPanelVisible(false);
-        setIsFolderActions(false);
-      } else if (isRestoreAll) {
-        setRestoreAllPanelVisible(false);
-      } else {
-        setMoveToPanelVisible(false);
-      }
+      setMoveToPanelVisible(false);
     }
   };
 
@@ -389,30 +409,16 @@ const FilesSelector = ({
         toastr.error(t("Common:ErrorEmptyList"));
       }
     } else {
-      setIsRequestRunning(true);
-      onSetNewFolderPath && onSetNewFolderPath(selectedItemId);
-      onSelectFolder && onSelectFolder(selectedItemId);
+      //setIsRequestRunning(true);
+      //onSetNewFolderPath && onSetNewFolderPath(breadCrumbs);
+      onSelectFolder && onSelectFolder(selectedItemId, breadCrumbs);
       onSave &&
         selectedItemId &&
         onSave(null, selectedItemId, fileName, isChecked);
       onSelectTreeNode && onSelectTreeNode(selectedTreeNode);
-
-      const info: {
-        id: string | number;
-        title: string;
-        path?: string[];
-      } = {
-        id: selectedFileInfo?.id || "",
-        title: selectedFileInfo?.title || "",
-        path: [],
-      };
-
-      breadCrumbs.forEach((item, index) => {
-        if (index !== 0 && info.path) info.path.push(item.label);
-      });
-
-      onSelectFile && selectedFileInfo && onSelectFile(info);
-      !withoutImmediatelyClose && onCloseAction();
+      onSelectFile && onSelectFile(selectedFileInfo, breadCrumbs);
+      onCloseAction();
+      //!withoutImmediatelyClose &&  onCloseAction();
     }
   };
 
@@ -544,7 +550,7 @@ export default inject(
       dialogsStore,
       filesStore,
     }: any,
-    { isCopy, isRestoreAll, isMove, isPanelVisible, id, passedFoldersTree }: any
+    { isCopy, isRestoreAll, isMove, isPanelVisible, id }: any
   ) => {
     const {
       id: selectedId,
@@ -561,8 +567,6 @@ export default inject(
 
     const fromFolderId = id
       ? id
-      : passedFoldersTree?.length > 0
-      ? passedFoldersTree[0].id
       : rootFolderType === FolderType.Archive ||
         rootFolderType === FolderType.TRASH
       ? undefined

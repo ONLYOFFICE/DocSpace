@@ -61,11 +61,6 @@ const RestoreBackup = (props) => {
     useState(false);
   const [isVisibleSelectFileDialog, setIsVisibleSelectFileDialog] =
     useState(false);
-  const [path, setPath] = useState("");
-
-  useEffect(() => {
-    setDocumentTitle(t("RestoreBackup"));
-  }, []);
 
   const startRestoreBackup = useCallback(async () => {
     try {
@@ -88,6 +83,7 @@ const RestoreBackup = (props) => {
   }, []);
 
   useEffect(() => {
+    setDocumentTitle(t("RestoreBackup"));
     startRestoreBackup();
     return () => {
       clearProgressInterval();
@@ -173,32 +169,9 @@ const RestoreBackup = (props) => {
     <div className="restore-backup_modules">
       {radioButtonState === LOCAL_FILE && <LocalFileModule t={t} />}
 
-      {radioButtonState === BACKUP_ROOM && (
-        <RoomsModule
-          isDisabled={!isEnableRestore}
-          t={t}
-          fileName={path}
-          isPanelVisible={isVisibleSelectFileDialog}
-          onClose={onModalClose}
-          onClickInput={onClickInput}
-          onSelectFile={(file) => {
-            if (file && file.path) {
-              const newPath = file.path.join("/");
-              setPath(`${newPath}/${file.title}`);
-            }
-            setRestoreResource(file.id);
-          }}
-        />
-      )}
+      {radioButtonState === BACKUP_ROOM && <RoomsModule />}
       {radioButtonState === DISK_SPACE && (
-        <ThirdPartyResourcesModule
-          t={t}
-          isPanelVisible={isVisibleSelectFileDialog}
-          onClose={onModalClose}
-          onClickInput={onClickInput}
-          onSelectFile={(file) => setRestoreResource(file.id)}
-          buttonSize={buttonSize}
-        />
+        <ThirdPartyResourcesModule buttonSize={buttonSize} />
       )}
       {radioButtonState === STORAGE_SPACE && (
         <ThirdPartyStoragesModule onSetStorageId={onSetStorageId} />
