@@ -18,7 +18,7 @@ import config from "../../../../../package.json";
 import ManualBackup from "./backup/manual-backup";
 import AutoBackup from "./backup/auto-backup";
 
-const DataManagementWrapper = props => {
+const DataManagementWrapper = (props) => {
   const {
     dataBackupUrl,
     automaticBackupUrl,
@@ -68,7 +68,8 @@ const DataManagementWrapper = props => {
                   href={isAutoBackupPage ? automaticBackupUrl : dataBackupUrl}
                   target="_blank"
                   isBold
-                  isHovered>
+                  isHovered
+                >
                   {t("Common:LearnMore")}
                 </Link>
               </Box>
@@ -99,13 +100,13 @@ const DataManagementWrapper = props => {
   useEffect(() => {
     const path = location.pathname;
 
-    const currentTab = data.findIndex(item => path.includes(item.id));
+    const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) setCurrentTab(currentTab);
 
     setIsLoading(true);
   }, []);
 
-  const onSelect = e => {
+  const onSelect = (e) => {
     navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
@@ -120,7 +121,11 @@ const DataManagementWrapper = props => {
   return isNotPaidPeriod ? (
     <ManualBackup buttonSize={buttonSize} renderTooltip={renderTooltip} />
   ) : (
-    <Submenu data={data} startSelect={currentTab} onSelect={e => onSelect(e)} />
+    <Submenu
+      data={data}
+      startSelect={currentTab}
+      onSelect={(e) => onSelect(e)}
+    />
   );
 };
 
