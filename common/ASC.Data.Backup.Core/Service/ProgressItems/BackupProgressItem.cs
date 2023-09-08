@@ -33,8 +33,6 @@ public class BackupProgressItem : BaseBackupProgressItem
     public Dictionary<string, string> StorageParams { get; set; }
     public string TempFolder { get; set; }
 
-    private const string ArchiveFormat = "tar.gz";
-
     private bool _isScheduled;
     private Guid _userId;
     private BackupStorageType _storageType;
@@ -97,16 +95,21 @@ public class BackupProgressItem : BaseBackupProgressItem
         _tempStream = scope.ServiceProvider.GetService<TempStream>();
 
         var dateTime = _coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
-        var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", (await _tenantManager.GetTenantAsync(TenantId)).Alias, dateTime, ArchiveFormat);
-
-        var tempFile = CrossPlatform.PathCombine(TempFolder, backupName);
-        var storagePath = tempFile;
         string hash;
+        var tempFile = "";
+        var storagePath = "";
 
         try
         {
             var backupStorage = await _backupStorageFactory.GetBackupStorageAsync(_storageType, TenantId, StorageParams);
-            var writer = await ZipWriteOperatorFactory.GetWriteOperatorAsync(_tempStream, _storageBasePath, backupName, TempFolder, _userId, backupStorage as IGetterWriteOperator);
+
+            var getter = backupStorage as IGetterWriteOperator;
+            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", (await _tenantManager.GetTenantAsync(TenantId)).Alias, dateTime, await getter.GetBackupExtensionAsync(_storageBasePath));
+
+            tempFile = CrossPlatform.PathCombine(TempFolder, backupName);
+            storagePath = tempFile;
+
+            var writer = await DataOperatorFactory.GetWriteOperatorAsync(_tempStream, _storageBasePath, backupName, TempFolder, _userId, getter);
 
             _backupPortalTask.Init(TenantId, tempFile, _limit, writer);
 
@@ -121,7 +124,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             if (writer.NeedUpload)
             {
                 storagePath = await backupStorage.UploadAsync(_storageBasePath, tempFile, _userId);
-                hash = BackupWorker.GetBackupHash(tempFile);
+                hash = BackupWorker.GetBackupHashSHA(tempFile);
             }
             else
             {

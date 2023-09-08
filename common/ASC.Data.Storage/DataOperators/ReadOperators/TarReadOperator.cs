@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,13 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup.Storage;
-
-public interface IBackupStorage
+namespace ASC.Data.Storage.DataOperators;
+public class TarReadOperator: BaseReadOperator
 {
-    Task<bool> IsExistsAsync(string storagePath);
-    Task<string> GetPublicLinkAsync(string storagePath);
-    Task<string> UploadAsync(string storageBasePath, string localPath, Guid userId);
-    Task DeleteAsync(string storagePath);
-    Task<string> DownloadAsync(string storagePath, string targetLocalPath);
+    public TarReadOperator(string targetFile)
+    {
+        _tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
+
+        using (var stream = File.OpenRead(targetFile))
+        using (var tarOutputStream = TarArchive.CreateInputTarArchive(stream, Encoding.UTF8))
+        {
+            tarOutputStream.ExtractContents(_tmpdir);
+        }
+
+        File.Delete(targetFile);
+    }
 }

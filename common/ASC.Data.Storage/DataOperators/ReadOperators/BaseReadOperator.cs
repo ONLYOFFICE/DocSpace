@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,20 +24,35 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.ZipOperators;
-
-public interface IDataWriteOperator : IAsyncDisposable
+namespace ASC.Data.Storage.DataOperators;
+public abstract class BaseReadOperator: IDataReadOperator
 {
-    Task WriteEntryAsync(string key, Stream stream);
-    bool NeedUpload { get; }
-    string Hash { get; }
-    string StoragePath { get; }
-}
+    internal string _tmpdir;
+    public Stream GetEntry(string key)
+    {
+        var filePath = Path.Combine(_tmpdir, key);
+        return File.Exists(filePath) ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) : null;
+    }
 
-public interface IDataReadOperator : IDisposable
-{
-    Stream GetEntry(string key);
-    IEnumerable<string> GetEntries(string key);
-    IEnumerable<string> GetDirectories(string key);
+    public IEnumerable<string> GetEntries(string key)
+    {
+        var path = Path.Combine(_tmpdir, key);
+        var files = Directory.EnumerateFiles(path);
+        return files;
+    }
 
+    public IEnumerable<string> GetDirectories(string key)
+    {
+        var path = Path.Combine(_tmpdir, key);
+        var files = Directory.EnumerateDirectories(path);
+        return files;
+    }
+
+    public void Dispose()
+    {
+        if (Directory.Exists(_tmpdir))
+        {
+            Directory.Delete(_tmpdir, true);
+        }
+    }
 }

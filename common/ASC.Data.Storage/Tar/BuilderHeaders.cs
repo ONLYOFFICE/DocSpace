@@ -24,20 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.ZipOperators;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public static class ZipWriteOperatorFactory
+namespace ASC.Data.Storage.Tar;
+public static class BuilderHeaders
 {
-    public static async Task<IDataWriteOperator> GetWriteOperatorAsync(TempStream tempStream, string storageBasePath, string title, string tempFolder, Guid userId, IGetterWriteOperator getter)
+    public static byte[] CreateHeader(string name, long size)
     {
-        var writer = await getter.GetWriteOperatorAsync(storageBasePath, title, userId);
+        var blockBuffer = new byte[512];
 
-        return writer ?? new ZipWriteOperator(tempStream, Path.Combine(tempFolder, title));
-    }
+        var tarHeader = new TarHeader()
+        {
+            Name = name,
+            Size = size
+        };
 
-    public static IDataWriteOperator GetDefaultWriteOperator(TempStream tempStream, string backupFilePath)
-    {
-        return new ZipWriteOperator(tempStream, backupFilePath);
+        tarHeader.WriteHeader(blockBuffer, null);
+
+        return blockBuffer;
     }
 }
- 

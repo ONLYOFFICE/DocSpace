@@ -677,6 +677,14 @@ public class FileReference<T>
     /// <type>System.String, System</type>
     public string FileType { get; set; }
 
+    /// <summary>Key</summary>
+    /// <type>System.String, System</type>
+    public string Key { get; set; }
+
+    /// <summary>Link</summary>
+    /// <type>System.String, System</type>
+    public string Link { get; set; }
+
     /// <summary>Token</summary>
     /// <type>System.String, System</type>
     public string Token { get; set; }

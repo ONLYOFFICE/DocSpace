@@ -219,11 +219,7 @@ public class Consumer : IDictionary<string, string>
 
     private void Set(string name, string value)
     {
-        if (!CanSet)
-        {
-            throw new NotSupportedException("Key for read only. Key " + name);
-        }
-
+        
         if (!ManagedKeys.Contains(name))
         {
             if (_additional.ContainsKey(name))
@@ -236,6 +232,11 @@ public class Consumer : IDictionary<string, string>
             }
 
             return;
+        }
+
+        if (!CanSet)
+        {
+            throw new NotSupportedException("Key for read only. Key " + name);
         }
 
         var tenant = CoreBaseSettings.Standalone
