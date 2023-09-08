@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Herstelfout. Herstelbestand niet geselecteerd.",
   "RestoreBackup": "Dataherstel",
   "RestoreBackupDescription": "Gebruik deze optie om uw ruimte te herstellen vanaf het voorgaande opgeslagen back-up bestand.",
-  "RestoreBackupResetInfoWarningText": "Alle huidige wachtwoorden zullen opnieuw worden ingesteld. Ruimtegebruikers krijgen een e-mail met de link voor het herstel van de toegang.",
-  "RestoreBackupWarningText": "Het ruimte is tijdens het herstelproces niet beschikbaar. Nadat het herstel is voltooid, gaan alle veranderingen na de datum van het geselecteerde herstelpunt, verloren.",
   "RestoreDefaultButton": "Terugzetten naar Standaardwaarden",
   "RoomsModule": "Backup kamer",
   "RoomsModuleDescription": "U kunt een nieuwe kamer aanmaken speciaal voor de back-up, een van de bestaande kamers kiezen, of de kopie opslaan in hun {{roomName}} kamer.",

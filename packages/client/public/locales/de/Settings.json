@@ -166,8 +166,6 @@
   "RecoveryFileNotSelected": "Fehler bei der Wiederherstellung. Datei zur Wiederherstellung nicht ausgewählt.",
   "RestoreBackup": "Datenwiederherstellung",
   "RestoreBackupDescription": "Nutzen Sie diese Option, um Ihr Bereich aus der vorher gespeicherten Sicherungsdatei wiederherzustellen.",
-  "RestoreBackupResetInfoWarningText": "Alle gültige Passwörter werden zurückgesetzt. Die Bereichsbenutzer bekommen eine E-Mail mit dem Link für Zugriffswiederherstellung.",
-  "RestoreBackupWarningText": "Während der Wiederherstellung wird der Bereich nicht verfügbar sein. Nach der Wiederherstellung gehen alle Änderungen, die nach dem Datum des gewählten Wiederherstellungspunktes vorgenommen werden, verloren.",
   "RestoreDefaultButton": "Standardmäßige Einstellungen",
   "RoomsModule": "Ersatzraum",
   "RoomsModuleDescription": "Sie können einen neuen Raum speziell für die Sicherung erstellen, einen der vorhandenen Räume wählen oder die Kopie in ihrem {{roomName}}-Raum speichern.",

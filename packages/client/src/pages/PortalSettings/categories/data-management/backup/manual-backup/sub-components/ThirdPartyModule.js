@@ -20,9 +20,7 @@ class ThirdPartyModule extends React.Component {
 
     this.state = {
       isStartCopy: false,
-      isLoadingData: false,
       selectedFolder: selectedFolder,
-      isPanelVisible: false,
       isError: false,
       isLoading: false,
     };
@@ -37,14 +35,6 @@ class ThirdPartyModule extends React.Component {
     this._isMount = false;
   }
 
-  onSetLoadingData = (isLoading) => {
-    const { isLoadingData } = this.state;
-    isLoading !== isLoadingData &&
-      this.setState({
-        isLoadingData: isLoading,
-      });
-  };
-
   onSelectFolder = (folderId) => {
     this._isMount &&
       this.setState({
@@ -52,17 +42,6 @@ class ThirdPartyModule extends React.Component {
       });
   };
 
-  onClickInput = () => {
-    this.setState({
-      isPanelVisible: true,
-    });
-  };
-
-  onClose = () => {
-    this.setState({
-      isPanelVisible: false,
-    });
-  };
   isInvalidForm = () => {
     const { selectedFolder } = this.state;
 
@@ -101,14 +80,6 @@ class ThirdPartyModule extends React.Component {
     });
   };
 
-  onSelectAccount = (options) => {
-    const key = options.key;
-
-    this.setState({
-      selectedAccount: { ...this.accounts[+key] },
-    });
-  };
-
   render() {
     const {
       isMaxProgress,
@@ -117,28 +88,18 @@ class ThirdPartyModule extends React.Component {
       connectedThirdPartyAccount,
       isTheSameThirdPartyAccount,
     } = this.props;
-    const {
-      isPanelVisible,
-      isLoadingData,
-      isError,
-      isStartCopy,
-      selectedFolder,
-    } = this.state;
+    const { isError, isStartCopy, selectedFolder } = this.state;
 
-    const isModuleDisabled = !isMaxProgress || isStartCopy || isLoadingData;
+    const isModuleDisabled = !isMaxProgress || isStartCopy;
 
     return (
       <div className="manual-backup_third-party-module">
         <DirectThirdPartyConnection
           t={t}
           onSelectFolder={this.onSelectFolder}
-          onClose={this.onClose}
-          onClickInput={this.onClickInput}
-          onSetLoadingData={this.onSetLoadingData}
           isDisabled={isModuleDisabled}
-          isPanelVisible={isPanelVisible}
           {...(selectedFolder && { id: selectedFolder })}
-          withoutBasicSelection={selectedFolder ? false : true}
+          withoutInitPath={!selectedFolder}
           isError={isError}
           buttonSize={buttonSize}
         />

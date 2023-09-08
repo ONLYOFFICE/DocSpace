@@ -52,7 +52,6 @@
   "RolePowerUserDescription": "Gli utenti esperti possono creare e modificare file nella stanza, ma non possono creare stanze, gestire utenti o accedere alle impostazioni.",
   "RoleReviewer": "Recensore",
   "RoleReviewerDescription": "Operazioni con file esistenti: visualizzazione, revisione, commenti.",
-  "RoleRoomAdminDescription": "Gli amministratori delle stanze possono creare e gestire le stanze assegnate, invitare nuovi utenti e assegnare ruoli di livello inferiore. Tutti gli amministratori hanno accesso alla sezione Personale.",
   "RoleUserDescription": "Gli utenti possono accedere solo alle stanze virtuali a cui sono stati invitati dagli amministratori. Non possono creare stanze, cartelle o file propri.",
   "RoleViewer": "Spettatore",
   "RoleViewerDescription": "Visualizzazione file",
