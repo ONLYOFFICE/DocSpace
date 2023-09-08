@@ -88,7 +88,6 @@ const DeleteProfileEverDialogComponent = (props) => {
     <Trans i18nKey="DeleteUserMessage" ns="DeleteProfileEverDialog" t={t}>
       {{ userCaption: t("Common:User") }}
       <strong>{{ user: user.displayName }}</strong>
-      will be deleted. This action cannot be undone.
     </Trans>
   );
   const warningMessageMyDocuments = t("DeleteMyDocumentsUser");
