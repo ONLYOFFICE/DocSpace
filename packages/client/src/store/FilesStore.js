@@ -2532,7 +2532,7 @@ class FilesStore {
             (f) => !fileIds.includes(f.id) && !f.isFolder
           )
         : this.hotkeysClipboard.filter(
-            (f) => !fileIds.includes(f.id) && f.isFolder
+            (f) => !folderIds.includes(f.id) && f.isFolder
           );
 
       newFilter.total -= deleteCount;

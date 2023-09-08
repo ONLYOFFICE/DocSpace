@@ -572,7 +572,7 @@ class HotkeyStore {
         const fileInAction = activeFiles.includes(item.id);
         !fileInAction && fileIds.push(item.id);
       } else if (item.id === selectedItemId) {
-        toastr.error(t("Translations:MoveToFolderMessage"));
+        toastr.error(t("MoveToFolderMessage"));
       } else {
         const folderInAction = activeFolders.includes(item.id);
 
