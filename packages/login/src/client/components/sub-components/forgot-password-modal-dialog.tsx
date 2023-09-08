@@ -71,6 +71,7 @@ const ForgotPasswordModalDialog: React.FC<IForgotPasswordDialogProps> = ({
   return (
     <ModalDialogContainer
       displayType="modal"
+      autoMaxHeight
       visible={isVisible}
       modalBodyPadding="12px 0 0 0"
       asideBodyPadding="16px 0 0 0"
