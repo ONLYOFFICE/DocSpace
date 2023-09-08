@@ -5,7 +5,7 @@ import Scrollbar from "@docspace/components/scrollbar";
 const StyledEditLinkPanel = styled.div`
   .edit-link-panel {
     .scroll-body {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               padding-left: 0 !important;
@@ -33,7 +33,7 @@ const StyledEditLinkPanel = styled.div`
 
       .edit-link_required-icon {
         display: inline-flex;
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin-right: 2px;
@@ -50,16 +50,16 @@ const StyledEditLinkPanel = styled.div`
     }
 
     .edit-link-toggle-block {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
-              padding: 0 0 20px 16px;
+              padding: 0 20px 16px;
             `
           : css`
-              padding: 0 16px 20px 0;
+              padding: 0 16px 20px;
             `}
 
-      border-top: ${props => props.theme.filesPanels.sharing.borderBottom};
+      border-top: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
       .edit-link-toggle-header {
         display: flex;
@@ -67,7 +67,7 @@ const StyledEditLinkPanel = styled.div`
         padding-bottom: 8px;
 
         .edit-link-toggle {
-          ${props =>
+          ${(props) =>
             props.theme.interfaceDirection === "rtl"
               ? css`
                   margin-right: auto;
@@ -105,7 +105,7 @@ const StyledEditLinkPanel = styled.div`
       }
 
       .edit-link_generate-icon {
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin: 16px 8px 0px 0px;
@@ -125,7 +125,7 @@ const StyledEditLinkPanel = styled.div`
 
   .edit-link_header {
     padding: 0 16px;
-    border-bottom: ${props => props.theme.filesPanels.sharing.borderBottom};
+    border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
     .edit-link_heading {
       font-weight: 700;
@@ -158,8 +158,8 @@ const StyledButtons = styled(Box)`
   position: absolute;
   bottom: 0px;
   width: 100%;
-  background: ${props => props.theme.filesPanels.sharing.backgroundButtons};
-  border-top: ${props => props.theme.filesPanels.sharing.borderTop};
+  background: ${(props) => props.theme.filesPanels.sharing.backgroundButtons};
+  border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
 `;
 
 export { StyledEditLinkPanel, StyledScrollbar, StyledButtons };

@@ -706,7 +706,7 @@
     <value>Request limit is exceeded</value>
   </data>
   <data name="ErrorTenantTooShort" xml:space="preserve">
-    <value>The tenant domain can not be empty.</value>
+    <value>The tenant domain cannot be empty.</value>
   </data>
   <data name="ErrorTenantTooShortFormat" xml:space="preserve">
     <value>The domain name must be between {0} and {1} characters long.</value>

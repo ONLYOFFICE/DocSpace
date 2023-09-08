@@ -67,4 +67,16 @@
   <data name="UnknownLastName" xml:space="preserve">
     <value>Último nome</value>
   </data>
+  <data name="LicenseException" xml:space="preserve">
+    <value>A licença expira ou a quota de utilizadores não corresponde à sua licença</value>
+  </data>
+  <data name="LicenseKeyNotFound" xml:space="preserve">
+    <value>Tem de introduzir a chave da licença</value>
+  </data>
+  <data name="LicenseKeyNotCorrect" xml:space="preserve">
+    <value>A chave da licença não está correta</value>
+  </data>
+  <data name="TariffPerMonth" xml:space="preserve">
+    <value>mês</value>
+  </data>
 </root>
