@@ -89,7 +89,14 @@ const Details = ({
         </StyledThumbnail>
       ) : (
         <StyledNoThumbnail>
-          {!showDefaultRoomIcon && (
+          {showDefaultRoomIcon ? (
+            <RoomIcon
+              color={selection.logo.color}
+              title={selection.title}
+              isArchive={selection.isArchive}
+              size="96px"
+            />
+          ) : (
             <img
               className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
                 selection.isRoom &&
@@ -99,14 +106,6 @@ const Details = ({
               }`}
               src={currentIcon}
               alt="thumbnail-icon-big"
-            />
-          )}
-          {showDefaultRoomIcon && (
-            <RoomIcon
-              color={selection.logo.color}
-              title={selection.title}
-              isArchive={selection.isArchive}
-              size="96px"
             />
           )}
         </StyledNoThumbnail>

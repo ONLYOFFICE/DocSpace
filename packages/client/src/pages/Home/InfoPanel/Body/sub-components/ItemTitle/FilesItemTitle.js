@@ -22,18 +22,17 @@ const FilesItemTitle = ({ t, selection, isSeveralItems }) => {
   return (
     <StyledTitle ref={itemTitleRef}>
       <div className="item-icon">
-        {!showDefaultRoomIcon && (
-          <img
-            className={`icon ${selection.isRoom && "is-room"}`}
-            src={icon}
-            alt="thumbnail-icon"
-          />
-        )}
-        {showDefaultRoomIcon && (
+        {showDefaultRoomIcon ? (
           <RoomIcon
             color={selection.logo.color}
             title={selection.title}
             isArchive={selection.isArchive}
+          />
+        ) : (
+          <img
+            className={`icon ${selection.isRoom && "is-room"}`}
+            src={icon}
+            alt="thumbnail-icon"
           />
         )}
       </div>
