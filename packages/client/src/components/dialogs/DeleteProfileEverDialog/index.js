@@ -1,11 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-
 import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
-
 import { withTranslation, Trans } from "react-i18next";
 import api from "@docspace/common/api";
 import toastr from "@docspace/components/toast/toastr";
@@ -24,6 +22,13 @@ const StyledModalDialogContainer = styled(ModalDialogContainer)`
       props.needReassignData &&
       css`
         width: auto;
+
+        @media (min-width: ${size.smallTablet}px) {
+          .delete-button,
+          .cancel-button {
+            width: auto;
+          }
+        }
       `}
 
     max-width: 520px;
@@ -55,13 +60,6 @@ const StyledModalDialogContainer = styled(ModalDialogContainer)`
 
   .reassign-data {
     line-height: 15px;
-  }
-
-  @media (min-width: ${size.smallTablet}px) {
-    .delete-button,
-    .cancel-button {
-      width: auto;
-    }
   }
 `;
 
