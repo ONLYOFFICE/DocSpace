@@ -75,17 +75,29 @@ public class TextileStyler : IPatternStyler
 
         formatter.Format(message.Body);
 
-        var template = GetTemplate(message);
         var imagePath = GetImagePath(message);
         var logoImg = GetLogoImg(message, imagePath);
         var logoText = GetLogoText(message);
+        var template = GetTemplate(message);
         var mailSettings = GetMailSettings(message);
         var unsubscribeText = GetUnsubscribeText(message, mailSettings);
 
 
         InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent);
-
-        message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
+        InitTopFooter(message, out var footerTop);
+        var newMaster = message.GetArgument("NewMaster");
+        if (newMaster != null)
+        {
+            message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
+                               .Replace("%TOPFOOTER%", footerTop)
+                               .Replace("%FOOTER%", footerContent)
+                               .Replace("%FOOTERSOCIAL%", footerSocialContent)
+                               .Replace("%TEXTFOOTER%", unsubscribeText)
+                               .Replace("%IMAGEPATH%", imagePath);
+        }
+        else
+        {
+            message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
                                .Replace("%LOGO%", logoImg)
                                .Replace("%LOGOTEXT%", logoText)
                                .Replace("%SITEURL%", mailSettings == null ? _mailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl)
@@ -93,11 +105,17 @@ public class TextileStyler : IPatternStyler
                                .Replace("%FOOTERSOCIAL%", footerSocialContent)
                                .Replace("%TEXTFOOTER%", unsubscribeText)
                                .Replace("%IMAGEPATH%", imagePath);
+        }
     }
 
     private static string GetTemplate(NoticeMessage message)
     {
         var template = NotifyTemplateResource.HtmlMaster;
+        var newMaster = message.GetArgument("NewMaster");
+        if(newMaster != null)
+        {
+             template = NotifyTemplateResource.HtmlMasterV11;
+        }
 
         var templateTag = message.GetArgument("MasterTemplate");
         if (templateTag != null)
@@ -200,24 +218,48 @@ public class TextileStyler : IPatternStyler
         switch (footerValue)
         {
             case "common":
-                InitCommonFooter(settings, out footerContent, out footerSocialContent);
+                InitCommonFooter(message, settings, out footerContent, out footerSocialContent);
                 break;
             case "social":
-                InitSocialFooter(settings, out footerSocialContent);
+                InitSocialFooter(message, settings, out footerSocialContent);
                 break;
             case "personal":
-                footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
+                footerSocialContent = message.GetArgument("NewMaster") != null ?  NotifyTemplateResource.SocialNetworksFooterV11 : NotifyTemplateResource.SocialNetworksFooterV10;
                 break;
             case "personalCustomMode":
                 break;
             case "opensource":
                 footerContent = NotifyTemplateResource.FooterOpensourceV10;
-                footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
+                footerSocialContent = message.GetArgument("NewMaster") != null ? NotifyTemplateResource.SocialNetworksFooterV11 : NotifyTemplateResource.SocialNetworksFooterV10;
                 break;
         }
     }
 
-    private void InitCommonFooter(MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
+    private void InitTopFooter(NoticeMessage message, out string footerTop)
+    {
+        footerTop = string.Empty;
+
+        var imagePath = GetImagePath(message);
+        var logoImg = GetLogoImg(message, imagePath);
+        var logoText = GetLogoText(message);
+        var mailSettings = GetMailSettings(message);
+        var TopGif = message.GetArgument("TopGif");
+        if (TopGif != null)
+        {
+            footerTop = NotifyTemplateResource.GifFooterV11
+                .Replace("%LOGO%", (string)TopGif.Value)
+                .Replace("%SITEURL%", mailSettings == null ? _mailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl);
+        }
+        else
+        {
+            footerTop = NotifyTemplateResource.TopFooterV11
+                .Replace("%LOGO%", logoImg)
+                .Replace("%LOGOTEXT%", logoText)
+                .Replace("%SITEURL%", mailSettings == null ? _mailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl);
+        }
+
+    }
+    private void InitCommonFooter(NoticeMessage message, MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
     {
         footerContent = string.Empty;
         footerSocialContent = string.Empty;
@@ -229,7 +271,7 @@ public class TextileStyler : IPatternStyler
                                       .Replace("%SUPPORTURL%", _mailWhiteLabelSettingsHelper.DefaultMailSupportUrl)
                                       .Replace("%SALESEMAIL%", _mailWhiteLabelSettingsHelper.DefaultMailSalesEmail)
                                       .Replace("%DEMOURL%", _mailWhiteLabelSettingsHelper.DefaultMailDemoUrl);
-            footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
+            footerSocialContent = message.GetArgument("NewMaster") != null ? NotifyTemplateResource.SocialNetworksFooterV11 : NotifyTemplateResource.SocialNetworksFooterV10;
 
         }
         else if (settings.FooterEnabled)
@@ -240,17 +282,17 @@ public class TextileStyler : IPatternStyler
                 .Replace("%SALESEMAIL%", settings.SalesEmail)
                 .Replace("%DEMOURL%", string.IsNullOrEmpty(settings.DemoUrl) ? "mailto:" + settings.SalesEmail : settings.DemoUrl);
 
-            footerSocialContent = settings.FooterSocialEnabled ? NotifyTemplateResource.SocialNetworksFooterV10 : string.Empty;
+            footerSocialContent = settings.FooterSocialEnabled ? (message.GetArgument("NewMaster") != null ? NotifyTemplateResource.SocialNetworksFooterV11: NotifyTemplateResource.SocialNetworksFooterV10) : string.Empty;
         }
     }
 
-    private static void InitSocialFooter(MailWhiteLabelSettings settings, out string footerSocialContent)
+    private static void InitSocialFooter(NoticeMessage message, MailWhiteLabelSettings settings, out string footerSocialContent)
     {
         footerSocialContent = string.Empty;
 
         if (settings == null || (settings.FooterEnabled && settings.FooterSocialEnabled))
         {
-            footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
+            footerSocialContent = message.GetArgument("NewMaster") != null ? NotifyTemplateResource.SocialNetworksFooterV11 : NotifyTemplateResource.SocialNetworksFooterV10;
         }
     }
 
@@ -274,7 +316,7 @@ public class TextileStyler : IPatternStyler
 
         var rootPath = message.GetArgument("__VirtualRootPath").Value;
 
-        return string.Format(NotifyTemplateResource.TextForFooterUnsubsribeDocSpace, rootPath, unsubscribeLink);
+        return string.Format(message.GetArgument("NewMaster") != null ? NotifyTemplateResource.TextForFooterUnsubsribeDocSpaceV11 : NotifyTemplateResource.TextForFooterUnsubsribeDocSpace, rootPath, unsubscribeLink);
     }
 
     private string GetPortalUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)

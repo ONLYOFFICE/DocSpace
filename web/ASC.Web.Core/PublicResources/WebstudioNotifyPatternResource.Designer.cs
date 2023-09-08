@@ -625,19 +625,19 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
+        ///   Looks up a localized string similar to h1. to &lt;span style=&quot;color:#FF6F3D;&quot;&gt;ONLYOFFICE &lt;/span&gt; DocSpace!
+        ///		
+        ///Hello, $UserName!
         ///
         ///You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please confirm your email (the link is valid for 7 days):
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///Enjoy a new way of document collaboration!
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_enterprise_admin_activation_v1 {
             get {
@@ -703,7 +703,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You are invited to join &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; as a guest user. Accept the invitation by clicking the link:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///The link is only valid for 7 days.
         ///
@@ -737,11 +737,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You are invited to join ONLYOFFICE DocSpace at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_enterprise_user_activation_v1 {
             get {
@@ -767,19 +765,19 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
+        ///   Looks up a localized string similar to h1. to &lt;span style=&quot;color:#FF6F3D;&quot;&gt;ONLYOFFICE &lt;/span&gt; DocSpace!
+        ///	
+        ///Hello, $UserName!
         ///
         ///You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please confirm your email (the link is valid for 7 days):
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///Enjoy a new way of document collaboration!
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_enterprise_whitelabel_admin_activation_v1 {
             get {
@@ -811,7 +809,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$__AuthorName has invited you as a guest user to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///The link is only valid for 7 days.
         ///
@@ -845,11 +843,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You are invited to join ONLYOFFICE DocSpace at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_enterprise_whitelabel_user_activation_v1 {
             get {
@@ -1061,19 +1057,20 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
+        ///   Looks up a localized string similar to 
+        ///h1. to &lt;span style=&quot;color:#FF6F3D;&quot;&gt;ONLYOFFICE &lt;/span&gt; DocSpace!
+        ///		
+        ///Hello, $UserName!
         ///
         ///You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please confirm your email (the link is valid for 7 days):
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///Enjoy a new way of document collaboration!
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_opensource_admin_activation_v1 {
             get {
@@ -1154,11 +1151,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You are invited to join ONLYOFFICE DocSpace at  &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_opensource_user_activation_v1 {
             get {
@@ -1679,22 +1674,22 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
+        ///   Looks up a localized string similar to 
+        ///h1. to &lt;span style=&quot;color:#FF6F3D;&quot;&gt;ONLYOFFICE &lt;/span&gt; DocSpace!
+        ///		
+        ///Hello, $UserName!
         ///
         ///You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please confirm your email (the link is valid for 7 days):
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
         ///* 1 admin, 2 power users
         ///* Up to 12 rooms
-        ///* Unlimited number of users in each room
-        ///* 2 GB disk space
-        ///
-        ///Enjoy a new way of document [rest of string was truncated]&quot;;.
+        ///* Unlimited numbe [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_activation_v1 {
             get {
@@ -1821,13 +1816,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You are invited to join &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; as a guest user. Accept the invitation by clicking the link:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///We will also send you useful tips and latest ONLYOFFICE news once in a while. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_saas_guest_activation_v115 {
             get {
@@ -1952,11 +1945,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You are invited to join ONLYOFFICE DocSpace at  &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_saas_user_activation_v1 {
             get {
@@ -2934,6 +2925,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_user_ldap_activation {
             get {
                 return ResourceManager.GetString("subject_user_ldap_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Truly Yours, ONLYOFFICE Team.
+        /// </summary>
+        public static string TrulyYoursText {
+            get {
+                return ResourceManager.GetString("TrulyYoursText", resourceCulture);
             }
         }
     }

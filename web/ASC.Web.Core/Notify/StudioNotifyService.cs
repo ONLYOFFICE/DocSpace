@@ -795,14 +795,17 @@ public class StudioNotifyService
 
             _settingsManager.Save(new FirstEmailConfirmSettings() { IsFirst = true });
 
-            var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonConfirmEmail", GetCulture(u));
+            var orangeButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonConfirmEmail", GetCulture(u));
 
             await _client.SendNoticeToAsync(
             notifyAction,
                await _studioNotifyHelper.RecipientFromEmailAsync(u.Email, false),
             new[] { EMailSenderName },
             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-            TagValues.GreenButton(greenButtonText, confirmationUrl),
+            TagValues.OrangeButton(orangeButtonText, confirmationUrl),
+            TagValues.TrulyYours(),
+            new TagValue(CommonTags.TopGif, _studioNotifyHelper.GetNotificationImageUrl("welcome.gif")),
+            new TagValue(CommonTags.NewMaster, true),
             new TagValue(CommonTags.Footer, footer));
         }
         catch (Exception error)

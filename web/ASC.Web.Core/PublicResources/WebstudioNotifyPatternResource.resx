@@ -287,7 +287,7 @@ $GreenButton
 
 You are invited to join "${__VirtualRootPath}":"${__VirtualRootPath}" as a guest user. Accept the invitation by clicking the link:
 
-$GreenButton
+$OrangeButton
 
 The link is only valid for 7 days.
 
@@ -319,7 +319,7 @@ ONLYOFFICE Team
 
 $__AuthorName has invited you as a guest user to "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
 
-$GreenButton
+$OrangeButton
 
 The link is only valid for 7 days.
 
@@ -844,13 +844,11 @@ ONLYOFFICE™ Support Team
 
 You are invited to join "${__VirtualRootPath}":"${__VirtualRootPath}" as a guest user. Accept the invitation by clicking the link:
 
-$GreenButton
+$OrangeButton
 
 We will also send you useful tips and latest ONLYOFFICE news once in a while. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.
 
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!
@@ -1178,58 +1176,62 @@ $Body</value>
     <value>CONFIRM</value>
   </data>
   <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
-    <value>Hello, $UserName!
+    <value>h1. to &lt;span style="color:#FF6F3D;"&gt;ONLYOFFICE &lt;/span&gt; DocSpace!
+		
+Hello, $UserName!
 
 You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Please confirm your email (the link is valid for 7 days):
 
-$GreenButton
+$OrangeButton
 
 Enjoy a new way of document collaboration!
 
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
-    <value>Hello, $UserName!
+    <value>h1. to &lt;span style="color:#FF6F3D;"&gt;ONLYOFFICE &lt;/span&gt; DocSpace!
+	
+Hello, $UserName!
 
 You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Please confirm your email (the link is valid for 7 days):
 
-$GreenButton
+$OrangeButton
 
 Enjoy a new way of document collaboration!
 
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
-    <value>Hello, $UserName!
+    <value>
+h1. to &lt;span style="color:#FF6F3D;"&gt;ONLYOFFICE &lt;/span&gt; DocSpace!
+		
+Hello, $UserName!
 
 You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Please confirm your email (the link is valid for 7 days):
 
-$GreenButton
+$OrangeButton
 
 Enjoy a new way of document collaboration!
 
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
-    <value>Hello, $UserName!
+    <value>
+h1. to &lt;span style="color:#FF6F3D;"&gt;ONLYOFFICE &lt;/span&gt; DocSpace!
+		
+Hello, $UserName!
 
 You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Please confirm your email (the link is valid for 7 days):
 
-$GreenButton
+$OrangeButton
 
 Your current tariff plan is STARTUP. It is absolutely free and includes:
 
@@ -1238,11 +1240,9 @@ Your current tariff plan is STARTUP. It is absolutely free and includes:
 * Unlimited number of users in each room
 * 2 GB disk space
 
-Enjoy a new way of document collaboration!
+*Enjoy a new way of document collaboration!*
 
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+$TrulyYours</value>
   </data>
   <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
     <value>Welcome to ONLYOFFICE DocSpace!</value>
@@ -1581,44 +1581,36 @@ ONLYOFFICE Team
 
 You are invited to join ONLYOFFICE DocSpace at "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
 
-$GreenButton
+$OrangeButton
 
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
     <value>Hello!
 
 You are invited to join ONLYOFFICE DocSpace at "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
 
-$GreenButton
+$OrangeButton
 
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
     <value>Hello!
 
 You are invited to join ONLYOFFICE DocSpace at  "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
 
-$GreenButton
+$OrangeButton
 
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_saas_user_activation_v1" xml:space="preserve">
     <value>Hello!
 
 You are invited to join ONLYOFFICE DocSpace at  "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
 
-$GreenButton
+$OrangeButton
 
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+$TrulyYours</value>
   </data>
   <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
     <value>Join ONLYOFFICE DocSpace</value>
@@ -1853,5 +1845,8 @@ ONLYOFFICE Team
   </data>
   <data name="subject_change_password" xml:space="preserve">
     <value>${LetterLogoText} password assistance</value>
+  </data>
+  <data name="TrulyYoursText" xml:space="preserve">
+    <value>Truly Yours, ONLYOFFICE Team</value>
   </data>
 </root>

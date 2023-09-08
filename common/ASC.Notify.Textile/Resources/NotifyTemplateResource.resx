@@ -118,6 +118,17 @@
             &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
+  <data name="GifFooterV11" xml:space="preserve">
+    <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
+          &lt;td colspan="3" style="margin: 0; padding: 0; background-color: #fff; "&gt;
+            &lt;div style="text-align: left; width: 600px; margin: 0; padding: 0;"&gt;
+                &lt;a href="%SITEURL%" style="text-decoration: none; display: inline-block; width: 386px; height: 44px; margin: 0; padding: 0;" target="_blank"&gt;
+                    &lt;img src="%LOGO%" style="border: 0px none; width: 600px; margin: 0; padding: 0;" alt="ONLYOFFICE" /&gt;
+                &lt;/a&gt;
+            &lt;/div&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;</value>
+  </data>
   <data name="HtmlMaster" xml:space="preserve">
     <value>&lt;body style="margin: 0; padding: 0; text-align: center; width: 100%; font-family: Arial, sans-serif; font-size: 14px; color: #333;"&gt;
 &lt;div style="background-color: #fff; width: 600px; margin: 0 auto; text-align: left;"&gt;
@@ -158,6 +169,38 @@
 &lt;/div&gt;
 &lt;/body&gt;</value>
   </data>
+  <data name="HtmlMasterV11" xml:space="preserve">
+    <value>&lt;body style="margin: 0; padding: 0; text-align: center; width: 100%; font-family: Helvetica, Arial, Tahoma, sans-serif; color: #333; font-size: 18px;"&gt;
+&lt;div style="background-color: #fff; width: 600px; margin: 0 auto; text-align: center;"&gt;
+    &lt;table cellspacing="0" cellpadding="0" style="font-family: Arial; font-size: 14px; color: #333; background: #fff; text-align: center; width: 600px; margin: 0; padding: 0; border: 0 none; border-collapse: collapse; empty-cells: show; border-spacing: 0;"&gt;
+      &lt;tbody&gt;
+    %TOPFOOTER%
+		&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
+        &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
+          &lt;td colspan="3" style="margin: 0; padding: 15px 30px 15px; background-color: #fff; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px;"&gt;
+            &lt;div style="font-family: Open Sans; font-size: 18px; color: #333; margin: 0; padding: 0; width: 520px; height: auto; overflow: hidden; word-wrap: break-word; vertical-align: top; text-align: center; border: 0 none;"&gt;
+              %CONTENT%
+            &lt;/div&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;table cellspacing="0" cellpadding="0" style="font-family: Open Sans; font-size: 18px; background-color: #F5F5F5; color: #333; text-align: center; vertical-align: top; width: 600px; margin: 0; padding: 0; border-collapse: collapse; border: 0; border-spacing: 0;"&gt;
+      &lt;tbody&gt;
+        &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
+          &lt;td colspan="6" style="width: 600px; vertical-align: top; margin: 0; padding: 20px 30px 15px;"&gt;
+              &lt;p style="color: #666666; font-family: Open Sans; font-size: 13px;line-height: 20px; margin: 0; padding: 0; text-align: center; width: 540px;"&gt;
+              %TEXTFOOTER%
+              &lt;/p&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+		%FOOTERSOCIAL%
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+&lt;/div&gt;
+&lt;/body&gt;</value>
+  </data>
   <data name="SocialNetworksFooterV10" xml:space="preserve">
     <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
           &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 155px;"&gt;
@@ -192,9 +235,53 @@
           &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
+  <data name="SocialNetworksFooterV11" xml:space="preserve">
+    <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 155px;"&gt;
+              &lt;a href="https://www.facebook.com/pages/OnlyOffice/833032526736775" style="width: 24px; height: 24px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-facebook-24.png" alt="Facebook" style="width: 24px; height: 24px;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
+              &lt;a href="https://twitter.com/ONLY_OFFICE" style="width: 24px; height: 24px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-twitter-24.png" alt="Twitter" style="width: 24px; height: 24px;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
+              &lt;a href="https://www.youtube.com/user/onlyofficeTV" style="width: 24px; height: 24px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-youtube-24.png" alt="YouTube" style="width: 24px; height: 24px;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
+              &lt;a href="https://www.instagram.com/the_onlyoffice/" style="width: 24px; height: 24px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-instagram-24.png" alt="Instagram" style="width: 24px; height: 24x;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 155px 0 5px;"&gt;
+              &lt;a href="https://vm.tiktok.com/ZMLXbFEyd/" style="width: 24px; height: 24px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-tik-tok-24.png" alt="Tiktok" style="width: 24px; height: 24px;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;</value>
+  </data>
   <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
     <value>This email is generated automatically and you do not need to answer it.&lt;br /&gt;You received this email because you are a registered user of&lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;.
 &lt;br /&gt; Click here to unsubscribe from the DocSpace notification emails: &lt;a href="{1}"  target="_blank"&gt;Unsubscribe&lt;/a&gt;
 &lt;br /&gt;</value>
+  </data>
+  <data name="TextForFooterUnsubsribeDocSpaceV11" xml:space="preserve">
+    <value>For any purchase questions, email us at &lt;a style="color: #FF6F3D; text-decoration: underline;" target="_blank" href="mailto:sales@onlyoffice.com"&gt;sales@onlyoffice.com&lt;/a&gt;.&lt;br /&gt; In case of technical problems please contact our &lt;a style="color: #FF6F3D; text-decoration: underline;" target="_blank" href="https://www.onlyoffice.com/support-contact-form.aspx"&gt;support team&lt;/a&gt;.&lt;br /&gt; &lt;a href="{1}" style="color: #FF6F3D; text-decoration: underline; white-space: nowrap;" target="_blank"&gt;Click here to unsubscribe&lt;/a&gt;&lt;br /&gt;                                 
+   </value>
+  </data>
+  <data name="TopFooterV11" xml:space="preserve">
+    <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
+          &lt;td colspan="3" style="margin: 0; padding: 0; background-color: #f6f6f6; height: 65px; padding: 20px 0 0 30px;"&gt;
+            &lt;div style="text-align: left; height: 65px; width: 570px; margin: 0; padding: 0;"&gt;
+                &lt;a href="%SITEURL%" style="text-decoration: none; display: inline-block; width: 386px; height: 44px; margin: 0; padding: 0;" target="_blank"&gt;
+                    &lt;img src="%LOGO%" style="border: 0px none; width: 386px; height: 44px; margin: 0; padding: 0;" alt="%LOGOTEXT%" /&gt;
+                &lt;/a&gt;
+            &lt;/div&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;</value>
   </data>
 </root>

@@ -130,4 +130,6 @@ public static class CommonTags
     public const string EmbeddedAttachments = "EmbeddedAttachments";
 
     public const string ImagePath = "ImagePath";
+    public const string TopGif = "TopGif";
+    public const string NewMaster = "NewMaster";
 }
