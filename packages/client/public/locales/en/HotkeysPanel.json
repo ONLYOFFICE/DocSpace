@@ -39,5 +39,10 @@
   "HotkeysSpaceKey": "Space",
   "HotkeysUndoLastAction": "Undo the last action",
   "HotkeysUploadFile": "Upload file",
-  "HotkeysUploadingObjects": "Uploading items"
+  "HotkeysUploadingObjects": "Uploading items",
+  "HotkeysCopySelected": "Copy selected items to the clipboard",
+  "HotkeysPasteSelected": "Paste selected items from the clipboard",
+  "HotkeysCutSelected": "Cut selected items to the clipboard",
+  "HotkeysZoomIn": "Zoom in",
+  "HotkeysZoomOut": "Zoom out"
 }

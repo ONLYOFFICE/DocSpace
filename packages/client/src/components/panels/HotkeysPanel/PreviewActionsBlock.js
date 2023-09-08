@@ -17,6 +17,18 @@ const PreviewActionsBlock = ({ t, textStyles, keyTextStyles }) => {
           <Text {...keyTextStyles}>{t("HotkeysSpaceKey")}</Text>
         </>
       </Row>
+      <Row className="hotkeys_row">
+        <>
+          <Text {...textStyles}>{t("HotkeysZoomIn")}</Text>
+          <Text {...keyTextStyles}>+ {t("Common:Or")} =</Text>
+        </>
+      </Row>
+      <Row className="hotkeys_row">
+        <>
+          <Text {...textStyles}>{t("HotkeysZoomOut")}</Text>
+          <Text {...keyTextStyles}>-</Text>
+        </>
+      </Row>
     </>
   );
 };
