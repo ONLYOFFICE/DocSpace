@@ -39,30 +39,39 @@ if ( $args.Count -ge 2 )
   $proxy_service = "OpenResty"
   $appsettings_config_path = "${app}\config\appsettings.production.json"
 
-  $letsencrypt_domain = $args[1]
-  $letsencrypt_mail = $args[0]
+  if ($args[0] -eq "-f") {
+    $ssl_cert = $args[1]
+    $ssl_key = $args[2]
+  }
 
-  [void](New-Item -ItemType "directory" -Path "${root_dir}\Logs" -Force)
+  else {
+    $letsencrypt_mail = $args[0]
+    $letsencrypt_domain = $args[1]
 
-  "certbot certonly --expand --webroot -w `"${root_dir}`" --noninteractive --agree-tos --email ${letsencrypt_mail} -d ${letsencrypt_domain}" > "${app}\letsencrypt\Logs\le-start.log"
-  cmd.exe /c "certbot certonly --expand --webroot -w `"${root_dir}`" --noninteractive --agree-tos --email ${letsencrypt_mail} -d ${letsencrypt_domain}" > "${app}\letsencrypt\Logs\le-new.log"
+    [void](New-Item -ItemType "directory" -Path "${root_dir}\Logs" -Force)
 
-  pushd "${letsencrypt_root_dir}\${letsencrypt_domain}"
-    $ssl_cert = (Resolve-Path -Path (Get-Item "${letsencrypt_root_dir}\${letsencrypt_domain}\fullchain.pem").Target).ToString().Replace('\', '/')
-    $ssl_key = (Resolve-Path -Path (Get-Item "${letsencrypt_root_dir}\${letsencrypt_domain}\privkey.pem").Target).ToString().Replace('\', '/')
-  popd
+    "certbot certonly --expand --webroot -w `"${root_dir}`" --noninteractive --agree-tos --email ${letsencrypt_mail} -d ${letsencrypt_domain}" > "${app}\letsencrypt\Logs\le-start.log"
+    cmd.exe /c "certbot certonly --expand --webroot -w `"${root_dir}`" --noninteractive --agree-tos --email ${letsencrypt_mail} -d ${letsencrypt_domain}" > "${app}\letsencrypt\Logs\le-new.log"
+
+    pushd "${letsencrypt_root_dir}\${letsencrypt_domain}"
+        $ssl_cert = (Resolve-Path -Path (Get-Item "${letsencrypt_root_dir}\${letsencrypt_domain}\fullchain.pem").Target).ToString().Replace('\', '/')
+        $ssl_key = (Resolve-Path -Path (Get-Item "${letsencrypt_root_dir}\${letsencrypt_domain}\privkey.pem").Target).ToString().Replace('\', '/')
+    popd
+  }
 
   if ( [System.IO.File]::Exists($ssl_cert) -and [System.IO.File]::Exists($ssl_key) -and [System.IO.File]::Exists("${nginx_conf_dir}\${nginx_tmpl}"))
   {
     Copy-Item "${nginx_conf_dir}\${nginx_tmpl}" -Destination "${nginx_conf_dir}\${nginx_conf}"
     ((Get-Content -Path "${nginx_conf_dir}\${nginx_conf}" -Raw) -replace '/usr/local/share/ca-certificates/tls.crt', $ssl_cert) | Set-Content -Path "${nginx_conf_dir}\${nginx_conf}"
     ((Get-Content -Path "${nginx_conf_dir}\${nginx_conf}" -Raw) -replace '/etc/ssl/private/tls.key', $ssl_key) | Set-Content -Path "${nginx_conf_dir}\${nginx_conf}"
-    ((Get-Content -Path "${appsettings_config_path}" -Raw) -replace '(?<=\")http://localhost:80(?=\")', "https://${letsencrypt_domain}") | Set-Content -Path "${appsettings_config_path}"
-  }
 
-  $acl = Get-Acl -Path "$env:SystemDrive\Certbot\archive\${letsencrypt_domain}"
-  $acl.SetSecurityDescriptorSddlForm('O:LAG:S-1-5-21-4011186057-2202358572-2315966083-513D:PAI(A;;0x1200a9;;;WD)(A;;FA;;;SY)(A;OI;0x1200a9;;;LS)(A;;FA;;;BA)(A;;FA;;;LA)')
-  Set-Acl -Path $acl.path -ACLObject $acl
+    if ($letsencrypt_domain)
+    {
+        $acl = Get-Acl -Path "$env:SystemDrive\Certbot\archive\${letsencrypt_domain}"
+        $acl.SetSecurityDescriptorSddlForm('O:LAG:S-1-5-21-4011186057-2202358572-2315966083-513D:PAI(A;;0x1200a9;;;WD)(A;;FA;;;SY)(A;OI;0x1200a9;;;LS)(A;;FA;;;BA)(A;;FA;;;LA)')
+        Set-Acl -Path $acl.path -ACLObject $acl
+    }
+  }
 
   Restart-Service -Name $proxy_service
 
@@ -83,4 +92,10 @@ else
   Write-Output "                  comma to register multiple emails, ex: "
   Write-Output "                  u1@example.com,u2@example.com. "
   Write-Output "      DOMAIN      Domain name to apply "
+  Write-Output " "
+  Write-Output " Using your own certificates via the -f parameter: "
+  Write-Output " usage: "
+  Write-Output "  docspace-ssl-setup.ps1 -f CERTIFICATE PRIVATEKEY "
+  Write-Output "    CERTIFICATE   Path to the certificate file for the domain."
+  Write-Output "    PRIVATEKEY    Path to the private key file for the certificate."
 }
