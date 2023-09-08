@@ -11,16 +11,18 @@ const MobileCategoryWrapper = (props) => {
     <StyledMobileCategoryWrapper>
       <div className="category-item-heading">
         <Link
-          className="inherit-title-link header"
+          className="inherit-title-link header settings_unavailable"
           onClick={onClickLink}
           truncate={true}
           href={combineUrl(window.DocSpaceConfig?.proxy?.url, url)}
         >
           {title}
         </Link>
-        <StyledArrowRightIcon size="small" />
+        <StyledArrowRightIcon className="settings_unavailable" size="small" />
       </div>
-      <Text className="category-item-description">{subtitle}</Text>
+      <Text className="category-item-description settings_unavailable">
+        {subtitle}
+      </Text>
     </StyledMobileCategoryWrapper>
   );
 };

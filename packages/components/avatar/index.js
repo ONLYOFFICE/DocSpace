@@ -119,19 +119,19 @@ const Avatar = (props) => {
             <>
               <RoleWrapper
                 size={size}
-                data-for={uniqueTooltipId}
-                data-tip={tooltipContent}
+                data-tooltip-id={uniqueTooltipId}
+                data-tooltip-content={tooltipContent}
                 className="avatar_role-wrapper"
               >
                 {props.roleIcon ? props.roleIcon : roleIcon}
               </RoleWrapper>
               {withTooltip && (
                 <Tooltip
+                  float
                   id={uniqueTooltipId}
-                  getContent={(dataTip) => (
-                    <Text fontSize="12px">{dataTip}</Text>
+                  getContent={({ content }) => (
+                    <Text fontSize="12px">{content}</Text>
                   )}
-                  effect="float"
                   place={tooltipPlace}
                 />
               )}

@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Lỗi khôi phục. Tập tin khôi phục không được chọn.",
   "RestoreBackup": "Khôi phục dữ liệu",
   "RestoreBackupDescription": "Sử dụng tùy chọn này để khôi phục lại không gian của bạn từ tập tin đã sao lưu trước đó.",
-  "RestoreBackupResetInfoWarningText": "Tất cả mật khẩu hiện tại sẽ được đặt lại. Người dùng không gian sẽ nhận được email có liên kết khôi phục quyền truy cập.",
-  "RestoreBackupWarningText": "Không gian sẽ trở nên không khả dụng trong quá trình khôi phục. Sau khi hoàn tất khôi phục tất cả các thay đổi được thực hiện sau ngày khôi phục đã chọn sẽ bị mất.",
   "RestoreDefaultButton": "Khôi phục về mặc định",
   "RoomsModule": "Phòng dự phòng",
   "RoomsModuleDescription": "Bạn có thể tạo một phòng mới chuyên dùng để sao lưu, chọn một trong các phòng hiện có hoặc lưu bản sao trong phòng {{roomName}} của họ.",

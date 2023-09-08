@@ -127,9 +127,17 @@ class SsoFormStore {
   defaultSettings = null;
   editIndex = 0;
 
+  isInit = false;
+
   constructor() {
     makeAutoObservable(this);
   }
+
+  init = () => {
+    if (this.isInit) return;
+    this.isInit = true;
+    this.load();
+  };
 
   load = async () => {
     try {

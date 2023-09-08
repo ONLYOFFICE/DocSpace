@@ -5,6 +5,7 @@ import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
 import { UnavailableStyles } from "../../../utils/commonSettingsStyles";
+import { mobile } from "@docspace/components/utils/device";
 
 const menuHeight = "48px";
 const sectionHeight = "50px";
@@ -93,6 +94,23 @@ const StyledSettingsComponent = styled.div`
     }
     svg {
       margin-top: 1px;
+    }
+  }
+
+  .link-learn-more {
+    display: block;
+    margin: 4px 0 16px 0;
+    font-weight: 600;
+  }
+
+  .category-item-description {
+    p,
+    a {
+      color: ${(props) => props.theme.client.settings.common.descriptionColor};
+    }
+
+    @media ${mobile} {
+      padding-right: 8px;
     }
   }
 

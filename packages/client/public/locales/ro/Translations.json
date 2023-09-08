@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Utilizatori avansați pot crea și modifica fişiere în sală, dar nu pot crea săli, gestiona utilizatorii sau accesa setările.",
   "RoleReviewer": "Recenzent",
   "RoleReviewerDescription": "Operaţii cu fişiere existente: vizualizare, revizuire, comentare.",
-  "RoleRoomAdminDescription": "Administratorii sălii pot crea şi gestiona sălile atribuite, invita noi utilizatori şi atribui roluri în funcţie de nivelul lor. Toţi administratorii pot accesa secţiunea Personal.",
   "RoleUserDescription": "Utilizatorii pot accesa doar sălile în care sunt invitaţi de către administratori. Nu au permisiunea de a crea săli, dosare sau fişiere.",
   "RoleViewer": "Vizualizator",
   "RoleViewerDescription": "Vizualizare fişier",

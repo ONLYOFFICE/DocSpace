@@ -282,7 +282,6 @@ const StyledAutoBackup = styled.div`
         : css`
             margin-left: 24px;
           `}
-    margin-top: 16px;
   }
   .backup_toggle-wrapper {
     margin-bottom: 16px;
