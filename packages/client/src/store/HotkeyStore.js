@@ -6,6 +6,7 @@ import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { RoomsType } from "@docspace/common/constants";
 import { encryptionUploadDialog } from "../helpers/desktop";
+import getFilesFromEvent from "@docspace/components/drag-and-drop/get-files-from-event";
 
 class HotkeyStore {
   filesStore;
@@ -611,9 +612,35 @@ class HotkeyStore {
         .catch((e) => {
           toastr.error(e);
           clearActiveOperations(fileIds, folderIds);
+        })
+        .finally(() => {
+          this.filesStore.setHotkeysClipboard([]);
         });
     } else {
       toastr.error(t("Common:ErrorEmptyList"));
+    }
+  };
+
+  uploadClipboardFiles = async (t, event) => {
+    const { uploadEmptyFolders } = this.filesActionsStore;
+    const { startUpload } = this.uploadDataStore;
+    const currentFolderId = this.selectedFolderStore.id;
+
+    if (this.filesStore.hotkeysClipboard.length) {
+      return this.moveFilesFromClipboard(t);
+    }
+
+    const files = await getFilesFromEvent(event);
+
+    const emptyFolders = files.filter((f) => f.isEmptyDirectory);
+
+    if (emptyFolders.length > 0) {
+      uploadEmptyFolders(emptyFolders, currentFolderId).then(() => {
+        const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
+        if (onlyFiles.length > 0) startUpload(onlyFiles, currentFolderId, t);
+      });
+    } else {
+      startUpload(files, currentFolderId, t);
     }
   };
 

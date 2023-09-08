@@ -61,8 +61,8 @@ const withHotkeys = (Component) => {
       setInviteUsersWarningDialogVisible,
 
       security,
-      setHotkeysClipboard,
-      moveFilesFromClipboard,
+      copyToClipboard,
+      uploadClipboardFiles,
     } = props;
 
     const navigate = useNavigate();
@@ -118,13 +118,21 @@ const withHotkeys = (Component) => {
       }
     };
 
+    const onPaste = async (e) => {
+      e.preventDefault();
+      uploadClipboardFiles(t, e);
+    };
+
     useEffect(() => {
       const throttledKeyDownEvent = throttle(onKeyDown, 300);
 
       window.addEventListener("keydown", throttledKeyDownEvent);
+      document.addEventListener("paste", onPaste);
 
-      return () =>
+      return () => {
         window.removeEventListener("keypress", throttledKeyDownEvent);
+        document.removeEventListener("paste", onPaste);
+      };
     });
 
     //Select/deselect item
@@ -333,9 +341,8 @@ const withHotkeys = (Component) => {
       hotkeysFilter
     );
 
-    useHotkeys("Ctrl+c", () => setHotkeysClipboard(), hotkeysFilter);
-    useHotkeys("Ctrl+x", () => setHotkeysClipboard(true), hotkeysFilter);
-    useHotkeys("Ctrl+v", () => moveFilesFromClipboard(t), hotkeysFilter);
+    useHotkeys("Ctrl+c", () => copyToClipboard(t), hotkeysFilter);
+    useHotkeys("Ctrl+x", () => copyToClipboard(t, true), hotkeysFilter);
 
     //Upload file
     useHotkeys(
@@ -401,8 +408,8 @@ const withHotkeys = (Component) => {
         selectAll,
         activateHotkeys,
         uploadFile,
-        setHotkeysClipboard,
-        moveFilesFromClipboard,
+        copyToClipboard,
+        uploadClipboardFiles,
       } = hotkeyStore;
 
       const {
@@ -489,8 +496,9 @@ const withHotkeys = (Component) => {
         setInviteUsersWarningDialogVisible,
 
         security,
-        setHotkeysClipboard,
-        moveFilesFromClipboard,
+        copyToClipboard,
+
+        uploadClipboardFiles,
       };
     }
   )(observer(WithHotkeys));
