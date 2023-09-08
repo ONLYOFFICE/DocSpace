@@ -6,7 +6,7 @@ import Portal from "../portal";
 import StyledTooltip from "./styled-tooltip";
 import { flip, shift, offset } from "@floating-ui/dom";
 
-const defaultOffset = 10;
+const defaultOffset = 4;
 const Tooltip = (props) => {
   const {
     id,
@@ -24,6 +24,7 @@ const Tooltip = (props) => {
     openOnClick,
     isOpen,
     float,
+    noArrow = true,
   } = props;
 
   const renderTooltip = () => (
@@ -36,18 +37,19 @@ const Tooltip = (props) => {
     >
       <ReactTooltip
         id={id}
-        place={place}
-        isOpen={isOpen}
         float={float}
+        place={place}
         closeOnScroll
         closeOnResize
+        isOpen={isOpen}
+        noArrow={noArrow}
         render={getContent}
         clickable={clickable}
         afterShow={afterShow}
         afterHide={afterHide}
+        offset={props.offset}
         positionStrategy="fixed"
         openOnClick={openOnClick}
-        offset={props.offset}
         anchorSelect={anchorSelect}
         className="__react_component_tooltip"
         middlewares={[
@@ -102,10 +104,13 @@ Tooltip.propTypes = {
   float: PropTypes.bool,
   /** The selector for the anchor elements */
   anchorSelect: PropTypes.string,
+  /** Tooltip arrow will not be shown */
+  noArrow: PropTypes.bool,
 };
 
 Tooltip.defaultProps = {
   place: "top",
+  noArrow: true,
 };
 
 export default Tooltip;
