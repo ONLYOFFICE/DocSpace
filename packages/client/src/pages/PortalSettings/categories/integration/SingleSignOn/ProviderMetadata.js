@@ -1,29 +1,50 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 
-import { smallTablet, size } from "@docspace/components/utils/device";
+import {
+  smallTablet,
+  hugeMobile,
+  size,
+} from "@docspace/components/utils/device";
 
 import MetadataUrlField from "./sub-components/MetadataUrlField";
 import { useIsMobileView } from "../../../utils/useIsMobileView";
 
 const StyledWrapper = styled.div`
   .button-wrapper {
-    margin: 24px 0;
+    margin-top: 24px;
   }
 
   @media ${smallTablet} {
     .button-wrapper {
-      position: fixed;
-      bottom: 4px;
-      width: calc(100% - 32px);
+      box-sizing: border-box;
+      position: absolute;
+      bottom: 0;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              right: 0;
+            `
+          : css`
+              left: 0;
+            `}
+      width: 100%;
+      padding: 16px 16px 16px 24px;
     }
   }
+
+  @media ${hugeMobile}{
+    .button-wrapper {
+      padding: 16px;
+    }
+  }
+}
 `;
 
 const ProviderMetadata = (props) => {
