@@ -103,6 +103,7 @@ const Details = ({
           )}
           {showDefaultRoomIcon && (
             <RoomIcon
+              color={selection.logo.color}
               title={selection.title}
               isArchive={selection.isArchive}
               size={96}

@@ -58,6 +58,7 @@ const ItemIcon = ({
   defaultRoomIcon,
   title,
   logo,
+  color,
   isArchive,
 }) => {
   const [showDefaultIcon, setShowDefaultIcon] = React.useState(isRoom);
@@ -82,7 +83,7 @@ const ItemIcon = ({
         )}
 
         {showDefaultRoomIcon && (
-          <RoomIcon title={title} isArchive={isArchive} />
+          <RoomIcon color={color} title={title} isArchive={isArchive} />
         )}
       </IconWrapper>
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}

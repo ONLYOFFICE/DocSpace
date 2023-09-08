@@ -1,7 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
-import roomsIconsColors from "@docspace/components/utils/roomsIconsColors";
 import Text from "@docspace/components/text";
 
 const StyledIcon = styled.div`
@@ -22,7 +21,7 @@ const StyledIcon = styled.div`
         ? props.theme.isBase
           ? "#A3A9AE"
           : "#FFFFFF"
-        : props.color};
+        : `#` + props.color};
     position: absolute;
     ${(props) =>
       !props.theme.isBase &&
@@ -48,16 +47,7 @@ const StyledIcon = styled.div`
 
 StyledIcon.defaultProps = { theme: Base };
 
-const RoomIcon = ({ title, isArchive, size = 32 }) => {
-  const randomPropertyValue = (object) => {
-    const keys = Object.keys(object);
-    if (keys.length > 0) {
-      const index = Math.floor(keys.length * Math.random());
-      return object[keys[index]];
-    }
-    return null;
-  };
-
+const RoomIcon = ({ title, isArchive, color, size = 32 }) => {
   const titleWithoutTooManySpaces = title.replace(/\s+/g, " ").trim();
   const indexSecondCharacterAfterSpace =
     titleWithoutTooManySpaces.lastIndexOf(" ");
@@ -67,8 +57,6 @@ const RoomIcon = ({ title, isArchive, size = 32 }) => {
       : titleWithoutTooManySpaces[indexSecondCharacterAfterSpace + 1];
 
   const roomTitle = (title[0] + secondCharacterAfterSpace).toUpperCase();
-
-  const color = randomPropertyValue(roomsIconsColors);
 
   return (
     <StyledIcon color={color} size={size} isArchive={isArchive}>

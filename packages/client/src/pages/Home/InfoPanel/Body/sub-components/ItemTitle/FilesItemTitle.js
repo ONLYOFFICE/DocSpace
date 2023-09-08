@@ -30,7 +30,11 @@ const FilesItemTitle = ({ t, selection, isSeveralItems }) => {
           />
         )}
         {showDefaultRoomIcon && (
-          <RoomIcon title={selection.title} isArchive={selection.isArchive} />
+          <RoomIcon
+            color={selection.logo.color}
+            title={selection.title}
+            isArchive={selection.isArchive}
+          />
         )}
       </div>
       <Text className="text">{selection.title}</Text>
