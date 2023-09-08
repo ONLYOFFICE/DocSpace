@@ -12,7 +12,7 @@ const RoundedButton = styled(Button)`
   padding: 13.5px 15px;
 
   border-radius: 16px;
-  margin-right: 7px;
+  margin-inline-end: 7px;
 
   line-height: 20px;
 `;
@@ -23,7 +23,13 @@ const Selectors = styled.div`
   margin-bottom: 16px;
 `;
 
-const StatusBadgeSelector = ({ label, statusCode, isStatusSelected, handleStatusClick, id }) => {
+const StatusBadgeSelector = ({
+  label,
+  statusCode,
+  isStatusSelected,
+  handleStatusClick,
+  id,
+}) => {
   const handleOnClick = () => handleStatusClick(statusCode);
   return (
     <RoundedButton

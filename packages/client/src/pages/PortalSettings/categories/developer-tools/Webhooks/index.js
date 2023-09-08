@@ -34,7 +34,8 @@ const ButtonSeating = styled.div`
   width: 100vw;
   height: 73px;
   bottom: 0;
-  left: 0;
+
+  inset-inline-start: 0;
   background-color: ${(props) => props.theme.backgroundColor};
 
   display: flex;
