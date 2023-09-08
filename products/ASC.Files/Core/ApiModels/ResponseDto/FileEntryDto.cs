@@ -28,6 +28,14 @@ using static ASC.Files.Core.Security.FileSecurity;
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+[JsonSourceGenerationOptions(WriteIndented = false, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSerializable(typeof(FileDto<int>[]))]
+[JsonSerializable(typeof(FileDto<string>[]))]
+[JsonSerializable(typeof(FolderDto<int>[]))]
+[JsonSerializable(typeof(FolderDto<string>[]))]
+public partial class FileEntryDtoContext : JsonSerializerContext { }
+
+
 /// <summary>
 /// </summary>
 [JsonDerivedType(typeof(FileDto<int>))]
