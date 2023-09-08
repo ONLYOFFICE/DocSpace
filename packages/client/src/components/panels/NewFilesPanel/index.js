@@ -48,23 +48,8 @@ const NewFilesPanel = (props) => {
     isLoading,
   } = props;
 
-  const [readingFiles, setReadingFiles] = useState([]);
   const [listFiles, setListFiles] = useState(newFiles);
   const [inProgress, setInProgress] = useState(false);
-
-  const onUpdateListFiles = (newReadingFiles) => {
-    let rendListFiles = [];
-
-    newFiles.forEach((file) => {
-      const fileHasRead = newReadingFiles.find(
-        (readingFile) => readingFile === file.id.toString()
-      );
-
-      if (!fileHasRead) rendListFiles.push(file);
-    });
-
-    setListFiles(rendListFiles);
-  };
 
   const onClose = () => {
     if (inProgress) return;
@@ -128,13 +113,15 @@ const NewFilesPanel = (props) => {
 
     markAsRead(folderIds, fileIds, item)
       .then(() => {
-        const newReadingFiles = [...readingFiles, id];
-        setReadingFiles(newReadingFiles);
         setInProgress(false);
-
         onFileClick(item);
-        if (newFiles.length === newReadingFiles.length) onClose();
-        onUpdateListFiles(newReadingFiles);
+
+        const newListFiles = listFiles.filter(
+          (file) => file.id.toString() !== id
+        );
+
+        setListFiles(newListFiles);
+        if (!newListFiles.length) onClose();
       })
       .catch((err) => toastr.error(err));
   };
