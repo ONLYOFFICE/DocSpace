@@ -23,6 +23,17 @@ const StyledTextInput = styled(Input).attrs((props) => ({
 }))`
   ${commonInputStyles}
   -webkit-appearance: ${(props) => props.theme.textInput.appearance};
+
+  background-color: ${(props) => props.theme.input.backgroundColor};
+  -webkit-text-fill-color: ${(props) =>
+    props?.value.length > 0
+      ? props.theme.text.color
+      : props.theme.textInput.placeholderColor} !important;
+  caret-color: ${(props) => props.theme.text.color};
+  -webkit-background-clip: text !important;
+  box-shadow: inset 0 0 20px 20px
+    ${(props) => props.theme.input.backgroundColor} !important;
+
   display: ${(props) => props.theme.textInput.display};
   font-family: ${(props) => props.theme.fontFamily};
   line-height: ${(props) =>

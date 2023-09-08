@@ -559,7 +559,7 @@ class AutomaticBackup extends React.PureComponent {
   }
 }
 export default inject(
-  ({ auth, backup, treeFoldersStore, selectFolderDialogStore }) => {
+  ({ auth, backup, treeFoldersStore, filesSelectorInput }) => {
     const { language, settingsStore, currentQuotaStore } = auth;
     const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
     const { organizationName, theme } = settingsStore;
@@ -595,8 +595,7 @@ export default inject(
       defaultFolderId,
     } = backup;
 
-    const { updateBaseFolderPath, resetNewFolderPath } =
-      selectFolderDialogStore;
+    const { updateBaseFolderPath, resetNewFolderPath } = filesSelectorInput;
 
     const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
     const isCheckedThirdParty =

@@ -10,11 +10,11 @@ const StatusBarWrapper = styled.div`
   margin-top: 9px;
 
   .statusBarItem:last-of-type {
-    margin-right: 0;
+    margin-inline-end: 0;
   }
 
   .statusActionItem {
-    margin-left: 12px;
+    margin-inline-start: 12px;
   }
 `;
 
@@ -33,7 +33,7 @@ const StatusBar = (props) => {
       formatFilters({
         deliveryDate: null,
         status: [],
-      }),
+      })
     );
     clearHistoryFilters();
   };
@@ -72,26 +72,36 @@ const StatusBar = (props) => {
   ));
 
   const isEqualDates = (firstDate, secondDate) => {
-    return firstDate.format("YYYY-MM-D HH:mm") === secondDate.format("YYYY-MM-D HH:mm");
+    return (
+      firstDate.format("YYYY-MM-D HH:mm") ===
+      secondDate.format("YYYY-MM-D HH:mm")
+    );
   };
 
   useEffect(() => {
     applyFilters(formatFilters(historyFilters));
-    if (historyFilters.deliveryDate === null && historyFilters.status.length === 0) {
+    if (
+      historyFilters.deliveryDate === null &&
+      historyFilters.status.length === 0
+    ) {
       clearHistoryFilters();
     }
   }, [historyFilters]);
 
-  return historyFilters.deliveryDate === null && historyFilters.status.length === 0 ? (
+  return historyFilters.deliveryDate === null &&
+    historyFilters.status.length === 0 ? (
     ""
   ) : (
     <StatusBarWrapper>
       {historyFilters.deliveryDate !== null ? (
         !isEqualDates(
           historyFilters.deliveryFrom,
-          historyFilters.deliveryFrom.clone().startOf("day"),
+          historyFilters.deliveryFrom.clone().startOf("day")
         ) ||
-        !isEqualDates(historyFilters.deliveryTo, historyFilters.deliveryTo.clone().endOf("day")) ? (
+        !isEqualDates(
+          historyFilters.deliveryTo,
+          historyFilters.deliveryTo.clone().endOf("day")
+        ) ? (
           <SelectedDateTime />
         ) : (
           <SelectedDate />
@@ -100,7 +110,8 @@ const StatusBar = (props) => {
         ""
       )}
       {SelectedStatuses}
-      {((historyFilters.deliveryDate !== null && historyFilters.status.length > 0) ||
+      {((historyFilters.deliveryDate !== null &&
+        historyFilters.status.length > 0) ||
         historyFilters.status.length > 1) && (
         <Link
           type="action"
@@ -108,7 +119,8 @@ const StatusBar = (props) => {
           isHovered={true}
           onClick={clearAll}
           color="#A3A9AE"
-          className="statusActionItem">
+          className="statusActionItem"
+        >
           Clear all
         </Link>
       )}
@@ -117,8 +129,19 @@ const StatusBar = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { formatFilters, historyFilters, clearHistoryFilters, clearDate, unselectStatus } =
-    webhooksStore;
+  const {
+    formatFilters,
+    historyFilters,
+    clearHistoryFilters,
+    clearDate,
+    unselectStatus,
+  } = webhooksStore;
 
-  return { formatFilters, historyFilters, clearHistoryFilters, clearDate, unselectStatus };
+  return {
+    formatFilters,
+    historyFilters,
+    clearHistoryFilters,
+    clearDate,
+    unselectStatus,
+  };
 })(observer(StatusBar));

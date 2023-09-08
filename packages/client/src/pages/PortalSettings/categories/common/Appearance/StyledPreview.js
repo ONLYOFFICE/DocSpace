@@ -436,6 +436,216 @@ const IconBox = styled.div`
   }
 `;
 
+const StyledMobilePreview = styled.div`
+  height: 293px;
+  border-radius: 16px;
+  padding: 0px 16px;
+  background: ${({ themePreview }) =>
+    themePreview === "Light" ? "#FFFFFF" : "#333333"};
+
+  border: ${({ themePreview }) =>
+    themePreview === "Light" ? "1px solid #d0d5da" : "1px solid transparent"};
+
+  .section-search {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    border: 1px solid;
+    border-radius: 3px;
+    padding-left: 8px;
+  }
+
+  .main-button-preview {
+    cursor: auto;
+    background-color: ${(props) => props.colorPreview};
+    border-radius: 3px;
+
+    &:active {
+      background-color: ${(props) => props.colorPreview} !important;
+      opacity: none !important;
+      filter: none !important;
+    }
+  }
+
+  .color-badge rect {
+    fill: ${(props) =>
+      props.themePreview === "Dark" && props.selectThemeId === 7
+        ? "#FFFFFF"
+        : props.colorPreview} !important;
+  }
+
+  .color-loaders rect {
+    fill: ${(props) =>
+      props.themePreview === "Light"
+        ? `${props.colorPreview} !important`
+        : `#FFFFFF !important`};
+  }
+
+  .menu-section {
+    &:not(:last-child) {
+      padding-bottom: 26px;
+    }
+  }
+
+  .loaders-theme {
+    background-color: ${(props) =>
+      props.themePreview === "Light" ? "#FFF" : "#545454"};
+    border-radius: 3px;
+  }
+
+  .loaders-tile-theme {
+    background: ${(props) =>
+      props.themePreview === "Light" ? "#F1F1F1" : "#333333"};
+
+    border-radius: 3px;
+  }
+
+  .loaders-tile-text-theme {
+    background: ${(props) =>
+      props.themePreview === "Light" ? "#D0D5DA" : "#858585"};
+
+    border-radius: 3px;
+  }
+
+  .loaders-theme-avatar {
+    background-color: ${(props) =>
+      props.themePreview === "Light" ? "#FFF" : "#545454"};
+    border-radius: 50px;
+  }
+
+  .border-color {
+    border-color: ${(props) =>
+      props.themePreview === "Light" ? "#d0d5da" : "#474747"};
+  }
+
+  .tile {
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 12px;
+    width: ${(props) => props.isViewTablet && "64%"};
+    margin-top: 24px;
+  }
+
+  .background {
+    background: ${(props) =>
+      props.themePreview === "Light" ? "#FFF" : "#292929"};
+  }
+
+  .tile-name {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 14px 16px;
+    height: 30px;
+  }
+
+  .tablet-tile-name {
+    width: 44% !important;
+    margin-left: 16px;
+    border-right: none !important;
+    border-radius: 12px 0 16px 0 !important;
+  }
+
+  .only-tile-name {
+    width: ${(props) => props.isViewTablet && "66%"};
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-left-width: 1px;
+    border-style: solid;
+    border-bottom: none;
+    border-radius: 12px 12px 0px 0px;
+  }
+
+  .action-button {
+    width: 72px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .tile-tag {
+    display: flex;
+    border-top-width: 1px;
+    border-top-style: solid;
+    padding: 16px 0px 16px 16px;
+  }
+
+  .tile-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .pin {
+    padding-right: 14px;
+
+    path {
+      fill: ${(props) =>
+        props.themePreview === "Light"
+          ? `${props.colorPreview} !important`
+          : `#FFFFFF !important`};
+    }
+  }
+
+  .menu-button > div {
+    cursor: auto;
+  }
+
+  .preview_mobile-header {
+    height: 48px;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 34px 1fr 32px;
+    gap: 16px;
+
+    margin: 0 -16px;
+    padding: 0 16px;
+
+    background: ${({ themePreview }) =>
+      themePreview === "Light" ? "#FFFFFF" : "#282828"};
+
+    border-radius: 16px 16px 0px 0px;
+  }
+
+  .preview_mobile-navigation {
+    height: 53px;
+    display: flex;
+    align-items: center;
+
+    .header {
+      width: 45%;
+    }
+  }
+
+  .color-badge rect {
+    fill: ${({ themePreview, selectThemeId, colorPreview }) =>
+      themePreview === "Dark" && selectThemeId === 7
+        ? "#FFFFFF"
+        : colorPreview} !important;
+  }
+  .section-badge {
+    padding-right: 12px;
+  }
+
+  .tile-icon {
+    padding-right: 12px;
+  }
+
+  .floating-button {
+    position: relative;
+    margin-left: auto;
+    right: 0px;
+    bottom: 48px;
+  }
+
+  .icon-button_svg {
+    svg {
+      path {
+        fill: #a3a9ae;
+      }
+    }
+  }
+`;
+
 StyledComponent.defaultProps = { theme: Base };
 
-export { StyledComponent, StyledFloatingButton, IconBox };
+export { StyledComponent, StyledFloatingButton, IconBox, StyledMobilePreview };

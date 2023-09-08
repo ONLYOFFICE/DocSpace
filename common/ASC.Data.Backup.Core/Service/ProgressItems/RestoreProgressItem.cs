@@ -106,9 +106,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
     protected override async Task DoJob()
     {
         Tenant tenant = null;
-
-        var tempFile = PathHelper.GetTempFileName(TempFolder);
-
+        var tempFile = "";
         try
         {
             await using var scope = _serviceScopeProvider.CreateAsyncScope();
@@ -127,16 +125,21 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
             var storage = await _backupStorageFactory.GetBackupStorageAsync(StorageType, TenantId, StorageParams);
 
-            await storage.DownloadAsync(StoragePath, tempFile);
+            tempFile = await storage.DownloadAsync(StoragePath, TempFolder);
 
             if (!_coreBaseSettings.Standalone)
             {
-                var backupHash = BackupWorker.GetBackupHash(tempFile);
-                var record = await _backupRepository.GetBackupRecordAsync(backupHash, TenantId);
+                var shaHash = BackupWorker.GetBackupHashSHA(tempFile);
+                var record = await _backupRepository.GetBackupRecordAsync(shaHash, TenantId);
 
                 if (record == null)
                 {
-                    throw new Exception(BackupResource.BackupNotFound);
+                    var md5Hash = BackupWorker.GetBackupHashMD5(tempFile, S3Storage.ChunkSize);
+                    record = await _backupRepository.GetBackupRecordAsync(md5Hash, TenantId);
+                    if (record == null)
+                    {
+                        throw new Exception(BackupResource.BackupNotFound);
+                    }
                 }
             }
 

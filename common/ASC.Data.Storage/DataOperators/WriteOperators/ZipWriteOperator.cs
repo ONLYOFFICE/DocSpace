@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.ZipOperators;
+namespace ASC.Data.Storage.DataOperators;
 
 
 public class ZipWriteOperator : IDataWriteOperator
@@ -54,11 +54,25 @@ public class ZipWriteOperator : IDataWriteOperator
         _tarOutputStream = new TarOutputStream(_gZipOutputStream, Encoding.UTF8);
     }
 
-    public async Task WriteEntryAsync(string key, Stream stream)
+    public async Task WriteEntryAsync(string tarKey, string domain, string path, IDataStore store)
+    {
+        Stream fileStream = null;
+        await ActionInvoker.TryAsync(async () =>
+        {
+            fileStream = await store.GetReadStreamAsync(domain, path);
+        }, 5, error => throw error);
+        if (fileStream != null)
+        {
+            await WriteEntryAsync(tarKey, fileStream);
+            fileStream.Dispose();
+        }
+    }
+
+    public async Task WriteEntryAsync(string tarKey, Stream stream)
     {
         await using (var buffered = _tempStream.GetBuffered(stream))
         {
-            var entry = TarEntry.CreateTarEntry(key);
+            var entry = TarEntry.CreateTarEntry(tarKey);
             entry.Size = buffered.Length;
             await _tarOutputStream.PutNextEntryAsync(entry, default);
             buffered.Position = 0;
@@ -71,52 +85,5 @@ public class ZipWriteOperator : IDataWriteOperator
     {
         _tarOutputStream.Close();
         await _tarOutputStream.DisposeAsync();
-    }
-}
-
-public class ZipReadOperator : IDataReadOperator
-{
-    private readonly string tmpdir;
-
-    public ZipReadOperator(string targetFile)
-    {
-        tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
-
-        using (var stream = File.OpenRead(targetFile))
-        using (var reader = new GZipInputStream(stream))
-        using (var tarOutputStream = TarArchive.CreateInputTarArchive(reader, Encoding.UTF8))
-        {
-            tarOutputStream.ExtractContents(tmpdir);
-        }
-
-        File.Delete(targetFile);
-    }
-
-    public Stream GetEntry(string key)
-    {
-        var filePath = Path.Combine(tmpdir, key);
-        return File.Exists(filePath) ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) : null;
-    }
-
-    public IEnumerable<string> GetEntries(string key)
-    {
-        var path = Path.Combine(tmpdir, key);
-        var files = Directory.EnumerateFiles(path);
-        return files;
-    }
-
-    public IEnumerable<string> GetDirectories(string key)
-    {
-        var path = Path.Combine(tmpdir, key);
-        var files = Directory.EnumerateDirectories(path);
-        return files;
-    }
-
-    public void Dispose()
-    {
-        if (Directory.Exists(tmpdir))
-        {
-            Directory.Delete(tmpdir, true);
-        }
     }
 }

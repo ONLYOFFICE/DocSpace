@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Los usuarios avanzados pueden crear y editar archivos en la sala, pero no pueden crear salas, gestionar usuarios ni acceder a la configuración.",
   "RoleReviewer": "Revisor",
   "RoleReviewerDescription": "Operaciones con archivos existentes: visualización, revisión, comentarios.",
-  "RoleRoomAdminDescription": "Los administradores de la sala pueden crear y gestionar las salas asignadas, invitar a nuevos usuarios y asignar roles a un nivel inferior al suyo. Todos los administradores tienen acceso a la sección Personal.",
   "RoleUserDescription": "Los usuarios solo pueden acceder a las salas a las que les han invitado los administradores. No pueden crear sus propias salas, carpetas o archivos.",
   "RoleViewer": "Espectador",
   "RoleViewerDescription": "Visualización de archivos",

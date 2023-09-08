@@ -725,4 +725,1133 @@ ONLYOFFICE 팀
   <data name="AcceptDocSpace" xml:space="preserve">
     <value>수락</value>
   </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>개인용 ONLYOFFICE에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>ONLYOFFICE Personal에 오신 것을 환영합니다</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>$Date, 포털 새 소식</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>${__VirtualRootPath}에 초대받으셨</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>고객님의 ONLYOFFICE DocSpace 구독이 곧 만료됩니다</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>고객님의 ONLYOFFICE DocSpace가 삭제될 예정입니다</value>
+  </data>
+  <data name="subject_profile_updated" xml:space="preserve">
+    <value>${__VirtualRootPath}의 프로필이 변경되었습니다</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>효과적인 문서 작업을 위한 몇 가지 팁</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>효과적인 문서 작업을 위한 몇 가지 팁</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>효과적인 문서 작업을 위한 몇 가지 팁</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>효과적인 문서 작업을 위한 몇 가지 팁</value>
+  </data>
+  <data name="subject_smtp_test" xml:space="preserve">
+    <value>SMTP 테스트 메시지</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>지금 요금제를 선택하세요</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 가입</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 가입</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 가입</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 가입</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 가입</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 가입</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>${__VirtualRootPath} 가입</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>${__VirtualRootPath} 가입</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>${__VirtualRootPath} 가입</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>${__VirtualRootPath} 가입</value>
+  </data>
+  <data name="subject_join" xml:space="preserve">
+    <value>${__VirtualRootPath}에 초대받으셨습니다</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>ONLYOFFICE Personal 계정에 로그인하세요</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 비즈니스 구독을 확인하세요</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 비즈니스 구독을 확인하세요</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 비즈니스 구독을 확인하세요</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 비즈니스 구독을 확인하세요</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>무료 ONLYOFFICE 앱을 이용하세요</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>무료 ONLYOFFICE 앱을 이용하세요</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>무료 ONLYOFFICE 앱을 이용하세요</value>
+  </data>
+  <data name="subject_profile_delete" xml:space="preserve">
+    <value>${__VirtualRootPath} 포털에서 프로필 삭제</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>새로운 DocSpace 사용자가 추가되었습니다: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ButtonAccessControlPanel" xml:space="preserve">
+    <value>제어판 액세스</value>
+  </data>
+  <data name="ButtonAccessYourPortal" xml:space="preserve">
+    <value>포털 액세스</value>
+  </data>
+  <data name="ButtonAccessYouWebOffice" xml:space="preserve">
+    <value>웹-오피스 액세스</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>이메일 주소를 활성화하려면 여기를 클릭하세요</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>이메일 주소 변경</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>비밀번호 변경</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>휴대폰 번호 변경</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>인증 앱 구성</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>DocSpace에서 공동 작업</value>
+  </data>
+  <data name="ButtonConfigureRightNow" xml:space="preserve">
+    <value>지금 구성</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>확인</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>확인</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>DocSpace 초대 확인</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>포털 주소 변경 확인</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>포털 소유자 업데이트 확인</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>방 초대 확인</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>계정 해지 확인</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>포털 비활성화</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>포털 삭제</value>
+  </data>
+  <data name="ButtonInviteRightNow" xml:space="preserve">
+    <value>지금 초대하세요</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>포털에 가입하려면 여기를 클릭하세요</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>피드백 남기기</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>프로필 삭제</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>지금 갱신</value>
+  </data>
+  <data name="ButtonRequestCallButton" xml:space="preserve">
+    <value>통화 요청</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>무료 평가판 시작</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>할인 적용</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>결제 섹션으로 이동</value>
+  </data>
+  <data name="subject_activate_email" xml:space="preserve">
+    <value>${LetterLogoText}. 이메일 주소를 활성화해주세요</value>
+  </data>
+  <data name="subject_backup_created" xml:space="preserve">
+    <value>${LetterLogoText}. ${__VirtualRootPath} 포털 백업이 생성되었습니다</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>이메일 변경 확인</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} 비밀번호 지원</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>비밀번호 변경 확인</value>
+  </data>
+  <data name="subject_change_phone" xml:space="preserve">
+    <value>${LetterLogoText}. 휴대폰 변경 요청</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. 보안 알림</value>
+  </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. 포털 소유자 변경</value>
+  </data>
+  <data name="subject_dns_change" xml:space="preserve">
+    <value>${LetterLogoText}. 포털 주소 변경</value>
+  </data>
+  <data name="subject_for_admin_notify" xml:space="preserve">
+    <value>관리자에게 보내는 사용자의 메시지</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>영업부 요청</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. 메일함 생성</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. 편지함 비밀번호 변경</value>
+  </data>
+  <data name="subject_migration_error" xml:space="preserve">
+    <value>${LetterLogoText}. 다른 리전 포털 마이그레이션 오류</value>
+  </data>
+  <data name="subject_migration_start" xml:space="preserve">
+    <value>${LetterLogoText}. 다른 리전 포털 마이그레이션이 시작되었습니다</value>
+  </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. 다른 리전 포털 마이그레이션이 성공적으로 완료되었습니다</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. 이메일 주소를 활성화해주세요</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>ONLYOFFICE Personal 개인 계정 만료</value>
+  </data>
+  <data name="subject_portal_deactivate" xml:space="preserve">
+    <value>${__VirtualRootPath} 포털 비활성화</value>
+  </data>
+  <data name="subject_portal_delete" xml:space="preserve">
+    <value>${__VirtualRootPath} 포털 삭제</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace가 비활성화되었습니다</value>
+  </data>
+  <data name="subject_portal_rename" xml:space="preserve">
+    <value>${LetterLogoText}. 포털 주소 변경</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>사용자가 자신의 프로필을 삭제했습니다</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}. 사용자 데이터 재할당이 완료되었습니다</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. 사용자 데이터 재할당에 실패했습니다</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. 사용자 데이터 삭제를 완료했습니다</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. 사용자 데이터 삭제에 실패했습니다</value>
+  </data>
+  <data name="subject_request_license" xml:space="preserve">
+    <value>엔터프라이즈 라이선스 요청</value>
+  </data>
+  <data name="subject_request_tariff" xml:space="preserve">
+    <value>SaaS 요금제 요청</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. 복원이 완료되었습니다</value>
+  </data>
+  <data name="subject_restore_started" xml:space="preserve">
+    <value>${LetterLogoText}. 복원이 시작되었습니다</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace를 구성하세요</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace의 유예 기간이 활성화되었습니다</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 유예 기간이 만료되었습니다</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace 유예 기간이 내일 만료됩니다</value>
+  </data>
+  <data name="subject_self_profile_updated" xml:space="preserve">
+    <value>${__VirtualRootPath} 포털 프로필 변경 알림</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. 복호화 프로세스에 실패했습니다</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. 복호화 프로세스가 시작되었습니다</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. 복호화 프로세스가 완료되었습니다</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. 암호화 프로세스에 실패했습니다</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. 암호화 프로세스가 시작되었습니다</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. 암호화 프로세스가 완료되었습니다</value>
+  </data>
+  <data name="subject_user_has_join" xml:space="preserve">
+    <value>${LetterLogoText} 포털에 새로운 사용자가 추가되었습니다</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>안녕하세요!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" 에 게스트 사용자로 초대받으셨습니다. 다음 링크를 클릭하여 초대를 수락하세요.
+
+$GreenButton
+
+유용한 팁과 ONLYOFFICE의 최신 소식을 가끔씩 보내드립니다. 언제든지 프로필 페이지에서 구독을 취소하거나 다시 활성화할 수 있습니다.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace에 오신 것을 환영합니다! 고객님의 사용자 프로필이 "${__VirtualRootPath}":"${__VirtualRootPath}" 에 성공적으로 추가되었으며 이제 다음과 같은 작업을 하실 수 있습니다.
+
+* 초대 받은 방에서 다른 사용자와 작업하세요. *실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방에서 공동으로 작업하세요*.
+
+* *다양한 형식의 파일을 작업하세요*. 텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어 형식의 파일을 이용하세요.
+
+* *문서를 공동으로 작업하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)를 이용하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+* *모든 클라우드 스토리지를 연결하세요.* 그리고 한 앱에서 편안하게 작업하세요. 
+
+$GreenButton
+
+도움이 필요한 경우 "지원 센터":"https://helpcenter.onlyoffice.com/" 를 참고하시거나 저희 "지원팀":"https://www.onlyoffice.com/support-contact-form.aspx" 에 문의하세요.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_activate_email" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"$InviteLink" 포털에 대한 이메일 주소를 활성화해주세요
+
+안녕하세요!
+
+보안상의 이유로, "${__VirtualRootPath}":"$InviteLink" 포털 라이프에 참여하려면 이메일 주소를 활성화해야 합니다.
+
+$GreenButton
+
+이 링크는 7일 동안만 유효합니다. 기간 내에 이메일 활성화를 완료하세요.</value>
+  </data>
+  <data name="pattern_backup_created" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 포털 백업이 생성되었습니다
+
+$OwnerName님,
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" 포털의 데이터가 포함된 백업 파일이 생성되었습니다.
+
+백업 절차에 대한 자세한 내용은 저희의 "데이터 백업":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" 사용자 가이드를 참고하세요.
+
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: "support.onlyoffice.com":"http://support.onlyoffice.com"
+
+감사합니다,
+ONLYOFFICE™ 지원팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) 포털 백업이 생성되었습니다
+
+$OwnerName님,
+
+[${__VirtualRootPath}](${__VirtualRootPath}) 포털의 데이터가 포함된 백업 파일이 생성되었습니다.
+
+백업 절차에 대한 자세한 내용은 저희의 [데이터 백업](${__HelpLink}/tipstricks/data-backup-restore.aspx) 사용자 가이드를 참고하세요.
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: [support.onlyoffice.com](http://support.onlyoffice.com)
+
+감사합니다,
+ONLYOFFICE™ 지원팀
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>${LetterLogoText} 계정의 이메일을 변경하고 싶으세요?
+
+클라우드에 로그인*하려면 아래 버튼을 클릭하세요.
+
+$GreenButton
+
+링크는 7일 동안만 유효합니다.
+
+*이 브라우저에서 ${LetterLogoText} 에 로그인하지 않은 경우 이전 이메일을 사용하여 작업을 확인해주세요. 기억나지 않는 경우 포털 관리자에게 문의하세요.
+
+이메일을 변경하고 싶지 않으신가요? 그러시다면 이 메시지를 무시해주세요.</value>
+  </data>
+  <data name="pattern_change_phone" xml:space="preserve">
+    <value>h1.휴대폰 변경 요청
+
+${LetterLogoText} 포털에 입장하기 위해 사용하는 휴대폰의 변경을 요청하셨습니다.
+
+아래 링크를 따라 휴대폰을 변경하세요.
+
+$GreenButton
+
+휴대폰을 변경하고 싶지 않거나 실수로 이 이메일을 받은 경우 무시하거나 포털 관리자에게 자세한 내용을 문의하세요.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.보안 알림
+
+${LetterLogoText} 포털에 입장하는 데 사용하는 인증 앱의 구성이 재설정되었습니다.
+
+아래 버튼을 클릭하여 포털 로그인 페이지로 이동하고 인증 애플리케이션을 구성하세요.
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_confirm_owner_change" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 포털 소유자 변경
+
+$OwnerName님,
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" 포털 소유자를 $UserName 님으로 변경할 것을 요청 받았습니다.
+
+아래 링크를 따라 작업을 확인해주세요.
+
+$GreenButton
+
+*알림*: 이 링크는 7일 동안만 유효합니다. 기간 내에 포털 소유자 변경 프로세스를 완료하세요.</value>
+  </data>
+  <data name="pattern_dns_change" xml:space="preserve">
+    <value>h1.포털 주소 변경
+
+$OwnerName님,
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" 포털 주소를 "$PortalAddress":"$PortalAddress" #if($PortalDns != "") ("$PortalDns":"$PortalDns" )로 변경할 것을 요청 받았습니다#end.
+
+아래 링크를 따라 작업을 확인해주세요.
+
+$GreenButton
+
+*알림*: 이 링크는 7일 동안만 유효합니다. 기간 내에 포털 주소 변경 프로세스를 완료하세요.</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" 에 게스트 사용자로 초대받으셨습니다. 다음 링크를 클릭하여 초대를 수락하세요.
+
+$GreenButton
+
+링크는 7일 동안만 유효합니다.
+
+웹 오피스 사용 방법에 대한 다양한 팁을 보내드립니다. 언제든지 프로필 페이지에서 구독을 취소하거나 다시 활성화할 수 있습니다.</value>
+  </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace에 오신 것을 환영합니다! 고객님의 사용자 프로필이 "${__VirtualRootPath}":"${__VirtualRootPath}" 에 성공적으로 추가되었으며 이제 다음과 같은 작업을 하실 수 있습니다.
+
+* 초대 받은 방에서 다른 사용자와 작업하세요. *실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방에서 공동으로 작업하세요*.
+
+* *다양한 형식의 파일을 작업하세요*. 텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어 형식의 파일을 이용하세요.
+
+* *문서를 공동으로 작업하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)를 이용하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+* *모든 클라우드 스토리지를 연결하세요.* 그리고 한 앱에서 편안하게 작업하세요. 
+
+$GreenButton
+
+도움이 필요한 경우 "지원 센터":"https://helpcenter.onlyoffice.com/" 를 참고하시거나 저희 "지원팀":"https://www.onlyoffice.com/support-contact-form.aspx" 에 문의하세요.
+
+감사합니다, 
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+$__AuthorName 님이 고객님을 "${__VirtualRootPath}":"${__VirtualRootPath}" 에 게스트 사용자로 초대하셨습니다. 다음 링크를 클릭하여 초대를 수락하세요.
+
+$GreenButton
+
+링크는 7일 동안만 유효합니다.
+
+웹 오피스 사용 방법에 대한 다양한 팁을 보내드립니다. 언제든지 프로필 페이지에서 구독을 취소하거나 다시 활성화할 수 있습니다.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace에 오신 것을 환영합니다! 고객님의 사용자 프로필이 "${__VirtualRootPath}":"${__VirtualRootPath}" 에 성공적으로 추가되었으며 이제 다음과 같은 작업을 하실 수 있습니다.
+
+* 초대 받은 방에서 다른 사용자와 작업하세요. *실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방에서 공동으로 작업하세요*.
+
+* *다양한 형식의 파일을 작업하세요*. 텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어 형식의 파일을 이용하세요.
+
+* *문서를 공동으로 작업하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)를 이용하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+* *모든 클라우드 스토리지를 연결하세요.* 그리고 한 앱에서 편안하게 작업하세요. 
+
+$GreenButton
+
+도움이 필요한 경우 "지원 센터":"https://helpcenter.onlyoffice.com/" 를 참고하시거나 저희 "지원팀":"https://www.onlyoffice.com/support-contact-form.aspx" 에 문의하세요.
+
+감사합니다, 
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_admin_notify" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 포털의 메시지
+
+이메일: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) 포털의 메시지
+
+이메일: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_join" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"$InviteLink" 포털 초대
+
+안녕하세요,
+
+문서 및 프로젝트 관리 플랫폼인 ${LetterLogoText}의 "${__VirtualRootPath}":"$InviteLink" 포털에 초대받으셨습니다. 포털에 가입하고 바로 동료 또는 친구와 공동 작업을 시작하세요.
+
+초대를 수락하려면 다음 링크에 이름 및 비밀번호를 입력하세요:
+
+$GreenButton
+
+*알림*: 이 링크는 48시간 동안만 유효합니다. 기간 내에 작업을 완료하세요.</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>$UserName님,
+
+      관리자가 "${__VirtualRootPath}":"${__VirtualRootPath}" 포털에 고객님을 위한 새로운 &lt;b&gt;$Address&lt;/b&gt; 편지함을 생성했습니다.
+
+      다른 이메일 클라이언트에 대해 다음 설정을 사용하세요:
+      로그인: &lt;b&gt;$Login&lt;/b&gt;
+      비밀번호: "&lt;b&gt;비밀번호 설정&lt;/b&gt;":"$MyStaffLink"
+
+      수신 메일(IMAP): 
+      서버: &lt;b&gt;$Server&lt;/b&gt;
+      포트: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      발신 메일(SMTP): 
+      서버: &lt;b&gt;$Server&lt;/b&gt;
+      포트: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      인증 필요: &lt;b&gt;예&lt;/b&gt;
+
+      실수로 이 이메일을 받은 경우 무시하거나 포털 관리자에게 자세한 내용을 문의하세요.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>$UserName님,
+
+      &lt;b&gt;$Address&lt;/b&gt; 편지함의 비밀번호가 변경되었습니다.
+
+      실수로 이 이메일을 받은 경우 무시하거나 포털 관리자에게 자세한 내용을 문의하세요.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>$UserName님,
+
+      관리자가 "${__VirtualRootPath}":"${__VirtualRootPath}" 포털에 고객님을 위한 새로운 &lt;b&gt;$Address&lt;/b&gt; 편지함을 생성했습니다.
+
+      실수로 이 이메일을 받은 경우 무시하거나 포털 관리자에게 자세한 내용을 문의하세요.</value>
+  </data>
+  <data name="pattern_migration_error" xml:space="preserve">
+    <value>h1.다른 리전 포털 마이그레이션 오류
+
+$RegionName 리전으로 마이그레이션하는 동안 오류가 발생했습니다. 나중에 다시 시도해주세요.
+이전 주소에서 포털을 이용할 수 있습니다: "$PortalUrl":"$PortalUrl"
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+감사합니다,
+ONLYOFFICE™ 지원팀
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^알림 유형을 관리하려면 "구독 설정":"$RecipientSubscriptionConfigURL"을 변경하세요.^</value>
+  </data>
+  <data name="pattern_migration_server_failure" xml:space="preserve">
+    <value>h1.다른 리전 포털 마이그레이션 오류
+
+다른 리전으로 마이그레이션하는 동안 오류가 발생했습니다. 나중에 다시 시도해주세요.
+이전 주소에서 포털을 이용할 수 있습니다: "$PortalUrl":"$PortalUrl"
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+감사합니다,
+ONLYOFFICE™ 지원팀
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^알림 유형을 관리하려면 "구독 설정":"$RecipientSubscriptionConfigURL"을 변경하세요.^</value>
+  </data>
+  <data name="pattern_migration_start" xml:space="preserve">
+    <value>h1.다른 리전 포털 마이그레이션이 시작되었습니다
+
+$RegionName으로의 포털 마이그레이션이 시작되었습니다. 데이터 양에 따라 다소 시간이 소요될 수 있습니다.
+
+*알림*: 마이그레이션 프로세스 중에는 포털을 사용할 수 없습니다. 마이그레이션이 완료되면 포털 URL이 변경되고 모든 공유 문서 링크에 액세스할 수 없게 됩니다.
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+감사합니다,
+ONLYOFFICE™ 지원팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.포털 마이그레이션
+h1."$PortalUrl":"$PortalUrl"
+
+포털이 새 도메인으로 마이그레이션되었습니다. 로그인에 사용할 비밀번호를 지정하여 포털에 대한 액세스를 복원하세요.
+
+아래 링크에서 계정의 비밀번호를 설정하세요:
+$GreenButton
+
+*알림*: 이 링크는 7일 동안만 유효합니다. 기간 내에 액세스 복원 프로세스를 완료하세요.
+
+실수로 이 이메일을 받은 경우 무시하거나 "$PortalUrl":"$PortalUrl" 포털 관리자에게 자세한 내용을 문의하세요.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>안녕하세요!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" 에 게스트 사용자로 초대받으셨습니다. 다음 링크를 클릭하여 초대를 수락하세요.
+
+"$ActivateUrl":"$ActivateUrl"
+
+링크는 7일 동안만 유효합니다.
+
+웹 오피스 사용 방법에 대한 다양한 팁을 보내드립니다. 언제든지 프로필 페이지에서 구독을 취소하거나 다시 활성화할 수 있습니다.</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace에 오신 것을 환영합니다! 고객님의 사용자 프로필이 "${__VirtualRootPath}":"${__VirtualRootPath}" 에 성공적으로 추가되었으며 이제 다음과 같은 작업을 하실 수 있습니다.
+
+* 초대 받은 방에서 다른 사용자와 작업하세요. *실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방에서 공동으로 작업하세요*.
+
+* *다양한 형식의 파일을 작업하세요*. 텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어 형식의 파일을 이용하세요.
+
+* *문서를 공동으로 작업하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)를 이용하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+* *모든 클라우드 스토리지를 연결하세요.* 그리고 한 앱에서 편안하게 작업하세요. 
+
+$GreenButton
+
+도움이 필요한 경우 "지원 센터":"https://helpcenter.onlyoffice.com/" 를 참고하시거나 저희 "지원팀":"https://www.onlyoffice.com/support-contact-form.aspx" 에 문의하세요.
+
+감사합니다, 
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>$UserName님, 안녕하세요
+ONLYOFFICE Personal "${__VirtualRootPath}":"${__VirtualRootPath}" 에 성공적으로 등록되었습니다.
+
+Dropbox, Google Drive, OneDrive, Box 등의 클라우드 스토리지를 연결하여 어디서나 문서에 액세스할 수 있는 하나의 작업 공간을 만드세요.
+
+"저희 블로그":"$TagBlogLink" 에서 ONLYOFFICE Personal에 대해 자세히 알아보세요.
+
+이용해 주셔서 감사합니다!
+
+감사합니다,
+ONLYOFFICE 팀</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.ONLYOFFICE Personal에 오신 것을 환영합니다
+
+고객님께서는 Personal 클라우드에 개인 오피스를 생성하셨습니다.
+
+h3.문서를 편집하고 저장할 수 있는 가상 작업 공간으로, 친구나 동료에게 액세스를 제공하여 어디서나 함께 작업할 수 있습니다.
+
+h3.ONLYOFFICE에서 다음과 같은 작업을 할 수 있습니다.
+
+- 텍스트 문서, 스프레드시트, 프레젠테이션을 생성하고 확인하고 편집할 수 있습니다.
+
+- 대중적인 모든 형식의 파일을 작업할 수 있습니다. MS Office 파일과 가장 잘 호환됩니다.
+
+- "바로 작성할 수 있는 양식":"https://www.onlyoffice.com/form-creator.aspx" 을 생성하고 공동으로 편집할 수 있습니다.
+
+- 온라인으로 문서를 공유하고 공동으로 작업할 수 있습니다.
+
+- 다양한 플러그인을 사용하여 추가 기능을 적용할 수 있습니다.
+
+- "Chrome 확장 프로그램":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US" 을 통해Personal 클라우드에 손쉽게 액세스할 수 있습니다.
+
+무료 "데스크탑 편집기":"https://www.onlyoffice.com/download-desktop.aspx" 를 이용해 오프라인으로 문서 작업을 하거나 "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" 또는 "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" 장치에 모바일 편집 앱을 다운로드할 수 있습니다.
+
+감사합니다,
+ONLYOFFICE 팀</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>ONLYOFFICE 계정의 이메일을 변경하고 싶으세요?
+
+클라우드에 로그인*하려면 아래 버튼을 클릭하세요.
+
+$GreenButton
+
+링크는 7일 동안만 유효합니다.
+
+*이 브라우저에서ONLYOFFICE에 로그인하지 않은 경우 이전 이메일을 사용하여 작업을 확인해주세요.
+
+이메일을 변경하고 싶지 않으신가요? 그러시다면 이 메시지를 무시해주세요.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>안녕하세요.
+
+개인용 ONLYOFFICE 솔루션에 계정을 등록하셨습니다. "여기":"$InviteLink" 를 클릭하여 등록을 확인하고 비밀번호를 생성하세요.
+
+링크를 열 수 없는 경우 "$InviteLink":"$InviteLink" 를 복사하여 브라우저 주소창에 붙여넣으세요.
+
+감사합니다,
+ONLYOFFICE 팀</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>personal.onlyoffice.com에서 계정 해지를 요청하셨습니다. 다음 링크를 따라 요청 프로세스를 완료하세요(이 링크는 7일 동안만 유효합니다).
+
+$GreenButton
+
+*알림*: 삭제 후에는 저희의 "개인 정보 보호 정책":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" 에 따라 고객님의 계정 및 모든 관련 데이터가 영구적으로 삭제됩니다.
+
+"계정 해지에 대해 더 보기":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+계속 진행하고 싶지 않은 경우 이 이메일을 무시해주세요. 
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+감사합니다,
+ONLYOFFICE 팀</value>
+  </data>
+  <data name="pattern_portal_deactivate" xml:space="preserve">
+    <value>"${__VirtualRootPath}":"${__VirtualRootPath}"포털 비활성화
+
+$OwnerName님,
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" 포털의 임시 비활성화를 요청하셨습니다. 아래 링크를 따라 작업을 확인해주세요.
+
+$GreenButton
+
+*알림*: 이 링크는 7일 동안만 유효합니다. 기간 내에 포털 비활성화 프로세스를 완료하세요.
+
+다음 링크를 클릭하여 언제든지 포털을 다시 활성화할 수 있습니다:
+p=. "포털 재활성화":"$ActivateUrl" (이 링크는 시간 제한 없이 유효합니다)
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+감사합니다,
+ONLYOFFICE™ 지원팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) 포털 비활성화
+
+$OwnerName님,
+
+[${__VirtualRootPath}](${__VirtualRootPath}) 포털의 임시 비활성화를 요청하셨습니다. 아래 링크를 따라 작업을 확인해주세요.
+
+$GreenButton
+
+_알림_: 이 링크는 7일 동안만 유효합니다. 기간 내에 포털 비활성화 프로세스를 완료하세요.
+
+다음 링크를 클릭하여 언제든지 포털을 다시 활성화할 수 있습니다:
+[포털 재활성화]($ActivateUrl) (이 링크는 시간 제한 없이 유효합니다)
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+감사합니다,
+ONLYOFFICE™ 지원팀
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 포털 삭제
+
+$OwnerName님,
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" 포털의 영구 삭제를 요청하셨습니다.
+
+*중요! 포털에 저장된 모든 데이터 및 등록 정보를 잃게 되며 복구할 수 없습니다.*
+
+#if($AutoRenew == "True")
+포털을 삭제하기 전에 자동 청구 기능이 꺼져 있는지 확인하세요. "Avangate 계정":"https://secure.avangate.com/myaccount/" 에서 자동 결제 상태를 확인할 수 있습니다.
+#end
+
+그래도 "${__VirtualRootPath}":"${__VirtualRootPath}" 포털을 삭제하고 싶다면 아래 링크를 따라 작업을 확인해주세요.
+
+$GreenButton
+
+*알림*: 이 링크는 7일 동안만 유효합니다. 기간 내에 포털 삭제 프로세스를 완료하세요.
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+감사합니다,
+ONLYOFFICE™ 지원팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) 포털 삭제
+
+$OwnerName님,
+
+[${__VirtualRootPath}](${__VirtualRootPath}) 포털의 영구 삭제를 요청하셨습니다.
+
+_중요! 포털에 저장된 모든 데이터 및 등록 정보를 잃게 되며 복구할 수 없습니다._
+
+#if($AutoRenew == "True")
+포털을 삭제하기 전에 자동 청구 기능이 꺼져 있는지 확인하세요. [Avangate 계정](https://secure.avangate.com/myaccount/")에서 자동 결제 상태를 확인할 수 있습니다.
+#end
+
+그래도 [${__VirtualRootPath}](${__VirtualRootPath}) 포털을 삭제하고 싶다면 아래 링크를 따라 작업을 확인해주세요.
+
+$GreenButton
+
+_알림_: 이 링크는 7일 동안만 유효합니다. 기간 내에 포털 삭제 프로세스를 완료하세요.
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+감사합니다,
+ONLYOFFICE™ 지원팀
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_rename" xml:space="preserve">
+    <value>h1.포털 주소 변경
+
+$UserDisplayName님,
+
+고객님의 $PortalUrl 포털 주소가 새로운 "${__VirtualRootPath}":"${__VirtualRootPath}" 주소로 변경되었습니다.
+
+*알림*: DNS 설정 및 싱글 사인-온 옵션은 고객님께서 변경할 때까지 작동하지 않습니다.</value>
+  </data>
+  <data name="pattern_profile_delete" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 포털에서 프로필 삭제
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" 포털에서 고객님의 프로필의 영구 삭제를 요청하셨습니다.
+
+그래도 프로필을 삭제하고 싶다면 아래 링크를 따라 작업을 확인해주세요.
+
+$GreenButton
+
+*알림*: 이 링크는 7일 동안만 유효합니다. 기간 내에 프로필 삭제 프로세스를 완료하세요.</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>"$FromUserName":"$FromUserLink" 사용자가 자신의 프로필을 삭제하였으며 이 프로필은 현재 차단되었습니다. 모든 사용자 파일은 여전히 해당 사용자에게 할당된 상태로 디스크 공간을 차지합니다.
+
+다른 사용자와 공유한 사용자의 문서를 다른 활성 사용자에게 다시 할당하거나 삭제하여 포털 디스크 공간을 확보할 수 있습니다.
+
+문서를 다른 사용자에게 다시 할당하거나 데이터를 삭제하려면 "이 링크":"$FromUserLink" 를 사용하세요.</value>
+  </data>
+  <data name="pattern_profile_updated" xml:space="preserve">
+    <value>h1."$__VirtualRootPath":"$__VirtualRootPath"의 프로필이 변경되었습니다
+
+$UserName님,
+
+"$__AuthorName":"$__AuthorUrl" 님이 "$__VirtualRootPath":"$__VirtualRootPath" 의 고객님의 사용자 프로필 정보를 변경했습니다.
+
+아래 링크에서 프로필을 확인하세요:
+"$UserName":"$MyStaffLink"</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath})의 프로필이 변경되었습니다
+
+$UserName님,
+
+[$__AuthorName]($__AuthorUrl)님이 [${__VirtualRootPath}](${__VirtualRootPath})의 고객님의 사용자 프로필 정보를 변경했습니다.
+
+아래 링크에서 프로필을 확인하세요:
+[$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_reassigns_completed" xml:space="preserve">
+    <value>$UserName님,
+
+"$FromUserName":"$FromUserLink" 사용자에서 "$ToUserName":"$ToUserLink" 사용자로의 데이터 재할당 프로세스가 성공적으로 완료되었습니다.</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>$UserName님,
+
+"$FromUserName":"$FromUserLink" 사용자에서 "$ToUserName":"$ToUserLink" 사용자로의 데이터 재할당 프로세스가 실패했습니다.
+
+예외 메시지: $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>$UserName님,
+
+"$FromUserName":"$FromUserLink" 사용자의 데이터 삭제 프로세스가 성공적으로 완료되었습니다.
+
+무료로 허용된 개인 데이터 삭제:
+
+# 문서 - $DocsSpace
+# CRM - $CrmSpace
+# 메일 - $MailSpace
+# 토크 - $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>$UserName님,
+
+"$FromUserName":"$FromUserLink" 사용자에 대한 데이터 삭제 프로세스가 실패했습니다.
+
+예외 메시지: $Message</value>
+  </data>
+  <data name="pattern_request_license" xml:space="preserve">
+    <value>h1.엔터프라이즈 라이선스 요청
+
+h3.이름
+$UserName
+
+h3.성
+$UserLastName
+
+h3.직위
+$Position
+
+h3.이메일
+"$UserEmail":"mailto:$UserEmail"
+
+h3.휴대폰
+$Phone
+
+h3.회사 웹사이트
+$Website
+
+h3.회사명
+$CompanyTitle
+
+h3.회사 규모
+$CompanySize
+
+h3.요청 콘텐츠
+$Body
+
+h3.포털 주소
+"${__VirtualRootPath}":"${__VirtualRootPath}"</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 에 대한 SAAS 관세 요청
+
+h3.이름
+$UserName
+
+h3.성
+$UserLastName
+
+h3.직위
+$Position
+
+h3.이메일
+"$UserEmail":"mailto:$UserEmail"
+
+h3.휴대폰
+$Phone
+
+h3.회사 웹사이트
+$Website
+
+h3.회사명
+$CompanyTitle
+
+h3.회사 규모
+$CompanySize
+
+h3.요청 콘텐츠
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.포털 복원
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+고객님의 포털이 복원되었습니다. 액세스하기 위해 새로운 비밀번호를 설정해야 합니다.
+
+$GreenButton
+
+*알림*: 이 링크는 7일 동안만 유효합니다.
+
+실수로 이 이메일을 받은 경우 무시하거나 "${__VirtualRootPath}":"${__VirtualRootPath}" 포털 관리자에게 자세한 내용을 문의하세요.</value>
+  </data>
+  <data name="pattern_restore_started" xml:space="preserve">
+    <value>h1.포털 복원이 시작되었습니다
+
+포털 복원이 시작되었습니다. 데이터 양에 따라 다소 시간이 소요될 수 있습니다.
+
+*알림*: 복원 프로세스 중에는 포털을 사용할 수 없습니다.
+
+문의 사항이 있거나 도움이 필요한 경우 언제든지 연락주세요: "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+감사합니다,
+ONLYOFFICE™ 지원팀
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^알림 유형을 관리하려면 "구독 설정":"$RecipientSubscriptionConfigURL"을 변경하세요.^</value>
+  </data>
+  <data name="pattern_self_profile_updated" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 포털 프로필 변경 알림
+
+"$__AuthorName":"$__AuthorUrl" 님이 "${__VirtualRootPath}":"${__VirtualRootPath}" 포털의 자신의 프로필 정보를 변경했습니다.
+
+
+^프로필 업데이트에 대한 알림을 받고 싶지 않은 경우 "구독 설정":"$RecipientSubscriptionConfigURL" 을 변경하세요.^</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) 포털 프로필 변경 알림
+
+[$__AuthorName]($__AuthorUrl)님이 [${__VirtualRootPath}](${__VirtualRootPath}) 포털의 자신의 프로필 정보를 변경했습니다.</value>
+  </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.$Date, 고객님의 DocSpace의 새 소식입니다
+
+#foreach($Activities 내 $activity)
+$activity
+
+#end</value>
+  </data>
+  <data name="pattern_smtp_test" xml:space="preserve">
+    <value>SMTP 테스트 메시지
+
+이 메시지는 SMTP 설정을 테스트하기 위해 자동으로 생성된 메시지입니다. 이 메시지를 확인하고 계신 경우 해당 설정이 올바르며 포털에서 사용할 수 있음을 의미합니다.
+
+
+감사합니다,
+ONLYOFFICE 팀</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+"${PortalUrl}":"${PortalUrl}" 포털의 파일 복호화 프로세스가 실패했습니다.
+
+일부 파일을 복호화하지 못했습니다. 자세한 내용은 "제어판":"${ControlPanelUrl}/storage" 에서 확인하세요.</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+"${PortalUrl}":"${PortalUrl}" 포털의 파일 복호화 프로세스가 시작되었습니다.
+
+복호화에 다소 시간이 소요될 수 있으므로 포털을 일시적으로 사용할 수 없습니다. 복호화가 완료되는 즉시 데이터 작업을 다시 할 수 있습니다.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+"${PortalUrl}":"${PortalUrl}" 포털의 파일 복호화 프로세스가 성공적으로 완료되었습니다.
+
+포털을 다시 사용할 수 있습니다.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+"${PortalUrl}":"${PortalUrl}" 포털의 파일 암호화 프로세스가 실패했습니다.
+
+일부 파일을 암호화하지 못했습니다. 자세한 내용은 "제어판":"${ControlPanelUrl}/storage" 에서 확인하세요.</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+"${PortalUrl}":"${PortalUrl}" 포털의 파일 암호화 프로세스가 시작되었습니다.
+
+암호화에 다소 시간이 소요될 수 있으므로 포털을 일시적으로 사용할 수 없습니다. 암호화가 완료되는 즉시 데이터 작업을 다시 할 수 있습니다.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+"${PortalUrl}":"${PortalUrl}" 포털의 파일 암호화 프로세스가 성공적으로 완료되었습니다.
+
+포털을 다시 사용할 수 있습니다.</value>
+  </data>
+  <data name="pattern_user_has_join" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 포털에 새로운 사용자가 추가되었습니다
+
+"$__AuthorName":"$__AuthorUrl"님이 "${__VirtualRootPath}":"${__VirtualRootPath}"의 포털에 합류했습니다.
+
+
+^새로운 사용자에 대한 알림을 받고 싶지 않은 경우 "구독 설정":"$RecipientSubscriptionConfigURL" 을 변경하세요.^</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) 포털에 새로운 사용자가 추가되었습니다
+[$__AuthorName]($__AuthorUrl)님이 [${__VirtualRootPath}](${__VirtualRootPath})의 포털에 합류했습니다.</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>$UserName님,
+
+고객님께서는 공동 작업을 향상시켜 줄 회사의 보안 웹오피스에 초대받으셨습니다. 해당 주소는 "${__VirtualRootPath}":"${__VirtualRootPath}"입니다. 앞으로 많이 사용하게 될 이 링크를 북마크에 추가하세요. 
+
+아래 링크를 따라 초대를 수락하고 회사 계정의 로그인 및 비밀번호를 사용하여 로그인하세요. 
+
+$GreenButton
+
+링크는 7일 동안만 유효합니다.</value>
+  </data>
 </root>
