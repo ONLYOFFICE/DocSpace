@@ -21,7 +21,9 @@ import HelpButton from "@docspace/components/help-button";
 import Link from "@docspace/components/link";
 import Badge from "@docspace/components/badge";
 
+import GetCodeDialog from "./sub-components/GetCodeDialog";
 import CSP from "./sub-components/csp";
+import Button from "@docspace/components/button";
 
 const SDKContainer = styled(Box)`
   @media ${tablet} {
@@ -62,7 +64,9 @@ const CategorySubHeader = styled.div`
   line-height: 16px;
 
   @media ${tablet} {
-    margin-bottom: 0;
+    &:not(&.copy-window-code) {
+      margin-bottom: 0;
+    }
   }
 
   @media ${hugeMobile} {
@@ -85,6 +89,12 @@ const ControlsGroup = styled(Box)`
   @media ${tablet} {
     gap: 4px;
   }
+`;
+
+const LabelGroup = styled(Box)`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 `;
 
 const InterfaceElements = styled(Box)`
@@ -157,6 +167,16 @@ const Preview = styled(Box)`
   }
 `;
 
+const GetCodeButton = styled(Button)`
+  margin-top: 34px;
+`;
+
+const FilesSelectorInputWrapper = styled.div`
+  & > div {
+    margin: 0;
+  }
+`;
+
 const PortalIntegration = (props) => {
   const { t, setDocumentTitle, currentColorScheme, sdkLink } = props;
 
@@ -190,6 +210,7 @@ const PortalIntegration = (props) => {
   const [width, setWidth] = useState("100");
   const [height, setHeight] = useState("600");
   const [withSubfolders, setWithSubfolders] = useState(true);
+  const [isGetCodeDialogOpened, setIsGetCodeDialogOpened] = useState(false);
 
   const [config, setConfig] = useState({
     width: `${width}${widthDimension.label}`,
@@ -343,6 +364,9 @@ const PortalIntegration = (props) => {
     });
   };
 
+  const openGetCodeModal = () => setIsGetCodeDialogOpened(true);
+  const closeGetCodeModal = () => setIsGetCodeDialogOpened(false);
+
   const codeBlock = `<div id="${frameId}">Fallback text</div>\n<script src="${scriptUrl}${params}"></script>`;
 
   const preview = (
@@ -354,7 +378,9 @@ const PortalIntegration = (props) => {
 
   const code = (
     <>
-      <CategorySubHeader>{t("CopyWindowCode")}</CategorySubHeader>
+      <CategorySubHeader className="copy-window-code">
+        {t("CopyWindowCode")}
+      </CategorySubHeader>
       <Textarea value={codeBlock} />
     </>
   );
@@ -475,13 +501,7 @@ const PortalIntegration = (props) => {
           </InterfaceElements>
           <CategorySubHeader>{t("DataDisplay")}</CategorySubHeader>
           <ControlsGroup>
-            <Box
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "4px",
-              }}
-            >
+            <LabelGroup>
               <Label className="label" text={t("RoomOrFolder")} />
               <HelpButton
                 offsetRight={0}
@@ -490,8 +510,10 @@ const PortalIntegration = (props) => {
                   <Text fontSize="12px">{t("RoomOrFolderDescription")}</Text>
                 }
               />
-            </Box>
-            <FilesSelectorInput onSelectFolder={onChangeFolderId} />
+            </LabelGroup>
+            <FilesSelectorInputWrapper>
+              <FilesSelectorInput onSelectFolder={onChangeFolderId} />
+            </FilesSelectorInputWrapper>
           </ControlsGroup>
           <CategorySubHeader>{t("AdvancedDisplay")}</CategorySubHeader>
           <ControlsGroup>
@@ -534,13 +556,7 @@ const PortalIntegration = (props) => {
             />
           </ControlsGroup>
           <ControlsGroup>
-            <Box
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
+            <LabelGroup>
               <Label className="label" text={t("ItemsCount")} />
               <HelpButton
                 offsetRight={0}
@@ -549,7 +565,7 @@ const PortalIntegration = (props) => {
                   <Text fontSize="12px">{t("ItemsCountDescription")}</Text>
                 }
               />
-            </Box>
+            </LabelGroup>
             <TextInput
               scale={true}
               onChange={onChangeCount}
@@ -570,6 +586,25 @@ const PortalIntegration = (props) => {
             />
           </ControlsGroup>
         </Controls>
+
+        {isMobileOnly && (
+          <>
+            <GetCodeButton
+              id="get-sdk-code-button"
+              primary
+              size="normal"
+              label={t("GetCode")}
+              onClick={openGetCodeModal}
+            />
+
+            <GetCodeDialog
+              t={t}
+              visible={isGetCodeDialogOpened}
+              codeBlock={codeBlock}
+              onClose={closeGetCodeModal}
+            />
+          </>
+        )}
       </Container>
     </SDKContainer>
   );
