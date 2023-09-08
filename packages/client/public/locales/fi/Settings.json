@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Palautusvirhe. Palautustiedostoa ei ole valittu.",
   "RestoreBackup": "Tiedon Palautus",
   "RestoreBackupDescription": "Käytä tätä, jos haluat palauttaa sivuston sisällön aiemmin tehdyltä varmuuskopiolta.",
-  "RestoreBackupResetInfoWarningText": "Kaikki nykyiset salasanat nollataan. Tilan käyttäjät saavat sähköpostiviestin, jossa on pääsyn palautuslinkki.",
-  "RestoreBackupWarningText": "Tila ei ole saatavilla palautuksen aikana. Siinä vaiheessa kun palautus on valmis, kaikki tehdyt muutokset, jotka ovat tehty halutun palautuspisteen jälkeen, ovat menetettyjä.",
   "RestoreDefaultButton": "Palauta oletus",
   "RoomsModule": "Varmuuskopioi huone",
   "RoomsModuleDescription": "Voit luoda uuden huoneen erityisesti varmuuskopiolle, valita yhden olemassa olevista huoneista, tai tallentaa kopioin heidän {{roomName}} huoneeseen.",

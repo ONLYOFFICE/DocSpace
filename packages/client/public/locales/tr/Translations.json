@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Uzman kullanıcılar odada dosya oluşturabilir ve düzenleyebilirler fakat oda oluşturamaz, kullanıcıları yönetemez veya ayarlara erişemezler.",
   "RoleReviewer": "İnceleyen",
   "RoleReviewerDescription": "Mevcut dosyalarla işlemler: görüntüleme, gözden geçirme, yorum yapma.",
-  "RoleRoomAdminDescription": "Oda yöneticileri, atanan odaları oluşturabilir ve yönetebilir, yeni kullanıcıları davet edebilir ve seviyelerinin altında roller atayabilir. Tüm yöneticilerin Kişisel bölümüne erişimi vardır.",
   "RoleUserDescription": "Kullanıcılar, yalnızca yöneticiler tarafından davet edildikleri odalara erişebilir. Kendi odalarını, klasörlerini veya dosyalarını oluşturamazlar.",
   "RoleViewer": "Görüntüleyici",
   "RoleViewerDescription": "Dosya görüntüleme",
