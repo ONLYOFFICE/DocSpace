@@ -65,7 +65,7 @@ const CreatePortalDialog = () => {
       lastName,
       email,
       portalName: name,
-      limitedAccessSpace: false,
+      limitedAccessSpace: restrictAccess,
     };
     try {
       const res = await createNewPortal(data);
