@@ -46,24 +46,17 @@ const NewFilesPanel = (props) => {
     t,
     visible,
     isLoading,
-    theme,
   } = props;
 
   const [readingFiles, setReadingFiles] = useState([]);
-  const [listFiles, setListFiles] = useState([]);
+  const [listFiles, setListFiles] = useState(newFiles);
   const [inProgress, setInProgress] = useState(false);
 
-  useEffect(() => {
-    if (newFiles.length === readingFiles.length) onClose();
-
-    onUpdateListFiles();
-  }, [newFiles, readingFiles, onUpdateListFiles]);
-
-  const onUpdateListFiles = () => {
+  const onUpdateListFiles = (newReadingFiles) => {
     let rendListFiles = [];
 
     newFiles.forEach((file) => {
-      const fileHasRead = readingFiles.find(
+      const fileHasRead = newReadingFiles.find(
         (readingFile) => readingFile === file.id.toString()
       );
 
@@ -138,17 +131,15 @@ const NewFilesPanel = (props) => {
 
     const item = newFiles.find((file) => file.id.toString() === id);
 
-    if (readingFiles.includes(id)) {
-      setInProgress(false);
-      return onFileClick(item);
-    }
-
     markAsRead(folderIds, fileIds, item)
       .then(() => {
-        setReadingFiles([...readingFiles, id]);
+        const newReadingFiles = [...readingFiles, id];
+        setReadingFiles(newReadingFiles);
         setInProgress(false);
 
         onFileClick(item);
+        if (newFiles.length === newReadingFiles.length) onClose();
+        onUpdateListFiles(newReadingFiles);
       })
       .catch((err) => toastr.error(err));
   };
@@ -335,12 +326,7 @@ export default inject(
     settingsStore,
     clientLoadingStore,
   }) => {
-    const {
-      addFileToRecentlyViewed,
-
-      hasNew,
-      refreshFiles,
-    } = filesStore;
+    const { addFileToRecentlyViewed, hasNew, refreshFiles } = filesStore;
 
     const { setIsSectionFilterLoading, isLoading } = clientLoadingStore;
 
