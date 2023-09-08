@@ -7,6 +7,7 @@
   "InvalidUsernameOrPassword": "Nome utente o password non validi.",
   "LoginWithAccountNotFound": "E' impossibile trovare l'account associato. Collega un account di rete sociale nella pagina di modifica del profilo.",
   "LoginWithBruteForce": "Autorizzazione temporaneamente bloccata.",
+  "LoginWithBruteForceCaptcha": "Conferma che non sei un robot",
   "RecaptchaInvalid": "Recaptcha non valido",
   "SsoAttributesNotFound": "Autenticazione non riuscita (attributi di asserzione non trovati)",
   "SsoAuthFailed": "Autenticazione fallita",

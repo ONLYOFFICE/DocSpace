@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Napaka pri obnovitvi. Datoteka za obnovitev ni izbrana.",
   "RestoreBackup": "Obnovitev podatkov",
   "RestoreBackupDescription": "S to opcijo obnovite svoj prostor iz predhodno shranjene varnostne kopije.",
-  "RestoreBackupResetInfoWarningText": "Vsa trenutna gesla bodo ponastavljena. Uporabniki prostora bodo prejeli e-pošto s povezavo za obnovitev dostopa.",
-  "RestoreBackupWarningText": "Prostor bo med postopkom obnavljanja postal nedostopen. Po končani obnovi bodo vse spremembe, storjene po izbranem datumu obnove, izgubljene.",
   "RestoreDefaultButton": "Obnovi na privzeto",
   "RoomsModule": "Varnostno kopiranje sobe",
   "RoomsModuleDescription": "Ustvarite lahko novo sobo posebej za varnostno kopijo, izberete eno od obstoječih sob ali shranite kopijo v njihovo {{roomName}} sobo.",

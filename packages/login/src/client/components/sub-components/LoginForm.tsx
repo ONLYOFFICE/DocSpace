@@ -352,7 +352,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                     className="login-checkbox"
                     isChecked={isChecked}
                     onChange={onChangeCheckbox}
-                    label={t("Remember")}
+                    label={t("Common:Remember")}
                     helpButton={
                       !checkIsSSR() && (
                         <HelpButton

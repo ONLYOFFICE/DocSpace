@@ -21,12 +21,12 @@ const StyledWrapper = styled.div`
 
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
-    padding-right: 30px;
+    padding-inline-end: 30px;
     text-overflow: ellipsis;
   }
 
   .mr-8 {
-    margin-right: 8px;
+    margin-inline-end: 8px;
   }
   .textOverflow {
     white-space: nowrap;
@@ -110,7 +110,10 @@ const WebhooksTableRow = (props) => {
   return (
     <>
       <StyledWrapper onClick={handleRowClick}>
-        <StyledTableRow contextOptions={contextOptions} hideColumns={hideColumns}>
+        <StyledTableRow
+          contextOptions={contextOptions}
+          hideColumns={hideColumns}
+        >
           <TableCell>
             <Text as="span" fontWeight={600} className="mr-8 textOverflow">
               {webhook.name}{" "}
@@ -123,7 +126,8 @@ const WebhooksTableRow = (props) => {
               fontSize="11px"
               color="#A3A9AE"
               fontWeight={600}
-              className="textOverflow">
+              className="textOverflow"
+            >
               {webhook.uri}
             </Text>
           </TableCell>

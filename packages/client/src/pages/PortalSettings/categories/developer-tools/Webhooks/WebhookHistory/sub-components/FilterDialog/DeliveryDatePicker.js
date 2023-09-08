@@ -21,7 +21,7 @@ const Selectors = styled.div`
   align-items: center;
 
   .mr-8 {
-    margin-right: 8px;
+    margin-inline-end: 8px;
   }
 
   .selectedItem {
@@ -30,14 +30,14 @@ const Selectors = styled.div`
 `;
 
 const TimePickerCell = styled.span`
-  margin-left: 8px;
+  margin-inline-start: 8px;
   display: inline-flex;
   align-items: center;
 
   .timePickerItem {
     display: inline-flex;
     align-items: center;
-    margin-right: 16px;
+    margin-inline-end: 16px;
   }
 `;
 
@@ -48,12 +48,17 @@ const StyledCalendar = styled(Calendar)`
     css`
       position: fixed;
       bottom: 0;
-      left: 0;
+      inset-inline-start: 0;
     `}
 `;
 
-const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) => {
-  const { t } = useTranslation(["Webhooks"]);
+const DeliveryDatePicker = ({
+  filters,
+  setFilters,
+  isApplied,
+  setIsApplied,
+}) => {
+  const { t } = useTranslation(["Webhooks", "Common"]);
 
   const calendarRef = useRef();
   const selectorRef = useRef();
@@ -91,7 +96,8 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
     }));
   };
 
-  const toggleCalendar = () => setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
+  const toggleCalendar = () =>
+    setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
 
   const closeCalendar = () => {
     setIsApplied(false);
@@ -114,7 +120,9 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
   const SelectedDateTime = () => {
     const formattedTime = isTimeEqual
       ? ""
-      : ` ${filters.deliveryFrom.format("HH:mm")} - ${moment(filters.deliveryTo).format("HH:mm")}`;
+      : ` ${filters.deliveryFrom.format("HH:mm")} - ${moment(
+          filters.deliveryTo
+        ).format("HH:mm")}`;
 
     return (
       <div>
@@ -135,18 +143,25 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
       setIsCalendarOpen(false);
   };
   const isEqualDates = (firstDate, secondDate) => {
-    return firstDate.format("YYYY-MM-D HH:mm") === secondDate.format("YYYY-MM-D HH:mm");
+    return (
+      firstDate.format("YYYY-MM-D HH:mm") ===
+      secondDate.format("YYYY-MM-D HH:mm")
+    );
   };
 
   const isTimeEqual =
-    isEqualDates(filters.deliveryFrom, filters.deliveryFrom.clone().startOf("day")) &&
+    isEqualDates(
+      filters.deliveryFrom,
+      filters.deliveryFrom.clone().startOf("day")
+    ) &&
     isEqualDates(filters.deliveryTo, filters.deliveryTo.clone().endOf("day"));
 
   const isTimeValid = filters.deliveryTo > filters.deliveryFrom;
 
   useEffect(() => {
     document.addEventListener("click", handleClick, { capture: true });
-    return () => document.removeEventListener("click", handleClick, { capture: true });
+    return () =>
+      document.removeEventListener("click", handleClick, { capture: true });
   }, []);
 
   return (
@@ -170,7 +185,12 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
           (isTimeOpen ? (
             <TimePickerCell>
               <span className="timePickerItem">
-                <Text isInline fontWeight={600} color="#A3A9AE" className="mr-8">
+                <Text
+                  isInline
+                  fontWeight={600}
+                  color="#A3A9AE"
+                  className="mr-8"
+                >
                   {t("From")}
                 </Text>
                 <TimePicker
@@ -195,7 +215,7 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
           ) : (
             <TimePickerCell>
               <SelectorAddButton
-                title={t("Add")}
+                title={t("Common:AddButton")}
                 onClick={showTimePicker}
                 className="mr-8 add-delivery-time-button"
               />
