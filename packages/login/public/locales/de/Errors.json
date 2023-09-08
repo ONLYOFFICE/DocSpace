@@ -7,6 +7,7 @@
   "InvalidUsernameOrPassword": "Ungültiger Name oder Kennwort.",
   "LoginWithAccountNotFound": "Kein angeschlossenes fremdes Konto gefunden. Schließen Sie zuerst Ihr Konto eines sozialen Netzwerks auf Ihrer Profilseite an.",
   "LoginWithBruteForce": "Autorisierung ist vorübergehend gesperrt",
+  "LoginWithBruteForceCaptcha": "Bestätigen Sie, dass Sie kein Roboter sind",
   "RecaptchaInvalid": "Ungültiges Recaptcha",
   "SsoAttributesNotFound": "Authentifizierung fehlgeschlagen",
   "SsoAuthFailed": "Authentifizierung fehlgeschlagen",
