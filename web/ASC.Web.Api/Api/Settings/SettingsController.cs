@@ -46,6 +46,7 @@ public class SettingsController : BaseSettingsController
     private readonly WebItemManagerSecurity _webItemManagerSecurity;
     private readonly TenantInfoSettingsHelper _tenantInfoSettingsHelper;
     private readonly TenantUtil _tenantUtil;
+    private readonly CoreSettings _coreSettings;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly IConfiguration _configuration;
@@ -76,6 +77,7 @@ public class SettingsController : BaseSettingsController
         WebItemManagerSecurity webItemManagerSecurity,
         TenantInfoSettingsHelper tenantInfoSettingsHelper,
         TenantUtil tenantUtil,
+        CoreSettings coreSettings,
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
         IConfiguration configuration,
@@ -115,6 +117,7 @@ public class SettingsController : BaseSettingsController
         _webItemManagerSecurity = webItemManagerSecurity;
         _tenantInfoSettingsHelper = tenantInfoSettingsHelper;
         _tenantUtil = tenantUtil;
+        _coreSettings = coreSettings;
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
         _configuration = configuration;
@@ -157,7 +160,7 @@ public class SettingsController : BaseSettingsController
             Personal = _coreBaseSettings.Personal,
             DocSpace = !_coreBaseSettings.DisableDocSpace,
             Standalone = _coreBaseSettings.Standalone,
-            BaseDomain = _coreBaseSettings.Basedomain,
+            BaseDomain = _coreBaseSettings.Standalone ? await _coreSettings.GetSettingAsync("BaseDomain") ?? _coreBaseSettings.Basedomain : _coreBaseSettings.Basedomain,
             Version = _configuration["version:number"] ?? "",
             TenantStatus = (await _tenantManager.GetCurrentTenantAsync()).Status,
             TenantAlias = Tenant.Alias,
