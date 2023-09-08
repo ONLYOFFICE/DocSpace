@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Vyskytla sa chyba. Nie je vybratý zálohový súbor.",
   "RestoreBackup": "Obnova dát",
   "RestoreBackupDescription": "Túto možnosť použite na obnovenie Vášho priestoru z predtým uloženého záložného súboru.",
-  "RestoreBackupResetInfoWarningText": "Všetky aktuálne heslá budú obnovené. Používatelia priestoru dostanú e-mail s odkazom na obnovenie prístupu.",
-  "RestoreBackupWarningText": "Počas procesu obnovenia sa priestor stane nedostupným. Po dokončení obnovenia sa všetky zmeny vykonané po dátume zvoleného bodu obnovenia stratia.",
   "RestoreDefaultButton": "Obnoviť predvolené",
   "RoomsModule": "Zálohovať miestnosť",
   "RoomsModuleDescription": "Môžete vytvoriť novú miestnosť špeciálne na zálohovanie, vybrať jednu z existujúcich miestností alebo uložiť kópiu do svojej miestnosti {{roomName}}.",

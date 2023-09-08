@@ -5,5 +5,9 @@
   "ErrorDeactivatedText": "Այս DocSpace-ն ապաակտիվացված է",
   "ErrorEmptyResponse": "Դատարկ պատասխան",
   "ErrorOfflineText": "Ինտերնետ կապ չի գտնվել",
-  "ErrorUnavailableText": "DocSpace-ը առկա չէ"
+  "ErrorUnavailableText": "DocSpace-ը առկա չէ",
+  "ExpiredLink": "Ժամկետանց հղում",
+  "InvalidLink": "Անվավեր հղում",
+  "LinkDoesNotExist": "Հղումը, որը փորձում եք բացել, գոյություն չունի:",
+  "LinkHasExpired": "Ձեր հետևած հղումը ժամկետանց է:"
 }
