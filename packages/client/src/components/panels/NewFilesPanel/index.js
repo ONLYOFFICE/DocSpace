@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
 import Backdrop from "@docspace/components/backdrop";
-import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
 import Text from "@docspace/components/text";
 import Heading from "@docspace/components/heading";
@@ -17,6 +16,7 @@ import {
   StyledBody,
   StyledFooter,
   StyledSharingBody,
+  StyledLink,
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
@@ -52,7 +52,6 @@ const NewFilesPanel = (props) => {
   const [readingFiles, setReadingFiles] = useState([]);
   const [listFiles, setListFiles] = useState([]);
   const [inProgress, setInProgress] = useState(false);
-  const zIndex = 310;
 
   useEffect(() => {
     if (newFiles.length === readingFiles.length) onClose();
@@ -253,12 +252,11 @@ const NewFilesPanel = (props) => {
 
       return (
         <Row key={file.id} element={element}>
-          <Link
+          <StyledLink
             onClick={onNewFileClick}
             containerWidth="100%"
             type="page"
             fontWeight={600}
-            color={theme.filesPanels.color}
             isTextOverflow
             truncate
             title={file.title}
@@ -268,18 +266,18 @@ const NewFilesPanel = (props) => {
             data-extension={file.fileExst}
           >
             {file.title}
-          </Link>
+          </StyledLink>
         </Row>
       );
     });
-  }, [onNewFileClick, theme.filesPanels.color, getItemIcon]);
+  }, [onNewFileClick, getItemIcon]);
 
   return (
     <StyledAsidePanel visible={visible}>
       <Backdrop
         onClick={onClose}
         visible={visible}
-        zIndex={zIndex}
+        zIndex={310}
         isAside={true}
       />
       <Aside className="header_aside-panel" visible={visible} onClose={onClose}>
