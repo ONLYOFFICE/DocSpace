@@ -83,6 +83,17 @@ const ThirdParty = loadable(() =>
 const SingleSignOn = loadable(() =>
   import("../pages/PortalSettings/categories/integration/SingleSignOn")
 );
+const SPSettings = loadable(() =>
+  import(
+    "../pages/PortalSettings/categories/integration/SingleSignOn/SPSettings"
+  )
+);
+const SPMetadata = loadable(() =>
+  import(
+    "../pages/PortalSettings/categories/integration/SingleSignOn/ProviderMetadata"
+  )
+);
+
 const DeveloperTools = loadable(() =>
   import("../pages/PortalSettings/categories/developer-tools/index.js")
 );
@@ -206,7 +217,7 @@ const PortalSettingsRoutes = {
     },
     {
       path: "integration",
-      element: <Integration />,
+      element: <Navigate to="integration/third-party-services" />,
     },
     {
       path: "integration/third-party-services",
@@ -215,6 +226,14 @@ const PortalSettingsRoutes = {
     {
       path: "integration/single-sign-on",
       element: <Integration />,
+    },
+    {
+      path: "integration/single-sign-on/sp-settings",
+      element: <SPSettings />,
+    },
+    {
+      path: "integration/single-sign-on/sp-metadata",
+      element: <SPMetadata />,
     },
     {
       path: "integration/portal-integration",

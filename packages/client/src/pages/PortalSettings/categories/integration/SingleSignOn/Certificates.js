@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +19,12 @@ import {
   decryptAlgorithmsOptions,
   verifyAlgorithmsOptions,
 } from "./sub-components/constants";
+
+const StyledWrapper = styled.div`
+  .icon-button {
+    padding: 0 5px;
+  }
+`;
 
 const Certificates = (props) => {
   const { t } = useTranslation("SingleSignOn");
@@ -54,7 +61,7 @@ const Certificates = (props) => {
   }
 
   return (
-    <Box>
+    <StyledWrapper>
       <Box
         alignItems="center"
         displayProp="flex"
@@ -165,7 +172,7 @@ const Certificates = (props) => {
           )}
         </>
       )}
-    </Box>
+    </StyledWrapper>
   );
 };
 
