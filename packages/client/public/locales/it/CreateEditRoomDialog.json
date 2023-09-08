@@ -12,6 +12,8 @@
   "MakeRoomPrivateDescription": "Tutti i file in questa stanza verranno crittografati.",
   "MakeRoomPrivateLimitationsWarningDescription": "Con questa funzione, puoi invitare solo gli utenti esistenti di DocSpace. Dopo aver creato una stanza, non sarai in grado di modificare l’elenco degli utenti.",
   "MakeRoomPrivateTitle": "Rendi la stanza privata",
+  "PublicRoomBarDescription": "Questa stanza è disponibile per chiunque abbia il link. Gli utenti esterni avranno l'autorizzazione di sola visualizzazione per tutti i file.",
+  "PublicRoomDescription": "Invita gli utenti tramite link esterni a visualizzare i documenti senza registrazione. Puoi anche incorporare questa stanza in qualsiasi interfaccia web.",
   "ReviewRoomDescription": "Richiedi una revisione o dei commenti sui documenti",
   "ReviewRoomTitle": "Rivedi la stanza",
   "RoomEditing": "Modifica della stanza",
