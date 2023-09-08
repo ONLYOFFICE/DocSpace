@@ -58,7 +58,7 @@ const DeliveryDatePicker = ({
   isApplied,
   setIsApplied,
 }) => {
-  const { t } = useTranslation(["Webhooks"]);
+  const { t } = useTranslation(["Webhooks", "Common"]);
 
   const calendarRef = useRef();
   const selectorRef = useRef();
@@ -215,7 +215,7 @@ const DeliveryDatePicker = ({
           ) : (
             <TimePickerCell>
               <SelectorAddButton
-                title={t("Add")}
+                title={t("Common:AddButton")}
                 onClick={showTimePicker}
                 className="mr-8 add-delivery-time-button"
               />
