@@ -113,7 +113,6 @@ const NewFilesPanel = (props) => {
 
     markAsRead(folderIds, fileIds, item)
       .then(() => {
-        setInProgress(false);
         onFileClick(item);
 
         const newListFiles = listFiles.filter(
@@ -123,7 +122,10 @@ const NewFilesPanel = (props) => {
         setListFiles(newListFiles);
         if (!newListFiles.length) onClose();
       })
-      .catch((err) => toastr.error(err));
+      .catch((err) => {
+        toastr.error(err);
+      })
+      .finally(() => setInProgress(false));
   };
 
   const onFileClick = (item) => {
