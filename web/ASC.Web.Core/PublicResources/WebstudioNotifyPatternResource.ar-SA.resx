@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>قبول</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بانشاء مستند جديد: &lt;a href={1}&gt;{2}&lt;/a&gt; في الغرفة: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بتعديل المستند: &lt;a href={1}&gt;{2}&lt;/a&gt; في الغرفة: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام برفع مستند جديد: &lt;a href={1}&gt;{2}&lt;/a&gt; في الغرفة: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بإضافة تعليق جديد إلى نسخة المستند: &lt;a href={1}&gt;{2}&lt;/a&gt; في الغرفة: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بنقل الغرفة: &lt;a href={1}&gt;{2}&lt;/a&gt; إلى الأرشيف - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بإنشاء غرفة جديدة: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بحذف الغرفة: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; أعاد تسمية الغرفة: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; تم تعيينه كـ &lt;b&gt;{1}&lt;/b&gt; iفي الغرفة: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; تم إضافته للغرفة : &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>تم إضافة مستخدم DocSpace جديد: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; تم إزالته من الغرفة: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بتغير مستوى وصول المستخدمين &lt;b&gt;{1}&lt;/b&gt; to &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>تم تحديث مستخدم DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>قبول</value>
+  </data>
+  <data name="ButtonAccessControlPanel" xml:space="preserve">
+    <value>لوحة التحكم بالوصول</value>
+  </data>
+  <data name="ButtonAccessYourPortal" xml:space="preserve">
+    <value>ادخل إلى بوابتك</value>
+  </data>
+  <data name="ButtonAccessYouWebOffice" xml:space="preserve">
+    <value>الوصول إلى مكتب الويب الخاص بك</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>انقر هنا لتنشيط عنوان بريدك الإلكتروني</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>قم بتغيير عنوان البريد الإلكتروني</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>قم بتغيير كلمة المرور</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>غير رقم الهاتف المحمول</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>تهيئة تطبيق المصادقة</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>تعاون في DocSpace</value>
+  </data>
+  <data name="ButtonConfigureRightNow" xml:space="preserve">
+    <value>التهيئة الآن</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>تأكيد</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>تأكيد دعوة DocSpace</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>تأكيد</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>تأكيد تغيير عنوان البوابة</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>تأكيد تحديث مالك البوابة</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>تأكيد دعوة الغرفة</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>تأكيد إغلاق الحساب</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>تعطيل البوابة</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>حذف البوابة الإلكترونية</value>
+  </data>
+  <data name="ButtonInviteRightNow" xml:space="preserve">
+    <value>دعوة الآن</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>انقر هنا للانضمام إلى البوابة</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>اترك تعليق</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>إزالة ملف التعريف</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>جدد الآن</value>
+  </data>
+  <data name="ButtonRequestCallButton" xml:space="preserve">
+    <value>طلب مكالمة</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>حدد خطط التسعير الآن</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>بدء الفترة التجريبية</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>استخدام الخصم</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>زيارة قسم المدفوعات</value>
+  </data>
+  <data name="subject_activate_email" xml:space="preserve">
+    <value>${LetterLogoText}. يرجى تفعيل عنوان بريدك الإلكتروني</value>
+  </data>
+  <data name="subject_backup_created" xml:space="preserve">
+    <value>${LetterLogoText}. ${__VirtualRootPath} تم إنشاء النسخ الاحتياطي للبوابة الإلكترونية</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>تأكيد تغيير بريدك الإلكتروني</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} مساعدة كلمة المرور</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>تأكيد تغيير كلمة المرور الخاصة بك</value>
+  </data>
+  <data name="subject_change_phone" xml:space="preserve">
+    <value>${LetterLogoText}. طلب تغيير الهاتف المحمول</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. إشعار الأمان</value>
+  </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. تغيير مالك البوابة الإلكترونية</value>
+  </data>
+  <data name="subject_dns_change" xml:space="preserve">
+    <value>${LetterLogoText}.تغيير عنوان البوابة الإلكترونية</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>احصل على تطبيقات ONLYOFFICE المجانية</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>احصل على تطبيقات ONLYOFFICE المجانية</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>احصل على تطبيقات ONLYOFFICE المجانية</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>عدة نصائح للعمل الفعال على مستنداتك</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>عدة نصائح للعمل الفعال على مستنداتك</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>عدة نصائح للعمل الفعال على مستنداتك</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>عدة نصائح للعمل الفعال على مستنداتك</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>اكتشف اشتراك الأعمال في ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>اكتشف اشتراك الأعمال في ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>اكتشف اشتراك الأعمال في ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>اكتشف اشتراك الأعمال في ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>انضم إلى ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>انضم إلى ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>انضم إلى ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_for_admin_notify" xml:space="preserve">
+    <value>رسالة مستخدم إلى المسؤولين</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>طلب قسم المبيعات</value>
+  </data>
+  <data name="subject_join" xml:space="preserve">
+    <value>دعوة للانضمام إلى بوابة ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. إنشاء صندوق البريد</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. تغيير كلمة مرور صندوق البريد</value>
+  </data>
+  <data name="subject_migration_error" xml:space="preserve">
+    <value>${LetterLogoText}. خطأ آخر في ترحيل مدخل المنطقة</value>
+  </data>
+  <data name="subject_migration_start" xml:space="preserve">
+    <value>${LetterLogoText}.  بدء ترحيل بوابة منطقة أخرى</value>
+  </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. اكتمل ترحيل بوابة منطقة أخرى بنجاح</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE للاستخدام الشخصي!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE الشخصي</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>قم بتسجيل الدخول إلى حساب ONLYOFFICE الشخصي الخاص بك</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE الشخصي. يرجى تفعيل عنوان بريدك الإلكتروني</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>إيقاف حساب ONLYOFFICE الشخصي</value>
+  </data>
+  <data name="subject_portal_deactivate" xml:space="preserve">
+    <value>إلغاء تنشيط بوابة ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete" xml:space="preserve">
+    <value>حذف مدخل ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>تم إلغاء تنشيط Onlyoffice DocSpace</value>
+  </data>
+  <data name="subject_portal_rename" xml:space="preserve">
+    <value>${LetterLogoText}.تغيير عنوان البوابة الإلكترونية</value>
+  </data>
+  <data name="subject_profile_delete" xml:space="preserve">
+    <value>حذف ملف التعريف الخاص بك من بوابة ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>قام المستخدم بحذف ملفه الشخصي</value>
+  </data>
+  <data name="subject_profile_updated" xml:space="preserve">
+    <value>تم تغيير ملف التعريف الخاص بك في ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}. اكتملت إعادة تعيين بيانات المستخدم</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. فشلت إعادة تعيين بيانات المستخدم</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. اكتملت إزالة بيانات المستخدم</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. فشلت إزالة بيانات المستخدم</value>
+  </data>
+  <data name="subject_request_license" xml:space="preserve">
+    <value>طلب ترخيص المؤسسة</value>
+  </data>
+  <data name="subject_request_tariff" xml:space="preserve">
+    <value>طلب خطة تسعير SaaS</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. اكتملت الاستعادة</value>
+  </data>
+  <data name="subject_restore_started" xml:space="preserve">
+    <value>${LetterLogoText}. بدأت الاستعادة</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>تكوين مساحة دوك سبيس الخاصة ب ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>سيتم حذف مساحة DocSpace الخاصة بك</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>انضم إلى ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>فترة السماح ل ONLYOFFICE DocSpace الخاص بك تنشيط</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>اشتراك Onlyoffice DocSpace على وشك الانتهاء</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>انتهت صلاحية فترة السماح ل ONLYOFFICE DocSpace الخاص بك</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>فترة السماح ل ONLYOFFICE DocSpace الخاص بك تنتهي غدا</value>
+  </data>
+  <data name="subject_self_profile_updated" xml:space="preserve">
+    <value>${__VirtualRootPath} إشعار تغيير ملف تعريف البوابة الإلكترونية</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>ما الجديد في البوابة الإلكترونية $Date</value>
+  </data>
+  <data name="subject_smtp_test" xml:space="preserve">
+    <value>رسالة اختبار SMTP</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. فشلت عملية فك التشفير</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. بدأت عملية فك التشفير</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. اكتملت عملية فك التشفير</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. فشلت عملية التشفير</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. بدأت عملية التشفير</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. اكتملت عملية التشفير</value>
+  </data>
+  <data name="subject_user_has_join" xml:space="preserve">
+    <value>تمت إضافة مستخدم جديد إلى بوابة ${LetterLogoText}</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>أنت مدعو للانضمام ${__VirtualRootPath}</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>مرحبا $UserName!
+
+اكتملت عملية تشفير الملفات على البوابة الإلكترونية "${PortalUrl}":"${PortalUrl}" بنجاح.
+
+البوابة الإلكترونية متاحة مرة أخرى.</value>
+  </data>
+  <data name="pattern_activate_email" xml:space="preserve">
+    <value>العنوان الرئيسي. قم بتنشيط بريدك الإلكتروني لبوابة "${__VirtualRootPath}":"$InviteLink".
+
+مرحباً!
+
+لبدء المشاركة في فترة صلاحية البوابة "${__VirtualRootPath}":"$InviteLink"تحتاج إلى تنشيط عنوان بريدك الإلكتروني. يتم ذلك لأسباب أمنية.
+
+$GreenButton
+
+هذا الرابط صالح لمدة 7 أيام فقط. يرجى إكمال تفعيل بريدك الإلكتروني خلال تلك الفترة.</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>هل تريد تغيير البريد الإلكتروني على حساب ${LetterLogoText} الخاص بك؟
+
+انقر فوق الزر أدناه وقم بتسجيل الدخول * إلى السحابة الخاصة بك.
+
+$GreenButton
+
+الرابط صالح لمدة 7 أيام.
+
+*إذا لم تقم بتسجيل الدخول إلى ${LetterLogoText} في هذا المتصفح، فستحتاج إلى استخدام بريدك الإلكتروني القديم للتأكيد. إذا كنت لا تتذكر ذلك، اتصل بمسؤول البوابة الإلكترونية.
+
+لا تريد تغيير بريدك الإلكتروني؟ فقط تجاهل هذه الرسالة.</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+أنت مدعو للانضمام الى "${__VirtualRootPath}":"${__VirtualRootPath}" كمستخدم ضيف. اقبل الدعوة بالنقر على الرابط:
+
+$GreenButton
+
+الرابط صالح لمدة 7 أيام فقط.
+
+ستحصل على مزيد من النصائح حول كيفية استخدام مكتب الويب الخاص بك. يمكنك إلغاء الاشتراكات على صفحة ملفك الشخصي في أي لحظة وكذلك إعادة تمكينها.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>عزيزي $UserName،
+
+     تم تغيير كلمة المرور لعلبة بريد &lt;b&gt;$Address&lt;/b&gt;
+
+      إذا تلقيت هذا البريد الإلكتروني عن طريق الخطأ، فيرجى تجاهله أو الاتصال بمسؤول البوابة الإلكترونية لمعرفة التفاصيل.</value>
+  </data>
+  <data name="pattern_user_has_join" xml:space="preserve">
+    <value>h1.عنوان رئيسي. تمت إضافة مستخدم جديد إلى بوابة "${__VirtualRootPath}":"${__VirtualRootPath}"  portal
+
+ "$__AuthorName":"$__AuthorUrl"انضم إلى البوابة الإلكترونية في "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+
+^إذا كنت لا ترغب في تلقي إشعارات حول المستخدمين الجدد ، فيرجى إدارة "إعدادات الاشتراك":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>تمت إضافة مستخدم جديد إلى بوابة [${__VirtualRootPath}](${__VirtualRootPath})
+[$__AuthorName]($__AuthorUrl) انضم إلى البوابة الإلكترونية في [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>مرحبا $UserName!
+
+لقد تمت دعوتك للانضمام إلى مكتب الويب الآمن والآمن لشركتك والذي من شأنه تعزيز تعاونك. عنوانها هو "${__VirtualRootPath}":"${__VirtualRootPath}".
+تعد إضافة هذا الرابط إلى إشاراتك المرجعية فكرة جيدة ، فمن المحتمل أن تستخدمه كثيرا.
+
+اقبل الدعوة باتباع الرابط أدناه واستخدم معلومات تسجيل الدخول وكلمة المرور من حساب الشركة لتسجيل الدخول.
+
+$GreenButton
+
+الرابط صالح لمدة 7 أيام فقط.</value>
+  </data>
+</root>
