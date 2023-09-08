@@ -32,7 +32,7 @@ const config = {
   devServer: {
     allowedHosts: "all",
     devMiddleware: {
-      publicPath: homepage,
+      publicPath: "/",
     },
     static: {
       directory: path.join(__dirname, "dist"),
@@ -52,14 +52,6 @@ const config = {
       progress: true,
     },
     port: 5015,
-    proxy: {
-      "/management/*": {
-        host: "127.0.0.1",
-        pathRewrite: {
-          "/management": "",
-        },
-      },
-    },
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
       // See https://github.com/facebook/create-react-app/issues/387.
