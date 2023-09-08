@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Erro na recuperação. O ficheiro de Recuperação não foi selecionado.",
   "RestoreBackup": "Restaurar Dados",
   "RestoreBackupDescription": "Utilize esta opção para restaurar o seu espaço através de uma cópia de segurança guardada anteriormente.",
-  "RestoreBackupResetInfoWarningText": "Todas as palavras-passe atuais serão redefinidas. Os utilizadores do espaço irão receber um email com um link para restaurar o acesso.",
-  "RestoreBackupWarningText": "O espaço vai ficar indisponível durante o processo de restauro. Após a restauração estar completa, todas as alterações feitas após a data do ponto de restauro serão perdidas.",
   "RestoreDefaultButton": "Restaurar para a Predefinição",
   "RoomsModule": "Sala de Apoio",
   "RoomsModuleDescription": "Pode criar uma nova sala especificamente para a cópia de segurança, escolher uma das salas existentes, ou guardar a cópia na sua sala {{roomName}}.",
