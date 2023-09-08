@@ -341,8 +341,12 @@ const withHotkeys = (Component) => {
       hotkeysFilter
     );
 
-    useHotkeys("Ctrl+c", () => copyToClipboard(t), hotkeysFilter);
-    useHotkeys("Ctrl+x", () => copyToClipboard(t, true), hotkeysFilter);
+    useHotkeys("Ctrl+c, command+c", () => copyToClipboard(t), hotkeysFilter);
+    useHotkeys(
+      "Ctrl+x, command+x",
+      () => copyToClipboard(t, true),
+      hotkeysFilter
+    );
 
     //Upload file
     useHotkeys(
