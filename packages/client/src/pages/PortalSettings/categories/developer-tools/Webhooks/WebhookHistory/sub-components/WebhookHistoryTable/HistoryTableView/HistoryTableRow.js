@@ -17,8 +17,6 @@ import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 
 import { useTranslation } from "react-i18next";
-import { getCookie } from "../../../../../../../../../../../common/utils";
-import { LANGUAGE } from "@docspace/common/constants";
 
 const StyledTableRow = styled(TableRow)`
   .textOverflow {
