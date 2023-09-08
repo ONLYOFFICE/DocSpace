@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "回復エラー。回復ファイルが選択されていません。",
   "RestoreBackup": "データ復元",
   "RestoreBackupDescription": "バックアップ・ファイルからスペースを復するためにこの操作を使用してください。",
-  "RestoreBackupResetInfoWarningText": "現在のパスワードはすべてリセットされます。スペースのユーザーには、アクセス回復のためのリンクが記載されたメールが送信されます。",
-  "RestoreBackupWarningText": "復元中は、スペースを使用できなくなります。復元が完了すると、選択した復元ポイントの日付以降に行われたすべての変更が失われます。",
   "RestoreDefaultButton": "デフォルトに戻す",
   "RoomsModule": "ルームをバックアップする",
   "RoomsModuleDescription": "バックアップのために特別に新しいルームを作るか、既存のルームの一つを選ぶか、その {{roomName}} ルムにコピーを保存することができます。",

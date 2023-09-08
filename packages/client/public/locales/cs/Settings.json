@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Chyba při obnově. Soubor pro obnovení nebyl vybrán.",
   "RestoreBackup": "Obnova dat",
   "RestoreBackupDescription": "Použijte tuto možnost pro obnovu Vašeho prostoru z předchozího souboru obnovy.",
-  "RestoreBackupResetInfoWarningText": "Všechna aktuální hesla budou resetována. Uživatelé prostoru obdrží e-mail s odkazem na obnovení přístupu.",
-  "RestoreBackupWarningText": "Prostor bude během procesu obnovy nedostupný. Poté, co je obnova dokončena, jsou všechny změny, které proběhly po datu, ke kterému jste chtěli obnovu, ztraceny.",
   "RestoreDefaultButton": "Obnovit do původního stavu",
   "RoomsModule": "Záložní místnost",
   "RoomsModuleDescription": "Můžete vytvořit novou místnost speciálně pro zálohu, vybrat jednu z existujících místností nebo uložit kopii do jejich místnosti {{roomName}}.",

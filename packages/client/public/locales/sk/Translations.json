@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Pokročilí používatelia môžu vytvárať a upravovať súbory v miestnosti, ale nemôžu vytvárať miestnosti, spravovať používateľov ani nemajú prístup k nastaveniam.",
   "RoleReviewer": "Recenzent",
   "RoleReviewerDescription": "Operácie s existujúcimi súbormi: prezeranie, kontrola, komentovanie.",
-  "RoleRoomAdminDescription": "Administrátori miestností môžu vytvárať a spravovať priradené miestnosti, pozývať nových používateľov a prideľovať role, ktoré sú nižšie ako pozícia administrátora. Všetci administrátori majú prístup do sekcie Osobné.",
   "RoleUserDescription": "Používatelia majú prístup iba do miestností, do ktorých ich pozvali administrátori. Nemôžu si vytvárať vlastné miestnosti, priečinky ani súbory.",
   "RoleViewer": "Prehliadač",
   "RoleViewerDescription": "Prezeranie súboru",

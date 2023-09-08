@@ -15,14 +15,15 @@ const StyledRowContainer = styled(RowContainer)`
 
   .row-list-item {
     cursor: pointer;
-    padding-right: ${() => (isMobileOnly ? "5px" : "15px")};
+    padding-inline-end: ${() => (isMobileOnly ? "5px" : "15px")};
   }
   .row-item::after {
     bottom: -3px;
   }
 
   .row-list-item:has(.selected-row-item) {
-    background-color: ${(props) => (props.theme.isBase ? "#f3f4f4" : "#282828")};
+    background-color: ${(props) =>
+      props.theme.isBase ? "#f3f4f4" : "#282828"};
   }
 `;
 
@@ -65,9 +66,14 @@ const HistoryRowView = (props) => {
       itemCount={totalItems}
       draggable
       useReactWindow={true}
-      itemHeight={59}>
+      itemHeight={59}
+    >
       {historyItems.map((item) => (
-        <HistoryRow key={item.id} historyItem={item} sectionWidth={sectionWidth} />
+        <HistoryRow
+          key={item.id}
+          historyItem={item}
+          sectionWidth={sectionWidth}
+        />
       ))}
     </StyledRowContainer>
   );
@@ -75,8 +81,14 @@ const HistoryRowView = (props) => {
 
 export default inject(({ setup, webhooksStore }) => {
   const { viewAs, setViewAs } = setup;
-  const { historyItems, fetchMoreItems, hasMoreItems, totalItems, historyFilters, formatFilters } =
-    webhooksStore;
+  const {
+    historyItems,
+    fetchMoreItems,
+    hasMoreItems,
+    totalItems,
+    historyFilters,
+    formatFilters,
+  } = webhooksStore;
   return {
     viewAs,
     setViewAs,

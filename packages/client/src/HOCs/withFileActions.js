@@ -240,7 +240,11 @@ export default function withFileActions(WrappedFileItem) {
       let className = isDragging ? " droppable" : "";
       if (draggable) className += " draggable";
 
-      let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
+      let value = item.isFolder
+        ? `folder_${id}`
+        : item.isDash
+        ? `dash_${id}`
+        : `file_${id}`;
       value += draggable ? "_draggable" : "_false";
 
       value += `_index_${itemIndex}`;
