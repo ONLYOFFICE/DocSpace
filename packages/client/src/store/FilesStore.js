@@ -2792,8 +2792,10 @@ class FilesStore {
 
     const items = [...newFolders, ...this.files];
 
-    if (items.length > 0 && this.isEmptyPage) {
-      this.setIsEmptyPage(false);
+    const isItemsEmpty = items.length === 0;
+
+    if (this.isEmptyPage !== isItemsEmpty) {
+      this.setIsEmptyPage(isItemsEmpty);
     }
 
     const newItem = items.map((item) => {
