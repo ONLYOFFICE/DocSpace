@@ -24,12 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup.Core.Log;
-public static partial class DbHelperLogger
-{
-    [LoggerMessage(Level = LogLevel.Error, Message = "Table {table}")]
-    public static partial void ErrorTableString(this ILogger<DbHelper> logger, string table, Exception exception);
+namespace ASC.Data.Storage.DataOperators;
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "Table {table}")]
-    public static partial void ErrorTable(this ILogger<DbHelper> logger, DataTable table, Exception exception);
+public interface IGetterWriteOperator
+{
+    Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId);
+    Task<string> GetBackupExtensionAsync(string storageBasePath);
 }

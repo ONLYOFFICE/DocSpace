@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
 import Text from "@docspace/components/text";
@@ -125,8 +125,13 @@ const AdminMessage = (props) => {
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="page-subtitle">{t("AdminsMessageHelper")}</Text>
+        <Text>{t("AdminsMessageSettingDescription")}</Text>
+        <Text fontSize="13px" fontWeight="400" className="learn-subtitle">
+          <Trans t={t} i18nKey="AdminsMessageSave" />
+        </Text>
+
         <Link
+          className="link-learn-more"
           color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
