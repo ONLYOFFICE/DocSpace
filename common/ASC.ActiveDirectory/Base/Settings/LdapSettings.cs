@@ -31,7 +31,6 @@ namespace ASC.ActiveDirectory.Base.Settings;
 /// <summary>
 /// </summary>
 [Scope]
-[Serializable]
 public class LdapSettings : ISettings<LdapSettings>, ICloneable
 {
     [JsonIgnore]
@@ -444,7 +443,6 @@ public class LdapSettings : ISettings<LdapSettings>, ICloneable
 }
 
 [Scope]
-[Serializable]
 public class LdapCronSettings : ISettings<LdapCronSettings>
 {
     [JsonIgnore]
@@ -464,7 +462,6 @@ public class LdapCronSettings : ISettings<LdapCronSettings>
     public string Cron { get; set; }
 }
 
-[Serializable]
 public class LdapCurrentAcccessSettings : ISettings<LdapCurrentAcccessSettings>
 {
     [JsonIgnore]
@@ -486,7 +483,6 @@ public class LdapCurrentAcccessSettings : ISettings<LdapCurrentAcccessSettings>
     public Dictionary<LdapSettings.AccessRight, List<string>> CurrentAccessRights { get; set; }
 }
 
-[Serializable]
 public class LdapCurrentUserPhotos : ISettings<LdapCurrentUserPhotos>
 {
     [JsonIgnore]
@@ -508,7 +504,6 @@ public class LdapCurrentUserPhotos : ISettings<LdapCurrentUserPhotos>
     public Dictionary<Guid, string> CurrentPhotos { get; set; }
 }
 
-[Serializable]
 public class LdapCurrentDomain : ISettings<LdapCurrentDomain>
 {
     [JsonIgnore]

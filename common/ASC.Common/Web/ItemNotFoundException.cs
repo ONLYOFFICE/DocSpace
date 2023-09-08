@@ -26,7 +26,6 @@
 
 namespace ASC.Common.Web;
 
-[Serializable]
 public class ItemNotFoundException : HttpException
 {
     public ItemNotFoundException() : base(404, "Not found") { }

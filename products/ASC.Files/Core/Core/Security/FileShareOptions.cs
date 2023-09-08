@@ -26,7 +26,6 @@
 
 namespace ASC.Files.Core.Security;
 
-[Serializable]
 public class FileShareOptions
 {
     public string Title { get; set; }
@@ -34,7 +33,7 @@ public class FileShareOptions
     public string Password { get; set; }
     public bool DenyDownload { get; set; }
     public bool Disabled { get; set; }
-    
+
     [JsonIgnore]
-    public bool IsExpired => ExpirationDate != DateTime.MinValue && ExpirationDate<DateTime.UtcNow;
+    public bool IsExpired => ExpirationDate != DateTime.MinValue && ExpirationDate < DateTime.UtcNow;
 }

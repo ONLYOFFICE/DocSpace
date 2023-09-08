@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Studio.Core;
 
-[Serializable]
 public class CollaboratorSettings : ISettings<CollaboratorSettings>
 {
     public bool FirstVisit { get; set; }
