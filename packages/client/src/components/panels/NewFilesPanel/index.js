@@ -95,18 +95,13 @@ const NewFilesPanel = (props) => {
     const files = [];
     const folders = [];
 
-    for (let item of newFiles) {
+    for (let item of listFiles) {
       if (item.fileExst) files.push(item);
       else folders.push(item);
     }
 
-    const fileIds = files
-      .filter((f) => !readingFiles.includes(f.id.toString()))
-      .map((f) => f.id);
-
-    const folderIds = folders
-      .filter((f) => !readingFiles.includes(f.id.toString()))
-      .map((f) => f.id);
+    const fileIds = files.map((f) => f.id);
+    const folderIds = folders.map((f) => f.id);
 
     markAsRead(folderIds, fileIds)
       .then(() => {
