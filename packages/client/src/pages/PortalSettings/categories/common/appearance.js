@@ -48,19 +48,16 @@ const Appearance = (props) => {
 
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
-  const [headerColorSchemeDialog, setHeaderColorSchemeDialog] = useState(
-    headerEditTheme
-  );
+  const [headerColorSchemeDialog, setHeaderColorSchemeDialog] =
+    useState(headerEditTheme);
 
   const [currentColorAccent, setCurrentColorAccent] = useState(null);
   const [currentColorButtons, setCurrentColorButtons] = useState(null);
 
-  const [openHexColorPickerAccent, setOpenHexColorPickerAccent] = useState(
-    false
-  );
-  const [openHexColorPickerButtons, setOpenHexColorPickerButtons] = useState(
-    false
-  );
+  const [openHexColorPickerAccent, setOpenHexColorPickerAccent] =
+    useState(false);
+  const [openHexColorPickerButtons, setOpenHexColorPickerButtons] =
+    useState(false);
 
   const [appliedColorAccent, setAppliedColorAccent] = useState(
     defaultAppliedColorAccent
@@ -69,12 +66,10 @@ const Appearance = (props) => {
     defaultAppliedColorButtons
   );
 
-  const [changeCurrentColorAccent, setChangeCurrentColorAccent] = useState(
-    false
-  );
-  const [changeCurrentColorButtons, setChangeCurrentColorButtons] = useState(
-    false
-  );
+  const [changeCurrentColorAccent, setChangeCurrentColorAccent] =
+    useState(false);
+  const [changeCurrentColorButtons, setChangeCurrentColorButtons] =
+    useState(false);
 
   const [isSmallWindow, setIsSmallWindow] = useState(false);
 
@@ -697,7 +692,7 @@ const Appearance = (props) => {
             </div>
 
             <div
-              data-for="theme-add"
+              data-tooltip-id="theme-add"
               data-tip="tooltip"
               className="theme-add"
               onClick={onAddTheme}
@@ -707,7 +702,6 @@ const Appearance = (props) => {
                 id="theme-add"
                 offsetBottom={0}
                 offsetRight={130}
-                effect="solid"
                 place="bottom"
                 getContent={textTooltip}
                 maxWidth="300px"

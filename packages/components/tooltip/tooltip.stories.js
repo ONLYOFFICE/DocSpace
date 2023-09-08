@@ -24,7 +24,7 @@ const Template = (args) => {
   return (
     <div style={{ height: "240px" }}>
       <div style={BodyStyle}>
-        <Link data-for="link" data-tip="Bob Johnston">
+        <Link data-tooltip-id="link" data-tooltip-content="Bob Johnston">
           Bob Johnston
         </Link>
       </div>
@@ -32,10 +32,10 @@ const Template = (args) => {
       <Tooltip
         {...args}
         id="link"
-        getContent={(dataTip) => (
+        getContent={({ content }) => (
           <div>
             <Text isBold={true} fontSize="16px">
-              {dataTip}
+              {content}
             </Text>
             <Text color="#A3A9AE" fontSize="13px">
               BobJohnston@gmail.com
@@ -50,12 +50,8 @@ const Template = (args) => {
 
 export const basic = Template.bind({});
 basic.args = {
-  effect: "float",
+  float: true,
   place: "top",
-  offsetTop: 0,
-  offsetRight: 0,
-  offsetBottom: 0,
-  offsetLeft: 0,
 };
 
 const arrayUsers = [
@@ -96,11 +92,11 @@ const AllTemplate = (args) => {
     <div>
       <div>
         <h5 style={{ marginLeft: -5 }}>Hover on me</h5>
-        <Link data-for="link" data-tip="Bob Johnston">
+        <Link data-tooltip-id="link" data-tooltip-content="Bob Johnston">
           Bob Johnston
         </Link>
       </div>
-      <Tooltip id="link" offsetRight={0} effect="solid">
+      <Tooltip id="link" offset={0}>
         <div>
           <Text isBold={true} fontSize="16px">
             Bob Johnston
@@ -114,23 +110,23 @@ const AllTemplate = (args) => {
 
       <div>
         <h5 style={{ marginLeft: -5 }}>Hover group</h5>
-        <Link data-for="group" data-tip={0}>
+        <Link data-tooltip-id="group" data-tooltip-content={0}>
           Bob
         </Link>
         <br />
-        <Link data-for="group" data-tip={1}>
+        <Link data-tooltip-id="group" data-tooltip-content={1}>
           John
         </Link>
         <br />
-        <Link data-for="group" data-tip={2}>
+        <Link data-tooltip-id="group" data-tooltip-content={2}>
           Kevin
         </Link>
         <br />
-        <Link data-for="group" data-tip={3}>
+        <Link data-tooltip-id="group" data-tooltip-content={3}>
           Alex
         </Link>
         <br />
-        <Link data-for="group" data-tip={4}>
+        <Link data-tooltip-id="group" data-tooltip-content={4}>
           Tomas
         </Link>
       </div>
@@ -138,16 +134,16 @@ const AllTemplate = (args) => {
       <Tooltip
         id="group"
         offsetRight={0}
-        getContent={(dataTip) =>
-          dataTip ? (
+        getContent={({ content }) =>
+          content ? (
             <div>
               <Text isBold={true} fontSize="16px">
-                {arrayUsers[dataTip].name}
+                {arrayUsers[content].name}
               </Text>
               <Text color="#A3A9AE" fontSize="13px">
-                {arrayUsers[dataTip].email}
+                {arrayUsers[content].email}
               </Text>
-              <Text fontSize="13px">{arrayUsers[dataTip].position}</Text>
+              <Text fontSize="13px">{arrayUsers[content].position}</Text>
             </div>
           ) : null
         }

@@ -84,7 +84,7 @@ global using ASC.Core.Notify.Socket;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
 global using ASC.Data.Storage;
-global using ASC.Data.Storage.ZipOperators;
+global using ASC.Data.Storage.DataOperators;
 global using ASC.ElasticSearch;
 global using ASC.ElasticSearch.Core;
 global using ASC.ElasticSearch.Service;
