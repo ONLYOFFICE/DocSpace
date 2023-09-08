@@ -9,6 +9,7 @@ import TrustedMailSection from "./trustedMail";
 import IpSecuritySection from "./ipSecurity";
 import AdminMessageSection from "./adminMessage";
 import SessionLifetimeSection from "./sessionLifetime";
+import BruteForceProtectionSection from "./bruteForceProtection";
 import MobileView from "./mobileView";
 import CategoryWrapper from "../sub-components/category-wrapper";
 import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
@@ -124,6 +125,15 @@ const AccessPortal = (props) => {
         classNameTooltip="ip-security"
       />
       <IpSecuritySection />
+
+      <StyledSettingsSeparator />
+      <CategoryWrapper
+        notTooltip={true}
+        t={t}
+        title={t("BruteForceProtection")}
+      />
+      <BruteForceProtectionSection />
+
       <StyledSettingsSeparator />
       <CategoryWrapper
         t={t}
@@ -182,4 +192,4 @@ export default inject(({ auth }) => {
     trustedMailDomainSettingsUrl,
     administratorMessageSettingsUrl,
   };
-})(withTranslation("Settings")(observer(AccessPortal)));
+})(withTranslation(["Settings", "Profile"])(observer(AccessPortal)));

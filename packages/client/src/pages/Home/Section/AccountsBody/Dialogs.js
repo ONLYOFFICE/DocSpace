@@ -54,7 +54,7 @@ const Dialogs = ({
         <ChangePasswordDialog
           visible={changePasswordVisible}
           onClose={() => setChangePasswordVisible(false)}
-          email={profile.email}
+          email={data.email}
         />
       )}
       {changeOwner && (

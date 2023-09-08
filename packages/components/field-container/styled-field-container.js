@@ -29,6 +29,13 @@ function getHorizontalCss(labelWidth) {
         props.theme.fieldContainer.horizontal.iconButton.marginTop};
       margin-left: ${(props) =>
         props.theme.fieldContainer.horizontal.iconButton.marginLeft};
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl" &&
+        css`
+          margin-left: 0;
+          margin-right: ${(props) =>
+            props.theme.fieldContainer.horizontal.iconButton.marginLeft};
+        `}
     }
   `;
 }
@@ -61,9 +68,9 @@ function getVerticalCss() {
         props.theme.fieldContainer.vertical.iconButton.margin};
       padding: ${(props) =>
         props.theme.fieldContainer.vertical.iconButton.padding};
-      width: ${(props) => props.theme.fieldContainer.vertical.iconButton.width};
-      height: ${(props) =>
-        props.theme.fieldContainer.vertical.iconButton.height};
+      display: flex;
+      align-items: center;
+      height: 100%;
     }
   `;
 }

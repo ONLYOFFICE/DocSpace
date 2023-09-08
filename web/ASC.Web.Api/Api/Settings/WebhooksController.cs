@@ -56,6 +56,17 @@ public class WebhooksController : BaseSettingsController
         _settingsManager = settingsManager;
     }
 
+    /// <summary>
+    /// Returns a list of the tenant webhooks.
+    /// </summary>
+    /// <short>
+    /// Get webhooks
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <path>api/2.0/settings/webhook</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksConfigDto, ASC.Web.Api">List of tenant webhooks with their config parameters</returns>
+    /// <collection>list</collection>
     [HttpGet("webhook")]
     public async IAsyncEnumerable<WebhooksConfigWithStatusDto> GetTenantWebhooks()
     {
@@ -67,33 +78,66 @@ public class WebhooksController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Creates a new tenant webhook with the parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Create a webhook
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksConfigRequestsDto, ASC.Web.Api" name="inDto">Webhook request parameters</param>
+    /// <path>api/2.0/settings/webhook</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksConfigDto, ASC.Web.Api">Tenant webhook with its config parameters</returns>
     [HttpPost("webhook")]
-    public async Task<WebhooksConfigDto> CreateWebhook(WebhooksConfigRequestsDto model)
+    public async Task<WebhooksConfigDto> CreateWebhook(WebhooksConfigRequestsDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        ArgumentNullException.ThrowIfNull(model.Uri);
-        ArgumentNullException.ThrowIfNull(model.SecretKey);
-        ArgumentNullException.ThrowIfNull(model.Name);
+        ArgumentNullException.ThrowIfNull(inDto.Uri);
+        ArgumentNullException.ThrowIfNull(inDto.SecretKey);
+        ArgumentNullException.ThrowIfNull(inDto.Name);
 
-        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.Name, model.SecretKey, model.Enabled, model.SSL);
+        var webhook = await _webhookDbWorker.AddWebhookConfig(inDto.Uri, inDto.Name, inDto.SecretKey, inDto.Enabled, inDto.SSL);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
+    /// <summary>
+    /// Updates the tenant webhook with the parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Update a webhook
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksConfigRequestsDto, ASC.Web.Api" name="inDto">New webhook request parameters</param>
+    /// <path>api/2.0/settings/webhook</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksConfigDto, ASC.Web.Api">Updated tenant webhook with its config parameters</returns>
     [HttpPut("webhook")]
-    public async Task<WebhooksConfigDto> UpdateWebhook(WebhooksConfigRequestsDto model)
+    public async Task<WebhooksConfigDto> UpdateWebhook(WebhooksConfigRequestsDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        ArgumentNullException.ThrowIfNull(model.Uri);
-        ArgumentNullException.ThrowIfNull(model.Name);
+        ArgumentNullException.ThrowIfNull(inDto.Uri);
+        ArgumentNullException.ThrowIfNull(inDto.Name);
 
-        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Name, model.Uri, model.SecretKey, model.Enabled, model.SSL);
+        var webhook = await _webhookDbWorker.UpdateWebhookConfig(inDto.Id, inDto.Name, inDto.Uri, inDto.SecretKey, inDto.Enabled, inDto.SSL);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
+    /// <summary>
+    /// Removes the tenant webhook with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Remove a webhook
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <param type="System.Int32, System" method="url" name="id">Webhook ID</param>
+    /// <path>api/2.0/settings/webhook</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksConfigDto, ASC.Web.Api">Tenant webhook with its config parameters</returns>
     [HttpDelete("webhook/{id}")]
     public async Task<WebhooksConfigDto> RemoveWebhook(int id)
     {
@@ -104,6 +148,24 @@ public class WebhooksController : BaseSettingsController
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
+    /// <summary>
+    /// Returns the logs of the webhook activities.
+    /// </summary>
+    /// <short>
+    /// Get webhook logs
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <param type="System.DateTime, System" name="deliveryFrom"></param>
+    /// <param type="System.DateTime, System" name="deliveryTo"></param>
+    /// <param type="System.String, System" name="hookUri"></param>
+    /// <param type="System.Int32, System" name="webhookId"></param>
+    /// <param type="System.Int32, System" name="configId"></param>
+    /// <param type="System.Int32, System" name="eventId"></param>
+    /// <param type="ASC.Webhooks.Core.WebhookGroupStatus, ASC.Webhooks.Core" name="groupStatus"></param>
+    /// <path>api/2.0/settings/webhooks/log</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksLogDto, ASC.Web.Api">Logs of the webhook activities</returns>
+    /// <collection>list</collection>
     [HttpGet("webhooks/log")]
     public async IAsyncEnumerable<WebhooksLogDto> GetJournal(DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? webhookId, int? configId, int? eventId, WebhookGroupStatus? groupStatus)
     {
@@ -121,6 +183,17 @@ public class WebhooksController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Retries a webhook with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Retry a webhook
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <param type="System.Int32, System" method="url" name="id">Webhook ID</param>
+    /// <path>api/2.0/settings/webhook/{id}/retry</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksLogDto, ASC.Web.Api">Logs of the webhook activities</returns>
     [HttpPut("webhook/{id}/retry")]
     public async Task<WebhooksLogDto> RetryWebhook(int id)
     {
@@ -143,12 +216,24 @@ public class WebhooksController : BaseSettingsController
         return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
     }
 
+    /// <summary>
+    /// Retries all the webhooks with the IDs specified in the request.
+    /// </summary>
+    /// <short>
+    /// Retry webhooks
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhookRetryRequestsDto, ASC.Web.Api" name="inDto">Request parameters to retry webhooks</param>
+    /// <path>api/2.0/settings/webhook/retry</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksLogDto, ASC.Web.Api">Logs of the webhook activities</returns>
+    /// <collection>list</collection>
     [HttpPut("webhook/retry")]
-    public async IAsyncEnumerable<WebhooksLogDto> RetryWebhooks(WebhookRetryRequestsDto model)
+    public async IAsyncEnumerable<WebhooksLogDto> RetryWebhooks(WebhookRetryRequestsDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        foreach (var id in model.Ids)
+        foreach (var id in inDto.Ids)
         {
             var item = await _webhookDbWorker.ReadJournal(id);
 
@@ -163,6 +248,17 @@ public class WebhooksController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns settings of all webhooks.
+    /// </summary>
+    /// <short>
+    /// Get webhook settings
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <path>api/2.0/settings/webhooks</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns type="ASC.Webhooks.Core.Webhook, ASC.Webhooks.Core">List of webhook settings</returns>
+    /// <collection>list</collection>
     [HttpGet("webhooks")]
     public async IAsyncEnumerable<Webhook> Settings()
     {
@@ -175,6 +271,17 @@ public class WebhooksController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Disables a webhook with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Disable a webhook
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <param type="System.Int32, System" method="url" name="id">Webhook ID</param>
+    /// <path>api/2.0/settings/webhook/{id}</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns type="ASC.Webhooks.Core.Webhook, ASC.Webhooks.Core">Webhook settings</returns>
     [HttpPut("webhook/{id}")]
     public async Task<Webhook> DisableWebHook(int id)
     {

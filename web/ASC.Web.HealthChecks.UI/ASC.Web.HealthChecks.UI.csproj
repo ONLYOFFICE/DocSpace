@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="7.0.0-rc2.7" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="7.0.0-rc2.7" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="7.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

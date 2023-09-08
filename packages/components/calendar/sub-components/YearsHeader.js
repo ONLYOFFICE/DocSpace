@@ -8,6 +8,7 @@ export const YearsHeader = ({
   setObservedDate,
   minDate,
   maxDate,
+  isMobile,
 }) => {
   const selectedYear = observedDate.year();
   const firstYear = selectedYear - (selectedYear % 10);
@@ -30,15 +31,16 @@ export const YearsHeader = ({
 
   return (
     <HeaderContainer>
-      <Title disabled className="years-header">
+      <Title disabled className="years-header" isMobile={isMobile}>
         {firstYear}-{firstYear + 9}
-        <HeaderActionIcon />
+        <HeaderActionIcon isMobile={isMobile} />
       </Title>
       <HeaderButtons
         onLeftClick={onLeftClick}
         onRightClick={onRightClick}
         isLeftDisabled={isLeftDisabled}
         isRightDisabled={isRightDisabled}
+        isMobile={isMobile}
       />
     </HeaderContainer>
   );

@@ -249,6 +249,8 @@ const SectionFilterContent = ({
   showFilterLoader,
   isPublicRoom,
   publicRoomKey,
+  setRoomsFilter,
+  standalone,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -350,7 +352,6 @@ const SectionFilterContent = ({
           newFilter.searchArea === RoomSearchArea.Active
             ? "rooms/shared"
             : "rooms/archived";
-
         navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       } else {
         const filterType = getFilterType(data) || null;
@@ -504,7 +505,7 @@ const SectionFilterContent = ({
           newFilter.searchArea === RoomSearchArea.Active
             ? "rooms/shared"
             : "rooms/archived";
-
+        setRoomsFilter(newFilter);
         navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       } else {
         const path = location.pathname.split("/filter")[0];
@@ -1111,7 +1112,7 @@ const SectionFilterContent = ({
       filterOptions.push(...statusItems);
       filterOptions.push(...typeItems);
       // filterOptions.push(...roleItems);
-      filterOptions.push(...accountItems);
+      if (!standalone) filterOptions.push(...accountItems);
       // filterOptions.push(...roomItems);
       filterOptions.push(...accountLoginTypeItems);
 
@@ -2060,6 +2061,7 @@ export default inject(
       setClearSearch,
       isLoadedEmptyPage,
       filesSettingsStore,
+      setRoomsFilter,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -2067,7 +2069,7 @@ export default inject(
     const { fetchTags } = tagsStore;
 
     const { user } = auth.userStore;
-    const { personal } = auth.settingsStore;
+    const { personal, standalone } = auth.settingsStore;
     const {
       isFavoritesFolder,
       isRecentFolder,
@@ -2140,6 +2142,8 @@ export default inject(
       accountsFilter,
       isPublicRoom,
       publicRoomKey,
+      setRoomsFilter,
+      standalone,
     };
   }
 )(

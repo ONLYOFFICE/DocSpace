@@ -63,6 +63,12 @@ const mobileDropDown = css`
   }
 
   right: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.right};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.right};
+      right: unset;
+    `}
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.bottom};
 
   .dialog-background-scroll {
@@ -83,7 +89,14 @@ const StyledDropDown = styled(DropDown)`
   width: ${(props) => props.theme.mainButtonMobile.dropDown.width};
   max-width: calc(100vw - 48px);
 
-  right: ${(props) => props.theme.mainButtonMobile.dropDown.right};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: ${(props) => props.theme.mainButtonMobile.dropDown.right};
+        `
+      : css`
+          right: ${(props) => props.theme.mainButtonMobile.dropDown.right};
+        `}
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.bottom};
 
   z-index: ${(props) => props.theme.mainButtonMobile.dropDown.zIndex};
@@ -101,8 +114,11 @@ const StyledDropDown = styled(DropDown)`
 
   ${isMobileOnly && mobileDropDown}
 
-  .section-scroll {
-    padding-right: 0px !important;
+  .section-scroll, .scroll-body {
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-left: 0px !important;`
+        : `padding-right: 0px !important;`}
   }
 
   .separator-wrapper {
@@ -170,7 +186,10 @@ const StyledContainerAction = styled.div`
   padding: 16px 0px;
 
   .sublevel {
-    padding-left: 48px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-right: 48px;`
+        : `padding-left: 48px;`}
   }
 `;
 
@@ -245,6 +264,12 @@ const StyledProgressBarContainer = styled.div`
 
         text-align: right;
         margin-right: 12px;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl" &&
+          css`
+            margin-left: 12px;
+            margin-right: 0px;
+          `}
       }
 
       .progress_icon {
@@ -282,7 +307,13 @@ const StyledAlertIcon = styled.div`
   z-index: 1010;
   width: 12px;
   height: 12px;
-  left: 26px;
+  right: 26px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: 26px;
+      right: 0px;
+    `}
   top: 6px;
 `;
 

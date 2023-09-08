@@ -21,6 +21,7 @@ import {
   FilterType,
   FolderType,
 } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const getIconUrl = (extension: string, isImage: boolean, isMedia: boolean) => {
   // if (extension !== iconPath) return iconSize32.get(iconPath);
@@ -171,7 +172,7 @@ const getIconUrl = (extension: string, isImage: boolean, isMedia: boolean) => {
   return iconSize32.get(path);
 };
 
-const convertFoldersToItems = (
+export const convertFoldersToItems = (
   folders: any,
   disabledItems: any[],
   filterParam?: string
@@ -215,9 +216,17 @@ const convertFoldersToItems = (
   return items;
 };
 
-const convertFilesToItems = (files: any, filterParam?: string) => {
+export const convertFilesToItems = (files: any, filterParam?: string) => {
   const items = files.map((file: any) => {
-    const { id, title, security, parentId, rootFolderType, fileExst } = file;
+    const {
+      id,
+      title,
+      security,
+      parentId,
+      folderId,
+      rootFolderType,
+      fileExst,
+    } = file;
 
     const isImage = file.viewAccessability.ImageView;
     const isMedia = file.viewAccessability.MediaView;
@@ -231,9 +240,8 @@ const convertFilesToItems = (files: any, filterParam?: string) => {
       label: title.replace(fileExst, ""),
       title,
       icon,
-
       security,
-      parentId,
+      parentId: parentId || folderId,
       rootFolderType,
       isFolder: false,
       isDisabled: !filterParam,
@@ -259,6 +267,12 @@ export const useFilesHelper = ({
   onSelectTreeNode,
   setSelectedTreeNode,
   filterParam,
+  getRootData,
+  onSetBaseFolderPath,
+  isRoomsOnly,
+  rootThirdPartyId,
+  getRoomList,
+  t,
 }: useFilesHelpersProps) => {
   const getFileList = React.useCallback(
     async (
@@ -305,68 +319,107 @@ export const useFilesHelper = ({
 
       filter.folder = id.toString();
 
-      const currentFolder = await getFolder(id, filter);
+      const setSettings = async (folderId, isErrorPath = false) => {
+        if (isInit && getRootData) {
+          const folder = await getFolderInfo(folderId);
 
-      const { folders, files, total, count, pathParts, current } =
-        currentFolder;
+          if (
+            folder.rootFolderType === FolderType.TRASH ||
+            folder.rootFolderType === FolderType.Archive
+          ) {
+            if (isRoomsOnly) {
+              await getRoomList(0, true, null, true);
+              toastr.error(
+                t("Files:ArchivedRoomAction", { name: folder.title })
+              );
+              return;
+            }
+            await getRootData();
+            return;
+          }
+        }
 
-      setSelectedItemSecurity(current.security);
+        const currentFolder = await getFolder(folderId, filter);
 
-      const foldersList: Item[] = convertFoldersToItems(
-        folders,
-        disabledItems,
-        filterParam
-      );
+        const { folders, files, total, count, pathParts, current } =
+          currentFolder;
 
-      const filesList: Item[] = convertFilesToItems(files, filterParam);
+        setSelectedItemSecurity(current.security);
 
-      const itemList = [...foldersList, ...filesList];
+        const foldersList: Item[] = convertFoldersToItems(
+          folders,
+          disabledItems,
+          filterParam
+        );
 
-      setHasNextPage(count === PAGE_COUNT);
+        const filesList: Item[] = convertFilesToItems(files, filterParam);
 
-      onSelectTreeNode && setSelectedTreeNode({ ...current, path: pathParts });
+        const itemList = [...foldersList, ...filesList];
 
-      if (isInit) {
-        if (isThirdParty) {
-          const breadCrumbs: BreadCrumb[] = [
-            { label: current.title, isRoom: false, id: current.id },
-          ];
+        setHasNextPage(count === PAGE_COUNT);
 
-          setBreadCrumbs(breadCrumbs);
-          setIsBreadCrumbsLoading(false);
-        } else {
+        onSelectTreeNode &&
+          setSelectedTreeNode({ ...current, path: pathParts });
+
+        if (isInit) {
           const breadCrumbs: BreadCrumb[] = await Promise.all(
             pathParts.map(async (folderId: number | string) => {
               const folderInfo: any = await getFolderInfo(folderId);
 
-              const { title, id, parentId, rootFolderType } = folderInfo;
+              const { title, id, parentId, rootFolderType, roomType } =
+                folderInfo;
 
               return {
                 label: title,
                 id: id,
                 isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
+                roomType,
               };
             })
           );
 
-          breadCrumbs.unshift({ ...defaultBreadCrumb });
+          !isThirdParty &&
+            !isRoomsOnly &&
+            breadCrumbs.unshift({ ...defaultBreadCrumb });
+
+          onSetBaseFolderPath &&
+            onSetBaseFolderPath(isErrorPath ? [] : breadCrumbs);
 
           setBreadCrumbs(breadCrumbs);
           setIsBreadCrumbsLoading(false);
         }
-      }
 
-      if (isFirstLoad || startIndex === 0) {
-        setTotal(total);
-        setItems(itemList);
-      } else {
-        setItems((prevState: Item[] | null) => {
-          if (prevState) return [...prevState, ...itemList];
-          return [...itemList];
-        });
+        if (isFirstLoad || startIndex === 0) {
+          setTotal(total);
+          setItems(itemList);
+        } else {
+          setItems((prevState: Item[] | null) => {
+            if (prevState) return [...prevState, ...itemList];
+            return [...itemList];
+          });
+        }
+        setIsRoot(false);
+        setIsNextPageLoading(false);
+      };
+
+      try {
+        await setSettings(id);
+      } catch (e) {
+        if (isThirdParty) {
+          await setSettings(rootThirdPartyId, true);
+
+          toastr.error(e);
+          return;
+        }
+
+        if (isRoomsOnly) {
+          await getRoomList(0, true, null, true);
+
+          toastr.error(e);
+          return;
+        }
+        getRootData && getRootData();
       }
-      setIsRoot(false);
-      setIsNextPageLoading(false);
     },
     [selectedItemId, searchValue, isFirstLoad, disabledItems]
   );

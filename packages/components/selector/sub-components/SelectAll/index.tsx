@@ -51,7 +51,7 @@ const SelectAll = React.memo(
               className="checkbox"
               isChecked={isChecked}
               isIndeterminate={isIndeterminate}
-              onChange={onSelectAll}
+              // onChange={onSelectAll}
             />
           </>
         )}

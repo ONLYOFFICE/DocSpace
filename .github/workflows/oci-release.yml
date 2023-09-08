@@ -42,7 +42,12 @@ jobs:
             --metadata-directive REPLACE \
             --exclude '*' \
             --include="${{ env.PRODUCT }}-install.sh" \
-            --include="${{ env.PRODUCT }}-enterprise-install.sh"
+            --include="${{ env.PRODUCT }}-enterprise-install.sh" \
+            --include="install-RedHat.sh" \
+            --include="install-RedHat/*" \
+            --include="install-Debian.sh" \
+            --include="install-Debian/*" \
+            --include="install.Docker"
 
       - name: Invalidate AWS CloudFront cache
         run: |
@@ -50,4 +55,9 @@ jobs:
             --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID_OCI }} \
             --paths \
             "/${{ env.PRODUCT }}-install.sh" \
-            "/${{ env.PRODUCT }}-enterprise-install.sh"
+            "/${{ env.PRODUCT }}-enterprise-install.sh" \
+            "/install-RedHat.sh" \
+            "/install-RedHat/*" \
+            "/install-Debian.sh" \
+            "/install-Debian/*" \
+            "/install-Docker.sh" 

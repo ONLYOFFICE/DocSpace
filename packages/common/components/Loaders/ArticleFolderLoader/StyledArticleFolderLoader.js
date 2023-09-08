@@ -3,17 +3,21 @@ import RectangleLoader from "../RectangleLoader";
 
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { tablet, mobile } from "@docspace/components/utils/device";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledContainer = styled.div`
   margin: 0;
 
   max-width: 211px;
-  padding: 0 20px 0 0;
+  padding: ${({ theme }) =>
+    getCorrectFourValuesStyle("0 20px 0 0", theme.interfaceDirection)};
 
   @media ${tablet} {
     width: ${(props) => (props.showText ? "240px" : "52px")};
-    padding: ${(props) =>
-      props.showText ? "0 16px 0 16px" : "10px 16px 10px 12px"};
+    padding: ${(props) => {
+      const padding = props.showText ? "0 16px 0 16px" : "10px 16px 10px 12px";
+      return getCorrectFourValuesStyle(padding, props.theme.interfaceDirection);
+    }};
     box-sizing: border-box;
   }
 
@@ -21,8 +25,10 @@ const StyledContainer = styled.div`
   css`
     max-width: ${(props) => (props.showText ? "240px" : "52px")};
     width: ${(props) => (props.showText ? "240px" : "52px")};
-    padding: ${(props) =>
-      props.showText ? "0 16px 0 16px" : "10px 16px 10px 12px"};
+    padding: ${(props) => {
+      const padding = props.showText ? "0 16px 0 16px" : "10px 16px 10px 12px";
+      return getCorrectFourValuesStyle(padding, props.theme.interfaceDirection);
+    }};
     box-sizing: border-box;
   `}
 

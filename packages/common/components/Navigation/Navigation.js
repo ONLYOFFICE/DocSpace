@@ -50,6 +50,7 @@ const Navigation = ({
   isEmptyPage,
   isDesktop: isDesktopClient,
   isRoom,
+  isFrame,
   hideInfoPanel,
   showRootFolderTitle,
   withLogo,
@@ -250,6 +251,7 @@ const Navigation = ({
               titles={titles}
               withMenu={withMenu}
               onPlusClick={onPlusClick}
+              isFrame={isFrame}
               isPublicRoom={isPublicRoom}
             />
           </StyledContainer>

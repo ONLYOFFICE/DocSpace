@@ -171,4 +171,613 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Tag eliminada: {0}</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Cidade</value>
+  </data>
+  <data name="ActionCol" xml:space="preserve">
+    <value>Ação</value>
+  </data>
+  <data name="ActionIdCol" xml:space="preserve">
+    <value>ID da Ação</value>
+  </data>
+  <data name="ActionTypeCol" xml:space="preserve">
+    <value>Tipo de Ação</value>
+  </data>
+  <data name="AdministratorAdded" xml:space="preserve">
+    <value>Administrador Adicionado: {0}</value>
+  </data>
+  <data name="AdministratorDeleted" xml:space="preserve">
+    <value>Administrador Eliminado: {0}</value>
+  </data>
+  <data name="AdministratorMessageSettingsUpdated" xml:space="preserve">
+    <value>As Definições de Mensagens de Administrador foram Atualizadas</value>
+  </data>
+  <data name="AdministratorOpenedFullAccess" xml:space="preserve">
+    <value>Administradores [{0}]. Acesso Completo Aberto</value>
+  </data>
+  <data name="AttachActionType" xml:space="preserve">
+    <value>Anexar</value>
+  </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>As Configurações de Retenção de Registos da Auditoria Foram Atualizadas</value>
+  </data>
+  <data name="AuditTrailReportDownloaded" xml:space="preserve">
+    <value>Relatório de Auditoria do Rastro Descarregado</value>
+  </data>
+  <data name="AuditTrailReportName" xml:space="preserve">
+    <value>Relatório de Auditoria do Rastro ({0}-{1})</value>
+  </data>
+  <data name="AuthorizationKeysSetting" xml:space="preserve">
+    <value>Chaves para autorização de terceiros atualizadas</value>
+  </data>
+  <data name="BrowserCol" xml:space="preserve">
+    <value>Navegador</value>
+  </data>
+  <data name="ColorThemeChanged" xml:space="preserve">
+    <value>O Tema de Cores foi Alterado</value>
+  </data>
+  <data name="CookieSettingsUpdated" xml:space="preserve">
+    <value>As Definições de Cookies foram Alteradas</value>
+  </data>
+  <data name="CopyActionType" xml:space="preserve">
+    <value>Copiar</value>
+  </data>
+  <data name="CreateActionType" xml:space="preserve">
+    <value>Criar</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>As Definições de Navegação Personalizada foram Atualizadas</value>
+  </data>
+  <data name="DateCol" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="DefaultStartPageSettingsUpdated" xml:space="preserve">
+    <value>As Configurações da Página Inicial Predefinida foram Atualizadas</value>
+  </data>
+  <data name="DeleteActionType" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="DetachActionType" xml:space="preserve">
+    <value>Desanexar</value>
+  </data>
+  <data name="DnsSettingsUpdated" xml:space="preserve">
+    <value>As Definições DNS foram Atualizadas</value>
+  </data>
+  <data name="DocumentServiceLocationSetting" xml:space="preserve">
+    <value>A Localização do Serviço de Documentos foi Atualizada</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>As definições do Guardar Forçado foram Atualizadas</value>
+  </data>
+  <data name="DocumentsOverwritingSettingsUpdated" xml:space="preserve">
+    <value>Atualização das Definições de Substituição</value>
+  </data>
+  <data name="DocumentsProduct" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="DocumentsSettingsModule" xml:space="preserve">
+    <value>Definições</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>As Configurações de Armazenamento do Guardar Forçado foram Atualizadas</value>
+  </data>
+  <data name="DocumentsThirdPartySettingsUpdated" xml:space="preserve">
+    <value>As Definições Relacionadas com Serviços de  Terceiros foram Atualizadas</value>
+  </data>
+  <data name="DocumentsUploadingFormatsSettingsUpdated" xml:space="preserve">
+    <value>As Definições dos Formatos de Carregamentos foram Atualizadas</value>
+  </data>
+  <data name="DownloadActionType" xml:space="preserve">
+    <value>Descarregar</value>
+  </data>
+  <data name="ExportActionType" xml:space="preserve">
+    <value>Exportar</value>
+  </data>
+  <data name="FileChangeOwner" xml:space="preserve">
+    <value>Definir proprietário de [{0}] como [{1}]</value>
+  </data>
+  <data name="FileConverted" xml:space="preserve">
+    <value>Ficheiro Convertido para o Formato Interno: {0}</value>
+  </data>
+  <data name="FileCopied" xml:space="preserve">
+    <value>Ficheiros [{0}]. Copiado da Pasta "{1}" Para a Pasta: "{2}"</value>
+  </data>
+  <data name="FileCopiedWithOverwriting" xml:space="preserve">
+    <value>Ficheiros [{0}]. Copiado com Substituição da Pasta "{1}" para a Pasta: "{2}"</value>
+  </data>
+  <data name="FileCreated" xml:space="preserve">
+    <value>Ficheiro Criado: {0}</value>
+  </data>
+  <data name="FileCreatedVersion" xml:space="preserve">
+    <value>Ficheiros [{0}]. Revisão: {1}. Versão Criada</value>
+  </data>
+  <data name="FileDeleted" xml:space="preserve">
+    <value>Ficheiro Eliminado: {0}</value>
+  </data>
+  <data name="FileDeletedVersion" xml:space="preserve">
+    <value>Ficheiros [{0}]. Revisão: {1}. Versão Eliminada</value>
+  </data>
+  <data name="FileDownloaded" xml:space="preserve">
+    <value>Ficheiro Descarregado: {0}</value>
+  </data>
+  <data name="FileDownloadedAs" xml:space="preserve">
+    <value>Ficheiros [{0}]. Descarregados Como: {1}</value>
+  </data>
+  <data name="FileImported" xml:space="preserve">
+    <value>Pastas [{0}]. Ficheiro Importado: {1}. Fornecedor: {2}</value>
+  </data>
+  <data name="FileLocked" xml:space="preserve">
+    <value>Ficheiro Trancado: {0}</value>
+  </data>
+  <data name="FileMoved" xml:space="preserve">
+    <value>Ficheiros [{0}]. Movidas da Página "{1}" Para a Pasta: "{2}"</value>
+  </data>
+  <data name="FileMovedToTrash" xml:space="preserve">
+    <value>Ficheiros [{0}]. Movidos para a Pasta da Reciclagem</value>
+  </data>
+  <data name="FileMovedWithOverwriting" xml:space="preserve">
+    <value>Ficheiros [{0}]. Movidos com Substituição da Pasta "{1}" Para a Pasta: "{2}"</value>
+  </data>
+  <data name="FileRenamed" xml:space="preserve">
+    <value>Ficheiro Renomeado: {0}</value>
+  </data>
+  <data name="FileRestoreVersion" xml:space="preserve">
+    <value>Ficheiros [{0}]. Revisão: {1}. Versão Restaurada</value>
+  </data>
+  <data name="FilesDocumentSigned" xml:space="preserve">
+    <value>Documento {1} assinado via {0}</value>
+  </data>
+  <data name="FileSendAccessLink" xml:space="preserve">
+    <value>O link partilhado foi enviado para o ficheiro [{0}]. Destinatários: [{1}]</value>
+  </data>
+  <data name="FilesModule" xml:space="preserve">
+    <value>Ficheiros</value>
+  </data>
+  <data name="FilesRequestSign" xml:space="preserve">
+    <value>Documento {1} enviado para assinar através de {0}</value>
+  </data>
+  <data name="FileUnlocked" xml:space="preserve">
+    <value>Ficheiro Desbloqueado: {0}</value>
+  </data>
+  <data name="FileUpdated" xml:space="preserve">
+    <value>Ficheiro Atualizado: {0}</value>
+  </data>
+  <data name="FileUpdatedAccess" xml:space="preserve">
+    <value>Ficheiros [{0}]. O Acesso foi Atualizado</value>
+  </data>
+  <data name="FileUpdatedRevisionComment" xml:space="preserve">
+    <value>Ficheiros [{0}]. Revisão {1}. Comentários Atualizados</value>
+  </data>
+  <data name="FileUploaded" xml:space="preserve">
+    <value>Ficheiro Carregado: {0}</value>
+  </data>
+  <data name="FolderCopied" xml:space="preserve">
+    <value>Pastas [{0}]. Copiada para a Pasta: {1}</value>
+  </data>
+  <data name="FolderCopiedWithOverwriting" xml:space="preserve">
+    <value>Pastas [{0}]. Copiada com Substituição para a Pasta: {1}</value>
+  </data>
+  <data name="FolderCreated" xml:space="preserve">
+    <value>Pasta Criada: {0}</value>
+  </data>
+  <data name="FolderDeleted" xml:space="preserve">
+    <value>Pasta Eliminada: {0}</value>
+  </data>
+  <data name="FolderMoved" xml:space="preserve">
+    <value>Pastas [{0}]. Movido para a Pasta: {1}</value>
+  </data>
+  <data name="FolderMovedToTrash" xml:space="preserve">
+    <value>Pastas [{0}]. Movido para a Pasta de Reciclagem</value>
+  </data>
+  <data name="FolderMovedWithOverwriting" xml:space="preserve">
+    <value>Pastas [{0}]. Movido com Substituição para a Pasta: {1}</value>
+  </data>
+  <data name="FolderRenamed" xml:space="preserve">
+    <value>Pasta Renomeada: {0}</value>
+  </data>
+  <data name="FoldersModule" xml:space="preserve">
+    <value>Pastas</value>
+  </data>
+  <data name="FolderUpdatedAccess" xml:space="preserve">
+    <value>Pastas [{0}]. O Acesso foi Atualizado</value>
+  </data>
+  <data name="FollowActionType" xml:space="preserve">
+    <value>Seguir</value>
+  </data>
+  <data name="FullTextSearchSetting" xml:space="preserve">
+    <value>As Definições do Sphinx foram atualizadas</value>
+  </data>
+  <data name="GeneralModule" xml:space="preserve">
+    <value>Geral</value>
+  </data>
+  <data name="GreetingSettingsUpdated" xml:space="preserve">
+    <value>As Configurações da Página de Boas Vindas foram Atualizadas</value>
+  </data>
+  <data name="GroupCreated" xml:space="preserve">
+    <value>Grupo Criado: {0}</value>
+  </data>
+  <data name="GroupDeleted" xml:space="preserve">
+    <value>Grupo Eliminado: {0}</value>
+  </data>
+  <data name="GroupsModule" xml:space="preserve">
+    <value>Grupos</value>
+  </data>
+  <data name="GroupUpdated" xml:space="preserve">
+    <value>Grupo Atualizado: {0}</value>
+  </data>
+  <data name="GuestAccount" xml:space="preserve">
+    <value>Conta de Convidado</value>
+  </data>
+  <data name="GuestActivated" xml:space="preserve">
+    <value>Convidado Ativado: {0}</value>
+  </data>
+  <data name="GuestCreated" xml:space="preserve">
+    <value>Convidado Criado: {0}</value>
+  </data>
+  <data name="GuestCreatedViaInvite" xml:space="preserve">
+    <value>Convidado Criado Através de Convite: {0}</value>
+  </data>
+  <data name="GuestImported" xml:space="preserve">
+    <value>Convidado Importado: {0}</value>
+  </data>
+  <data name="ImportActionType" xml:space="preserve">
+    <value>Importar</value>
+  </data>
+  <data name="IpCol" xml:space="preserve">
+    <value>IP</value>
+  </data>
+  <data name="LanguageSettingsUpdated" xml:space="preserve">
+    <value>As Definições de Língua foram Atualizadas</value>
+  </data>
+  <data name="LicenseKeyUploaded" xml:space="preserve">
+    <value>Chave de licença carregada</value>
+  </data>
+  <data name="LinkActionType" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="LoginFail" xml:space="preserve">
+    <value>Falha no Login</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Falha no Login. Demasiadas tentativas</value>
+  </data>
+  <data name="LoginFailDisabledProfile" xml:space="preserve">
+    <value>Falha no Login. Perfil Desativado</value>
+  </data>
+  <data name="LoginFailInvalidCombination" xml:space="preserve">
+    <value>Falha no Login. A combinação de nome de utilizador e palavra-chave é inválida</value>
+  </data>
+  <data name="LoginFailIpSecurity" xml:space="preserve">
+    <value>Segurança de IP: Falha no Login</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Falha no Login. O Recaptcha é inválido</value>
+  </data>
+  <data name="LoginFailSocialAccountNotFound" xml:space="preserve">
+    <value>Falha no Login. A Conta de Redes Sociais Associada Não foi Encontrada</value>
+  </data>
+  <data name="LoginFailViaApi" xml:space="preserve">
+    <value>Falha no Login através da API</value>
+  </data>
+  <data name="LoginFailViaApiSms" xml:space="preserve">
+    <value>Falha no Login através da API e do Código SMS</value>
+  </data>
+  <data name="LoginFailViaApiSocialAccount" xml:space="preserve">
+    <value>Falha no Login via API e através das Redes Sociais</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Falha no Login via API e pela aplicação autenticadora</value>
+  </data>
+  <data name="LoginFailViaSms" xml:space="preserve">
+    <value>O Login via SMS falhou</value>
+  </data>
+  <data name="LoginFailViaSSO" xml:space="preserve">
+    <value>O Login via SSO Falhou</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>O Login através do autenticador Falhou</value>
+  </data>
+  <data name="LoginHistoryReportDownloaded" xml:space="preserve">
+    <value>O Relatório do Histórico de Logins foi Descarregado</value>
+  </data>
+  <data name="LoginHistoryReportName" xml:space="preserve">
+    <value>Relatório do Histórico de Logins ({0}-{1})</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>Login Bem-sucedido</value>
+  </data>
+  <data name="LoginSuccessSocialAccount" xml:space="preserve">
+    <value>Login através da Conta de Redes Sociais Bem-sucedido</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>O login através da conta de redes sociais foi Bem-sucedido</value>
+  </data>
+  <data name="LoginSuccessViaApi" xml:space="preserve">
+    <value>Login através da API bem-sucedido</value>
+  </data>
+  <data name="LoginSuccessViaApiSms" xml:space="preserve">
+    <value>Login através da API e do Código de SMS bem-sucedido</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Login via API e autenticador Bem-sucedido</value>
+  </data>
+  <data name="LoginSuccessViaSms" xml:space="preserve">
+    <value>Login via SMS bem-sucedido</value>
+  </data>
+  <data name="LoginSuccessViaSocialAccount" xml:space="preserve">
+    <value>Login via API e Redes Sociais Bem-sucedido</value>
+  </data>
+  <data name="LoginSuccessViaSSO" xml:space="preserve">
+    <value>Login via SSO Bem-sucedido</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Login via autenticador Bem-sucedido</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Terminar Sessão</value>
+  </data>
+  <data name="MailServiceSettingsUpdated" xml:space="preserve">
+    <value>As Definições do Serviço de E-mail foram Atualizadas</value>
+  </data>
+  <data name="ModuleCol" xml:space="preserve">
+    <value>Módulo</value>
+  </data>
+  <data name="MoveActionType" xml:space="preserve">
+    <value>Mover</value>
+  </data>
+  <data name="OthersProduct" xml:space="preserve">
+    <value>Outros</value>
+  </data>
+  <data name="OwnerChanged" xml:space="preserve">
+    <value>Proprietário Alterado: {0}</value>
+  </data>
+  <data name="OwnerSentChangeOwnerInstructions" xml:space="preserve">
+    <value>Proprietário [{0}]. Enviou Instruções para a Alteração de Proprietário</value>
+  </data>
+  <data name="OwnerSentPortalDeactivationInstructions" xml:space="preserve">
+    <value>Proprietário [{0}]. Enviou Instruções para a Desativação do Portal</value>
+  </data>
+  <data name="OwnerSentPortalDeleteInstructions" xml:space="preserve">
+    <value>Proprietário [{0}]. Enviou Instruções para a Eliminação do Portal</value>
+  </data>
+  <data name="PageCol" xml:space="preserve">
+    <value>Página</value>
+  </data>
+  <data name="PasswordStrengthSettingsUpdated" xml:space="preserve">
+    <value>As Definições da Força da Palavra-Passe foram Atualizadas</value>
+  </data>
+  <data name="PeopleProduct" xml:space="preserve">
+    <value>Pessoas</value>
+  </data>
+  <data name="PlatformCol" xml:space="preserve">
+    <value>Plataforma</value>
+  </data>
+  <data name="PortalAccessSettingsUpdated" xml:space="preserve">
+    <value>As Definições de Acesso ao Portal foram Atualizadas</value>
+  </data>
+  <data name="PortalDeactivated" xml:space="preserve">
+    <value>Portal Desativado</value>
+  </data>
+  <data name="PortalDeleted" xml:space="preserve">
+    <value>Portal Eliminado</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>A Sala Privada está desativada</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>A Sala Privada está ativada</value>
+  </data>
+  <data name="ProductAccessOpened" xml:space="preserve">
+    <value>Produtos [{0}]. Acesso Aberto</value>
+  </data>
+  <data name="ProductAccessOpenedForGroups" xml:space="preserve">
+    <value>Produtos: [{0}]. Grupos [{1}]. Acesso Aberto</value>
+  </data>
+  <data name="ProductAccessOpenedForUsers" xml:space="preserve">
+    <value>Produtos: [{0}]. Utilizadores [{1}].  Acesso Aberto</value>
+  </data>
+  <data name="ProductAccessRestricted" xml:space="preserve">
+    <value>Produtos [{0}]. Acesso Restrito</value>
+  </data>
+  <data name="ProductAddedAdministrator" xml:space="preserve">
+    <value>Produtos [{0}]. Administrador Adicionado: {1}</value>
+  </data>
+  <data name="ProductCol" xml:space="preserve">
+    <value>Produto</value>
+  </data>
+  <data name="ProductDeletedAdministrator" xml:space="preserve">
+    <value>Produtos [{0}]. Administrador Eliminado: {1}</value>
+  </data>
+  <data name="ProductsListUpdated" xml:space="preserve">
+    <value>Lista de Produtos Atualizada</value>
+  </data>
+  <data name="ProductsModule" xml:space="preserve">
+    <value>Produtos</value>
+  </data>
+  <data name="ReassignsActionType" xml:space="preserve">
+    <value>Reatribuições</value>
+  </data>
+  <data name="SendActionType" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="SentInviteInstructions" xml:space="preserve">
+    <value>As Instruções de Convite foram Enviadas: {0}</value>
+  </data>
+  <data name="SessionCompleted" xml:space="preserve">
+    <value>Sessão Concluída</value>
+  </data>
+  <data name="SessionStarted" xml:space="preserve">
+    <value>Sessão Iniciada</value>
+  </data>
+  <data name="SettingsProduct" xml:space="preserve">
+    <value>Definições</value>
+  </data>
+  <data name="SSODisabled" xml:space="preserve">
+    <value>SSO Desativado</value>
+  </data>
+  <data name="SSOEnabled" xml:space="preserve">
+    <value>SSO Ativado</value>
+  </data>
+  <data name="StartBackupSetting" xml:space="preserve">
+    <value>Iniciar cópia de segurança</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Iniciar decriptação de armazenamento</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Iniciar encriptação do armazenamento</value>
+  </data>
+  <data name="StartTransferSetting" xml:space="preserve">
+    <value>Iniciar a migração da região do portal</value>
+  </data>
+  <data name="SystemAccount" xml:space="preserve">
+    <value>Conta do Sistema</value>
+  </data>
+  <data name="TargetIdCol" xml:space="preserve">
+    <value>ID do Alvo</value>
+  </data>
+  <data name="TeamTemplateChanged" xml:space="preserve">
+    <value>O Modelo da Equipa foi Alterado</value>
+  </data>
+  <data name="TimeTrackingModule" xml:space="preserve">
+    <value>Monitorização do Tempo</value>
+  </data>
+  <data name="TimeZoneSettingsUpdated" xml:space="preserve">
+    <value>As Definições de Fuso Horário foram Atualizadas</value>
+  </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Lixo esvaziado</value>
+  </data>
+  <data name="TrustedMailDomainSettingsUpdated" xml:space="preserve">
+    <value>As definições de E-mails fidedignos foram atualizadas</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>As Definições de Autenticação de Dois Fatores atualizadas: A autenticação de dois Fatores foi desativada</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>As Definições de Autenticação de Dois Fatores foram atualizadas: A confirmação por SMS foi ativada</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>As Definições de Autenticação de Dois Fatores foram Atualizadas: A aplicação de Autenticação foi ativada</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsUpdated" xml:space="preserve">
+    <value>As Definições de Autenticação de Dois Fatores foram Atualizadas</value>
+  </data>
+  <data name="UnfollowActionType" xml:space="preserve">
+    <value>Não Seguir</value>
+  </data>
+  <data name="UnknownAccount" xml:space="preserve">
+    <value>Conta Desconhecida</value>
+  </data>
+  <data name="UnlinkActionType" xml:space="preserve">
+    <value>Desvincular</value>
+  </data>
+  <data name="UpdateAccessActionType" xml:space="preserve">
+    <value>Acesso Atualizado</value>
+  </data>
+  <data name="UpdateActionType" xml:space="preserve">
+    <value>Atualizar</value>
+  </data>
+  <data name="UploadActionType" xml:space="preserve">
+    <value>Carregar</value>
+  </data>
+  <data name="UserActivated" xml:space="preserve">
+    <value>Utilizador Ativado: {0}</value>
+  </data>
+  <data name="UserAddedAvatar" xml:space="preserve">
+    <value>Utilizadores [{0}]. Avatar Adicionad</value>
+  </data>
+  <data name="UserCol" xml:space="preserve">
+    <value>Utilizador</value>
+  </data>
+  <data name="UserCreated" xml:space="preserve">
+    <value>Utilizador Criado: {0}</value>
+  </data>
+  <data name="UserCreatedViaInvite" xml:space="preserve">
+    <value>Utilizador Criado Via Convite: {0}</value>
+  </data>
+  <data name="UserDataReassigns" xml:space="preserve">
+    <value>Dados Reatribuídos: do utilizador {0} para o utilizador {1}</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>Os dados do utilizador para o {0} foram eliminados</value>
+  </data>
+  <data name="UserDeleted" xml:space="preserve">
+    <value>Utilizador Eliminado: {0}</value>
+  </data>
+  <data name="UserDeletedAvatar" xml:space="preserve">
+    <value>Utilizadores [{0}]. Avatar Eliminado</value>
+  </data>
+  <data name="UserFileUpdated" xml:space="preserve">
+    <value>Utilizadores [{0}]. Ficheiro Atualizado: {1}</value>
+  </data>
+  <data name="UserImported" xml:space="preserve">
+    <value>Utilizador Importado: {0}</value>
+  </data>
+  <data name="UserLinkedSocialAccount" xml:space="preserve">
+    <value>Conta das Redes Sociais Associada. Fornecedor: {0}</value>
+  </data>
+  <data name="UsersDeleted" xml:space="preserve">
+    <value>Utilizadores Eliminados: {0}</value>
+  </data>
+  <data name="UserSentActivationInstructions" xml:space="preserve">
+    <value>Utilizadores [{0}]. As Instruções de Ativação foram Enviadas</value>
+  </data>
+  <data name="UserSentDeleteInstructions" xml:space="preserve">
+    <value>As Instruções para Eliminar o Perfil foram Enviadas</value>
+  </data>
+  <data name="UserSentEmailInstructions" xml:space="preserve">
+    <value>Utilizadores [{0}]. As Instruções de alteração de E-mail foram Enviadas</value>
+  </data>
+  <data name="UserSentPasswordInstructions" xml:space="preserve">
+    <value>Utilizadores [{0}]. As Instruções para a Alteração de Palavra-Chave foram Enviadas</value>
+  </data>
+  <data name="UsersModule" xml:space="preserve">
+    <value>Utilizadores</value>
+  </data>
+  <data name="UsersSentActivationInstructions" xml:space="preserve">
+    <value>Utilizadores [{0}]. As Instruções de Ativação foram Enviadas</value>
+  </data>
+  <data name="UsersUpdatedStatus" xml:space="preserve">
+    <value>Utilizadores [{0}]. O Estado foi Atualizado</value>
+  </data>
+  <data name="UsersUpdatedType" xml:space="preserve">
+    <value>Utilizadores [{0}]. O Tipo foi Atualizado</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Aplicação autenticadora desconectada: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Foram criados novos códigos de cópia de segurança</value>
+  </data>
+  <data name="UserUnlinkedSocialAccount" xml:space="preserve">
+    <value>Conta de Redes Sociais Desvinculada. Fornecedor: {0}</value>
+  </data>
+  <data name="UserUpdated" xml:space="preserve">
+    <value>Utilizador Atualizado: {0}</value>
+  </data>
+  <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
+    <value>Utilizadores [{0}]. As Miniaturas de Avatar foram Atualizadas</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>Email Atualizado</value>
+  </data>
+  <data name="UserUpdatedLanguage" xml:space="preserve">
+    <value>Idioma Atualizado</value>
+  </data>
+  <data name="UserUpdatedMobileNumber" xml:space="preserve">
+    <value>Utilizadores [{0}]. Número de Telemóvel Atualizado: {1}</value>
+  </data>
+  <data name="UserUpdatedPassword" xml:space="preserve">
+    <value>Palavra-chave Atualizada</value>
+  </data>
+  <data name="ThirdPartyCreated" xml:space="preserve">
+    <value>Foi Criado um Terceiro: {0}. Fornecedor: {1}</value>
+  </data>
+  <data name="ThirdPartyDeleted" xml:space="preserve">
+    <value>Terceiro Eliminado {0}. Fornecedor: {1}</value>
+  </data>
+  <data name="ThirdPartyUpdated" xml:space="preserve">
+    <value>Terceiro Atualizado: {0}. Fornecedor: {1}</value>
+  </data>
 </root>

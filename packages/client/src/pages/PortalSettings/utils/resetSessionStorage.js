@@ -2,23 +2,19 @@ import { saveToSessionStorage, getFromSessionStorage } from "../utils";
 
 export const resetSessionStorage = () => {
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
-  const portalNameDefaultFromSessionStorage = getFromSessionStorage(
-    "portalNameDefault"
-  );
-  const greetingTitleFromSessionStorage = getFromSessionStorage(
-    "greetingTitle"
-  );
+  const portalNameDefaultFromSessionStorage =
+    getFromSessionStorage("portalNameDefault");
+  const greetingTitleFromSessionStorage =
+    getFromSessionStorage("greetingTitle");
   const greetingTitleDefaultFromSessionStorage = getFromSessionStorage(
     "greetingTitleDefault"
   );
   const languageFromSessionStorage = getFromSessionStorage("language");
-  const languageDefaultFromSessionStorage = getFromSessionStorage(
-    "languageDefault"
-  );
+  const languageDefaultFromSessionStorage =
+    getFromSessionStorage("languageDefault");
   const timezoneFromSessionStorage = getFromSessionStorage("timezone");
-  const timezoneDefaultFromSessionStorage = getFromSessionStorage(
-    "timezoneDefault"
-  );
+  const timezoneDefaultFromSessionStorage =
+    getFromSessionStorage("timezoneDefault");
 
   const selectColorId = getFromSessionStorage("selectColorId");
   const defaultColorId = getFromSessionStorage("defaultColorId");
@@ -41,6 +37,12 @@ export const resetSessionStorage = () => {
   );
   const currentIPSettings = getFromSessionStorage("currentIPSettings");
   const defaultIPSettings = getFromSessionStorage("defaultIPSettings");
+  const currentBruteForceProtection = getFromSessionStorage(
+    "currentBruteForceProtection"
+  );
+  const defaultBruteForceProtection = getFromSessionStorage(
+    "defaultBruteForceProtection"
+  );
   const currentAdminMessageSettings = getFromSessionStorage(
     "currentAdminMessageSettings"
   );
@@ -58,10 +60,9 @@ export const resetSessionStorage = () => {
     "defaultStoragePeriod"
   );
 
-  const companyNameFromeSessionStorage = getFromSessionStorage("companyName");
-  const companySettingsFromSessionStorage = getFromSessionStorage(
-    "companySettings"
-  );
+  const companyNameFromSessionStorage = getFromSessionStorage("companyName");
+  const companySettingsFromSessionStorage =
+    getFromSessionStorage("companySettings");
   const defaultCompanySettingsFromSessionStorage = getFromSessionStorage(
     "defaultCompanySettings"
   );
@@ -100,6 +101,12 @@ export const resetSessionStorage = () => {
   if (currentIPSettings !== defaultIPSettings) {
     saveToSessionStorage("currentIPSettings", defaultIPSettings);
   }
+  if (currentBruteForceProtection !== defaultBruteForceProtection) {
+    saveToSessionStorage(
+      "currentBruteForceProtection",
+      defaultBruteForceProtection
+    );
+  }
   if (currentAdminMessageSettings !== defaultAdminMessageSettings) {
     saveToSessionStorage(
       "currentAdminMessageSettings",
@@ -115,9 +122,9 @@ export const resetSessionStorage = () => {
   if (storagePeriodSettings !== defaultStoragePeriodSettings) {
     saveToSessionStorage("storagePeriod", defaultStoragePeriodSettings);
   }
-  if (companyNameFromeSessionStorage !== "ONLYOFFICE") {
-    saveToSessionStorage("companyName", "ONLYOFFICE");
-  }
+
+  sessionStorage.removeItem("companyName");
+
   if (
     companySettingsFromSessionStorage !==
     defaultCompanySettingsFromSessionStorage

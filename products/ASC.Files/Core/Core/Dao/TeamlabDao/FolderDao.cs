@@ -320,10 +320,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var roomTypes = new List<FolderType>
         {
-            FolderType.CustomRoom, 
-            FolderType.ReviewRoom, 
-            FolderType.FillingFormsRoom, 
-            FolderType.EditingRoom, 
+            FolderType.CustomRoom,
+            FolderType.ReviewRoom,
+            FolderType.FillingFormsRoom,
+            FolderType.EditingRoom,
             FolderType.ReadOnlyRoom,
             FolderType.PublicRoom,
         };
@@ -528,6 +528,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             await Queries.DeleteBunchObjectsAsync(filesDbContext, TenantID, folderId.ToString());
 
+            await filesDbContext.SaveChangesAsync();
             await tx.CommitAsync();
             await RecalculateFoldersCountAsync(parent);
         });
@@ -694,16 +695,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return moved;
     }
 
-    public async Task<IDictionary<int, string>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
+    public Task<IDictionary<int, string>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return await CanMoveOrCopyAsync(folderIds, tId);
+            return CanMoveOrCopyAsync(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return await CanMoveOrCopyAsync(folderIds, tsId);
+            return CanMoveOrCopyAsync(folderIds, tsId);
         }
 
         throw new NotImplementedException();
@@ -719,7 +720,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var result = new Dictionary<int, string>();
 
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
-
         foreach (var folderId in folderIds)
         {
             var exists = await Queries.AnyTreeAsync(filesDbContext, folderId, to);
@@ -1217,14 +1217,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var roomTypes = new List<FolderType>
         {
-            FolderType.CustomRoom, 
-            FolderType.ReviewRoom, 
-            FolderType.FillingFormsRoom, 
-            FolderType.EditingRoom, 
+            FolderType.CustomRoom,
+            FolderType.ReviewRoom,
+            FolderType.FillingFormsRoom,
+            FolderType.EditingRoom,
             FolderType.ReadOnlyRoom,
             FolderType.PublicRoom
         };
-        
+
         Expression<Func<DbFolder, bool>> filter = f => roomTypes.Contains(f.FolderType);
 
         await foreach (var e in GetFeedsInternalAsync(tenant, from, to, filter, null))
@@ -1296,16 +1296,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime)
     {
-        var roomTypes = new List<FolderType> 
-        { 
-            FolderType.CustomRoom, 
-            FolderType.ReviewRoom, 
-            FolderType.FillingFormsRoom, 
-            FolderType.EditingRoom, 
+        var roomTypes = new List<FolderType>
+        {
+            FolderType.CustomRoom,
+            FolderType.ReviewRoom,
+            FolderType.FillingFormsRoom,
+            FolderType.EditingRoom,
             FolderType.ReadOnlyRoom,
             FolderType.PublicRoom,
         };
-        
+
         Expression<Func<DbFolder, bool>> filter = f => roomTypes.Contains(f.FolderType);
 
         await foreach (var q in GetTenantsWithFeeds(fromTime, filter, true))
@@ -1599,57 +1599,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                     Entries = r.Select(e => new KeyValuePair<string, FileEntryType>(e.EntryId, e.EntryType)).ToHashSet()
                 }));
 
-    private string GetProjectTitle(object folderID)
+    public async Task<string> GetBackupExtensionAsync(int folderId)
     {
-        return "";
-        //if (!ApiServer.Available)
-        //{
-        //    return string.Empty;
-        //}
-
-        //var cacheKey = "documents/folders/" + folderID.ToString();
-
-        //var projectTitle = Convert.ToString(cache.Get<string>(cacheKey));
-
-        //if (!string.IsNullOrEmpty(projectTitle)) return projectTitle;
-
-        //var bunchObjectID = GetBunchObjectID(folderID);
-
-        //if (string.IsNullOrEmpty(bunchObjectID))
-        //    throw new Exception("Bunch Object id is null for " + folderID);
-
-        //if (!bunchObjectID.StartsWith("projects/project/"))
-        //    return string.Empty;
-
-        //var bunchObjectIDParts = bunchObjectID.Split('/');
-
-        //if (bunchObjectIDParts.Length < 3)
-        //    throw new Exception("Bunch object id is not supported format");
-
-        //var projectID = Convert.ToInt32(bunchObjectIDParts[bunchObjectIDParts.Length - 1]);
-
-        //if (HttpContext.Current == null || !SecurityContext.IsAuthenticated)
-        //    return string.Empty;
-
-        //var apiServer = new ApiServer();
-
-        //var apiUrl = string.Format("{0}project/{1}.json?fields=id,title", SetupInfo.WebApiBaseUrl, projectID);
-
-        //var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))))["response"];
-
-        //if (responseApi != null && responseApi.HasValues)
-        //{
-        //    projectTitle = Global.ReplaceInvalidCharsAndTruncate(responseApi["title"].Value<string>());
-        //}
-        //else
-        //{
-        //    return string.Empty;
-        //}
-        //if (!string.IsNullOrEmpty(projectTitle))
-        //{
-        //    cache.Insert(cacheKey, projectTitle, TimeSpan.FromMinutes(15));
-        //}
-        //return projectTitle;
+        return (await _globalStore.GetStoreAsync()).GetBackupExtension();
     }
 }
 

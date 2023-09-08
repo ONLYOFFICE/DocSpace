@@ -510,6 +510,11 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         return Task.FromResult<IDataWriteOperator>(new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder));
     }
 
+    public Task<string> GetBackupExtensionAsync(string folderId)
+    {
+        return Task.FromResult("tar.gz");
+    }
+
     public Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId)
     {
         return Task.CompletedTask;
@@ -669,6 +674,21 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
     }
 
     public Task<int> GetFoldersCountAsync(string parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool withSubfolders = false, bool excludeSubject = false)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, string to)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<IDictionary<string, string>> IFolderDao<string>.CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, int to)
     {
         throw new NotImplementedException();
     }

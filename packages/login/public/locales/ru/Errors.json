@@ -7,6 +7,7 @@
   "InvalidUsernameOrPassword": "Неверный логин или пароль.",
   "LoginWithAccountNotFound": "Связанных сторонних аккаунтов не найдено. Сначала необходимо подключить аккаунт социальной сети на странице редактирования профиля.",
   "LoginWithBruteForce": "Авторизация временно заблокирована.",
+  "LoginWithBruteForceCaptcha": "Подтвердите, что вы не робот",
   "RecaptchaInvalid": "Неверный код Recaptcha",
   "SsoAttributesNotFound": "Аутентификация не пройдена (атрибуты утверждений не найдены)",
   "SsoAuthFailed": "Аутентификация не пройдена",

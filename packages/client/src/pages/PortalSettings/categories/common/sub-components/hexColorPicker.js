@@ -1,12 +1,20 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Button from "@docspace/components/button";
 import { HexColorPicker, HexColorInput } from "react-colorful";
+import { isMobileOnly } from "react-device-detect";
 
 const StyledComponent = styled.div`
   .save-button {
-    margin-right: 10px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 10px;
+          `
+        : css`
+            margin-right: 10px;
+          `}
   }
 
   .hex-color-picker .react-colorful {
@@ -22,6 +30,11 @@ const StyledComponent = styled.div`
 
   .hex-color-picker .react-colorful__interactive {
     width: 183px;
+
+    ${isMobileOnly &&
+    css`
+      width: calc(100vw - 76px);
+    `}
   }
 
   .hex-color-picker .react-colorful__saturation-pointer {
@@ -46,12 +59,12 @@ const StyledComponent = styled.div`
     height: 32px;
     outline: none;
     padding: 6px 8px;
-    border: 1px solid ${(props) => (props.theme.isBase ? "#d0d5da" : "#474747")};
+    border: 1px solid ${props => (props.theme.isBase ? "#d0d5da" : "#474747")};
     border-radius: 3px;
     width: 100%;
     box-sizing: border-box;
-    background: ${(props) => !props.theme.isBase && "#282828"};
-    color: ${(props) => !props.theme.isBase && "#5C5C5C"};
+    background: ${props => !props.theme.isBase && "#282828"};
+    color: ${props => !props.theme.isBase && "#5C5C5C"};
   }
 
   .hex-value-label {
@@ -62,7 +75,14 @@ const StyledComponent = styled.div`
     display: flex;
 
     .apply-button {
-      margin-right: 8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 8px;
+            `
+          : css`
+              margin-right: 8px;
+            `}
     }
   }
 
@@ -71,6 +91,11 @@ const StyledComponent = styled.div`
     flex-direction: column;
     padding-bottom: 16px;
     width: 195px;
+
+    ${isMobileOnly &&
+    css`
+      width: calc(100vw - 64px);
+    `}
   }
 
   .hex-value-container {
@@ -87,7 +112,7 @@ const StyledComponent = styled.div`
   }
 `;
 
-const HexColorPickerComponent = (props) => {
+const HexColorPickerComponent = props => {
   const { onCloseHexColorPicker, onAppliedColor, setColor, color } = props;
 
   const { t } = useTranslation("Common");

@@ -16,14 +16,15 @@ import DocumentService from "./DocumentService";
 import SMTPSettings from "./SMTPSettings";
 
 const IntegrationWrapper = (props) => {
-  const { t, tReady, loadBaseInfo, baseDomain, toDefault } = props;
+  const { t, tReady, baseDomain, enablePlugins, toDefault, isSSOAvailable } =
+    props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
-      toDefault();
+      isSSOAvailable && toDefault();
     };
   }, []);
 
@@ -57,7 +58,6 @@ const IntegrationWrapper = (props) => {
     const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) setCurrentTab(currentTab);
 
-    await loadBaseInfo();
     setIsLoading(true);
   };
 
@@ -81,17 +81,17 @@ const IntegrationWrapper = (props) => {
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
 
-export default inject(({ setup, auth, ssoStore }) => {
-  const { initSettings } = setup;
-  const { load: toDefault } = ssoStore;
+export default inject(({ auth, ssoStore }) => {
   const { baseDomain } = auth.settingsStore;
+  const { load: toDefault } = ssoStore;
+  const { enablePlugins } = auth.settingsStore;
+  const { isSSOAvailable } = auth.currentQuotaStore;
 
   return {
-    loadBaseInfo: async () => {
-      await initSettings();
-    },
     baseDomain,
+    enablePlugins,
     toDefault,
+    isSSOAvailable,
   };
 })(
   withTranslation(["Settings", "SingleSignOn", "Translations"])(

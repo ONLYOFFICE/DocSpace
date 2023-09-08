@@ -131,7 +131,7 @@ function VirtualList({
             activedescendant: currentIndex,
             handleMouseMove,
           }}
-          outerElementType={CustomScrollbarsVirtualList}
+          outerElementType={Scrollbar}
         >
           {Row}
         </VariableSizeList>

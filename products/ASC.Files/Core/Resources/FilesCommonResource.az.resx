@@ -311,7 +311,8 @@
     <value>Portaldakı sənədlərinizi yaradın, redaktə edin, yaddaşda saxlayın və paylaşın. Google Drive, Zoho, Box'dən sənədlərinizi import edin.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Portaldakı sənədlərinizi yaradın, redaktə edin, yaddaşda saxlayın və paylaşın. Google Drive, Zoho, Box'dən sənədlərinizi import edin.</value>
+    <value>Ofis sənədlərini real vaxt rejimində redaktə edin, paylaşın və əməkdaşlıq edin. Bütün komandanın daxil ola biləcəyi ümumi sənədlər yaradın və idarə edin.
+docx, xlsx, pptx ilə ən yüksək uyğunluq.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Paylaşılan sənədlərə baxıb endirin. Faylları paylaşılan qovluqlara yükləyin. docx, xlsx, pptx formatları ilə 100% uyğunluğa zəmanət verilir.</value>
@@ -414,5 +415,8 @@
   </data>
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Otağı sabitləyə bilməzsiniz</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>Xarici Keçid</value>
   </data>
 </root>

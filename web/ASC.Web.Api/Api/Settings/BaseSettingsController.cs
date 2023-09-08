@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
+///<summary>
+/// Portal settings API.
+///</summary>
+///<name>settings</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -41,7 +45,7 @@ public partial class BaseSettingsController : ControllerBase
     internal readonly ApiContext ApiContext;
     internal readonly IMemoryCache MemoryCache;
     internal readonly WebItemManager WebItemManager;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    protected readonly IHttpContextAccessor _httpContextAccessor;
     private readonly int _maxCount = 10;
     private readonly int _expirationMinutes = 2;
 

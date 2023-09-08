@@ -19,19 +19,37 @@ const INFO_PANEL_COLUMNS_SIZE = `infoPanelPeopleColumnsSize_ver-${TableVersions.
 
 const marginCss = css`
   margin-top: -1px;
-  border-top: ${(props) =>
+  border-top: ${props =>
     `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
 `;
 
 const userNameCss = css`
-  margin-left: -24px;
-  padding-left: 24px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: -24px;
+          padding-right: 24px;
+        `
+      : css`
+          margin-left: -24px;
+          padding-left: 24px;
+        `}
+
   ${marginCss}
 `;
 
 const contextCss = css`
-  margin-right: -20px;
-  padding-right: 18px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: -20px;
+          padding-left: 18px;
+        `
+      : css`
+          margin-right: -20px;
+          padding-right: 18px;
+        `}
+
   ${marginCss}
 `;
 
@@ -59,13 +77,13 @@ const StyledTableContainer = styled(TableContainer)`
         border-left: 0; //for Safari macOS
         border-right: 0; //for Safari macOS
 
-        border-image-source: ${(props) => `linear-gradient(to right, 
+        border-image-source: ${props => `linear-gradient(to right, 
           ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
       }
       .table-container_row-context-menu-wrapper {
         ${contextCss}
 
-        border-image-source: ${(props) => `linear-gradient(to left,
+        border-image-source: ${props => `linear-gradient(to left,
           ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
       }
     }
@@ -83,7 +101,7 @@ const StyledTableContainer = styled(TableContainer)`
 
       .table-container_user-name-cell,
       .table-container_row-context-menu-wrapper {
-        border-bottom: ${(props) =>
+        border-bottom: ${props =>
           `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       }
     }
@@ -162,8 +180,7 @@ const Table = ({
         itemCount={filterTotal}
         filesLength={peopleList.length}
         itemHeight={49}
-        useReactWindow={!withPaging}
-      >
+        useReactWindow={!withPaging}>
         {peopleList.map((item, index) => (
           <TableRow
             theme={theme}

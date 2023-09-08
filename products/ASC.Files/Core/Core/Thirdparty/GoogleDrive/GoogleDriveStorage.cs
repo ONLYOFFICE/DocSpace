@@ -421,18 +421,19 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         request.Content = new StreamContent(stream);
         if (googleDriveSession.BytesToTransfer > 0)
         {
-            request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
-                                                           googleDriveSession.BytesTransfered,
-                                                           googleDriveSession.BytesTransfered + chunkLength - 1,
-                                                           googleDriveSession.BytesToTransfer));
+            request.Content.Headers.ContentRange = new ContentRangeHeaderValue(
+                                                       googleDriveSession.BytesTransfered,
+                                                       googleDriveSession.BytesTransfered + chunkLength - 1,
+                                                       googleDriveSession.BytesToTransfer);
         }
         else
         {
             var bytesToTransfer = lastChunk ? (googleDriveSession.BytesTransfered + chunkLength).ToString() : "*";
-            request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
-                                                           googleDriveSession.BytesTransfered,
-                                                           googleDriveSession.BytesTransfered + chunkLength - 1,
-                                                           bytesToTransfer));
+
+            request.Content.Headers.ContentRange = new ContentRangeHeaderValue(
+                                           googleDriveSession.BytesTransfered,
+                                           googleDriveSession.BytesTransfered + chunkLength - 1,
+                                           Convert.ToInt64(bytesToTransfer));
         }
         var httpClient = _clientFactory.CreateClient();
         HttpResponseMessage response;
@@ -441,21 +442,10 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         {
             response = await httpClient.SendAsync(request);
         }
-        catch (HttpRequestException exception) // todo create catch
+        catch (Exception exception) // todo create catch
         {
-            /*if (exception. != null && exception.Response.Headers.AllKeys.Contains("Range")) if (exception.Status == WebExceptionStatus.ProtocolError || exception.Status == WebExceptionStatus.UnknownError) //Status is UnknownError (unix)
-            {
-                response = exception.Response;
-            }
-            else if (exception.Message.Equals("Invalid status code: 308", StringComparison.InvariantCulture)) //response is null (unix)
-            {
-                response = null;
-            }
-            else
-            {
-                throw;
-            }*/
-            throw exception;
+            _logger.ErrorWithException(exception);
+            throw;
         }
 
         if (response == null || response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)

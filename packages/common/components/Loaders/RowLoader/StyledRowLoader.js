@@ -20,10 +20,15 @@ const StyledBox = styled.div`
   grid-template-columns: 1fr;
   grid-template-rows: 16px;
   grid-row-gap: 2px;
-  justify-items: left;
+  justify-items: ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `right` : `left`};
   align-items: left;
   box-sizing: border-box;
-  padding-right: ${isDesktop() ? "8px" : "12px"};
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `padding-left: ${isDesktop() ? "8px" : "12px"};`
+      : `padding-right: ${isDesktop() ? "8px" : "12px"};`}
 
   .first-row-content__mobile {
     max-width: 384px;

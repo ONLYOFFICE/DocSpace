@@ -100,6 +100,88 @@ public abstract class BaseStartup
             }
         });
 
+        var redisOptions = _configuration.GetSection("Redis").Get<RedisConfiguration>().ConfigurationOptions;
+        var connectionMultiplexer = ConnectionMultiplexer.Connect(redisOptions);
+
+        services.AddRateLimiter(options =>
+        {
+            options.GlobalLimiter = PartitionedRateLimiter.CreateChained(
+            PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+            {
+                var userId = httpContext?.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+
+                if (userId == null)
+                {
+                    return RateLimitPartition.GetNoLimiter("no_limiter");
+                }
+
+                var permitLimit = 1500;
+
+                string partitionKey;
+
+                partitionKey = $"sw_{userId}";
+
+                return RedisRateLimitPartition.GetSlidingWindowRateLimiter(partitionKey, key => new RedisSlidingWindowRateLimiterOptions
+                { 
+                    PermitLimit = permitLimit,
+                    Window = TimeSpan.FromMinutes(1),
+                    ConnectionMultiplexerFactory = () => connectionMultiplexer
+                });
+            }),
+                PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                {
+                    var userId = httpContext?.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                    string partitionKey;
+                    int permitLimit;
+
+                    if (userId == null)
+                    {
+                        return RateLimitPartition.GetNoLimiter("no_limiter");
+                    }
+
+                    if (String.Compare(httpContext.Request.Method, "GET", true) == 0)
+                    {
+                        permitLimit = 50;
+                        partitionKey = $"cr_read_{userId}";
+
+                    }
+                    else
+                    {
+                        permitLimit = 15;
+                        partitionKey = $"cr_write_{userId}";
+                    }
+
+                    return RedisRateLimitPartition.GetConcurrencyRateLimiter(partitionKey, key => new RedisConcurrencyRateLimiterOptions
+                    {
+                        PermitLimit = permitLimit,
+                        QueueLimit = 0,
+                        ConnectionMultiplexerFactory = () => connectionMultiplexer
+                    });
+                }
+            ));
+
+            options.AddPolicy("sensitive_api", httpContext => {
+                var userId = httpContext?.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+
+                if (userId == null)
+                {
+                    return RateLimitPartition.GetNoLimiter("no_limiter");
+                }
+
+                var permitLimit = 5;
+                var partitionKey = $"sensitive_api_{userId}";
+
+                return RedisRateLimitPartition.GetSlidingWindowRateLimiter(partitionKey, key => new RedisSlidingWindowRateLimiterOptions
+                {
+                    PermitLimit = permitLimit,
+                    Window = TimeSpan.FromMinutes(1),
+                    ConnectionMultiplexerFactory = () => connectionMultiplexer
+                });
+            });
+            
+            options.OnRejected = (context, ct) => RateLimitMetadata.OnRejected(context.HttpContext, context.Lease, ct);
+        });
+
         services.AddScoped<EFLoggerFactory>();
 
         services.AddBaseDbContextPool<AccountLinkContext>()
@@ -279,6 +361,9 @@ public abstract class BaseStartup
 
         services.AddAutoMapper(GetAutoMapperProfileAssemblies());
 
+        services.AddBillingHttpClient();
+
+
         if (!_hostEnvironment.IsDevelopment())
         {
             services.AddStartupTask<WarmupServicesStartupTask>()
@@ -310,6 +395,8 @@ public abstract class BaseStartup
         app.UseSynchronizationContextMiddleware();
 
         app.UseAuthentication();
+
+        app.UseRateLimiter();
 
         app.UseAuthorization();
 
@@ -346,6 +433,8 @@ public abstract class BaseStartup
                 await context.Response.WriteAsync($"{Environment.MachineName} running {CustomHealthCheck.Running}");
             });
         });
+
+
     }
 
     public void ConfigureContainer(ContainerBuilder builder)

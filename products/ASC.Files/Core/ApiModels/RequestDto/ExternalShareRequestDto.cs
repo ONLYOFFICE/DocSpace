@@ -26,7 +26,11 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class ExternalShareRequestDto
 {
+    /// <summary></summary>
+    /// <type>System.String, System</type>
     public string Password { get; set; }
 }
