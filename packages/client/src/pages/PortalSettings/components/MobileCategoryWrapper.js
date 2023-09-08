@@ -1,11 +1,7 @@
-import React from "react";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import { Base } from "@docspace/components/themes";
-import {
-  StyledMobileCategoryWrapper,
-  StyledArrowRightIcon,
-} from "../StyledSecurity";
+import { StyledMobileCategoryWrapper, StyledArrowRightIcon } from "./styles";
 import { combineUrl } from "@docspace/common/utils";
 
 const MobileCategoryWrapper = (props) => {
@@ -15,16 +11,18 @@ const MobileCategoryWrapper = (props) => {
     <StyledMobileCategoryWrapper>
       <div className="category-item-heading">
         <Link
-          className="inherit-title-link header"
+          className="inherit-title-link header settings_unavailable"
           onClick={onClickLink}
           truncate={true}
           href={combineUrl(window.DocSpaceConfig?.proxy?.url, url)}
         >
           {title}
         </Link>
-        <StyledArrowRightIcon size="small" />
+        <StyledArrowRightIcon className="settings_unavailable" size="small" />
       </div>
-      <Text className="category-item-description">{subtitle}</Text>
+      <Text className="category-item-description settings_unavailable">
+        {subtitle}
+      </Text>
     </StyledMobileCategoryWrapper>
   );
 };
