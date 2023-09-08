@@ -15,6 +15,5 @@
   "ShareEmailBody": "Вам предоставлен доступ к документу {{itemName}}. Нажмите на ссылку ниже, чтобы открыть документ прямо сейчас: {{shareLink}}.",
   "ShareEmailSubject": "Вам предоставлен доступ к документу {{itemName}}",
   "ShareVia": "Отправить по",
-  "SharingSettingsTitle": "Настройки доступа",
-  "Shorten": "Сократить"
+  "SharingSettingsTitle": "Настройки доступа"
 }

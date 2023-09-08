@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,30 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup;
-
-public interface IBackupProvider
+namespace ASC.Data.Storage.DataOperators;
+public class ZipReadOperator : BaseReadOperator
 {
-    string Name { get; }
-    event EventHandler<ProgressChangedEventArgs> ProgressChanged;
-
-    Task<IEnumerable<XElement>> GetElements(int tenant, string[] configs, IDataWriteOperator writer);
-    Task LoadFromAsync(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader);
-}
-
-public class ProgressChangedEventArgs : EventArgs
-{
-    public string Status { get; private set; }
-    public double Progress { get; private set; }
-    public bool Completed { get; private set; }
-
-    public ProgressChangedEventArgs(string status, double progress)
-        : this(status, progress, false) { }
-
-    public ProgressChangedEventArgs(string status, double progress, bool completed)
+    public ZipReadOperator(string targetFile)
     {
-        Status = status;
-        Progress = progress;
-        Completed = completed;
+        _tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
+
+        using (var stream = File.OpenRead(targetFile))
+        using (var reader = new GZipInputStream(stream))
+        using (var tarOutputStream = TarArchive.CreateInputTarArchive(reader, Encoding.UTF8))
+        {
+            tarOutputStream.ExtractContents(_tmpdir);
+        }
+
+        File.Delete(targetFile);
     }
 }

@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Errore di ripristino. File di ripristino non selezionato.",
   "RestoreBackup": "Ripristino dati",
   "RestoreBackupDescription": "Utilizza questa opzione per ripristinare il tuo spazio dal file di backup precedentemente salvato.",
-  "RestoreBackupResetInfoWarningText": "Tutte le password correnti verranno resettate. Gli utenti dello spazio riceveranno un'email con il link per recuperare l'accesso.",
-  "RestoreBackupWarningText": "Lo spazio non sarà disponibile durante il processo di ripristino. Dopo il ripristino tutte le modifiche effettuate dopo la data del punto di ripristino scelto andranno persi.",
   "RestoreDefaultButton": "Ripristina le impostazioni predefinite",
   "RoomsModule": "Stanza di backup",
   "RoomsModuleDescription": "Puoi creare una nuova stanza appositamente per il backup, scegliere una delle stanze esistenti o salvare la copia nella loro stanza {{roomName}}.",

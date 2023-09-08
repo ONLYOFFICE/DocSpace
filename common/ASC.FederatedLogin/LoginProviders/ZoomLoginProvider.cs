@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using AutoMapper;
-
 using static System.Formats.Asn1.AsnWriter;
 
 namespace ASC.FederatedLogin.LoginProviders;
@@ -39,7 +37,6 @@ public class ZoomLoginProvider : BaseLoginProvider<ZoomLoginProvider>
     public override string ClientSecret => this["zoomClientSecret"];
     public override string CodeUrl => "https://zoom.us/oauth/authorize";
     public override string Scopes => "";
-    public string ApiRedirectUri => this["zoomApiRedirectUrl"];
 
     public const string ApiUrl = "https://api.zoom.us/v2";
     private const string UserProfileUrl = $"{ApiUrl}/users/me";
