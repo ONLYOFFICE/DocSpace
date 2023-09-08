@@ -74,16 +74,14 @@ const ItemIcon = ({
   return (
     <>
       <IconWrapper isRoom={isRoom} default={showDefaultIcon}>
-        {!showDefaultRoomIcon && (
+        {showDefaultRoomIcon ? (
+          <RoomIcon color={color} title={title} isArchive={isArchive} />
+        ) : (
           <StyledIcon
             className={`react-svg-icon`}
             isRoom={isRoom}
             src={showDefaultIcon ? defaultRoomIcon : icon}
           />
-        )}
-
-        {showDefaultRoomIcon && (
-          <RoomIcon color={color} title={title} isArchive={isArchive} />
         )}
       </IconWrapper>
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}

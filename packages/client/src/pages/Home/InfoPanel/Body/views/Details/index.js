@@ -106,7 +106,7 @@ const Details = ({
               color={selection.logo.color}
               title={selection.title}
               isArchive={selection.isArchive}
-              size={96}
+              size="96px"
             />
           )}
         </StyledNoThumbnail>

@@ -8,26 +8,20 @@ const StyledIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: ${(props) => props.size + `px`};
-  width: ${(props) => props.size + `px`};
+  height: ${(props) => props.size};
+  width: ${(props) => props.size};
 
   .room-background {
-    height: ${(props) => props.size + `px`};
-    width: ${(props) => props.size + `px`};
+    height: ${(props) => props.size};
+    width: ${(props) => props.size};
     border-radius: 6px;
     vertical-align: middle;
     background: ${(props) =>
       props.isArchive
-        ? props.theme.isBase
-          ? "#A3A9AE"
-          : "#FFFFFF"
+        ? props.theme.roomIcon.backgroundArchive
         : `#` + props.color};
     position: absolute;
-    ${(props) =>
-      !props.theme.isBase &&
-      css`
-        opacity: 0.1;
-      `};
+    opacity: ${(props) => props.theme.roomIcon.opacityBackground};
   }
 
   .room-title {
@@ -40,23 +34,22 @@ const StyledIcon = styled.div`
       !props.theme.isBase &&
       !props.isArchive &&
       css`
-        color: ${(props) => props.color};
+        color: ${(props) => `#` + props.color};
       `};
   }
 `;
 
 StyledIcon.defaultProps = { theme: Base };
 
-const RoomIcon = ({ title, isArchive, color, size = 32 }) => {
-  const titleWithoutTooManySpaces = title.replace(/\s+/g, " ").trim();
-  const indexSecondCharacterAfterSpace =
-    titleWithoutTooManySpaces.lastIndexOf(" ");
-  const secondCharacterAfterSpace =
-    indexSecondCharacterAfterSpace === -1
+const RoomIcon = ({ title, isArchive, color, size = "32px" }) => {
+  const titleWithoutSpaces = title.replace(/\s+/g, " ").trim();
+  const indexAfterLastSpace = titleWithoutSpaces.lastIndexOf(" ");
+  const secondCharacter =
+    indexAfterLastSpace === -1
       ? ""
-      : titleWithoutTooManySpaces[indexSecondCharacterAfterSpace + 1];
+      : titleWithoutSpaces[indexAfterLastSpace + 1];
 
-  const roomTitle = (title[0] + secondCharacterAfterSpace).toUpperCase();
+  const roomTitle = (title[0] + secondCharacter).toUpperCase();
 
   return (
     <StyledIcon color={color} size={size} isArchive={isArchive}>
