@@ -35,6 +35,7 @@ PACKAGE_SYSNAME="onlyoffice"
 PRODUCT_NAME="DocSpace"
 PRODUCT=$(tr '[:upper:]' '[:lower:]' <<< ${PRODUCT_NAME})
 BASE_DIR="/app/$PACKAGE_SYSNAME";
+PROXY_YML="${BASE_DIR}/proxy.yml"
 STATUS=""
 DOCKER_TAG=""
 GIT_BRANCH="master"
@@ -100,6 +101,8 @@ DOCUMENT_SERVER_URL_EXTERNAL=""
 APP_CORE_BASE_DOMAIN=""
 APP_CORE_MACHINEKEY=""
 ENV_EXTENSION=""
+LETS_ENCRYPT_DOMAIN=""
+LETS_ENCRYPT_MAIL=""
 
 HELP_TARGET="install-Docker.sh";
 
@@ -433,6 +436,34 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-led | --letsencryptdomain )
+			if [ "$2" != "" ]; then
+				LETS_ENCRYPT_DOMAIN=$2
+				shift
+			fi
+		;;
+
+		-lem | --letsencryptmail )
+			if [ "$2" != "" ]; then
+				LETS_ENCRYPT_MAIL=$2
+				shift
+			fi
+		;;
+
+		-cf | --certfile )
+			if [ "$2" != "" ]; then
+				CERTIFICATE_PATH=$2
+				shift
+			fi
+		;;
+
+		-ckf | --certkeyfile )
+			if [ "$2" != "" ]; then
+				CERTIFICATE_KEY_PATH=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -477,6 +508,10 @@ while [ "$1" != "" ]; do
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
 			echo "      -mysqlport, --mysqlport           mysql server port number (default value 3306)"
+			echo "      -led, --letsencryptdomain         defines the domain for Let's Encrypt certificate"
+			echo "      -lem, --letsencryptmail           defines the domain administator mail address for Let's Encrypt certificate"
+			echo "      -cf, --certfile                   path to the certificate file for the domain"
+			echo "      -ckf, --certkeyfile               path to the private key file for the certificate"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
@@ -684,7 +719,7 @@ install_service () {
 	fi
 
 	if ! command_exists $COMMAND_NAME; then
-		echo "command $COMMAND_NAME not found"
+		echo "Command $COMMAND_NAME not found"
 		exit 1;
 	fi
 }
@@ -841,9 +876,9 @@ docker_login () {
 }
 
 create_network () {
-	EXIST=$(docker network ls | awk '{print $2;}' | { grep -x ${NETWORK_NAME} || true; });
+	NETWORT_EXIST=$(docker network ls | awk '{print $2;}' | { grep -x ${NETWORK_NAME} || true; });
 
-	if [[ -z ${EXIST} ]]; then
+	if [[ -z ${NETWORT_EXIST} ]]; then
 		docker network create --driver bridge ${NETWORK_NAME}
 	fi
 }
@@ -868,7 +903,11 @@ read_continue_installation () {
 
 domain_check () {
 	if ! command_exists dig; then
-		install_service dig dnsutils
+		if command_exists apt-get; then
+			install_service dig dnsutils
+		elif command_exists yum; then
+			install_service dig bind-utils
+		fi
 	fi
 
 	if ! command_exists ping; then
@@ -931,14 +970,9 @@ establish_conn() {
 	echo "OK"
 }
 
-get_container_env_parameter () {
-	local CONTAINER_NAME=$1;
-	local PARAMETER_NAME=$2;
-
-	if [[ -z ${CONTAINER_NAME} ]]; then
-		echo "Empty container name"
-		exit 1;
-	fi
+get_env_parameter () {
+	local PARAMETER_NAME=$1;
+	local CONTAINER_NAME=$2;
 
 	if [[ -z ${PARAMETER_NAME} ]]; then
 		echo "Empty parameter name"
@@ -946,15 +980,15 @@ get_container_env_parameter () {
 	fi
 
 	if command_exists docker ; then
-		CONTAINER_EXIST=$(docker ps -aqf "name=$CONTAINER_NAME");
+		[ -n "$CONTAINER_NAME" ] && CONTAINER_EXIST=$(docker ps -aqf "name=$CONTAINER_NAME");
 
 		if [[ -n ${CONTAINER_EXIST} ]]; then
 			VALUE=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' ${CONTAINER_NAME} | grep "${PARAMETER_NAME}=" | sed 's/^.*=//');
 		fi
+	fi
 
-		if [ -z $VALUE ] && [ -f $BASE_DIR/.env ]; then
-			VALUE=$(awk -F= "/${PARAMETER_NAME}/ {print \$2}" $BASE_DIR/.env | tr -d '\r')
-		fi
+	if [ -z ${VALUE} ] && [ -f ${BASE_DIR}/.env ]; then
+		VALUE=$(awk -F= "/${PARAMETER_NAME}/ {print \$2}" ${BASE_DIR}/.env | tr -d '\r')
 	fi
 
 	echo ${VALUE//\"}
@@ -1027,8 +1061,8 @@ get_available_version () {
 	echo "$LATEST_TAG" | sed "s/\"//g"
 }
 
-set_url_external () {
-	DOCUMENT_SERVER_URL_EXTERNAL=${DOCUMENT_SERVER_URL_EXTERNAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_URL_EXTERNAL")};
+set_docs_url_external () {
+	DOCUMENT_SERVER_URL_EXTERNAL=${DOCUMENT_SERVER_URL_EXTERNAL:-$(get_env_parameter "DOCUMENT_SERVER_URL_EXTERNAL" "${CONTAINER_NAME}")};
 
 	if [[ ! -z ${DOCUMENT_SERVER_URL_EXTERNAL} ]] && [[ $DOCUMENT_SERVER_URL_EXTERNAL =~ ^(https?://)?([^:/]+)(:([0-9]+))?(/.*)?$ ]]; then
 		[[ -z ${BASH_REMATCH[1]} ]] && DOCUMENT_SERVER_URL_EXTERNAL="http://$DOCUMENT_SERVER_URL_EXTERNAL"
@@ -1038,130 +1072,59 @@ set_url_external () {
 }
 
 set_jwt_secret () {
-	CURRENT_JWT_SECRET="";
-
-	if [[ -z ${DOCUMENT_SERVER_JWT_SECRET} ]]; then
-		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PACKAGE_SYSNAME}-document-server" "JWT_SECRET");
-
-		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
-			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
-		fi
-	fi
-
-	if [[ -z ${DOCUMENT_SERVER_JWT_SECRET} ]]; then
-		CURRENT_JWT_SECRET=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_JWT_SECRET");
-
-		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
-			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
-		fi
-	fi
-
-	if [[ -z ${DOCUMENT_SERVER_JWT_SECRET} ]] && [ -f $BASE_DIR/.env ]; then
-		DOCUMENT_SERVER_JWT_SECRET=$(sed -n "/.*DOCUMENT_SERVER_JWT_SECRET=/s///p" $BASE_DIR/.env)
-	fi
-
-	if [[ -z ${DOCUMENT_SERVER_JWT_SECRET} ]]; then
-		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 32);
-	fi
+	DOCUMENT_SERVER_JWT_SECRET="${DOCUMENT_SERVER_JWT_SECRET:-$(get_env_parameter "JWT_SECRET" "${PACKAGE_SYSNAME}-document-server")}"
+	DOCUMENT_SERVER_JWT_SECRET="${DOCUMENT_SERVER_JWT_SECRET:-$(get_env_parameter "DOCUMENT_SERVER_JWT_SECRET" "${CONTAINER_NAME}")}"
+	DOCUMENT_SERVER_JWT_SECRET="${DOCUMENT_SERVER_JWT_SECRET:-$(get_random_str 32)}"
 }
 
 set_jwt_header () {
-	CURRENT_JWT_HEADER="";
-
-	if [[ -z ${DOCUMENT_SERVER_JWT_HEADER} ]]; then
-		CURRENT_JWT_HEADER=$(get_container_env_parameter  "${PACKAGE_SYSNAME}-document-server" "JWT_HEADER");
-
-		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
-			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
-		fi
-	fi	
-	
-	if [[ -z ${DOCUMENT_SERVER_JWT_HEADER} ]]; then
-		CURRENT_JWT_HEADER=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_JWT_HEADER");
-
-		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
-			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
-		fi
-	fi
-
-	if [[ -z ${DOCUMENT_SERVER_JWT_HEADER} ]] && [ -f $BASE_DIR/.env ]; then
-		DOCUMENT_SERVER_JWT_HEADER=$(sed -n "/.*DOCUMENT_SERVER_JWT_HEADER=/s///p" $BASE_DIR/.env)
-	fi
-
-	if [[ -z ${DOCUMENT_SERVER_JWT_HEADER} ]]; then
-		DOCUMENT_SERVER_JWT_HEADER="AuthorizationJwt"
-	fi
+	DOCUMENT_SERVER_JWT_HEADER="${DOCUMENT_SERVER_JWT_HEADER:-$(get_env_parameter "JWT_HEADER" "${PACKAGE_SYSNAME}-document-server")}"
+	DOCUMENT_SERVER_JWT_HEADER="${DOCUMENT_SERVER_JWT_HEADER:-$(get_env_parameter "DOCUMENT_SERVER_JWT_HEADER" "${CONTAINER_NAME}")}"
+	DOCUMENT_SERVER_JWT_HEADER="${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}"
 }
 
 set_core_machinekey () {
-	if [[ -z ${APP_CORE_MACHINEKEY} ]]; then
-		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_MACHINEKEY");
-
-		if [[ -n ${CURRENT_CORE_MACHINEKEY} ]]; then
-			APP_CORE_MACHINEKEY="$CURRENT_CORE_MACHINEKEY";
-		fi
-	fi
-
-	if [[ -z ${APP_CORE_MACHINEKEY} ]] && [[ "$UPDATE" != "true" ]]; then
-		APP_CORE_MACHINEKEY=$(get_random_str 12);
-	fi
+	APP_CORE_MACHINEKEY="${APP_CORE_MACHINEKEY:-$(get_env_parameter "APP_CORE_MACHINEKEY" "${CONTAINER_NAME}")}"
+	[[ "$UPDATE" != "true" ]] && APP_CORE_MACHINEKEY="${APP_CORE_MACHINEKEY:-$(get_random_str 12))}"
 }
 
 set_mysql_params () {
-	if [[ -z ${MYSQL_PASSWORD} ]]; then
-		MYSQL_PASSWORD=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_PASSWORD");
+	MYSQL_PASSWORD="${MYSQL_PASSWORD:-$(get_env_parameter "MYSQL_PASSWORD" "${CONTAINER_NAME}")}"
+	MYSQL_PASSWORD="${MYSQL_PASSWORD:-$(get_random_str 20)}"
 
-		if [[ -z ${MYSQL_PASSWORD} ]]; then
-			MYSQL_PASSWORD=$(get_random_str 20);
-		fi
-	fi
-	
-	if [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-		MYSQL_ROOT_PASSWORD=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_ROOT_PASSWORD");
+	MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-$(get_env_parameter "MYSQL_ROOT_PASSWORD" "${CONTAINER_NAME}")}"
+	MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-$(get_random_str 20)}"
 
-		if [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-			MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD:-$(get_random_str 20)};
-		fi
-	fi
-	
-	if [[ -z ${MYSQL_DATABASE} ]]; then
-		MYSQL_DATABASE=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_DATABASE");
-	fi
-
-	if [[ -z ${MYSQL_USER} ]]; then
-		MYSQL_USER=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_USER");
-	fi
-
-	if [[ -z ${MYSQL_HOST} ]]; then
-		MYSQL_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_HOST");
-	fi
-
-	if [[ -z ${MYSQL_PORT} ]]; then
-		MYSQL_PORT=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_PORT");
-	fi
+	MYSQL_DATABASE="${MYSQL_DATABASE:-$(get_env_parameter "MYSQL_DATABASE" "${CONTAINER_NAME}")}"
+	MYSQL_USER="${MYSQL_USER:-$(get_env_parameter "MYSQL_USER" "${CONTAINER_NAME}")}"
+	MYSQL_HOST="${MYSQL_HOST:-$(get_env_parameter "MYSQL_HOST" "${CONTAINER_NAME}")}"
+	MYSQL_PORT="${MYSQL_PORT:-$(get_env_parameter "MYSQL_PORT" "${CONTAINER_NAME}")}"
 }
 
 set_docspace_params() {
-	ENV_EXTENSION=${ENV_EXTENSION:-$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION")};
-	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
-	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
+	ENV_EXTENSION=${ENV_EXTENSION:-$(get_env_parameter "ENV_EXTENSION" "${CONTAINER_NAME}")};
+	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_env_parameter "APP_CORE_BASE_DOMAIN" "${CONTAINER_NAME}")};
+	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_env_parameter "APP_URL_PORTAL" "${CONTAINER_NAME}")};
+	EXTERNAL_PORT=${EXTERNAL_PORT:-$(get_env_parameter "EXTERNAL_PORT" "${CONTAINER_NAME}")};
 
-	ELK_SHEME=${ELK_SHEME:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_SHEME")};
-	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
-	ELK_PORT=${ELK_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_PORT")};
+	ELK_SHEME=${ELK_SHEME:-$(get_env_parameter "ELK_SHEME" "${CONTAINER_NAME}")};
+	ELK_HOST=${ELK_HOST:-$(get_env_parameter "ELK_HOST" "${CONTAINER_NAME}")};
+	ELK_PORT=${ELK_PORT:-$(get_env_parameter "ELK_PORT" "${CONTAINER_NAME}")};
 
-	REDIS_HOST=${REDIS_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "REDIS_HOST")};
-	REDIS_PORT=${REDIS_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "REDIS_PORT")};
-	REDIS_USER_NAME=${REDIS_USER_NAME:-$(get_container_env_parameter "${CONTAINER_NAME}" "REDIS_USER_NAME")};
-	REDIS_PASSWORD=${REDIS_PASSWORD:-$(get_container_env_parameter "${CONTAINER_NAME}" "REDIS_PASSWORD")};
+	REDIS_HOST=${REDIS_HOST:-$(get_env_parameter "REDIS_HOST" "${CONTAINER_NAME}")};
+	REDIS_PORT=${REDIS_PORT:-$(get_env_parameter "REDIS_PORT" "${CONTAINER_NAME}")};
+	REDIS_USER_NAME=${REDIS_USER_NAME:-$(get_env_parameter "REDIS_USER_NAME" "${CONTAINER_NAME}")};
+	REDIS_PASSWORD=${REDIS_PASSWORD:-$(get_env_parameter "REDIS_PASSWORD" "${CONTAINER_NAME}")};
 
-	RABBIT_HOST=${RABBIT_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_HOST")};
-	RABBIT_PORT=${RABBIT_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_PORT")};
-	RABBIT_USER_NAME=${RABBIT_USER_NAME:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_USER_NAME")};
-	RABBIT_PASSWORD=${RABBIT_PASSWORD:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_PASSWORD")};
-	RABBIT_VIRTUAL_HOST=${RABBIT_VIRTUAL_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_VIRTUAL_HOST")};
+	RABBIT_HOST=${RABBIT_HOST:-$(get_env_parameter "RABBIT_HOST" "${CONTAINER_NAME}")};
+	RABBIT_PORT=${RABBIT_PORT:-$(get_env_parameter "RABBIT_PORT" "${CONTAINER_NAME}")};
+	RABBIT_USER_NAME=${RABBIT_USER_NAME:-$(get_env_parameter "RABBIT_USER_NAME" "${CONTAINER_NAME}")};
+	RABBIT_PASSWORD=${RABBIT_PASSWORD:-$(get_env_parameter "RABBIT_PASSWORD" "${CONTAINER_NAME}")};
+	RABBIT_VIRTUAL_HOST=${RABBIT_VIRTUAL_HOST:-$(get_env_parameter "RABBIT_VIRTUAL_HOST" "${CONTAINER_NAME}")};
 	
-	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
+	CERTIFICATE_PATH=${CERTIFICATE_PATH:-$(get_env_parameter "CERTIFICATE_PATH")};
+	CERTIFICATE_KEY_PATH=${CERTIFICATE_KEY_PATH:-$(get_env_parameter "CERTIFICATE_KEY_PATH")};
+	DHPARAM_PATH=${DHPARAM_PATH:-$(get_env_parameter "DHPARAM_PATH")};
 }
 
 set_installation_type_data () {
@@ -1191,7 +1154,9 @@ download_files () {
 	HOSTS=("ELK_HOST" "REDIS_HOST" "RABBIT_HOST" "MYSQL_HOST"); 
 	for HOST in "${HOSTS[@]}"; do [[ "${!HOST}" == *CONTAINER_PREFIX* || "${!HOST}" == *$PACKAGE_SYSNAME* ]] && export "$HOST="; done
 
-	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
+	echo -n "Downloading configuration files to the ${BASE_DIR} directory..."
+	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR} >/dev/null
+	echo "OK"
 
 	reconfigure STATUS ${STATUS}
 	reconfigure INSTALLATION_TYPE ${INSTALLATION_TYPE}
@@ -1288,21 +1253,27 @@ install_product () {
 
 	if [ "${UPDATE}" = "true" ] && [ "${LOCAL_CONTAINER_TAG}" != "${DOCKER_TAG}" ]; then
 		docker-compose -f $BASE_DIR/build.yml pull
-		docker-compose -f $BASE_DIR/migration-runner.yml -f $BASE_DIR/notify.yml -f $BASE_DIR/healthchecks.yml down
+		docker-compose -f $BASE_DIR/migration-runner.yml -f $BASE_DIR/notify.yml -f $BASE_DIR/healthchecks.yml -f ${PROXY_YML} down
 		docker-compose -f $BASE_DIR/${PRODUCT}.yml down --volumes
 	fi
 
 	reconfigure ENV_EXTENSION ${ENV_EXTENSION}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
-	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:8092"}"
-
-	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
+	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-router:8092"}"
+	reconfigure EXTERNAL_PORT ${EXTERNAL_PORT}
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
+	docker-compose -f ${PROXY_YML} up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
 	docker-compose -f $BASE_DIR/healthchecks.yml up -d
+
+	if [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
+		bash $BASE_DIR/config/${PRODUCT}-ssl-setup -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
+	elif [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
+		bash $BASE_DIR/config/${PRODUCT}-ssl-setup "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
+	fi
 }
 
 make_swap () {
@@ -1367,7 +1338,7 @@ start_installation () {
 		set_docspace_params
 	fi
 
-	set_url_external
+	set_docs_url_external
 	set_jwt_secret
 	set_jwt_header
 

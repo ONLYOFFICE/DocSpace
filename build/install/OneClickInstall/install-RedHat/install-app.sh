@@ -36,6 +36,7 @@ if [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
 			DOCUMENT_SERVER_INSTALLED="false"
 			RECONFIGURE_PRODUCT="true"
 		else
+			systemctl list-units --type=service | grep -q openresty && systemctl stop openresty
 			${package_manager} -y update ${ds_pkg_name}	
 		fi				
 	fi
@@ -100,6 +101,8 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 		su - postgres -s /bin/bash -c "psql -c \"CREATE DATABASE ${DS_DB_NAME} OWNER ${DS_DB_USER};\""
 	fi
 
+	systemctl list-units --type=service | grep -q openresty && systemctl stop openresty
+	
 	if [ "$INSTALLATION_TYPE" = "COMMUNITY" ]; then	
 		${package_manager} -y install ${package_sysname}-documentserver
 	else
