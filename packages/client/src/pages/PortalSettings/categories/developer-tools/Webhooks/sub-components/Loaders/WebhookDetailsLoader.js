@@ -31,7 +31,7 @@ const LoaderWrapper = styled.div`
   }
 
   .mr-20 {
-    margin-right: 20px;
+    margin-inline-end: 20px;
   }
 `;
 
@@ -41,24 +41,34 @@ const DetailsWrapperLoader = styled.div`
 `;
 const DetailsItemWrapper = styled.div`
   padding: 16px;
-  margin-right: 40px;
+  margin-inline-end: 40px;
   display: inline-block;
 `;
 
 export const WebhookDetailsLoader = () => {
   const DetailsItemLoader = () => (
     <DetailsItemWrapper>
-      <Loaders.Rectangle width="37px" height="16px" className="mb-5 display-block" />
+      <Loaders.Rectangle
+        width="37px"
+        height="16px"
+        className="mb-5 display-block"
+      />
       <Loaders.Rectangle width="180px" height="20px" />
     </DetailsItemWrapper>
   );
 
-  const MessageHeader = () => <Loaders.Rectangle width="130px" height="20px" className="mb-4" />;
+  const MessageHeader = () => (
+    <Loaders.Rectangle width="130px" height="20px" className="mb-4" />
+  );
 
   return (
     <LoaderWrapper>
       <DetailsWrapperLoader>
-        <Loaders.Rectangle width="80px" height="20px" className="mb-24 display-block" />
+        <Loaders.Rectangle
+          width="80px"
+          height="20px"
+          className="mb-24 display-block"
+        />
         <DetailsItemLoader />
         <DetailsItemLoader />
         <DetailsItemLoader />

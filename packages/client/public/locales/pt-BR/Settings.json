@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Erro de recuperação. Arquivo de recuperação não selecionado.",
   "RestoreBackup": "Restauração de dados",
   "RestoreBackupDescription": "Use esta opção para restaurar seu espaço a partir do arquivo de backup salvo anteriormente.",
-  "RestoreBackupResetInfoWarningText": "Todas as senhas atuais serão redefinidas. Os usuários do espaço receberão um e-mail com o link de restauração de acesso.",
-  "RestoreBackupWarningText": "O espaço ficará indisponível durante o processo de restauração. Após a conclusão da restauração, todas as mudanças feitas após a data do ponto de restauração selecionado serão perdidas.",
   "RestoreDefaultButton": "Restaurar padrão",
   "RoomsModule": "Sala de backup",
   "RoomsModuleDescription": "Você pode criar uma nova sala especificamente para o backup, escolher uma das salas existentes ou salvar a cópia em sua sala {{roomName}}.",
