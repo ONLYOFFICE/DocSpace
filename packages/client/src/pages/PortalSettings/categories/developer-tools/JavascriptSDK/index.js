@@ -10,7 +10,7 @@ import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import ComboBox from "@docspace/components/combobox";
 import TabContainer from "@docspace/components/tabs-container";
-import SelectFolderInput from "client/SelectFolderInput";
+import FilesSelectorInput from "SRC_DIR/components/FilesSelectorInput";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
 import { objectToGetParams, loadScript } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
@@ -190,7 +190,6 @@ const PortalIntegration = (props) => {
   const [width, setWidth] = useState("100");
   const [height, setHeight] = useState("600");
   const [withSubfolders, setWithSubfolders] = useState(true);
-  const [folderPanelVisible, setFolderPanelVisible] = useState(false);
 
   const [config, setConfig] = useState({
     width: `${width}${widthDimension.label}`,
@@ -344,14 +343,6 @@ const PortalIntegration = (props) => {
     });
   };
 
-  const onClickFolderInput = () => {
-    setFolderPanelVisible(true);
-  };
-
-  const onCloseFolderInput = () => {
-    setFolderPanelVisible(false);
-  };
-
   const codeBlock = `<div id="${frameId}">Fallback text</div>\n<script src="${scriptUrl}${params}"></script>`;
 
   const preview = (
@@ -500,13 +491,7 @@ const PortalIntegration = (props) => {
                 }
               />
             </Box>
-            <SelectFolderInput
-              onSelectFolder={onChangeFolderId}
-              onClose={onCloseFolderInput}
-              onClickInput={onClickFolderInput}
-              isPanelVisible={folderPanelVisible}
-              filteredType="exceptSortedByTags"
-            />
+            <FilesSelectorInput onSelectFolder={onChangeFolderId} />
           </ControlsGroup>
           <CategorySubHeader>{t("AdvancedDisplay")}</CategorySubHeader>
           <ControlsGroup>

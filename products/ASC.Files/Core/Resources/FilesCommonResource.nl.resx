@@ -296,7 +296,8 @@
     <value>Documenten maken, bewerken en delen. Werk samen aan documenten in real-time. 100% compatibiliteit met MS Office-formaten gegarandeerd.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Documenten maken, bewerken en delen. Werk samen aan documenten in real-time. 100% compatibiliteit met MS Office-formaten gegarandeerd.</value>
+    <value>Bewerk, deel en werk samen in real-time aan office documenten. Maak en beheer gedeelde documenten waar het hele team toegang toe heeft. 
+Het beste geschikt voor docx, xlsx, pptx.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Creëer, editeer, bewaar en deel documenten. Verbind uw Google Drive, Dropbox en Box accounts en bekijk al uw documenten op één plaats.</value>
@@ -414,5 +415,8 @@
   </data>
   <data name="MessageFillFormDraftDiscard" xml:space="preserve">
     <value>Het bestand is niet langer een concept om het formulier in te vullen.</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>Externe koppeling</value>
   </data>
 </root>

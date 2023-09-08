@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
+import Link from "@docspace/components/link";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
 import toastr from "@docspace/components/toast/toastr";
 import { LearnMoreWrapper } from "../StyledSecurity";
@@ -17,6 +18,10 @@ import IpSecurityLoader from "../sub-components/loaders/ip-security-loader";
 
 const MainContainer = styled.div`
   width: 100%;
+
+  .ip-security_warning {
+    max-width: 700px;
+  }
 
   .page-subtitle {
     margin-bottom: 10px;
@@ -42,13 +47,14 @@ const MainContainer = styled.div`
 const IpSecurity = (props) => {
   const {
     t,
-
     ipRestrictionEnable,
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
     initSettings,
     isInit,
+    ipSettingsUrl,
+    currentColorScheme,
   } = props;
 
   const navigate = useNavigate();
@@ -182,7 +188,18 @@ const IpSecurity = (props) => {
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="page-subtitle">{t("IPSecurityHelper")}</Text>
+        <Text className="page-subtitle">
+          {t("IPSecuritySettingDescription")}
+        </Text>
+        <Link
+          className="link-learn-more"
+          color={currentColorScheme.main.accent}
+          target="_blank"
+          isHovered
+          href={ipSettingsUrl}
+        >
+          {t("Common:LearnMore")}
+        </Link>
       </LearnMoreWrapper>
 
       <RadioButtonGroup
@@ -231,7 +248,9 @@ const IpSecurity = (props) => {
           >
             {t("Common:Warning")}!
           </Text>
-          <Text>{t("IPSecurityWarningHelper")}</Text>
+          <Text className="ip-security_warning">
+            {t("IPSecurityWarningHelper")}
+          </Text>
         </>
       )}
 
@@ -259,6 +278,8 @@ export default inject(({ auth, setup }) => {
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
+    ipSettingsUrl,
+    currentColorScheme,
   } = auth.settingsStore;
 
   const { initSettings, isInit } = setup;
@@ -270,5 +291,7 @@ export default inject(({ auth, setup }) => {
     setIpRestrictions,
     initSettings,
     isInit,
+    ipSettingsUrl,
+    currentColorScheme,
   };
 })(withTranslation(["Settings", "Common"])(observer(IpSecurity)));

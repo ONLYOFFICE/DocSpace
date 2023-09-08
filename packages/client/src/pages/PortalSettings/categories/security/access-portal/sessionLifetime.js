@@ -5,6 +5,7 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
 import Text from "@docspace/components/text";
+import Link from "@docspace/components/link";
 import TextInput from "@docspace/components/text-input";
 import toastr from "@docspace/components/toast/toastr";
 import { LearnMoreWrapper } from "../StyledSecurity";
@@ -42,6 +43,8 @@ const SessionLifetime = (props) => {
     setSessionLifetimeSettings,
     initSettings,
     isInit,
+    lifetimeSettingsUrl,
+    currentColorScheme,
   } = props;
   const [type, setType] = useState(false);
   const [sessionLifetime, setSessionLifetime] = useState("1440");
@@ -189,7 +192,18 @@ const SessionLifetime = (props) => {
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text>{t("SessionLifetimeHelper")}</Text>
+        <Text className="learn-subtitle">
+          {t("SessionLifetimeSettingDescription")}
+        </Text>
+        <Link
+          className="link-learn-more"
+          color={currentColorScheme.main.accent}
+          target="_blank"
+          isHovered
+          href={lifetimeSettingsUrl}
+        >
+          {t("Common:LearnMore")}
+        </Link>
       </LearnMoreWrapper>
 
       <RadioButtonGroup
@@ -255,6 +269,8 @@ export default inject(({ auth, setup }) => {
     sessionLifetime,
     enabledSessionLifetime,
     setSessionLifetimeSettings,
+    lifetimeSettingsUrl,
+    currentColorScheme,
   } = auth.settingsStore;
   const { initSettings, isInit } = setup;
 
@@ -264,5 +280,7 @@ export default inject(({ auth, setup }) => {
     setSessionLifetimeSettings,
     initSettings,
     isInit,
+    lifetimeSettingsUrl,
+    currentColorScheme,
   };
 })(withTranslation(["Settings", "Common"])(observer(SessionLifetime)));

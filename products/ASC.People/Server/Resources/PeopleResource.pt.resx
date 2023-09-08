@@ -61,4 +61,25 @@
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Não foi possível encontrar o ficheiro enviado</value>
   </data>
+  <data name="ErrorImageSizetLimit" xml:space="preserve">
+    <value>O tamanho da imagem é demasiado grande</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>O tamanho do ficheiro é demasiado grande</value>
+  </data>
+  <data name="ErrorUnknownFileImageType" xml:space="preserve">
+    <value>Tipo de ficheiro de imagem desconhecido</value>
+  </data>
+  <data name="ProductAdminOpportunities" xml:space="preserve">
+    <value>Fazer o mesmo que um utilizador|Criar perfis e grupos|Importar perfis|Convidar utilizadores</value>
+  </data>
+  <data name="ProductDescription" xml:space="preserve">
+    <value>Adicionar novos utilizadores, convidá-los ou importá-los. Gerir utilizadores e ver as suas informações detalhadas.</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>Pessoas</value>
+  </data>
+  <data name="ProductUserOpportunities" xml:space="preserve">
+    <value>Ver perfis e grupos</value>
+  </data>
 </root>

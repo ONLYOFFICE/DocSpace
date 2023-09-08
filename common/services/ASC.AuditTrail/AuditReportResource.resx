@@ -514,10 +514,10 @@
     <value>Products [{0}]. Access Opened</value>
   </data>
   <data name="ProductAccessOpenedForGroups" xml:space="preserve">
-    <value>Products: [{0}]. Groups [{1}].  Access Opened</value>
+    <value>Products: [{0}]. Groups [{1}]. Access Opened</value>
   </data>
   <data name="ProductAccessOpenedForUsers" xml:space="preserve">
-    <value>Products: [{0}]. Users [{1}].  Access Opened</value>
+    <value>Products: [{0}]. Users [{1}]. Access Opened</value>
   </data>
   <data name="ProductAccessRestricted" xml:space="preserve">
     <value>Products [{0}]. Access Restricted</value>

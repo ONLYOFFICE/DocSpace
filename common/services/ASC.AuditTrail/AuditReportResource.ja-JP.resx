@@ -718,4 +718,10 @@
   <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
     <value>ユーザー[{0}]。アバターサムネイルが更新されました</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>都市</value>
+  </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>国</value>
+  </data>
 </root>

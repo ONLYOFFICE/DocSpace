@@ -21,13 +21,13 @@ const StyledComponent = styled.div`
   }
 
   .category-item-wrapper {
-    padding-bottom: 20px;
+    padding-bottom: 22px;
 
     .category-item-heading {
       padding-bottom: 8px;
       svg {
         padding-bottom: 5px;
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl" &&
           css`
             transform: scaleX(-1);
@@ -39,7 +39,7 @@ const StyledComponent = styled.div`
         }
         display: flex;
         svg {
-          ${props =>
+          ${(props) =>
             props.theme.interfaceDirection === "rtl" &&
             css`
               transform: scaleX(-1);
@@ -50,14 +50,15 @@ const StyledComponent = styled.div`
     }
 
     .category-item-description {
-      color: ${props => props.theme.client.settings.common.descriptionColor};
+      color: ${(props) => props.theme.client.settings.common.descriptionColor};
       font-size: 13px;
+      font-weight: 400px;
       max-width: 1024px;
       line-height: 20px;
     }
 
     .inherit-title-link {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-left: 4px;
@@ -68,10 +69,6 @@ const StyledComponent = styled.div`
       font-size: 16px;
       font-weight: 700;
     }
-    .link-learn-more {
-      line-height: 15px;
-      font-weight: 600;
-    }
   }
 `;
 
@@ -79,15 +76,11 @@ StyledComponent.defaultProps = { theme: Base };
 
 const CustomizationNavbar = ({
   t,
-  theme,
   isLoaded,
   tReady,
   setIsLoadedCustomizationNavbar,
   isLoadedPage,
   isSettingPaid,
-  currentColorScheme,
-  languageAndTimeZoneSettingsUrl,
-  dnsSettingsUrl,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
   const navigate = useNavigate();
@@ -96,7 +89,7 @@ const CustomizationNavbar = ({
     if (isLoadedSetting) setIsLoadedCustomizationNavbar(isLoadedSetting);
   }, [isLoadedSetting]);
 
-  const onClickLink = e => {
+  const onClickLink = (e) => {
     e.preventDefault();
     navigate(e.target.pathname);
   };
@@ -113,24 +106,15 @@ const CustomizationNavbar = ({
             truncate={true}
             href={
               "portal-settings/customization/general/language-and-time-zone"
-            }>
+            }
+          >
             {t("StudioTimeLanguageSettings")}
           </Link>
           <StyledArrowRightIcon size="small" color="#333333" />
         </div>
         <Text className="category-item-description">
-          {t("LanguageAndTimeZoneSettingsDescription")}
+          {t("LanguageAndTimeZoneSettingsNavDescription")}
         </Text>
-        <Box paddingProp="10px 0 3px 0">
-          <Link
-            className="link-learn-more"
-            color={currentColorScheme.main.accent}
-            target="_blank"
-            isHovered={true}
-            href={languageAndTimeZoneSettingsUrl}>
-            {t("Common:LearnMore")}
-          </Link>
-        </Box>
       </div>
       <div className="category-item-wrapper">
         <div className="category-item-heading">
@@ -140,13 +124,14 @@ const CustomizationNavbar = ({
             onClick={onClickLink}
             href={
               "/portal-settings/customization/general/welcome-page-settings"
-            }>
+            }
+          >
             {t("CustomTitlesWelcome")}
           </Link>
           <StyledArrowRightIcon size="small" color="#333333" />
         </div>
         <Text className="category-item-description">
-          {t("CustomTitlesSettingsDescription")}
+          {t("CustomTitlesSettingsNavDescription")}
         </Text>
       </div>
 
@@ -157,7 +142,8 @@ const CustomizationNavbar = ({
               truncate={true}
               className="inherit-title-link header"
               onClick={onClickLink}
-              href={"/portal-settings/customization/general/dns-settings"}>
+              href={"/portal-settings/customization/general/dns-settings"}
+            >
               {t("DNSSettings")}
             </Link>
             {!isSettingPaid && (
@@ -172,17 +158,8 @@ const CustomizationNavbar = ({
           </div>
         </div>
         <Text className="category-item-description">
-          {t("DNSSettingsDescription")}
+          {t("DNSSettingsNavDescription")}
         </Text>
-        <Box paddingProp="10px 0 3px 0">
-          <Link
-            color={currentColorScheme.main.accent}
-            target="_blank"
-            isHovered={true}
-            href={dnsSettingsUrl}>
-            {t("Common:LearnMore")}
-          </Link>
-        </Box>
       </div>
 
       <div className="category-item-wrapper">
@@ -191,34 +168,25 @@ const CustomizationNavbar = ({
             truncate={true}
             className="inherit-title-link header"
             onClick={onClickLink}
-            href={"/portal-settings/customization/general/portal-renaming"}>
+            href={"/portal-settings/customization/general/portal-renaming"}
+          >
             {t("PortalRenaming")}
           </Link>
           <StyledArrowRightIcon size="small" color="#333333" />
         </div>
         <Text className="category-item-description">
-          {t("PortalRenamingDescription")}
+          {t("PortalRenamingNavDescription")}
         </Text>
       </div>
     </StyledComponent>
   );
 };
 
-export default inject(({ auth, common }) => {
-  const {
-    theme,
-    currentColorScheme,
-    languageAndTimeZoneSettingsUrl,
-    dnsSettingsUrl,
-  } = auth.settingsStore;
+export default inject(({ common }) => {
   const { isLoaded, setIsLoadedCustomizationNavbar } = common;
   return {
-    theme,
     isLoaded,
     setIsLoadedCustomizationNavbar,
-    currentColorScheme,
-    languageAndTimeZoneSettingsUrl,
-    dnsSettingsUrl,
   };
 })(
   withCultureNames(
