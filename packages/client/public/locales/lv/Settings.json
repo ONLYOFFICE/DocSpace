@@ -155,8 +155,6 @@
   "RecoveryFileNotSelected": "Atkopšanas kļūda. Atkopšanas fails nav atlasīts.",
   "RestoreBackup": "Datu atjaunošana",
   "RestoreBackupDescription": "Izmantojiet šo iespēju, lai atjaunotu portālu no iepriekš noglabāta rezerves faila.",
-  "RestoreBackupResetInfoWarningText": "Visas pašreizējās paroles tiks atiestatītas. Portāla lietotāji saņems e-pasta ziņojumu ar piekļuves atjaunošanas saiti.",
-  "RestoreBackupWarningText": "Portāls nebūs pieejams atjaunošanas laikā. Pēc atjaunošanas tiks pazaudētas visas izmaiņas kas veiktas pēc izvēlētā atjaunošanas punkta datuma.",
   "RestoreDefaultButton": "Atjaunot uz noklusējumu",
   "RoomsModule": "Dublējuma telpa",
   "RoomsModuleDescription": "Jūs varat izveidot jaunu telpu tieši dublēšanai, izvēlēties vienu no esošajām telpām vai saglabāt kopiju savā {{roomName}} telpā.",

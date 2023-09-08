@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Bərpa xətası. Bərpa olunacaq fayl seçilməyib.",
   "RestoreBackup": "Məlumatların bərpası",
   "RestoreBackupDescription": "Sahənizi əvvəllər saxlanmış ehtiyat faylından bərpa etmək üçün bu seçimdən istifadə edin.",
-  "RestoreBackupResetInfoWarningText": "Bütün cari parollar sıfırlanacaq. Sahə istifadəçiləri girişin bərpası linki ilə e-poçt məktubu alacaqlar.",
-  "RestoreBackupWarningText": "Sahə bərpa prosesi zamanı əlçatmaz olacaq. Bərpa tamamlandıqdan sonra seçilmiş bərpa nöqtəsi tarixindən sonra edilən bütün dəyişikliklər itiriləcək.",
   "RestoreDefaultButton": "İlkin vəziyyətə bərpa edin",
   "RoomsModule": "Ehtiyat otaq",
   "RoomsModuleDescription": "Yedəkləmə üçün xüsusi olaraq yeni otaq yarada, mövcud otaqlardan birini seçə və ya nüsxəni onların {{roomName}} otağında saxlaya bilərsiniz.",
