@@ -902,7 +902,7 @@ const StyledModalRowContainer = styled.div`
 `;
 
 const StyledLink = styled(Link)`
-  color: props.theme.filesPanels.color;
+  color: ${(props) => props.theme.filesPanels.color};
 `;
 
 StyledModalRowContainer.defaultProps = { theme: Base };
