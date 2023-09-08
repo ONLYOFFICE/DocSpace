@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import { size } from "@docspace/components/utils/device";
 
 export const useIsMobileView = () => {
@@ -10,7 +10,7 @@ export const useIsMobileView = () => {
       : setIsMobileView(false);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     onCheckView();
 
     window.addEventListener("resize", onCheckView);
