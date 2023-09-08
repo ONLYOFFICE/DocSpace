@@ -67,7 +67,6 @@ if ( $args.Count -ge 2 )
 
     if ($letsencrypt_domain)
     {
-        ((Get-Content -Path "${appsettings_config_path}" -Raw) -replace '(?<=\")http://localhost:80(?=\")', "https://${letsencrypt_domain}") | Set-Content -Path "${appsettings_config_path}"
         $acl = Get-Acl -Path "$env:SystemDrive\Certbot\archive\${letsencrypt_domain}"
         $acl.SetSecurityDescriptorSddlForm('O:LAG:S-1-5-21-4011186057-2202358572-2315966083-513D:PAI(A;;0x1200a9;;;WD)(A;;FA;;;SY)(A;OI;0x1200a9;;;LS)(A;;FA;;;BA)(A;;FA;;;LA)')
         Set-Acl -Path $acl.path -ACLObject $acl
