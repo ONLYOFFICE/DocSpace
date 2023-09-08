@@ -18,37 +18,11 @@ class ThirdPartyModule extends React.PureComponent {
     !isResourcesDefault && setSelectedFolder("");
   }
 
-  onClickInput = () => {
-    this.setState({
-      isPanelVisible: true,
-    });
-  };
-  onClose = () => {
-    this.setState({
-      isPanelVisible: false,
-    });
-  };
   onSelectFolder = (id) => {
     const { setSelectedFolder } = this.props;
 
     setSelectedFolder(`${id}`);
   };
-
-  onConnect = () => {
-    const { isConnected } = this.state;
-
-    this.setState({ isConnected: !isConnected });
-  };
-
-  onSelectAccount = (options) => {
-    const key = options.key;
-    const label = options.label;
-
-    this.setState({
-      selectedAccount: { key, label },
-    });
-  };
-
   render() {
     const { isPanelVisible } = this.state;
     const {
@@ -69,11 +43,9 @@ class ThirdPartyModule extends React.PureComponent {
           <DirectThirdPartyConnection
             t={t}
             onSelectFolder={this.onSelectFolder}
-            onClose={this.onClose}
-            onClickInput={this.onClickInput}
             isDisabled={isLoadingData}
             isPanelVisible={isPanelVisible}
-            withoutBasicSelection={isResourcesDefault ? false : true}
+            withoutInitPath={!isResourcesDefault}
             isError={isError}
             id={passedId}
             buttonSize={buttonSize}

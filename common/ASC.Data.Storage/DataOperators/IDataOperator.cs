@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,9 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.ZipOperators;
+namespace ASC.Data.Storage.DataOperators;
 
-public interface IGetterWriteOperator
+public interface IDataWriteOperator : IAsyncDisposable
 {
-    Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId);
+    Task WriteEntryAsync(string tarKey, Stream stream);
+    Task WriteEntryAsync(string tarKey, string domain, string path, IDataStore store);
+    bool NeedUpload { get; }
+    string Hash { get; }
+    string StoragePath { get; }
+}
+
+public interface IDataReadOperator : IDisposable
+{
+    Stream GetEntry(string key);
+    IEnumerable<string> GetEntries(string key);
+    IEnumerable<string> GetDirectories(string key);
+
 }
