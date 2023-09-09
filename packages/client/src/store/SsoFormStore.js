@@ -19,6 +19,9 @@ import {
   SSO_TITLE,
   SSO_PHONE,
   SSO_NAME_ID_FORMAT,
+  SSO_SIGNING,
+  SSO_ENCRYPT,
+  SSO_SIGNING_ENCRYPT,
 } from "../helpers/constants";
 import isEqual from "lodash/isEqual";
 
@@ -45,7 +48,7 @@ class SsoFormStore {
 
   idpCertificate = "";
   idpPrivateKey = null;
-  idpAction = "signing";
+  idpAction = SSO_SIGNING;
   idpCertificates = [];
 
   // idpCertificateAdvanced
@@ -59,7 +62,7 @@ class SsoFormStore {
 
   spCertificate = "";
   spPrivateKey = "";
-  spAction = "signing";
+  spAction = SSO_SIGNING;
   spCertificates = [];
 
   // spCertificateAdvanced
@@ -661,18 +664,18 @@ class SsoFormStore {
   };
 
   resetSpCheckboxes = (action) => {
-    if (action === "signing and encrypt") {
+    if (action === SSO_SIGNING_ENCRYPT) {
       this.spSignAuthRequests = false;
       this.spSignLogoutRequests = false;
       this.spSignLogoutResponses = false;
       this.spEncryptAssertions = false;
     }
-    if (action === "signing") {
+    if (action === SSO_SIGNING) {
       this.spSignAuthRequests = false;
       this.spSignLogoutRequests = false;
       this.spSignLogoutResponses = false;
     }
-    if (action === "encrypt") {
+    if (action === SSO_ENCRYPT) {
       this.spEncryptAssertions = false;
     }
   };
@@ -744,14 +747,14 @@ class SsoFormStore {
   };
 
   checkedSpBoxes = (cert) => {
-    if (cert.action === "signing") {
+    if (cert.action === SSO_SIGNING) {
       this.spSignAuthRequests = true;
       this.spSignLogoutRequests = true;
     }
-    if (cert.action === "encrypt") {
+    if (cert.action === SSO_ENCRYPT) {
       this.spEncryptAssertions = true;
     }
-    if (cert.action === "signing and encrypt") {
+    if (cert.action === SSO_SIGNING_ENCRYPT) {
       this.spSignAuthRequests = true;
       this.spSignLogoutRequests = true;
       this.spEncryptAssertions = true;
@@ -880,7 +883,7 @@ class SsoFormStore {
     if (!this.enableSso || this.isLoadingXml) return true;
     return !this.spCertificates.some(
       (cert) =>
-        cert.action === "signing" || cert.action === "signing and encrypt"
+        cert.action === SSO_SIGNING || cert.action === SSO_SIGNING_ENCRYPT
     );
   }
 
@@ -888,7 +891,7 @@ class SsoFormStore {
     if (!this.enableSso || this.isLoadingXml) return true;
     return !this.spCertificates.some(
       (cert) =>
-        cert.action === "encrypt" || cert.action === "signing and encrypt"
+        cert.action === SSO_ENCRYPT || cert.action === SSO_SIGNING_ENCRYPT
     );
   }
 }

@@ -104,6 +104,9 @@ export const SSO_EMAIL = "email";
 export const SSO_LOCATION = "location";
 export const SSO_TITLE = "title";
 export const SSO_PHONE = "phone";
+export const SSO_SIGNING = "signing";
+export const SSO_ENCRYPT = "encrypt";
+export const SSO_SIGNING_ENCRYPT = "signing and encrypt";
 
 export const DEFAULT_SELECT_TIMEZONE = {
   key: "UTC",
