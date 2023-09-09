@@ -41,7 +41,7 @@ class SsoFormStore {
   sloUrlPost = "";
   sloUrlRedirect = "";
   sloBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
-  nameIdFormat = SSO_NAME_ID_FORMAT;
+  nameIdFormat = SSO_NAME_ID_FORMAT[0];
 
   idpCertificate = "";
   idpPrivateKey = null;
