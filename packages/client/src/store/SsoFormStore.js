@@ -700,6 +700,18 @@ class SsoFormStore {
     );
   };
 
+  checkSpCertificateExist = () => {
+    if (this.spAction === SSO_SIGNING_ENCRYPT && this.spCertificates.length > 0)
+      return true;
+
+    return this.spCertificates.find(
+      (item) =>
+        (item.action === this.spAction ||
+          item.action === SSO_SIGNING_ENCRYPT) &&
+        !this.isEdit
+    );
+  };
+
   addSpCertificate = async (t) => {
     const data = [
       {
@@ -709,11 +721,7 @@ class SsoFormStore {
       },
     ];
 
-    if (
-      this.spCertificates.find(
-        (item) => item.action === this.spAction && !this.isEdit
-      )
-    ) {
+    if (this.checkSpCertificateExist()) {
       toastr.error(t("CertificateExist"));
       return;
     }
