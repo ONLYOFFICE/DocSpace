@@ -59,6 +59,13 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
 
   try {
     initialState = await getInitialState(query);
+    const hideAuthPage = false;
+    const ssoUrl = initialState?.capabilities?.ssoUrl;
+
+    if (hideAuthPage && ssoUrl && query.skipssoredirect !== "true") {
+      res.redirect(ssoUrl);
+      return next();
+    }
 
     if (initialState.isAuth && url !== "/login/error") {
       res.redirect("/");
