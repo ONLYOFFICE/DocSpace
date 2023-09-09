@@ -272,7 +272,9 @@ restart_services() {
 
 	echo -n "Updating database... "
 	systemctl start ${PRODUCT}-migration-runner >/dev/null 2>&1 || true
-	sleep 15
+	while systemctl is-active docspace-migration-runner &>/dev/null; do
+		sleep 5
+	done
 	echo "OK"
 
 	echo -n "Restarting services... "
