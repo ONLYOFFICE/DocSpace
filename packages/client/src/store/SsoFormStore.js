@@ -192,6 +192,7 @@ class SsoFormStore {
   closeIdpModal = () => {
     this.idpCertificate = "";
     this.idpPrivateKey = "";
+    this.editIndex = 0;
     this.isEdit = false;
     this.idpIsModalVisible = false;
   };
@@ -650,10 +651,11 @@ class SsoFormStore {
     this.spIsModalVisible = true;
   };
 
-  setIdpCertificate = (certificate, isEdit) => {
+  setIdpCertificate = (certificate, index, isEdit) => {
     this.idpCertificate = certificate.crt;
     this.idpPrivateKey = certificate.key;
     this.idpAction = certificate.action;
+    this.editIndex = index;
     this.isEdit = isEdit;
     this.idpIsModalVisible = true;
   };
@@ -722,10 +724,16 @@ class SsoFormStore {
         return;
       }
       const newCertificates = res.data;
-      newCertificates.map((cert) => {
-        this.spCertificates = [...this.spCertificates, cert];
-        this.checkedSpBoxes(cert);
-      });
+      if (this.isEdit) {
+        this.spCertificates[this.editIndex] = newCertificates[0];
+        this.checkedSpBoxes(newCertificates[0]);
+      } else {
+        newCertificates.map((cert) => {
+          this.spCertificates = [...this.spCertificates, cert];
+          this.checkedSpBoxes(cert);
+        });
+      }
+
       this.isCertificateLoading = false;
       this.closeSpModal();
     } catch (err) {
@@ -777,10 +785,15 @@ class SsoFormStore {
         return;
       }
       const newCertificates = res.data;
-      newCertificates.map((cert) => {
-        this.idpCertificates = [...this.idpCertificates, cert];
-        this.checkedIdpBoxes(cert);
-      });
+      if (this.isEdit) {
+        this.idpCertificates[this.editIndex] = newCertificates[0];
+        this.checkedIdpBoxes(newCertificates[0]);
+      } else {
+        newCertificates.map((cert) => {
+          this.idpCertificates = [...this.idpCertificates, cert];
+          this.checkedIdpBoxes(cert);
+        });
+      }
       this.isCertificateLoading = false;
       this.closeIdpModal();
     } catch (err) {
