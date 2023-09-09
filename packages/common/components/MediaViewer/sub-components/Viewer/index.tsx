@@ -2,8 +2,6 @@ import ReactDOM from "react-dom";
 import { isMobile } from "react-device-detect";
 import React, { useRef, useState, useEffect, useCallback } from "react";
 
-import ContextMenu from "@docspace/components/context-menu";
-
 import { StyledViewerContainer } from "../../StyledComponents";
 
 import NextButton from "../NextButton";
@@ -32,7 +30,7 @@ function Viewer(props: ViewerProps) {
   const panelVisibleRef = useRef<boolean>(false);
   const panelToolbarRef = useRef<boolean>(false);
 
-  const contextMenuRef = useRef<ContextMenu>(null);
+  const contextMenuRef = useRef<{ show: (e: any) => void }>(null);
 
   const [isFullscreen, setIsFullScreen] = useState<boolean>(false);
   useEffect(() => {
@@ -130,12 +128,21 @@ function Viewer(props: ViewerProps) {
     if (isFullscreen) {
       if (document.exitFullscreen) {
         document.exitFullscreen();
-      } else if (document["webkitExitFullscreen"]) {
-        document["webkitExitFullscreen"]();
-      } else if (document["mozCancelFullScreen"]) {
-        document["mozCancelFullScreen"]();
-      } else if (document["msExitFullscreen"]) {
-        document["msExitFullscreen"]();
+      } else if (
+        "webkitExitFullscreen" in document &&
+        typeof document.webkitExitFullscreen === "function"
+      ) {
+        document.webkitExitFullscreen();
+      } else if (
+        "mozCancelFullScreen" in document &&
+        typeof document.mozCancelFullScreen === "function"
+      ) {
+        document.mozCancelFullScreen();
+      } else if (
+        "msExitFullscreen" in document &&
+        typeof document.msExitFullscreen === "function"
+      ) {
+        document.msExitFullscreen();
       }
     }
 
@@ -202,6 +209,7 @@ function Viewer(props: ViewerProps) {
               resetToolbarVisibleTimer={resetToolbarVisibleTimer}
               contextModel={props.contextModel}
               errorTitle={props.errorTitle}
+              someDialogIsOpen={props.someDialogIsOpen}
             />,
             containerRef.current
           )
