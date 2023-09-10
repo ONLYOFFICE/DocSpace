@@ -50,6 +50,7 @@ public class RoomLogoManager
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly SecurityContext _securityContext;
+    private readonly FileUtilityConfiguration _fileUtilityConfiguration;
 
     public RoomLogoManager(
         StorageFactory storageFactory,
@@ -60,7 +61,8 @@ public class RoomLogoManager
         FilesMessageService filesMessageService,
         IHttpContextAccessor httpContextAccessor,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        SecurityContext securityContext)
+        SecurityContext securityContext,
+        FileUtilityConfiguration fileUtilityConfiguration)
     {
         _storageFactory = storageFactory;
         _tenantManager = tenantManager;
@@ -71,6 +73,7 @@ public class RoomLogoManager
         _httpContextAccessor = httpContextAccessor;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _securityContext = securityContext;
+        _fileUtilityConfiguration = fileUtilityConfiguration;
     }
 
     public bool EnableAudit { get; set; } = true;
@@ -172,6 +175,14 @@ public class RoomLogoManager
     {
         if (!room.HasLogo)
         {
+            if (string.IsNullOrEmpty(room.Color))
+            {
+                room.Color = GetRandomColour();
+
+                var folderDao = _daoFactory.GetFolderDao<T>();
+                await folderDao.SaveFolderAsync(room);
+            }
+
             return new Logo
             {
                 Original = string.Empty,
@@ -215,6 +226,14 @@ public class RoomLogoManager
         }
 
         return pathWithoutQuery;
+    }
+
+    internal string GetRandomColour()
+    {
+        var rand = new Random();
+        var color = _fileUtilityConfiguration.LogoColors[rand.Next(_fileUtilityConfiguration.LogoColors.Count - 1)];
+        var result = Color.FromRgba(color.R, color.G, color.B, 1).ToHex();
+        return result.Substring(0, result.Length - 2);//without opacity
     }
 
     private async Task RemoveTempAsync(string fileName)

@@ -86,7 +86,7 @@ public class FileStorageService //: IFileStorageService
     private readonly QuotaSocketManager _quotaSocketManager;
     private readonly ExternalShare _externalShare;
     private readonly TenantUtil _tenantUtil;
-    private readonly FileUtilityConfiguration _fileUtilityConfiguration;
+    private readonly RoomLogoManager _roomLogoManager;
 
     public FileStorageService(
         Global global,
@@ -146,7 +146,7 @@ public class FileStorageService //: IFileStorageService
         QuotaSocketManager quotaSocketManager,
         ExternalShare externalShare,
         TenantUtil tenantUtil,
-        FileUtilityConfiguration fileUtilityConfiguration)
+        RoomLogoManager roomLogoManager)
     {
         _global = global;
         _globalStore = globalStore;
@@ -205,7 +205,7 @@ public class FileStorageService //: IFileStorageService
         _quotaSocketManager = quotaSocketManager;
         _externalShare = externalShare;
         _tenantUtil = tenantUtil;
-        _fileUtilityConfiguration = fileUtilityConfiguration;
+        _roomLogoManager = roomLogoManager;
     }
 
     public async Task<Folder<T>> GetFolderAsync<T>(T folderId)
@@ -613,7 +613,7 @@ public class FileStorageService //: IFileStorageService
             newFolder.ParentId = parent.Id;
             newFolder.FolderType = folderType;
             newFolder.Private = parent.Private ? parent.Private : privacy;
-            newFolder.Color = GetRandomColour();
+            newFolder.Color = _roomLogoManager.GetRandomColour();
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
 
@@ -634,13 +634,7 @@ public class FileStorageService //: IFileStorageService
             throw GenerateException(e);
         }
 
-        string GetRandomColour()
-        {
-            var rand = new Random();
-            var color = _fileUtilityConfiguration.LogoColors[rand.Next(_fileUtilityConfiguration.LogoColors.Count - 1)];
-            var result = Color.FromRgba(color.R, color.G, color.B, 1).ToHex();
-            return result.Substring(0, result.Length - 2);//without opacity
-        }
+
     }
 
     public async Task<Folder<T>> FolderRenameAsync<T>(T folderId, string title)
