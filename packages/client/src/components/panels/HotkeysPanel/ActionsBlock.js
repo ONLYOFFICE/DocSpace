@@ -29,6 +29,24 @@ const ActionsBlock = ({ t, textStyles, keyTextStyles, CtrlKey }) => {
           <Text {...keyTextStyles}>{CtrlKey}+Shift+z</Text>
         </>
       </Row> */}
+      <Row className="hotkeys_row">
+        <>
+          <Text {...textStyles}>{t("HotkeysCopySelected")}</Text>
+          <Text {...keyTextStyles}> {CtrlKey} + c</Text>
+        </>
+      </Row>
+      <Row className="hotkeys_row">
+        <>
+          <Text {...textStyles}>{t("HotkeysPasteSelected")}</Text>
+          <Text {...keyTextStyles}> {CtrlKey} + v</Text>
+        </>
+      </Row>
+      <Row className="hotkeys_row">
+        <>
+          <Text {...textStyles}>{t("HotkeysCutSelected")}</Text>
+          <Text {...keyTextStyles}> {CtrlKey} + x</Text>
+        </>
+      </Row>
     </>
   );
 };

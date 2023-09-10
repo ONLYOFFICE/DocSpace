@@ -30,8 +30,8 @@ const FILES_TO_IGNORE = [
  * @param evt
  */
 export default async function getFilesFromEvent(evt) {
-  return isDragEvt(evt) && evt.dataTransfer
-    ? getDataTransferFiles(evt.dataTransfer, evt.type)
+  return (isDragEvt(evt) && evt.dataTransfer) || evt.clipboardData
+    ? getDataTransferFiles(evt.dataTransfer ?? evt.clipboardData, evt.type)
     : getInputFiles(evt);
 }
 
@@ -59,7 +59,7 @@ async function getDataTransferFiles(dt, type) {
     const items = fromList(dt.items).filter((item) => item.kind === "file");
     // According to https://html.spec.whatwg.org/multipage/dnd.html#dndevents,
     // only 'dragstart' and 'drop' has access to the data (source node)
-    if (type !== "drop") {
+    if (type !== "drop" && type !== "paste") {
       return items;
     }
     const files = await Promise.all(items.map(toFilePromises));
