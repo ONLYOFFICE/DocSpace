@@ -1,11 +1,13 @@
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
+import Badge from "@docspace/components/badge";
 import { Base } from "@docspace/components/themes";
 import { StyledMobileCategoryWrapper, StyledArrowRightIcon } from "./styles";
 import { combineUrl } from "@docspace/common/utils";
 
 const MobileCategoryWrapper = (props) => {
-  const { title, url, subtitle, onClickLink } = props;
+  const { title, url, subtitle, onClickLink, withPaidBadge, badgeLabel } =
+    props;
 
   return (
     <StyledMobileCategoryWrapper>
@@ -18,6 +20,14 @@ const MobileCategoryWrapper = (props) => {
         >
           {title}
         </Link>
+        {withPaidBadge && (
+          <Badge
+            backgroundColor="#EDC409"
+            label={badgeLabel}
+            isPaidBadge={true}
+            className="paid-badge"
+          />
+        )}
         <StyledArrowRightIcon className="settings_unavailable" size="small" />
       </div>
       <Text className="category-item-description settings_unavailable">
