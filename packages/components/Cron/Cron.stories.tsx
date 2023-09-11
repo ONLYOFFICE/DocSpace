@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { initReactI18next } from "react-i18next";
 import i18n from "i18next";
 
 import Cron, { getNextSynchronization } from ".";
-
-import type { Meta, StoryObj } from "@storybook/react";
+import TextInput from "../text-input/text-input";
+import Button from "../button";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -97,6 +98,10 @@ export const Default: Story = {
       setCron(cron);
     };
 
+    const onClick = () => {
+      setCron(input);
+    };
+
     useEffect(() => {
       setValue(defaultValue);
     }, [defaultValue]);
@@ -105,14 +110,24 @@ export const Default: Story = {
 
     return (
       <div>
-        <input
+        <div
           style={{
-            borderColor: error ? "red" : "black",
+            display: "flex",
+            gap: "6px",
+            alignItems: "baseline",
+            maxWidth: "max-content",
           }}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onBlur={(e) => setCron(e.target.value)}
-        />
+        >
+          <TextInput
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            hasError={!!error}
+            scale={false}
+          />
+          {/*@ts-ignore*/}
+          <Button size="small" label={"Set value"} onClick={onClick} />
+        </div>
+
         <Cron value={cron} setValue={setValue} onError={onError} />
         <p>
           <strong>Cron string: </strong> {cron}
