@@ -28,7 +28,6 @@ namespace ASC.Web.Studio.Core;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class EmailActivationSettings : ISettings<EmailActivationSettings>
 {
     /// <summary>Shown or hidden</summary>

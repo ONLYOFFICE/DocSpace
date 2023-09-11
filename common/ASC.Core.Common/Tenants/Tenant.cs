@@ -28,7 +28,6 @@ using Profile = AutoMapper.Profile;
 
 namespace ASC.Core.Tenants;
 
-[Serializable]
 public class Tenant : IMapFrom<DbTenant>
 {
     public const int DefaultTenant = -1;
