@@ -237,7 +237,7 @@ const NewFilesPanel = (props) => {
         <Row
           key={file.id}
           element={element}
-          inProgressElement={currentOpenFileId === file.id.toString()}
+          inProgress={currentOpenFileId === file.id.toString()}
         >
           <StyledLink
             onClick={onNewFileClick}
