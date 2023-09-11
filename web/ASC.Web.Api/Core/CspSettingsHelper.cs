@@ -135,72 +135,69 @@ public class CspSettingsHelper
             }
         }
 
-        var csp = new CspBuilder();
+        var options = domains.Select(r => new CspOptions(r)).ToList();
 
-        var def = csp.ByDefaultAllow
-            .FromSelf()
-            .From("data:")
-            .From(_filesLinkUtility.DocServiceUrl);
-
-        var scriptBuilder = csp.AllowScripts
-            .FromSelf()
-            .From(_filesLinkUtility.DocServiceUrl)
-            .AllowUnsafeInline();
-
-        var firebaseDomain = _configuration["firebase:authDomain"];
-        if (!string.IsNullOrEmpty(firebaseDomain))
-        {
-            def.From(firebaseDomain);
-
-            var googleapi = "*.googleapis.com";
-            def.From(googleapi);
-            scriptBuilder.From(googleapi);
-        }
-
-        var styleBuilder = csp.AllowStyles
-            .FromSelf()
-            .AllowUnsafeInline();
-
-        var imageBuilder = csp.AllowImages
-            .FromSelf()
-            .From("data:")
-            .From("blob:");
-
-        var frameBuilder = csp.AllowFraming
-            .FromSelf();
-
+        var defaultOptions = _configuration.GetSection("csp:default").Get<CspOptions>();
         if (!_coreBaseSettings.Standalone && !string.IsNullOrEmpty(_coreBaseSettings.Basedomain))
         {
-            def.From($"*.{_coreBaseSettings.Basedomain}");
-        }
-
-        if (!string.IsNullOrEmpty(_configuration["web:zendesk-key"]))
-        {
-            def.From("*.zdassets.com");
-            scriptBuilder.From("*.zdassets.com");
-
-            def.From("*.zendesk.com");
-            def.From("*.zopim.com");
-            def.From("wss:");
-
-            scriptBuilder
-                .From("*.zopim.com")
-                .AllowUnsafeEval();//zendesk;
-
-            imageBuilder.From("*.zopim.io");
-        }
-
-        foreach (var domain in domains)
-        {
-            scriptBuilder.From(domain);
-            styleBuilder.From(domain);
-            imageBuilder.From(domain);
-            frameBuilder.From(domain);
+            defaultOptions.Def.Add($"*.{_coreBaseSettings.Basedomain}");
         }
 
         if (_globalStore.GetStore() is S3Storage s3Storage && !string.IsNullOrEmpty(s3Storage.CdnDistributionDomain))
         {
-            imageBuilder.From(s3Storage.CdnDistributionDomain);
+            defaultOptions.Img.Add(s3Storage.CdnDistributionDomain);
+        }
+
+        options.Add(defaultOptions);
+
+        options.Add(new CspOptions()
+        {
+            Def = new List<string> { _filesLinkUtility.DocServiceUrl },
+            Script = new List<string> { _filesLinkUtility.DocServiceUrl },
+        });
+
+        var firebaseDomain = _configuration["firebase:authDomain"];
+        if (!string.IsNullOrEmpty(firebaseDomain))
+        {
+            var firebaseOptions = _configuration.GetSection("csp:firebase").Get<CspOptions>();
+            firebaseOptions.Def.Add(firebaseDomain);
+            options.Add(firebaseOptions);
+        }
+
+        if (!string.IsNullOrEmpty(_configuration["web:zendesk-key"]))
+        {
+            var zenDeskOptions = _configuration.GetSection("csp:zendesk").Get<CspOptions>();
+            options.Add(zenDeskOptions);
+        }
+
+        var csp = new CspBuilder();
+
+        foreach (var option in options)
+        {
+            foreach (var domain in option.Def)
+            {
+                csp.ByDefaultAllow.From(domain);
+            }
+
+            foreach (var domain in option.Script)
+            {
+                csp.AllowScripts.From(domain);
+            }
+
+            foreach (var domain in option.Style)
+            {
+                csp.AllowStyles.From(domain);
+            }
+
+            foreach (var domain in option.Img)
+            {
+                csp.AllowImages.From(domain);
+            }
+
+            foreach (var domain in option.Frame)
+            {
+                csp.AllowFraming.From(domain);
+            }
         }
 
         var (_, headerValue) = csp.BuildCspOptions().ToString(null);
@@ -210,5 +207,28 @@ public class CspSettingsHelper
     private string GetKey(string domain)
     {
         return $"csp:{domain}";
+    }
+}
+
+public class CspOptions
+{
+    public List<string> Script { get; set; } = new List<string>();
+    public List<string> Style { get; set; } = new List<string>();
+    public List<string> Img { get; set; } = new List<string>();
+    public List<string> Frame { get; set; } = new List<string>();
+    public List<string> Def { get; set; } = new List<string>();
+
+    public CspOptions()
+    {
+
+    }
+
+    public CspOptions(string domain)
+    {
+        Def = new List<string>() { };
+        Script = new List<string>() { domain };
+        Style = new List<string>() { domain };
+        Img = new List<string>() { domain };
+        Frame = new List<string>() { domain };
     }
 }
