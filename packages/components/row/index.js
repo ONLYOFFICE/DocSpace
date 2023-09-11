@@ -144,12 +144,12 @@ class Row extends React.Component {
                 />
               </StyledCheckbox>
             )}
+            {mode == "default" && renderElement && (
+              <StyledElement onClick={onRowClick} className="styled-element">
+                {element}
+              </StyledElement>
+            )}
           </>
-        )}
-        {mode == "default" && renderElement && (
-          <StyledElement onClick={onRowClick} className="styled-element">
-            {element}
-          </StyledElement>
         )}
 
         <StyledContent onClick={onRowClick} className="row_content">

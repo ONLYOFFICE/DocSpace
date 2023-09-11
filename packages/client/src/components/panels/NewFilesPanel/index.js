@@ -52,6 +52,7 @@ const NewFilesPanel = (props) => {
 
   const [listFiles, setListFiles] = useState(newFiles);
   const [inProgress, setInProgress] = useState(false);
+  const [currentOpenFileId, setCurrentOpenFileId] = useState(null);
 
   const onClose = () => {
     if (inProgress) return;
@@ -108,6 +109,8 @@ const NewFilesPanel = (props) => {
 
     const { id, extension: fileExst } = e.target.dataset;
 
+    setCurrentOpenFileId(id);
+
     const fileIds = fileExst ? [id] : [];
     const folderIds = fileExst ? [] : [id];
 
@@ -127,7 +130,10 @@ const NewFilesPanel = (props) => {
       .catch((err) => {
         toastr.error(err);
       })
-      .finally(() => setInProgress(false));
+      .finally(() => {
+        setInProgress(false);
+        setCurrentOpenFileId(null);
+      });
   };
 
   const onFileClick = (item) => {
@@ -228,7 +234,11 @@ const NewFilesPanel = (props) => {
       const element = getItemIcon(file);
 
       return (
-        <Row key={file.id} element={element}>
+        <Row
+          key={file.id}
+          element={element}
+          inProgress={currentOpenFileId === file.id.toString()}
+        >
           <StyledLink
             onClick={onNewFileClick}
             containerWidth="100%"
@@ -247,7 +257,7 @@ const NewFilesPanel = (props) => {
         </Row>
       );
     });
-  }, [onNewFileClick, getItemIcon]);
+  }, [onNewFileClick, getItemIcon, currentOpenFileId]);
 
   const element = (
     <StyledAsidePanel visible={visible}>
