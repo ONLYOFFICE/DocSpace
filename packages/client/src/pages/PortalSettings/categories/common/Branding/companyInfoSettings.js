@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Trans, withTranslation } from "react-i18next";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import toastr from "@docspace/components/toast/toastr";
 import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
@@ -12,6 +14,7 @@ import Link from "@docspace/components/link";
 import LoaderCompanyInfoSettings from "../sub-components/loaderCompanyInfoSettings";
 import AboutDialog from "../../../../About/AboutDialog";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import { smallTablet, size } from "@docspace/components/utils/device";
 
 const StyledComponent = styled.div`
   .link {
@@ -32,6 +35,16 @@ const StyledComponent = styled.div`
   .save-cancel-buttons {
     margin-top: 24px;
   }
+
+  .description {
+    padding-bottom: 16px;
+  }
+
+  @media ${smallTablet} {
+    .header {
+      display: none;
+    }
+  }
 `;
 
 const CompanyInfoSettings = (props) => {
@@ -49,6 +62,8 @@ const CompanyInfoSettings = (props) => {
     buildVersionInfo,
     personal,
   } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const defaultCompanySettingsError = {
     hasErrorAddress: false,
@@ -76,6 +91,18 @@ const CompanyInfoSettings = (props) => {
   } = companySettingsError;
 
   const link = t("Common:AboutCompanyTitle");
+
+  useEffect(() => {
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  const checkWidth = () => {
+    window.innerWidth > size.smallTablet &&
+      location.pathname.includes("company-info-settings") &&
+      navigate("/portal-settings/customization/branding");
+  };
 
   useEffect(() => {
     if (!(companyInfoSettingsData && tReady)) return;
@@ -427,7 +454,7 @@ const CompanyInfoSettings = (props) => {
 };
 
 export default inject(({ auth, common }) => {
-  const { settingsStore } = auth;
+  const { currentQuotaStore, settingsStore } = auth;
 
   const {
     setIsLoadedCompanyInfoSettingsData,
@@ -444,6 +471,8 @@ export default inject(({ auth, common }) => {
     personal,
   } = settingsStore;
 
+  const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
+
   return {
     getCompanyInfoSettings,
     setCompanyInfoSettings,
@@ -454,6 +483,7 @@ export default inject(({ auth, common }) => {
     isLoadedCompanyInfoSettingsData,
     buildVersionInfo,
     personal,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(
   withLoading(
