@@ -314,7 +314,8 @@
     <value>Erstellen, bearbeiten, speichern und geben Sie die Dokumente frei. Arbeiten Sie daran in Echtzeit zusammen. Sicherheit durch garantierte 100%ige Kompatibilität mit MS Office Formaten.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Erstellen, bearbeiten, speichern und geben Sie die Dokumente frei. Arbeiten Sie daran in Echtzeit zusammen. Sicherheit durch garantierte 100%ige Kompatibilität mit docx, xslx und pptx Formaten.</value>
+    <value>Erstellen, bearbeiten, speichern und geben Sie die Dokumente frei. Arbeiten Sie daran in Echtzeit zusammen.
+Sicherheit durch garantierte 100%ige Kompatibilität mit docx, xslx und pptx Formaten.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Betrachten und laden Sie geteilte Dokumente herunter. Laden Sie zu geteilten Ordnern hoch. 100%ige Kompatibilität zu docx, xslx, pptx Formaten garantiert.</value>
@@ -414,5 +415,8 @@
   </data>
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Sie können einen Raum nicht anheften</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>Externer Link</value>
   </data>
 </root>

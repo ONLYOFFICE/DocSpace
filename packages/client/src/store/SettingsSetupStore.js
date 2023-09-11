@@ -84,7 +84,6 @@ class SettingsSetupStore {
 
   initSettings = async () => {
     if (this.isInit) return;
-    this.isInit = true;
 
     if (authStore.isAuthenticated) {
       await authStore.settingsStore.getPortalPasswordSettings();
@@ -92,11 +91,18 @@ class SettingsSetupStore {
       await authStore.settingsStore.getIpRestrictionsEnable();
       await authStore.settingsStore.getIpRestrictions();
       await authStore.settingsStore.getSessionLifetime();
+      await authStore.settingsStore.getBruteForceProtection();
     }
+
+    this.isInit = true;
   };
 
   setIsLoadingDownloadReport = (state) => {
     this.isLoadingDownloadReport = state;
+  };
+
+  resetIsInit = () => {
+    this.isInit = false;
   };
 
   setIsInit = (isInit) => {

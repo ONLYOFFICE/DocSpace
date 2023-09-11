@@ -21,6 +21,7 @@ import {
   FilterType,
   FolderType,
 } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const getIconUrl = (extension: string, isImage: boolean, isMedia: boolean) => {
   // if (extension !== iconPath) return iconSize32.get(iconPath);
@@ -267,6 +268,11 @@ export const useFilesHelper = ({
   setSelectedTreeNode,
   filterParam,
   getRootData,
+  onSetBaseFolderPath,
+  isRoomsOnly,
+  rootThirdPartyId,
+  getRoomList,
+  t,
 }: useFilesHelpersProps) => {
   const getFileList = React.useCallback(
     async (
@@ -313,21 +319,27 @@ export const useFilesHelper = ({
 
       filter.folder = id.toString();
 
-      try {
+      const setSettings = async (folderId, isErrorPath = false) => {
         if (isInit && getRootData) {
-          const folder = await getFolderInfo(id);
+          const folder = await getFolderInfo(folderId);
 
           if (
             folder.rootFolderType === FolderType.TRASH ||
             folder.rootFolderType === FolderType.Archive
           ) {
+            if (isRoomsOnly) {
+              await getRoomList(0, true, null, true);
+              toastr.error(
+                t("Files:ArchivedRoomAction", { name: folder.title })
+              );
+              return;
+            }
             await getRootData();
-
             return;
           }
         }
 
-        const currentFolder = await getFolder(id, filter);
+        const currentFolder = await getFolder(folderId, filter);
 
         const { folders, files, total, count, pathParts, current } =
           currentFolder;
@@ -350,35 +362,31 @@ export const useFilesHelper = ({
           setSelectedTreeNode({ ...current, path: pathParts });
 
         if (isInit) {
-          if (isThirdParty) {
-            const breadCrumbs: BreadCrumb[] = [
-              { label: current.title, isRoom: false, id: current.id },
-            ];
+          const breadCrumbs: BreadCrumb[] = await Promise.all(
+            pathParts.map(async (folderId: number | string) => {
+              const folderInfo: any = await getFolderInfo(folderId);
 
-            setBreadCrumbs(breadCrumbs);
-            setIsBreadCrumbsLoading(false);
-          } else {
-            const breadCrumbs: BreadCrumb[] = await Promise.all(
-              pathParts.map(async (folderId: number | string) => {
-                const folderInfo: any = await getFolderInfo(folderId);
+              const { title, id, parentId, rootFolderType, roomType } =
+                folderInfo;
 
-                const { title, id, parentId, rootFolderType, roomType } =
-                  folderInfo;
+              return {
+                label: title,
+                id: id,
+                isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
+                roomType,
+              };
+            })
+          );
 
-                return {
-                  label: title,
-                  id: id,
-                  isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
-                  roomType,
-                };
-              })
-            );
-
+          !isThirdParty &&
+            !isRoomsOnly &&
             breadCrumbs.unshift({ ...defaultBreadCrumb });
 
-            setBreadCrumbs(breadCrumbs);
-            setIsBreadCrumbsLoading(false);
-          }
+          onSetBaseFolderPath &&
+            onSetBaseFolderPath(isErrorPath ? [] : breadCrumbs);
+
+          setBreadCrumbs(breadCrumbs);
+          setIsBreadCrumbsLoading(false);
         }
 
         if (isFirstLoad || startIndex === 0) {
@@ -392,7 +400,24 @@ export const useFilesHelper = ({
         }
         setIsRoot(false);
         setIsNextPageLoading(false);
+      };
+
+      try {
+        await setSettings(id);
       } catch (e) {
+        if (isThirdParty) {
+          await setSettings(rootThirdPartyId, true);
+
+          toastr.error(e);
+          return;
+        }
+
+        if (isRoomsOnly) {
+          await getRoomList(0, true, null, true);
+
+          toastr.error(e);
+          return;
+        }
         getRootData && getRootData();
       }
     },

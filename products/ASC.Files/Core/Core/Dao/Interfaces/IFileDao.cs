@@ -117,7 +117,7 @@ public interface IFileDao<T>
     ///    Return only the latest versions of files of a folder
     /// </remarks>
     IAsyncEnumerable<File<T>> GetFilesAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, 
-        bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1);
+        bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1, T roomId = default);
 
     /// <summary>
     /// Get stream of file
@@ -306,7 +306,7 @@ public interface IFileDao<T>
     Task SaveProperties(T fileId, EntryProperties entryProperties);
     
     Task<int> GetFilesCountAsync(T parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders = false, 
-        bool excludeSubject = false);
+        bool excludeSubject = false, T roomId = default);
 
     #endregion
 }

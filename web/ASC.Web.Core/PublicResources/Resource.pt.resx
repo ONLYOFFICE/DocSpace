@@ -298,4 +298,697 @@
   <data name="ConsumersMicrosoft" xml:space="preserve">
     <value>Microsoft</value>
   </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Via SMS</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Via app autenticadora</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>Chave de acesso S3</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Chave de api Rackspace</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID do Cliente da Aplicação</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Ativar a aplicação para iniciar sessão no portal utilizando uma conta Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para permitir que os seus utilizadores iniciem sessão no ONLYOFFICE utilizando o Apple ID. {0}Aceda ao Portal Apple Developers e crie uma nova aplicação de integração do ONLYOFFICE. Insira os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Uma chave de identificação com 10 caracteres gerada para Iniciar Sessão com a chave privada da Apple</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Chave privada descarregada através do Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>ID de 10 caracteres da conta de desenvolvedor da Equipa</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>iniciar sessão</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>Chaveapi</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Ative esta aplicação para encurtar as ligações de convite do portal e as ligações partilhadas no módulo Documentos com o serviço Bitly.</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para encurtar as ligações de convites e documentos. {0}Insira o seu login Bitly e chave API abaixo:</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Id da Caixa</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Chave da Caixa</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Ative esta aplicação para gerir ficheiros Box e pastas.</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para conectar sua conta Box ao módulo Documentos. Poderá gerir, editar e compartilhar arquivos do Box com utilizadores da ONLYOFFICE. {0}Entre na sua conta na página de desenvolvedores do Box e crie uma nova aplicação para a integração do ONLYOFFICE. Insira os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Ativar a aplicação para a autenticação de dois fatores através do Clickatell.</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Utilize esta aplicação para ativar a autenticação de dois fatores com o serviço Clickatell. {0}Inicie sessão na sua conta da Plataforma SMS e crie uma nova integração para o ONLYOFFICE. Copie uma apiKey e insira-a abaixo:</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>Chave do DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>Segredo do DocuSign</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Ativar a aplicação para assinar digitalmente os seus documentos com o DocuSign.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>Ponto final de autenticação DocuSign</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para assinar digitalmente documentos utilizando o DocuSign. {0}Vá para a sua Consola DocuSign Admin e adicione a integração do ONLYOFFICE. Introduza os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Permitir que a aplicação gerencie ficheiros e pastas do Dropbox.</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Ative esta app para ligar a sua conta do Dropbox ao módulo Documentos. Poderá gerenciar, editar e compartilhar arquivos do Dropbox com utilizadores do ONLYOFFICE. {0}Inicie sessão na sua conta no site Dropbox Developers e crie uma nova aplicação para integração com o ONLYOFFICE. Insira os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>ID DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Chave DropBox</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Chave da App</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Ative esta aplicação para criar listas bibliográficas nos documentos através do Easybib.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para criar bibliografias no ONLYOFFICE editors. {0}Vá à página de login do EasyBib e preencha o formulário para adicionar a integração com o ONLYOFFICE. Depois de obter a chave da app, cole-a abaixo:</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Token da App</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>ID do Facebook</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Chave do Facebook</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Ative esta aplicação para iniciar sessão no portal utilizando uma conta de Facebook.</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Ative esta app para permitir que os utilizadores iniciem sessão no ONLYOFFICE através do Facebook e ligue as contas de Facebook dos clientes ao módulo do CRM. {0}Vá ao Portal Facebook Developers e crie uma nova integração de app para a ONLYOFFICE. Introduza os dados que recebeu abaixo:</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Chave Web API</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Chave do servidor</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>ID do Remetente</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID do Projeto</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Ative esta aplicação para receber notificações sobre as mensagens que recebeu através do Firebase Cloud Messaging.</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para permitir que os seus utilizadores recebam notificações sobre as mensagens mesmo quando estão offline. {0}Vá à consola do Firebase e adicione um novo projeto para a integração da ONLYOFFICE. Introduza os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>ID da Google</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Chave da Google</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Armazenamento na Nuvem da Google</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Introduza o nome do Bucket da Nuvem da Google para armazenar as cópias de segurança.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Ligue o Armazenamento na Nuvem da Google para criar uma cópia de segurança e armazenar os dados do seu portal.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Ligue o serviço de Armazenamento em Nuvem da Google para fazer uma cópia de segurança e armazenar dados do seu portal. {0}Vá para a Plataforma da Consola da Nuvem da Google e crie uma nova conta de serviço para o ONLYOFFICE. Cole os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>Json da GoogleCloud</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Ligue o projeto para iniciar sessão no portal utilizando uma conta Google e para gerir ficheiros e pastas do Google Drive.</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para ligar a sua conta Google Drive ao módulo dos Documentos. Poderá gerir, editar, e partilhar ficheiros do Google Drive com utilizadores da ONLYOFFICE.{0}Vá para a Consola de APIs da Google e crie um novo projeto para a integração do ONLYOFFICE. Introduza os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Ative a aplicação para iniciar sessão no portal utilizando uma conta LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para permitir que os seus utilizadores iniciem sessão na ONLYOFFICE utilizando as suas contas de LinkedIn. {0}Vá para o website do LinkedIn Developers e crie uma nova integração de app para a ONLYOFFICE. Introduza os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>ID do LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Chave do LinkedIn</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Chave S</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Ative esta aplicação para iniciar sessão no portal utilizando uma conta Mail.ru.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Quando adicionar uma aplicação Mail.ru pode ativar o início de sessão no portal utilizando uma conta Mail.ru na sua página de perfil.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID da Aplicação do Cliente</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Segredo do Cliente</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Ativa a aplicação para iniciar sessão no portal utilizando uma conta Microsoft.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para permitir que os seus utilizadores possam iniciar sessão na ONLYOFFICE utilizando uma conta da Microsoft. {0}Vá ao Microsoft Azure e crie uma nova integração de aplicação para a ONLYOFFICE. Introduza os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Armazenamento em Nuvem Rackspace</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Associe o serviço de Armazenamento em Nuvem Rackspace para criar uma cópia de segurança e armazenar dados do seu portal.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Ligue o serviço de Armazenamento em Nuvem Rackspace para efetuar cópias de segurança e armazenar dados do seu portal. {0}Nas definições de segurança do Painel de Controlo da Nuvem Rackspace, clique em Mostrar ligação junto à Chave de API do Rackspace. Cole os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Contentor Privado</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Contentor Privado</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Introduza o endereço de URL do Contentor Privado do Rackspace para guardar as cópias de segurança.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Contentor Público</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Contentor Público</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Introduza o endereço de URL do contentor público da Rackspace para armazenar cópias de segurança.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Região</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Região</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Introduza a região onde os seus contentores da Rackspace estão localizados.</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Introduza o nome único do bucket da Amazon para guardar as cópias de segurança.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Associe o Amazon AWS S3 para fazer cópias de segurança e armazenar dados do seu portal.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Associe o Amazon AWS S3 para fazer backup e armazenar dados do seu portal. {0}Aceda à Consola de Gestão AWS e crie chaves de acesso para a ONLYOFFICE. Cole os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Introduza a região AWS onde o seu bucket da Amazon reside.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>Chave secreta de acesso S3</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Armazenamento em Nuvem Selectel</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Palavra-chave para aceder ao armazenamento</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Autent. Utilizador</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Associe o serviço de Armazenamento em Nuvem Selectel para criar cópias de segurança e armazenar dados do seu portal.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Associe o serviço de Armazenamento em Nuvem Selectel para efetuar cópias de segurança e armazenar dados do seu portal. {0}Obtenha os dados de acesso de um utilizador com direitos de leitura/escrita para os contentores onde pretende armazenar as suas cópias de segurança e cole-os abaixo:</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Introduza o nome do contentor privado Selectel para armazenar cópias de segurança.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Introduza o nome do contentor público Selectel para armazenar cópias de segurança.</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>ID da aplicação</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Segredo do cliente</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Ative a aplicação para gerir ficheiros e pastas do OneDrive.</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para associar a sua conta do OneDrive a módulo dos Documentos. Poderá gerir, editar e partilhar ficheiros do OneDrive com os utilizadores da ONLYOFFICE. {0}Inicie sessão na sua conta Microsoft Azure e crie uma nova aplicação para a integração da ONLYOFFICE. Introduza os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>Centro de SMS</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Ative a aplicação para permitir a autenticação de dois fatores através do Centro de SMS.</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Utilize esta aplicação para ativar a autenticação de dois fatores através do serviço do Centro de SMS. {0}Introduza as credenciais da sua conta smsc e a sua palavra-passe (ou palavra-passe MD5 hash) em letras minúsculas:</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Palavra-passe ou palavra-passe MD5 hash em letras minúsculas</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Nome de utilizador do bot</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Token do bot</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Associe a sua conta do Telegram para receber notificações sobre o portal através do Telegram.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Para receber notificações do portal através do Telegram, ative o bot do Telegram. Pode criar um novo bot utilizando o BotFather no ambiente de trabalho do Telegram. Para utilizar este bot, os utilizadores do portal têm de ativar as notificações do Telegram na sua página de perfil. {0}Cole o nome de utilizador do bot e o token que recebeu nos campos abaixo.</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Sid da Conta</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Token de Auten.</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Ative esta aplicação para chamar para contactos CRM através do Twilio.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para permitir que os seus utilizadores façam chamadas para os seus contactos do módulo CRM através do Twilio. {0}Vá para a Consola Twilio e cole estes dados abaixo:</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Número de telemóvel do Twilio (necessário para a autorização de SMS)</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>ID do cliente</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Segredo do Cliente</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Ative esta aplicação para iniciar sessão no portal através de uma conta Twitter e procure por contactos.</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Ative esta aplicação para permitir que os seus utilizadores iniciem sessão na ONLYOFFICE utilizando o seu Twitter, e para que liguem as contas Twitter dos seus clientes ao módulo CRM. {0}Aceda ao Portal de Programadores do Twitter e crie uma nova aplicação de integração para a ONLYOFFICE. Introduza os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>Chave API</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>Segredo da Chave API</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Nome de utilizador Rackspace</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>ID da Aplicação</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Chave Segura</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Ative esta aplicação para iniciar sessão no portal utilizando uma conta VK.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Quando adiciona a aplicação VK pode ativar o login para o portal através da conta VK na sua página de perfil.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Ative a aplicação para publicar documentos diretamente no WordPress.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Ative a aplicação para publicar facilmente documentos no seu website WordPress. {0}Vá à Página de Developers do WordPress e crie uma nova app para a integração da ONLYOFFICE. Cole os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>Chave WordPress</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>Segredo WordPress</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>ID do Cliente</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Segredo do Cliente</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Ative a aplicação para importar utilizadores do serviço Yahoo.</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Ative esta app para adicionar novos utilizadores do portal através da sua lista de contactos Yahoo. {0}Vá à página Criar Aplicação na Yahoo Developer Network e crie uma nova aplicação para a integração da ONLYOFFICE. Introduza os dados que recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Ativar a aplicação para iniciar sessão no portal utilizando uma conta Yandex.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Quando adicionar a aplicação Yandex, pode ativar o login para o portal através da conta Yandex na sua página de perfil.</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>A operação de recuperação da palavra-chave está proibida para um utilizador LDAP</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>A operação de recuperação de palavra-passe está proibida para um utilizador SSO</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>ID da Instância Incorreto.</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>O acesso ao portal é restrito.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Más chaves</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>O seu perfil está suspenso</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Os emails deste domínio não são permitidos para se registar</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>A mensagem está em branco</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Tipo de ficheiro de imagem desconhecido</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>O tamanho da imagem excede os parâmetros permitidos</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>O tamanho do ficheiro é demasiado grande</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Primeironome ou últimonome incorretos</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>O acesso ao portal é restrito</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>O seu plano de preço não inclui esta opção</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>Caracteres de {0} a {1}</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>sem espaços</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>apenas letras do latim</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>O limite do pedido foi ultrapassado</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>O domínio do locatário (tenant) não pode estar vazio.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>O nome do domínio tem de ter entre {0} e {1} caracteres.</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>Região EU (Frankfurt)</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Erro de conexão</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Não foi possível criar os utilizadores, os dados que recebemos estão incorretos.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>O servidor não conseguiu obter as definições.</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>O servidor não conseguiu guardar as definições.</value>
+  </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Login ou palavra-chave incorreta.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>O domínio LDAP não foi encontrado.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Nenhum grupo foi encontrado.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Valor do Filtro do Utilizador Inválido.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Tentou retirar os direitos de administrador de si próprio(a). Os direitos de administrador não foram alterados.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>A sua conta não está ligada ao diretório LDAP e a sua palavra-chave LDAP não está ativa. Por favor, altere ou defina a palavra-chave para a sua conta na página das configurações do perfil.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Erro desconhecido.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Nenhum utilizador foi encontrado.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Não foi possível obter o Atributo de Grupo para um ou vários grupos.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Filtro de Grupo Incorreto.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Não foi possível obter o Atributo do Nome do Grupo para um ou vários grupos.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Não foi possível obter o Atributo de Início de Sessão para um ou vários utilizadores.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Não é possível ligar ao servidor LDAP. Verifique se o endereço do servidor e o número da porta estão corretos.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Não foi possível obter o Atributo de Utilizador para um ou vários utilizadores.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Erro interno do servidor.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>A modificar utilizadores LDAP no portal dos utilizadores comuns</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>a adicionar utilizador</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Verificação do Certificado</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>A verificar as definições de apoio LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>A desconectar o LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>A obter a lista de grupos do servidor LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>A obter a lista de utilizadores do servidor LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>A definir o utilizador {0} como {1} admin</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>A carregar a informação base LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>a remover utilizador</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>A remover grupos desatualizados que foram carregados anteriormente através do LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>A remover direitos de acesso desatualizados que foram carregados anteriormente através do LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>A desativar perfis de utilizadores desatualizados que foram carregados anteriormente através do LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>A guardar grupos</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>A guardar as definições</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>A guardar a foto</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>A guardar utilizadores</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>A sincronizar utilizadores</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>A atualizar os direitos de acesso dos utilizadores</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>A atualizar as fotos dos utilizadores</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>É necessário um tipo de autenticação mais seguro. Por favor, utilize uma conexão encriptada ou ative a autenticação simples no servidor.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>O limite de utilizadores do atual plano de preços atual foi atingido</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>O StartTLS não é suportado pelo servidor LDAP atual.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Demasiadas operações LDAP.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Não foi possível obter um ID Único para objetos de utilizador/grupo. Por predefinição, o sistema tentará corresponder a um dos seguintes identificadores: entryUUID, nsuniqueid, GUID, objectSid. Se nenhum dos atributos corresponder ao seu servidor LDAP, especifique o atributo necessário na definição ldap.unique.id do ficheiro web.appsettings.config.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>A licença não está correta</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>A licença não é válida para esta versão do portal.</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>O número de portais excede o número permitido pela licença</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>O número de utilizadores excede o número permitido pela licença</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Carregado com êxito</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Carregado com êxito. {0}O Apoio e as atualizações não estão disponíveis para esta licença desde {2}.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Carregado com êxito. {0}O Apoio não está disponível para esta licença desde {2}.{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Se o utilizador com o e-mail {0} existir, as instruções de como alterar a palavra-chave foram enviadas para este endereço eletrónico.</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Para alterar o número, precisa de eliminar o seu número de telemóvel atual</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>Região ORG</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Proprietário</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>A Quota de espaço em disco foi excedida</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>O espaço na nuvem para os seus documentos de escritório</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Acesso ao Portal</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>O processo de reatribuição de dados para {0} não está concluído.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Recaptacha Inválido</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Ásia-Pacífico (Singapura)</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>O prazo para utilizar o código expirou. Solicite uma nova mensagem de texto.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>As definições de SMS não estão disponíveis</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Enviou demasiadas mensagens de texto. Por favor, tente de novo.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Não foi possível guardar as definições</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>As definições não podem estar vazias</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Vinculação inválida: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>ID da entidade Inválido</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Mapeamento de campos inválido</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Integrações de terceiros</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Código incorreto</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>As definições da aplicação TFA não estão disponíveis</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Enviou demasiadas mensagens de texto. Por favor, tente de novo mais tarde.</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>Região Oeste dos EUA (Oregon)</value>
+  </data>
 </root>

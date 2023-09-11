@@ -1,8 +1,6 @@
-﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
-import React, { useState, useEffect, useCallback } from "react";
-import { withTranslation } from "react-i18next";
+﻿import React, { useState, useEffect, useCallback } from "react";
+import { withTranslation, Trans } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
-import HelpButton from "@docspace/components/help-button";
 import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
@@ -11,13 +9,14 @@ import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
-import { PortalRenamingTooltip } from "../sub-components/common-tooltips";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import { PortalRenamingDialog } from "SRC_DIR/components/dialogs";
+import Text from "@docspace/components/text";
+import Link from "@docspace/components/link";
 
 const PortalRenaming = (props) => {
   const {
@@ -33,6 +32,8 @@ const PortalRenaming = (props) => {
     setIsLoaded,
     getAllSettings,
     domain,
+    currentColorScheme,
+    renamingSettingsUrl,
   } = props;
 
   const navigate = useNavigate();
@@ -271,16 +272,10 @@ const PortalRenaming = (props) => {
     setIsShowModal(false);
   };
 
-  const tooltipPortalRenamingTooltip = (
-    <PortalRenamingTooltip t={t} domain={domain} />
-  );
   const hasError = errorValue === null ? false : true;
 
   const settingsBlock = (
     <div className="settings-block">
-      <div className="settings-block-description">
-        {t("PortalRenamingMobile", { domain })}
-      </div>
       <FieldContainer
         id="fieldContainerPortalRenaming"
         className="field-container-width"
@@ -312,15 +307,25 @@ const PortalRenaming = (props) => {
       {isCustomizationView && !isMobileView && (
         <div className="category-item-heading">
           <div className="category-item-title">{t("PortalRenaming")}</div>
-          <HelpButton
-            className="portal-renaming-help-button"
-            offsetRight={0}
-            iconName={CombinedShapeSvgUrl}
-            size={12}
-            tooltipContent={tooltipPortalRenamingTooltip}
-          />
         </div>
       )}
+      <div className="category-item-description">
+        <Text fontSize="13px" fontWeight={400}>
+          {t("PortalRenamingDescriptionText", { domain })}
+        </Text>
+        <Text fontSize="13px" fontWeight={400}>
+          <Trans t={t} i18nKey="PortalRenamingNote" />
+        </Text>
+        <Link
+          className="link-learn-more"
+          color={currentColorScheme.main.accent}
+          target="_blank"
+          isHovered
+          href={renamingSettingsUrl}
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </div>
       {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
         <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
       ) : (
@@ -352,10 +357,17 @@ const PortalRenaming = (props) => {
 };
 
 export default inject(({ auth, setup, common }) => {
-  const { theme, tenantAlias, baseDomain } = auth.settingsStore;
+  const {
+    theme,
+    tenantAlias,
+    baseDomain,
+    currentColorScheme,
+    renamingSettingsUrl,
+  } = auth.settingsStore;
   const { setPortalRename, getAllSettings } = setup;
   const { isLoaded, setIsLoadedPortalRenaming, initSettings, setIsLoaded } =
     common;
+
   return {
     theme,
     setPortalRename,
@@ -366,6 +378,8 @@ export default inject(({ auth, setup, common }) => {
     setIsLoaded,
     getAllSettings,
     domain: baseDomain,
+    currentColorScheme,
+    renamingSettingsUrl,
   };
 })(
   withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))

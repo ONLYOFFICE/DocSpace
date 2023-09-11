@@ -1,14 +1,28 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import equal from "fast-deep-equal/react";
 import { tablet } from "@docspace/components/utils/device";
 
 const StyledSectionPaging = styled.div`
   margin: 16px 0 0;
-  padding-right: 3px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding-left: 3px;
+        `
+      : css`
+          padding-right: 3px;
+        `}
 
   @media ${tablet} {
-    padding-right: 0px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 0px;
+          `
+        : css`
+            padding-right: 0px;
+          `}
   }
 `;
 

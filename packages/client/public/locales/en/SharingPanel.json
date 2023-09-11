@@ -9,12 +9,11 @@
   "ExternalLink": "External link",
   "FormFilling": "Form filling",
   "InternalLink": "Internal link",
+  "LinkName": "Link name",
   "Notify users": "Notify users",
   "ReadOnly": "Read only",
   "ShareEmailBody": "You have been granted access to the {{itemName}} document. Click the link below to open the document right now: {{shareLink}}.",
   "ShareEmailSubject": "You have been granted access to the {{itemName}} document",
   "ShareVia": "Share via",
-  "SharingSettingsTitle": "Sharing settings",
-  "LinkName": "Link name",
-  "Shorten": "Shorten"
+  "SharingSettingsTitle": "Sharing settings"
 }

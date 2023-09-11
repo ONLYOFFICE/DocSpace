@@ -60,6 +60,8 @@ const withHotkeys = (Component) => {
       setInviteUsersWarningDialogVisible,
 
       security,
+      copyToClipboard,
+      uploadClipboardFiles,
     } = props;
 
     const navigate = useNavigate();
@@ -111,13 +113,21 @@ const withHotkeys = (Component) => {
       }
     };
 
+    const onPaste = async (e) => {
+      e.preventDefault();
+      uploadClipboardFiles(t, e);
+    };
+
     useEffect(() => {
       const throttledKeyDownEvent = throttle(onKeyDown, 300);
 
       window.addEventListener("keydown", throttledKeyDownEvent);
+      document.addEventListener("paste", onPaste);
 
-      return () =>
+      return () => {
         window.removeEventListener("keypress", throttledKeyDownEvent);
+        document.removeEventListener("paste", onPaste);
+      };
     });
 
     //Select/deselect item
@@ -330,6 +340,13 @@ const withHotkeys = (Component) => {
       hotkeysFilter
     );
 
+    useHotkeys("Ctrl+c, command+c", () => copyToClipboard(t), hotkeysFilter);
+    useHotkeys(
+      "Ctrl+x, command+x",
+      () => copyToClipboard(t, true),
+      hotkeysFilter
+    );
+
     //Upload file
     useHotkeys(
       "Shift+u",
@@ -394,6 +411,8 @@ const withHotkeys = (Component) => {
         selectAll,
         activateHotkeys,
         uploadFile,
+        copyToClipboard,
+        uploadClipboardFiles,
       } = hotkeyStore;
 
       const {
@@ -478,6 +497,9 @@ const withHotkeys = (Component) => {
         setInviteUsersWarningDialogVisible,
 
         security,
+        copyToClipboard,
+
+        uploadClipboardFiles,
       };
     }
   )(observer(WithHotkeys));

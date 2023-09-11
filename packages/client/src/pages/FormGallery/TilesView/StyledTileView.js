@@ -3,6 +3,7 @@ import { Base } from "@docspace/components/themes";
 import TileContent from "./sub-components/TileContent";
 import { tablet, desktop } from "@docspace/components/utils/device";
 import { isMobile } from "react-device-detect";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const FlexBoxStyles = css`
   display: flex;
@@ -48,8 +49,17 @@ const StyledTile = styled.div`
   .file-icon_container {
     width: 32px;
     height: 32px;
-    margin-left: 16px;
-    margin-right: 8px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 16px;
+            margin-left: 8px;
+          `
+        : css`
+            margin-left: 16px;
+            margin-right: 8px;
+          `}
   }
 `;
 
@@ -104,7 +114,11 @@ const StyledFileTileBottom = styled.div`
 
   .tile-file-loader {
     padding-top: 4px;
-    padding-left: 3px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-right: 3px;`
+        : `padding-left: 3px;`}
   }
 `;
 
@@ -137,7 +151,11 @@ const StyledContent = styled.div`
 const StyledElement = styled.div`
   flex: 0 0 auto;
   display: flex;
-  margin-right: 4px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-left: 4px;`
+      : `margin-right: 4px;`}
   user-select: none;
   margin-top: 3px;
 
@@ -149,7 +167,8 @@ const StyledOptionButton = styled.div`
   display: block;
 
   .expandButton > div:first-child {
-    padding: 8px 21px 8px 12px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("8px 21px 8px 12px", theme.interfaceDirection)};
   }
 `;
 
@@ -167,7 +186,10 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 
   .badge {
-    margin-right: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 8px;`
+        : `margin-right: 8px;`}
     cursor: pointer;
     height: 16px;
     width: 16px;
@@ -175,7 +197,9 @@ const SimpleFilesTileContent = styled(TileContent)`
 
   .new-items {
     position: absolute;
-    right: 29px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `left: 29px;` : `right: 29px;`}
     top: 19px;
   }
 
@@ -186,7 +210,11 @@ const SimpleFilesTileContent = styled(TileContent)`
 
   .share-icon {
     margin-top: -4px;
-    padding-right: 8px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-left: 8px;`
+        : `padding-right: 8px;`}
   }
 
   .favorite,
@@ -210,7 +238,10 @@ const SimpleFilesTileContent = styled(TileContent)`
 
 const paddingCss = css`
   @media ${desktop} {
-    padding-right: 3px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-left: 3px;`
+        : `padding-right: 3px;`}
   }
 `;
 
@@ -257,7 +288,10 @@ const StyledTileContainer = styled.div`
       cursor: pointer !important;
 
       .sort-combo-box {
-        margin-right: 3px;
+        ${({ theme }) =>
+          theme.interfaceDirection === "rtl"
+            ? `margin-left: 3px;`
+            : `margin-right: 3px;`}
         .dropdown-container {
           top: 104%;
           bottom: auto;
@@ -319,7 +353,10 @@ const StyledTileContainer = styled.div`
           color: ${(props) => props.theme.filterInput.sort.tileSortColor};
 
           .sort-icon {
-            margin-right: 8px;
+            ${({ theme }) =>
+              theme.interfaceDirection === "rtl"
+                ? `margin-left: 8px;`
+                : `margin-right: 8px;`}
             svg {
               path {
                 fill: ${(props) => props.theme.filterInput.sort.tileSortFill};
@@ -336,7 +373,10 @@ const StyledTileContainer = styled.div`
   }
 
   @media ${tablet} {
-    margin-right: -3px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: -3px;`
+        : `margin-right: -3px;`}
   }
 
   ${isMobile &&
@@ -371,7 +411,11 @@ const MainContainerWrapper = styled.div`
 
   display: flex;
   align-self: center;
-  margin-right: auto;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-left: auto;`
+      : `margin-right: auto;`}
 `;
 
 const MainContainer = styled.div`

@@ -11,27 +11,43 @@ const hotkeyBorderStyle = css`
 `;
 
 const rowCheckboxDraggingStyle = css`
-  margin-left: -20px;
-  padding-left: 20px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: -20px;
+          padding-right: 20px;
+        `
+      : css`
+          margin-left: -20px;
+          padding-left: 20px;
+        `}
 
   border-bottom: 1px solid;
   border-image-slice: 1;
-  border-image-source: ${(props) => `linear-gradient(to right, 
+  border-image-source: ${props => `linear-gradient(to right, 
           ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
 `;
 
 const contextMenuWrapperDraggingStyle = css`
-  margin-right: -20px;
-  padding-right: 20px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: -20px;
+          padding-left: 20px;
+        `
+      : css`
+          margin-right: -20px;
+          padding-right: 20px;
+        `}
 
   border-bottom: 1px solid;
   border-image-slice: 1;
-  border-image-source: ${(props) => `linear-gradient(to left,
+  border-image-source: ${props => `linear-gradient(to left,
           ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
 `;
 
 const StyledTableRow = styled(TableRow)`
-  ${(props) =>
+  ${props =>
     props.isRoom &&
     css`
       .table-container_cell {
@@ -39,64 +55,95 @@ const StyledTableRow = styled(TableRow)`
         max-height: 48px;
       }
     `}
-  ${(props) =>
+  ${props =>
     !props.isDragging &&
     css`
       :hover {
         .table-container_cell {
           cursor: pointer;
-          background: ${(props) =>
+          background: ${props =>
             `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
 
-          margin-top: ${(props) => (props.showHotkeyBorder ? "-2px" : "-1px")};
+          margin-top: ${props => (props.showHotkeyBorder ? "-2px" : "-1px")};
 
-          ${(props) =>
+          ${props =>
             !props.showHotkeyBorder &&
             css`
-              border-top: ${(props) =>
+              border-top: ${props =>
                 `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
             `}
         }
         .table-container_file-name-cell {
-          margin-left: -24px;
-          padding-left: 24px;
+          ${props =>
+            props.theme.interfaceDirection === "rtl"
+              ? css`
+                  margin-right: -24px;
+                  padding-right: 24px;
+                `
+              : css`
+                  margin-left: -24px;
+                  padding-left: 24px;
+                `}
         }
         .table-container_row-context-menu-wrapper {
-          margin-right: -20px;
-          padding-right: 18px;
+          ${props =>
+            props.theme.interfaceDirection === "rtl"
+              ? css`
+                  margin-left: -20px;
+                  padding-left: 18px;
+                `
+              : css`
+                  margin-right: -20px;
+                  padding-right: 18px;
+                `}
         }
       }
     `}
   .table-container_cell {
-    background: ${(props) =>
+    background: ${props =>
       (props.checked || props.isActive) &&
       `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
-    cursor: ${(props) =>
+    cursor: ${props =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
       `url(${CursorPalmSvgUrl}), auto !important`};
 
-    ${(props) =>
+    ${props =>
       props.inProgress &&
       css`
         pointer-events: none;
         /* cursor: wait; */
       `}
 
-    ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"}
+    ${props => props.showHotkeyBorder && "border-color: #2DA7DB"}
   }
 
   .table-container_element-wrapper,
   .table-container_quick-buttons-wrapper {
-    padding-right: 0px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 0px;
+          `
+        : css`
+            padding-right: 0px;
+          `}
   }
 
   .table-container_element-wrapper,
   .table-container_row-loader {
-    min-width: ${(props) => (props.isRoom ? "40px" : "36px")};
+    min-width: ${props => (props.isRoom ? "40px" : "36px")};
 
-    margin-left: -20px;
-    padding-left: 20px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: -20px;
+            padding-right: 20px;
+          `
+        : css`
+            margin-left: -20px;
+            padding-left: 20px;
+          `}
   }
 
   .table-container_element-container {
@@ -110,7 +157,14 @@ const StyledTableRow = styled(TableRow)`
 
   .table-container_row-loader {
     svg {
-      margin-left: 4px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 4px;
+            `
+          : css`
+              margin-left: 4px;
+            `}
     }
   }
 
@@ -119,25 +173,50 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_file-name-cell {
-    ${(props) =>
+    ${props =>
       props.showHotkeyBorder &&
       css`
-        margin-left: -24px;
-        padding-left: 24px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: -24px;
+                padding-right: 24px;
+              `
+            : css`
+                margin-left: -24px;
+                padding-left: 24px;
+              `}
+
         ${hotkeyBorderStyle}
       `};
-    ${(props) => props.dragging && rowCheckboxDraggingStyle};
+    ${props => props.dragging && rowCheckboxDraggingStyle};
   }
 
   .table-container_row-context-menu-wrapper {
-    padding-right: 0px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 0px;
+          `
+        : css`
+            padding-right: 0px;
+          `}
 
-    ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
-    ${(props) =>
+    ${props => props.dragging && contextMenuWrapperDraggingStyle};
+    ${props =>
       props.showHotkeyBorder &&
       css`
-        margin-right: -20px;
-        padding-right: 18px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-left: -20px;
+                padding-left: 18px;
+              `
+            : css`
+                margin-right: -20px;
+                padding-right: 18px;
+              `}
+
         ${hotkeyBorderStyle}
       `};
   }
@@ -150,10 +229,17 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .item-file-name {
-    padding: 12px 12px 12px 0px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 12px 0px 12px 12px;
+          `
+        : css`
+            padding: 12px 12px 12px 0px;
+          `}
   }
 
-  ${(props) =>
+  ${props =>
     props.showHotkeyBorder &&
     css`
       .table-container_cell {
@@ -179,7 +265,7 @@ const StyledTableRow = styled(TableRow)`
       }
     `}
 
-  ${(props) =>
+  ${props =>
     props.isHighlight &&
     css`
       .table-container_cell:not(.table-container_element-wrapper) {
@@ -187,7 +273,7 @@ const StyledTableRow = styled(TableRow)`
 
         @keyframes Highlight {
           0% {
-            background: ${(props) => props.theme.filesSection.animationColor};
+            background: ${props => props.theme.filesSection.animationColor};
           }
 
           100% {
@@ -196,17 +282,43 @@ const StyledTableRow = styled(TableRow)`
         }
       }
 
-      .table-container_cell:not(.table-container_element-wrapper, .table-container_file-name-cell) {
-        padding-right: ${(props) => props.hideColumns && `0px`};
+      .table-container_cell:not(
+          .table-container_element-wrapper,
+          .table-container_file-name-cell
+        ) {
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding-left: ${props => props.hideColumns && `0px`};
+              `
+            : css`
+                padding-right: ${props => props.hideColumns && `0px`};
+              `}
       }
 
       .table-container_file-name-cell {
-        margin-left: -24px;
-        padding-left: 24px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: -24px;
+                padding-right: 24px;
+              `
+            : css`
+                margin-left: -24px;
+                padding-left: 24px;
+              `}
       }
       .table-container_row-context-menu-wrapper {
-        margin-right: -20px;
-        padding-right: 18px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-left: -20px;
+                padding-left: 18px;
+              `
+            : css`
+                margin-right: -20px;
+                padding-right: 18px;
+              `}
       }
     `}
 `;
@@ -216,12 +328,19 @@ const StyledDragAndDrop = styled(DragAndDrop)`
 `;
 
 const StyledBadgesContainer = styled.div`
-  margin-left: 8px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 8px;
+        `
+      : css`
+          margin-left: 8px;
+        `}
 
   display: flex;
   align-items: center;
 
-  ${(props) =>
+  ${props =>
     props.showHotkeyBorder &&
     css`
       margin-top: 1px;
@@ -230,16 +349,37 @@ const StyledBadgesContainer = styled.div`
   .badges {
     display: flex;
     align-items: center;
-    margin-right: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 12px;
+          `
+        : css`
+            margin-right: 12px;
+          `}
   }
 
   .badges:last-child {
-    margin-left: 0px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 0px;
+          `
+        : css`
+            margin-left: 0px;
+          `}
   }
 
   .badge {
     cursor: pointer;
-    margin-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 8px;
+          `
+        : css`
+            margin-right: 8px;
+          `}
   }
 
   .new-items {
@@ -250,10 +390,24 @@ const StyledBadgesContainer = styled.div`
 
   .badge-version {
     width: max-content;
-    margin: 0 5px -2px -2px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin: 0 -2px -2px 5px;
+          `
+        : css`
+            margin: 0 5px -2px -2px;
+          `}
 
     > div {
-      padding: 0 3.3px 0 4px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding: 0 4px 0 3.3px;
+            `
+          : css`
+              padding: 0 3.3px 0 4px;
+            `}
       p {
         letter-spacing: 0.5px;
         font-size: 9px;
@@ -277,11 +431,25 @@ const StyledQuickButtonsContainer = styled.div`
   }
 
   .badge {
-    margin-right: 14px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 14px;
+          `
+        : css`
+            margin-right: 14px;
+          `}
   }
 
   .badge:last-child {
-    margin-right: 10px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 10px;
+          `
+        : css`
+            margin-right: 10px;
+          `}
   }
 
   .lock-file {
@@ -297,8 +465,7 @@ const StyledQuickButtonsContainer = styled.div`
   .share-button-icon:hover {
     cursor: pointer;
     path {
-      fill: ${(props) =>
-        props.theme.filesSection.tableView.row.shareHoverColor};
+      fill: ${props => props.theme.filesSection.tableView.row.shareHoverColor};
     }
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }

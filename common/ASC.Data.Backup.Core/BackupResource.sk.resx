@@ -120,4 +120,7 @@
   <data name="ButtonSetPassword" xml:space="preserve">
     <value>Nastaviť heslo</value>
   </data>
+  <data name="BackupNotFound" xml:space="preserve">
+    <value>Záložný súbor je neplatný. Použite prosím súbor vytvorený vo verzii ONLYOFFICE v11.5 alebo novšej verzii.</value>
+  </data>
 </root>

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const PlayerFullSceenWrapper = styled.div`
   display: flex;
@@ -7,7 +7,14 @@ export const PlayerFullSceenWrapper = styled.div`
   min-width: 48px;
   height: 48px;
 
-  padding-left: 10px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding-right: 10px;
+        `
+      : css`
+          padding-left: 10px;
+        `}
 
   &:hover {
     cursor: pointer;

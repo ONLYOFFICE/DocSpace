@@ -136,6 +136,8 @@ class FilesStore {
     start: true,
   });
 
+  hotkeysClipboard = [];
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -497,6 +499,10 @@ class FilesStore {
             this.bufferSelection[foundIndex] = folder;
           });
         }
+      }
+
+      if (folder.id === this.selectedFolderStore.id) {
+        this.selectedFolderStore.setSelectedFolder({ ...folder });
       }
     }
   };
@@ -2526,6 +2532,14 @@ class FilesStore {
         ? this.folders.filter((x) => !folderIds.includes(x.id))
         : this.folders;
 
+      const hotkeysClipboard = fileIds
+        ? this.hotkeysClipboard.filter(
+            (f) => !fileIds.includes(f.id) && !f.isFolder
+          )
+        : this.hotkeysClipboard.filter(
+            (f) => !folderIds.includes(f.id) && f.isFolder
+          );
+
       newFilter.total -= deleteCount;
 
       runInAction(() => {
@@ -2533,6 +2547,7 @@ class FilesStore {
         this.setFiles(files);
         this.setFolders(folders);
         this.setTempActionFilesIds([]);
+        this.setHotkeysClipboard(hotkeysClipboard);
       });
 
       return;
@@ -3736,6 +3751,12 @@ class FilesStore {
     Object.assign(newFilter, filter);
 
     return await api.rooms.getRooms(newFilter);
+  };
+
+  setHotkeysClipboard = (hotkeysClipboard) => {
+    this.hotkeysClipboard = hotkeysClipboard
+      ? hotkeysClipboard
+      : this.selection;
   };
 
   get isFiltered() {

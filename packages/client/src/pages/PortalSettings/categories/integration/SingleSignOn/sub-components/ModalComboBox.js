@@ -29,6 +29,7 @@ const ModalComboBox = (props) => {
         selectedOption={currentOption}
         showDisabledItems
         isDisabled={isDisabled}
+        directionY="both"
       />
     </FieldContainer>
   );

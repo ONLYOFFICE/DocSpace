@@ -991,4 +991,7 @@
   <data name="TariffsFeature_thirdparty" xml:space="preserve">
     <value>Сторонние интеграции</value>
   </data>
+  <data name="ErrorTooManyLoginAttempts" xml:space="preserve">
+    <value>Слишком много попыток входа. Пожалуйста, попробуйте позже</value>
+  </data>
 </root>

@@ -2,7 +2,10 @@ import styled from "styled-components";
 import { desktop } from "@docspace/components/utils/device";
 
 const StyledTreeFolder = styled.div`
-  padding-right: 16px;
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `padding-left: 16px;`
+      : `padding-right: 16px;`}
 `;
 
 const StyledLoader = styled.div`
@@ -18,7 +21,11 @@ const StyledLoader = styled.div`
     padding-top: 4px;
   }
 
-  ${(props) => props.paddingLeft && `padding-left: ${props.paddingLeft}`};
+  ${(props) =>
+    props.paddingLeft &&
+    (props.theme.interfaceDirection === "rtl"
+      ? `padding-right: ${props.paddingLeft}`
+      : `padding-left: ${props.paddingLeft}`)};
 `;
 
 export { StyledLoader, StyledTreeFolder };

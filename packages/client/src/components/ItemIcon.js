@@ -46,7 +46,14 @@ const EncryptedFileIcon = styled.div`
   position: absolute;
   width: 16px;
   margin-top: 14px;
-  margin-left: 12px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+              margin-right: 12px;
+            `
+      : css`
+              margin-left: 12px;
+            `}
 `;
 
 const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom, defaultRoomIcon }) => {

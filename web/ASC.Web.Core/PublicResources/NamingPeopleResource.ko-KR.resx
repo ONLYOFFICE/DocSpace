@@ -145,4 +145,16 @@
   <data name="EducationUserTitle" xml:space="preserve">
     <value>제목</value>
   </data>
+  <data name="EducationUsers" xml:space="preserve">
+    <value>교사/학생</value>
+  </data>
+  <data name="EducationUser" xml:space="preserve">
+    <value>교사/학생</value>
+  </data>
+  <data name="EducationSchemaName" xml:space="preserve">
+    <value>교육 기관</value>
+  </data>
+  <data name="EducationAddUsers" xml:space="preserve">
+    <value>교사/학생 추가</value>
+  </data>
 </root>
