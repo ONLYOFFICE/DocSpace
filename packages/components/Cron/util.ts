@@ -480,7 +480,15 @@ export const getUnits = (t?: TFunction) => {
       total: 7,
       alt: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
       altWithTranslation: t
-        ? [t("SUN"), t("MON"), t("TUE"), t("WED"), t("THU"), t("FRI"), t("SAT")]
+        ? [
+            t("Common:SUN"),
+            t("Common:MON"),
+            t("Common:TUE"),
+            t("Common:WED"),
+            t("Common:THU"),
+            t("Common:FRI"),
+            t("Common:SAT"),
+          ]
         : undefined,
     },
   ]);
