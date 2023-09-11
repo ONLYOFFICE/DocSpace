@@ -36,15 +36,11 @@ jobs:
         packageType: [deb, rpm]
 
     steps:
+      # To avoid mistake "System.IO.IOException: No space left on device"
       - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          android: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
+        run: |
+          sudo rm -rf /usr/local/lib/android /opt/ghc
+          sudo docker image prune --all --force
 
       - name: Import GPG
         uses: crazy-max/ghaction-import-gpg@v5
@@ -74,9 +70,14 @@ jobs:
           sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nodesource.gpg --import
           sudo chmod 644 /usr/share/keyrings/nodesource.gpg
           sudo apt-get -y update
-          sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename dpkg-sig lintian
+          sudo apt install -y dotnet-sdk-7.0 yarn nodejs rename
           sudo npm install -g json
-          [ "${{ matrix.packageType }}" == "rpm" ] && sudo pip install rpmlint || true
+          if [[ "${{ matrix.packageType }}" == "rpm" ]]; then
+            sudo apt install -y python3-rpm python3-pip
+            sudo pip install rpmlint
+          else
+            sudo apt install -y dpkg-sig lintian dh-make
+          fi
 
       - name: Build DEB Packages
         if: matrix.packageType == 'deb'
@@ -140,7 +141,7 @@ jobs:
       - name: Checking the DEB package for errors
         if: matrix.packageType == 'deb'
         run: |
-          lintian --suppress-tags=mismatched-override --profile debian ${{ env.PACKAGE_DIRECTORY }}/*.deb | tee -a LINTIAN
+          lintian --profile debian ${{ env.PACKAGE_DIRECTORY }}/*.deb | tee -a LINTIAN
           if grep -qE '^(W:|E:)' LINTIAN; then
             echo "::warning Noticedeb=lintian::$(cat LINTIAN | awk '/^W:/ { ws += 1 } /^E:/ { es += 1 } END { print "Warnings:", ws, "Errors:", es }')"
           fi
@@ -151,6 +152,6 @@ jobs:
           for rpm_package in ${{ env.PACKAGE_DIRECTORY }}/rpm/SPECS/RPMS/noarch/*.rpm; do
             rpmlint --ignore-unused-rpmlintrc --rpmlintrc ${{ env.PACKAGE_DIRECTORY }}/rpm/SPECS/SOURCES/$(${{ env.PRODUCT_LOW }}).rpmlintrc $rpm_package | tee -a RPM_LINT
           done
-          if grep -qE '^(W:|E:)' RPM_LINT; then
+          if grep -qE '(W:|E:)' RPM_LINT; then
             echo "::warning Noticerpm=rpmlint::$(cat RPM_LINT | awk '/W:/ { ws += 1 } /E:/ { es += 1 } END { print "Warnings:", ws, "Errors:", es }')"
           fi
