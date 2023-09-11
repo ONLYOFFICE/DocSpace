@@ -5,10 +5,9 @@ import { useNavigate } from "react-router-dom";
 import MobileCategoryWrapper from "../../../components/MobileCategoryWrapper";
 
 const StyledWrapper = styled.div`
-  margin-top: 9px;
+  margin-top: 13px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
 `;
 
 const MobileView = () => {
