@@ -11,8 +11,6 @@ import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavba
 import MobileCategoryWrapper from "../../components/MobileCategoryWrapper";
 
 const StyledComponent = styled.div`
-  margin-top: 8px;
-
   .combo-button-label {
     max-width: 100%;
   }

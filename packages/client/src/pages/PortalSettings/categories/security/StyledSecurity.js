@@ -54,10 +54,6 @@ export const MainContainer = styled.div`
       padding-right: 8px;
     }
   }
-
-  @media ${smallTablet} {
-    margin-top: 8px;
-  }
 `;
 
 MainContainer.defaultProps = { theme: Base };
