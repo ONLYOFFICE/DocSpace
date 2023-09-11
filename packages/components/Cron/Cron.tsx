@@ -90,7 +90,7 @@ function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
     };
   }, [period]);
 
-  const units = useMemo(() => getUnits(t), []);
+  const units = useMemo(() => getUnits(t), [t]);
 
   return (
     <CronWrapper>

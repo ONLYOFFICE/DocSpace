@@ -10,10 +10,10 @@ function Period({ period = "Hour", setPeriod, t }: PeriodProps) {
     setPeriod(arg.key);
   };
 
-  const options = useMemo(() => getOptions(t), []);
+  const options = useMemo(() => getOptions(t), [t]);
   const selectedOption = useMemo(
     () => ({ key: period, label: getLabel(period, t) }),
-    [period]
+    [period, t]
   );
 
   return (

@@ -10,7 +10,7 @@ function Hours({ hours, setHours, unit, t }: HoursProps) {
       setValue={setHours}
       placeholder={t("EveryHour")}
       unit={unit}
-      prefix={t("at")}
+      prefix={t("At")}
       dropDownMaxHeight={300}
     />
   );
