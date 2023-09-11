@@ -40,6 +40,7 @@ class Row extends React.Component {
       isRoom,
       withoutBorder,
       contextTitle,
+      inProgressElement,
     } = this.props;
 
     const { onRowClick, inProgress, mode, onContextClick, ...rest } =
@@ -144,12 +145,24 @@ class Row extends React.Component {
                 />
               </StyledCheckbox>
             )}
-            {mode == "default" && renderElement && (
-              <StyledElement onClick={onRowClick} className="styled-element">
-                {element}
-              </StyledElement>
-            )}
           </>
+        )}
+
+        {inProgressElement ? (
+          <Loader className="row-loader" type="oval" size="16px" />
+        ) : (
+          mode == "default" &&
+          renderElement && (
+            <StyledElement onClick={onRowClick} className="styled-element">
+              {element}
+            </StyledElement>
+          )
+        )}
+
+        {mode == "default" && renderElement && (
+          <StyledElement onClick={onRowClick} className="styled-element">
+            {element}
+          </StyledElement>
         )}
 
         <StyledContent onClick={onRowClick} className="row_content">
