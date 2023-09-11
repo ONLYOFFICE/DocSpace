@@ -88,7 +88,7 @@ public class TextileStyler : IPatternStyler
 
 
         InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent);
-        var direction = GetDirectionAsync(message);
+        var direction = GetDirectionAsync(message).Result;
 
         message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
                                .Replace("%LOGO%", logoImg)
@@ -98,8 +98,8 @@ public class TextileStyler : IPatternStyler
                                .Replace("%FOOTERSOCIAL%", footerSocialContent)
                                .Replace("%TEXTFOOTER%", unsubscribeText)
                                .Replace("%IMAGEPATH%", imagePath)
-                               .Replace("%DIRECTION%", direction.Result.Item1)
-                               .Replace("%AlignLeftOrRight%;", direction.Result.Item2);
+                               .Replace("%DIRECTION%", direction.Item1)
+                               .Replace("%AlignLeftOrRight%;", direction.Item2);
     }
 
     private async Task<(string, string)> GetDirectionAsync(NoticeMessage message)
