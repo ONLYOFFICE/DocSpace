@@ -8,6 +8,7 @@ import StatusBadge from "../../sub-components/StatusBadge";
 import { inject, observer } from "mobx-react";
 
 import { Base } from "@docspace/components/themes";
+import { useTranslation } from "react-i18next";
 
 const BarWrapper = styled.div`
   width: 100%;
@@ -44,7 +45,13 @@ const BarItem = styled.div`
 `;
 
 const BarItemHeader = ({ children }) => (
-  <Text as="h3" color="#A3A9AE" fontSize="12px" fontWeight={600} className="barItemHeader">
+  <Text
+    as="h3"
+    color="#A3A9AE"
+    fontSize="12px"
+    fontWeight={600}
+    className="barItemHeader"
+  >
     {children}
   </Text>
 );
@@ -55,8 +62,14 @@ const FlexWrapper = styled.div`
 `;
 
 const DetailsBar = ({ eventDetails }) => {
+  const { t, i18n } = useTranslation("Webhooks");
+
   const formatDate = (date) => {
-    return moment(date).format("MMM D, YYYY, h:mm:ss A") + " UTC";
+    return (
+      moment(date).locale(i18n.language).format("MMM D, YYYY, h:mm:ss A") +
+      " " +
+      t("UTC")
+    );
   };
 
   const formattedDelivery = formatDate(eventDetails.delivery);

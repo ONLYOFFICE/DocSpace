@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Użtkownicy z większą liczbą uprawnień mogą tworzyć i edytować pliki w pokoju, ale nie mogą tworzyć pokoi, zarządzać użytkownikami ani uzyskać dostępu do ustawień.",
   "RoleReviewer": "Recenzujący",
   "RoleReviewerDescription": "Operacje na istniejących plikach: przeglądanie, recenzowanie, komentowanie.",
-  "RoleRoomAdminDescription": "Administratorzy pokojów mogą tworzyć i zarządzać przypisanymi im pokojami, zapraszać nowych użytkowników oraz przypisywać role poniżej swojego poziomu. Wszyscy administratorzy mają dostęp do sekcji Osobiste.",
   "RoleUserDescription": "Użytkownicy mają dostęp tylko do pokoi, do których zostali zaproszeni przez administratorów. Nie mogą tworzyć własnych pokoi, folderów ani plików.",
   "RoleViewer": "Przeglądający",
   "RoleViewerDescription": "Odczyt plików",

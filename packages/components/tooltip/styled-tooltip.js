@@ -15,8 +15,13 @@ const StyledTooltip = styled.div`
     padding: ${(props) => props.theme.tooltip.padding};
     pointer-events: ${(props) => props.theme.tooltip.pointerEvents};
     max-width: ${(props) =>
-      props.maxWidth ? props.maxWidth : props.theme.tooltip.maxWidth};
+      `min(100vw, ${
+        props.maxWidth ? props.maxWidth : props.theme.tooltip.maxWidth
+      })`};
     color: ${(props) => props.theme.tooltip.textColor} !important;
+    z-index: 999;
+
+    box-sizing: border-box;
 
     p,
     span {

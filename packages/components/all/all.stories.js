@@ -207,30 +207,29 @@ const Template = (args) => (
           </Link>
         </div>
         <div style={{ padding: "24px 0 8px 0" }}>
-          <Link data-for="group" data-tip={0}>
+          <Link data-tooltip-id="group" data-tooltip-content={0}>
             Bob
           </Link>
           <br />
-          <Link data-for="group" data-tip={1}>
+          <Link data-tooltip-id="group" data-tooltip-content={1}>
             John
           </Link>
           <br />
-          <Link data-for="group" data-tip={2}>
+          <Link data-tooltip-id="group" data-tooltip-content={2}>
             Kevin
           </Link>
           <Tooltip
             id="group"
-            offsetRight={90}
-            getContent={(dataTip) =>
-              dataTip ? (
+            getContent={({ content }) =>
+              content ? (
                 <div>
                   <Text isBold={true} fontSize="16px">
-                    {arrayUsers[dataTip].name}
+                    {arrayUsers[content].name}
                   </Text>
                   <Text color="#A3A9AE" fontSize="13px">
-                    {arrayUsers[dataTip].email}
+                    {arrayUsers[content].email}
                   </Text>
-                  <Text fontSize="13px">{arrayUsers[dataTip].position}</Text>
+                  <Text fontSize="13px">{arrayUsers[content].position}</Text>
                 </div>
               ) : null
             }

@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
-import { DNSSettingsTooltip } from "../sub-components/common-tooltips";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
@@ -19,6 +18,8 @@ import withLoading from "SRC_DIR/HOCs/withLoading";
 import Badge from "@docspace/components/badge";
 import toastr from "@docspace/components/toast/toastr";
 import ToggleButton from "@docspace/components/toggle-button";
+import Text from "@docspace/components/text";
+import Link from "@docspace/components/link";
 
 const toggleStyle = {
   position: "static",
@@ -58,6 +59,7 @@ const DNSSettings = (props) => {
     dnsName,
     enable,
     isDefaultDNS,
+    dnsSettingsUrl,
   } = props;
   const [hasScroll, setHasScroll] = useState(false);
   const isLoadedSetting = isLoaded && tReady;
@@ -82,9 +84,8 @@ const DNSSettings = (props) => {
     }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile = document.getElementsByClassName(
-      "settings-mobile"
-    )[0];
+    const settingsMobile =
+      document.getElementsByClassName("settings-mobile")[0];
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
@@ -152,15 +153,6 @@ const DNSSettings = (props) => {
       setIsCustomizationView(false);
     }
   }, [isSmallTablet, setIsCustomizationView]);
-
-  const tooltipDNSSettingsTooltip = (
-    <DNSSettingsTooltip
-      t={t}
-      currentColorScheme={currentColorScheme}
-      helpLink={helpLink}
-      standalone={standalone}
-    />
-  );
 
   const settingsBlock = (
     <div className="settings-block">
@@ -233,13 +225,6 @@ const DNSSettings = (props) => {
       {isCustomizationView && !isMobileView && (
         <div className="category-item-heading">
           <div className="category-item-title">{t("DNSSettings")}</div>
-          <HelpButton
-            offsetRight={0}
-            iconName={CombinedShapeSvgUrl}
-            size={12}
-            tooltipContent={tooltipDNSSettingsTooltip}
-            className="dns-setting_helpbutton "
-          />
           {!isSettingPaid && (
             <Badge
               className="paid-badge"
@@ -250,6 +235,20 @@ const DNSSettings = (props) => {
           )}
         </div>
       )}
+      <div className="category-item-description">
+        <Text fontSize="13px" fontWeight={400}>
+          {t("DNSSettingsDescription")}
+        </Text>
+        <Link
+          className="link-learn-more"
+          color={currentColorScheme.main.accent}
+          target="_blank"
+          isHovered
+          href={dnsSettingsUrl}
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </div>
       {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
         <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
       ) : (
@@ -261,7 +260,8 @@ const DNSSettings = (props) => {
 };
 
 export default inject(({ auth, common }) => {
-  const { helpLink, currentColorScheme, standalone } = auth.settingsStore;
+  const { helpLink, currentColorScheme, standalone, dnsSettingsUrl } =
+    auth.settingsStore;
   const {
     isLoaded,
     setIsLoadedDNSSettings,
@@ -293,5 +293,6 @@ export default inject(({ auth, common }) => {
     standalone,
     setIsEnableDNS,
     saveDNSSettings,
+    dnsSettingsUrl,
   };
 })(withLoading(withTranslation(["Settings", "Common"])(observer(DNSSettings))));

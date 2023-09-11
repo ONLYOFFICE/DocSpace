@@ -104,8 +104,8 @@ class SaveCancelButtons extends React.Component {
             minwidth={displaySettings && "auto"}
           />
         </div>
-        {showReminder && (
-          <Text className="unsaved-changes"> {reminderTest} </Text>
+        {showReminder && reminderTest && (
+          <Text className="unsaved-changes">{reminderTest}</Text>
         )}
       </StyledSaveCancelButtons>
     );
