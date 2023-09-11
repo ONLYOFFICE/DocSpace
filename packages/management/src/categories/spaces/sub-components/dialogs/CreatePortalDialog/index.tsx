@@ -70,7 +70,8 @@ const CreatePortalDialog = () => {
     try {
       const res = await createNewPortal(data);
       if (visit) {
-        return window.open(res?.reference, "_self");
+        const protocol = window?.location?.protocol;
+        return window.open(`${protocol}//${res?.tenant?.domain}/`, "_self");
       }
       await authStore.settingsStore.getAllPortals();
     } catch (error) {
