@@ -108,7 +108,8 @@ public class TextileStyler : IPatternStyler
         var culture = user.GetCulture();
         var direction = string.Empty;
         var textAlign = string.Empty;
-        if (culture.Name == "ar-SA")
+
+        if (culture.TextInfo.IsRightToLeft)
         {
             direction = "direction:rtl";
             textAlign = "text-align:right";
