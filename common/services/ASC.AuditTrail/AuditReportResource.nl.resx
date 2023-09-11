@@ -718,4 +718,10 @@
   <data name="UserUpdatedEmail" xml:space="preserve">
     <value>E-mail Bijgewerkt</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Plaats</value>
+  </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>Land</value>
+  </data>
 </root>

@@ -16,6 +16,7 @@ interface ViewerWrapperProps {
   isVideo: boolean;
   isPdf: boolean;
   isPreviewFile: boolean;
+  someDialogIsOpen: boolean;
 
   archiveRoom: boolean;
 

@@ -207,9 +207,14 @@ public abstract class BaseStorage : IDataStore
 
     public virtual IDataWriteOperator CreateDataWriteOperator(
             CommonChunkedUploadSession chunkedUploadSession,
-            CommonChunkedUploadSessionHolder sessionHolder)
+            CommonChunkedUploadSessionHolder sessionHolder, bool isConsumerStorage = false)
     {
         return new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
+    }
+
+    public virtual string GetBackupExtension(bool isConsumerStorage = false)
+    {
+        return "tar.gz";
     }
 
     #endregion

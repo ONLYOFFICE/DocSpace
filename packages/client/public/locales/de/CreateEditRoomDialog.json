@@ -12,6 +12,8 @@
   "MakeRoomPrivateDescription": "Alle Dateien in diesem Raum werden verschlüsselt.",
   "MakeRoomPrivateLimitationsWarningDescription": "Mit dieser Funktion können Sie nur bestehende DocSpace-Benutzer einladen. Nachdem Sie einen Raum erstellt haben, können Sie die Liste der Benutzer nicht mehr ändern.",
   "MakeRoomPrivateTitle": "Machen Sie den Raum privat",
+  "PublicRoomBarDescription": "Dieser Raum steht jedem mit dem Link zur Verfügung. Externe Benutzer haben für alle Dateien die Berechtigung \"Nur Anzeigen\".",
+  "PublicRoomDescription": "Laden Sie Nutzer über externe Links ein, um Dokumente ohne Registrierung einzusehen. Sie können diesen Raum auch in eine beliebige Weboberfläche einbetten.",
   "ReviewRoomDescription": "Eine Überprüfung oder Kommentare zu den Dokumenten anfordern",
   "ReviewRoomTitle": "Raum überprüfen",
   "RoomEditing": "Bearbeitung von Räumen",

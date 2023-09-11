@@ -2,6 +2,7 @@ import styled from "styled-components";
 import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
+import { mobile } from "@docspace/components/utils/device";
 
 export const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -33,6 +34,26 @@ export const MainContainer = styled.div`
     ${({ theme }) =>
       theme.interfaceDirection === "rtl" ? `right: 50%;` : `left: 50%;`}
   }
+
+  .category-item-description {
+    margin-top: 8px;
+    max-width: 700px;
+
+    .link-learn-more {
+      display: block;
+      margin: 4px 0 16px 0;
+      font-weight: 600;
+    }
+
+    p,
+    a {
+      color: ${(props) => props.theme.client.settings.common.descriptionColor};
+    }
+
+    @media ${mobile} {
+      padding-right: 8px;
+    }
+  }
 `;
 
 MainContainer.defaultProps = { theme: Base };
@@ -51,51 +72,23 @@ export const StyledTooltip = styled.div`
   }
 `;
 
-export const StyledMobileCategoryWrapper = styled.div`
-  margin-bottom: 20px;
-
-  .category-item-heading {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-
-  .category-item-subheader {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 5px;
-  }
-
-  .category-item-description {
-    color: ${(props) => props.theme.client.settings.security.descriptionColor};
-    font-size: 13px;
-    max-width: 1024px;
-    line-height: 20px;
-  }
-
-  .inherit-title-link {
-    ${({ theme }) =>
-      theme.interfaceDirection === "rtl"
-        ? `margin-left: 7px;`
-        : `margin-right: 7px;`}
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  .link-text {
-    margin: 0;
-  }
-`;
-
-StyledMobileCategoryWrapper.defaultProps = { theme: Base };
-
 export const LearnMoreWrapper = styled.div`
   display: none;
+
+  .link-learn-more {
+    font-weight: 600;
+  }
+
+  p,
+  a {
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
+  }
 
   @media (max-width: 600px) {
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
+    padding-right: 8px;
     line-height: 20px;
   }
 
@@ -129,6 +122,7 @@ export const StyledBruteForceProtection = styled.div`
 
   .input-container {
     margin-bottom: 8px;
+    margin-right: 8px;
   }
 
   .mobile-description {
@@ -141,6 +135,7 @@ export const StyledBruteForceProtection = styled.div`
 
     .page-subtitle {
       line-height: 20px;
+      padding-right: 8px;
       color: ${(props) =>
         props.theme.client.settings.security.descriptionColor};
       padding-bottom: 7px;

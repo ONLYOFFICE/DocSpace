@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -16,6 +17,12 @@ import {
 } from "./sub-components/constants";
 
 const PROVIDER_URL = "https://idpservice/idp";
+
+const StyledWrapper = styled.div`
+  .radio-button-group {
+    margin-left: 24px;
+  }
+`;
 
 const IdpSettings = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
@@ -40,7 +47,7 @@ const IdpSettings = (props) => {
   } = props;
 
   return (
-    <Box>
+    <StyledWrapper>
       <UploadXML />
 
       <SsoFormField
@@ -158,7 +165,7 @@ const IdpSettings = (props) => {
         options={nameIdOptions}
         tabIndex={8}
       />
-    </Box>
+    </StyledWrapper>
   );
 };
 

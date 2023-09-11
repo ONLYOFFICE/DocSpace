@@ -1285,7 +1285,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Products: [{0}]. Groups [{1}].  Access Opened.
+        ///   Looks up a localized string similar to Products: [{0}]. Groups [{1}]. Access Opened.
         /// </summary>
         public static string ProductAccessOpenedForGroups {
             get {
@@ -1294,7 +1294,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Products: [{0}]. Users [{1}].  Access Opened.
+        ///   Looks up a localized string similar to Products: [{0}]. Users [{1}]. Access Opened.
         /// </summary>
         public static string ProductAccessOpenedForUsers {
             get {
