@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Submenu from "@docspace/components/submenu";
 import { useNavigate } from "react-router-dom";
 import { withTranslation } from "react-i18next";
@@ -22,8 +22,6 @@ const SubmenuCommon = (props) => {
     isLoadedSubmenu,
     getWhiteLabelLogoUrls,
   } = props;
-  const [currentTab, setCurrentTab] = useState(0);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,14 +29,6 @@ const SubmenuCommon = (props) => {
       resetSessionStorage();
       getWhiteLabelLogoUrls();
     };
-  }, []);
-
-  useEffect(() => {
-    const path = location.pathname;
-    const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) {
-      setCurrentTab(currentTab);
-    }
   }, []);
 
   useEffect(() => {
@@ -79,6 +69,14 @@ const SubmenuCommon = (props) => {
       )
     );
   };
+
+  const getCurrentTab = () => {
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+    return currentTab !== -1 ? currentTab : 0;
+  };
+
+  const currentTab = getCurrentTab();
 
   if (!isLoadedSubmenu) return <LoaderSubmenu />;
 
