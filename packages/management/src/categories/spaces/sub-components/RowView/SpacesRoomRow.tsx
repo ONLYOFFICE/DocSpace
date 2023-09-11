@@ -36,9 +36,9 @@ type TRow = {
   item: TPortals;
 };
 const SpacesRoomRow = ({ item }: TRow) => {
-  const { spacesStore } = useStore();
-
+  const { spacesStore, authStore } = useStore();
   const { deletePortal, faviconLogo } = spacesStore;
+  const { tenantAlias } = authStore.settingsStore;
 
   const { t } = useTranslation(["Common", "Files", "Settings"]);
 
@@ -76,6 +76,8 @@ const SpacesRoomRow = ({ item }: TRow) => {
     },
   ];
 
+  const isCurrentPortal = tenantAlias === item.portalName;
+
   return (
     <StyledRoomRow
       contextOptions={contextOptionsProps}
@@ -83,7 +85,7 @@ const SpacesRoomRow = ({ item }: TRow) => {
       key={item.id}
       data={item}
     >
-      <RoomContent item={item} />
+      <RoomContent item={item} isCurrentPortal={isCurrentPortal} />
     </StyledRoomRow>
   );
 };

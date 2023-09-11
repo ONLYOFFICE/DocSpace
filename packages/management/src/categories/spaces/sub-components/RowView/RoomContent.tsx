@@ -13,7 +13,7 @@ const StyledRowContent = styled(RowContent)`
   }
 `;
 
-export const RoomContent = ({ item }) => {
+export const RoomContent = ({ item, isCurrentPortal }) => {
   const { t } = useTranslation(["Management", "Common", "Settings"]);
 
   // const { rooms, users, storage } = item?.data;
@@ -42,7 +42,7 @@ export const RoomContent = ({ item }) => {
         className="spaces_row-current"
       >
         {/** TODO: add display current space */}
-        {/* {item.isCurrent ? "Current space" : ""} */}
+        {isCurrentPortal && t("CurrentSpace")}
       </Text>
       <Text fontSize="12px" as="div" fontWeight={600}>
         {/* {`${t("PortalStats", {
