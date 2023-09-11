@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -7,7 +7,7 @@ import Section from "@docspace/common/components/Section";
 import SectionBodyContent from "./Section/Body/index";
 import SectionHeaderContent from "./Section/Header/index";
 
-const NotificationComponent = (props) => {
+const NotificationComponent = props => {
   const { setSelectedNode } = props;
   const { t, ready } = useTranslation("Notifications");
 
@@ -28,7 +28,7 @@ const NotificationComponent = (props) => {
   );
 };
 
-export default inject(({ treeFoldersStore, clientLoadingStore }) => {
+export default inject(({ treeFoldersStore }) => {
   const { setSelectedNode } = treeFoldersStore;
 
   return {

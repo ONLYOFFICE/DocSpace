@@ -1,4 +1,4 @@
-import {
+import type {
   ContextMenuModel,
   NullOrUndefined,
   PlaylistType,
@@ -22,6 +22,11 @@ export enum KeyboardEventKeys {
   KeyS = "KeyS",
   Numpad1 = "Numpad1",
   Digit1 = "Digit1",
+
+  NumpadAdd = "NumpadAdd",
+  NumpadSubtract = "NumpadSubtract",
+  Equal = "Equal",
+  Minus = "Minus",
 }
 
 export enum ToolbarActionType {

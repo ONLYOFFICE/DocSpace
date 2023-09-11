@@ -31,15 +31,25 @@ const marginStyles = css`
   }
 
   @media (max-width: 375px) {
-    margin-left: -16px;
-    margin-right: -8px;
-    padding-left: 16px;
-    padding-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: -16px;
+            margin-left: -8px;
+            padding-right: 16px;
+            padding-left: 8px;
+          `
+        : css`
+            margin-left: -16px;
+            margin-right: -8px;
+            padding-left: 16px;
+            padding-right: 8px;
+          `}
   }
 `;
 
 const checkedStyle = css`
-  background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
+  background: ${props => props.theme.filesSection.rowView.checkedBackground};
   ${marginStyles}
 `;
 
@@ -48,7 +58,14 @@ const StyledWrapper = styled.div`
     border: 1px solid transparent;
     border-left: none;
     border-right: none;
-    margin-left: 0;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 0;
+          `
+        : css`
+            margin-left: 0;
+          `}
     height: 100%;
     user-select: none;
 
@@ -61,7 +78,7 @@ const StyledWrapper = styled.div`
 StyledWrapper.defaultProps = { theme: Base };
 
 const StyledSimpleUserRow = styled(Row)`
-  ${(props) => (props.checked || props.isActive) && checkedStyle};
+  ${props => (props.checked || props.isActive) && checkedStyle};
 
   ${!isMobile &&
   css`
@@ -71,9 +88,9 @@ const StyledSimpleUserRow = styled(Row)`
 
       margin-top: -3px;
       padding-bottom: 1px;
-      border-top: ${(props) =>
+      border-top: ${props =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      border-bottom: ${(props) =>
+      border-bottom: ${props =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
     }
   `}
@@ -84,11 +101,18 @@ const StyledSimpleUserRow = styled(Row)`
 
   .styled-element {
     height: 32px;
-    margin-right: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 12px;
+          `
+        : css`
+            margin-right: 12px;
+          `}
   }
 `;
 
-const SimpleUserRow = (props) => {
+const SimpleUserRow = props => {
   const {
     item,
     sectionWidth,
@@ -118,8 +142,7 @@ const SimpleUserRow = (props) => {
       className={`user-item row-wrapper ${
         isChecked || isActive ? "row-selected" : ""
       }`}
-      value={value}
-    >
+      value={value}>
       <div className="user-item">
         <StyledSimpleUserRow
           key={item.id}
@@ -133,8 +156,7 @@ const SimpleUserRow = (props) => {
           mode={"modern"}
           className={"user-row"}
           onRowClick={onRowClick}
-          onContextClick={onRowContextClick}
-        >
+          onContextClick={onRowContextClick}>
           <UserContent {...props} />
         </StyledSimpleUserRow>
       </div>

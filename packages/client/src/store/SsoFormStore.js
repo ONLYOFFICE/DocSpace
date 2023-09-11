@@ -127,9 +127,17 @@ class SsoFormStore {
   defaultSettings = null;
   editIndex = 0;
 
+  isInit = false;
+
   constructor() {
     makeAutoObservable(this);
   }
+
+  init = () => {
+    if (this.isInit) return;
+    this.isInit = true;
+    this.load();
+  };
 
   load = async () => {
     try {
@@ -279,8 +287,8 @@ class SsoFormStore {
     try {
       return await validateCerts(data);
     } catch (err) {
-      toastr.error(err);
-      console.error(err);
+      toastr.error(err?.response?.data || err);
+      console.error("validateCertificate failed", { err });
     }
   };
 

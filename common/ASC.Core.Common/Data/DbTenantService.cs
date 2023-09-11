@@ -219,6 +219,7 @@ public class DbTenantService : ITenantService
     public async Task<Tenant> SaveTenantAsync(CoreSettings coreSettings, Tenant tenant)
     {
         ArgumentNullException.ThrowIfNull(tenant);
+            DbTenant dbTenant = null;
 
         await using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
@@ -242,15 +243,18 @@ public class DbTenantService : ITenantService
 
             tenant.LastModified = DateTime.UtcNow;
 
-            var dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
+                dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
             dbTenant.Id = 0;
-            dbTenant = (await tenantDbContext.Tenants.AddAsync(dbTenant)).Entity;
+
+                var entity = await tenantDbContext.Tenants.AddAsync(dbTenant);
+                dbTenant = entity.Entity;
+
             await tenantDbContext.SaveChangesAsync();
             tenant.Id = dbTenant.Id;
         }
         else
         {
-            var dbTenant = await Queries.TenantAsync(tenantDbContext, tenant.Id);
+            dbTenant = await Queries.TenantAsync(tenantDbContext, tenant.Id);
 
             if (dbTenant != null)
             {
@@ -457,6 +461,7 @@ static file class Queries
         EF.CompileAsyncQuery(
             (TenantDbContext ctx) =>
                 ctx.TenantVersion
+                    .AsNoTracking()
                     .Where(r => r.DefaultVersion == 1 || r.Id == 0)
                     .OrderByDescending(r => r.Id)
                     .Select(r => r.Id)

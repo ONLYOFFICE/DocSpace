@@ -91,6 +91,7 @@ const AccessRightSelect = ({
         key: currentItem?.key,
         label: currentItem?.label,
       }}
+      forceCloseClickOutside={true}
       {...props}
     />
   );

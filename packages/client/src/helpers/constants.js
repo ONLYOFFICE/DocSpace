@@ -34,6 +34,7 @@ export const ValidationResult = Object.freeze({
   Expired: 2,
   Password: 3,
   InvalidPassword: 4,
+  TariffLimit: 5,
 });
 
 export const GUID_EMPTY = "00000000-0000-0000-0000-000000000000";

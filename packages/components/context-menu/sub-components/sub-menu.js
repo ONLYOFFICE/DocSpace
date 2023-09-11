@@ -13,7 +13,7 @@ import Scrollbar from "../../scrollbar";
 import ToggleButton from "../../toggle-button";
 import { SubMenuItem } from "../styled-context-menu";
 import Loaders from "@docspace/common/components/Loaders";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 const SubMenu = (props) => {
   const {
@@ -34,7 +34,7 @@ const SubMenu = (props) => {
   const theme = useTheme();
 
   const onItemMouseEnter = (e, item) => {
-    if (item.disabled) {
+    if (item.disabled || isMobileOnly) {
       e.preventDefault();
       return;
     }
@@ -45,8 +45,9 @@ const SubMenu = (props) => {
   const onItemClick = (e, item) => {
     if (item.onLoad) {
       e.preventDefault();
+      if (!isMobileOnly) return;
 
-      if (isMobile) onMobileItemClick(e, item.onLoad);
+      if (isMobileOnly) onMobileItemClick(e, item.onLoad);
       else onLeafClick(e);
       return;
     }

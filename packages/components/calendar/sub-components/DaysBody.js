@@ -16,9 +16,10 @@ export const DaysBody = ({
     selectedDate,
     handleDateChange,
     minDate,
-    maxDate
+    maxDate,
+    isMobile
   );
-  const weekdayElements = getWeekdayElements();
+  const weekdayElements = getWeekdayElements(isMobile);
 
   return (
     <CalendarContainer isMobile={isMobile}>

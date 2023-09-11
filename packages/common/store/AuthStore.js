@@ -93,31 +93,35 @@ class AuthStore {
 
     const requests = [];
 
+    const isPortalDeactivated = this.settingsStore.isPortalDeactivate;
+
+    const isPortalRestore =
+      this.settingsStore.tenantStatus === TenantStatus.PortalRestore;
+
     if (
       this.settingsStore.isLoaded &&
       this.settingsStore.socketUrl &&
       !this.settingsStore.isPublicRoom
     ) {
-      requests.push(
-        this.userStore.init().then(() => {
-          if (
-            this.isQuotaAvailable &&
-            this.settingsStore.tenantStatus !== TenantStatus.PortalRestore
-          ) {
-            this.getTenantExtra();
-          }
-        })
-      );
+      !isPortalDeactivated &&
+        requests.push(
+          this.userStore.init().then(() => {
+            if (this.isQuotaAvailable && !isPortalRestore) {
+              this.getTenantExtra();
+            }
+          })
+        );
     } else {
       this.userStore.setIsLoaded(true);
     }
 
     if (this.isAuthenticated && !skipRequest) {
-      this.settingsStore.tenantStatus !== TenantStatus.PortalRestore &&
+      !isPortalRestore &&
+        !isPortalDeactivated &&
         requests.push(this.settingsStore.getAdditionalResources());
 
       if (!this.settingsStore.passwordSettings) {
-        if (this.settingsStore.tenantStatus !== TenantStatus.PortalRestore) {
+        if (!isPortalRestore && !isPortalDeactivated) {
           requests.push(
             this.settingsStore.getPortalPasswordSettings(),
             this.settingsStore.getCompanyInfoSettings()
@@ -326,16 +330,17 @@ class AuthStore {
   };
 
   logout = async () => {
-    await api.user.logout();
+    const ssoLogoutUrl = await api.user.logout();
 
     this.isLogout = true;
-    //console.log("Logout response ", response);
 
     setWithCredentialsStatus(false);
 
     const { isDesktopClient: isDesktop, personal } = this.settingsStore;
 
     isDesktop && logoutDesktop();
+
+    if (ssoLogoutUrl) return ssoLogoutUrl;
 
     this.reset(true);
     this.userStore.setUser(null);

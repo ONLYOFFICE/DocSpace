@@ -170,16 +170,25 @@ const BackupListModalDialog = (props) => {
     setState((val) => ({ ...val, isChecked: !val.isChecked }));
   };
 
-  const { onModalClose, isVisibleDialog, t, isCopyingToLocal, theme } = props;
+  const {
+    onModalClose,
+    isVisibleDialog,
+    t,
+    isCopyingToLocal,
+    theme,
+    standalone,
+  } = props;
   const { filesList, isLoading, selectedFileIndex, isChecked } = state;
 
   const helpContent = () => (
     <>
       <Text className="restore-backup_warning-description">
         {t("RestoreBackupWarningText")}{" "}
-        <Text as="span" className="restore-backup_warning-link">
-          {t("RestoreBackupResetInfoWarningText")}
-        </Text>
+        {!standalone && (
+          <Text as="span" className="restore-backup_warning-link">
+            {t("RestoreBackupResetInfoWarningText")}
+          </Text>
+        )}
       </Text>
     </>
   );
@@ -210,7 +219,7 @@ const BackupListModalDialog = (props) => {
                 </Text>
                 <Link
                   id="delete-backups"
-                  onClick={this.onCleanBackupList}
+                  onClick={onCleanBackupList}
                   fontWeight={600}
                   style={{ textDecoration: "underline dotted" }}
                 >
@@ -224,8 +233,8 @@ const BackupListModalDialog = (props) => {
                 filesList.length > 0 ? (
                   <BackupListBody
                     filesList={filesList}
-                    onDeleteBackup={this.onDeleteBackup}
-                    onSelectFile={this.onSelectFile}
+                    onDeleteBackup={onDeleteBackup}
+                    onSelectFile={onSelectFile}
                     selectedFileIndex={selectedFileIndex}
                   />
                 ) : (
@@ -253,7 +262,7 @@ const BackupListModalDialog = (props) => {
             <Checkbox
               truncate
               className="backup-list_checkbox"
-              onChange={this.onChangeCheckbox}
+              onChange={onChangeCheckbox}
               isChecked={isChecked}
             />
             <Text as="span" className="backup-list_agreement-text">
@@ -274,7 +283,7 @@ const BackupListModalDialog = (props) => {
               primary
               size="normal"
               label={t("Common:Restore")}
-              onClick={this.onRestorePortal}
+              onClick={onRestorePortal}
               isDisabled={isCopyingToLocal || !isChecked}
             />
             <Button
@@ -298,7 +307,7 @@ BackupListModalDialog.propTypes = {
 export default inject(({ auth, backup }) => {
   const { settingsStore } = auth;
   const { downloadingProgress } = backup;
-  const { socketHelper, theme, setTenantStatus } = settingsStore;
+  const { socketHelper, theme, setTenantStatus, standalone } = settingsStore;
   const isCopyingToLocal = downloadingProgress !== 100;
 
   return {
@@ -306,6 +315,7 @@ export default inject(({ auth, backup }) => {
     theme,
     socketHelper,
     isCopyingToLocal,
+    standalone,
   };
 })(
   withTranslation(["Settings", "Common", "Translations"])(

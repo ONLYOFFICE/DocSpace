@@ -30,6 +30,7 @@ import AutoBackupLoader from "@docspace/common/components/Loaders/AutoBackupLoad
 import FloatingButton from "@docspace/components/floating-button";
 import Badge from "@docspace/components/badge";
 import { getSettingsThirdParty } from "@docspace/common/api/files";
+import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 
 const { DocumentModuleType, ResourcesModuleType, StorageModuleType } =
   BackupStorageType;
@@ -66,6 +67,8 @@ class AutomaticBackup extends React.PureComponent {
     this.monthNumbersArray = [];
     this.maxNumberCopiesArray = [];
     this.weekdaysLabelArray = [];
+
+    setDocumentTitle(t("AutoBackup"));
 
     this.getTime();
     this.getMonthNumbers();
@@ -433,7 +436,7 @@ class AutomaticBackup extends React.PureComponent {
     ) : isInitialLoading ? (
       <AutoBackupLoader />
     ) : (
-      <StyledAutoBackup theme={theme} isEnableAuto={isEnableAuto}>
+      <StyledAutoBackup isEnableAuto={isEnableAuto}>
         <div className="backup_modules-header_wrapper">
           <Text isBold fontSize="16px">
             {t("AutoBackup")}
@@ -556,7 +559,7 @@ class AutomaticBackup extends React.PureComponent {
   }
 }
 export default inject(
-  ({ auth, backup, treeFoldersStore, selectFolderDialogStore }) => {
+  ({ auth, backup, treeFoldersStore, filesSelectorInput }) => {
     const { language, settingsStore, currentQuotaStore } = auth;
     const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
     const { organizationName, theme } = settingsStore;
@@ -592,8 +595,7 @@ export default inject(
       defaultFolderId,
     } = backup;
 
-    const { updateBaseFolderPath, resetNewFolderPath } =
-      selectFolderDialogStore;
+    const { updateBaseFolderPath, resetNewFolderPath } = filesSelectorInput;
 
     const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
     const isCheckedThirdParty =

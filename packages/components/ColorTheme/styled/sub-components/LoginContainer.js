@@ -52,6 +52,7 @@ const LoginContainer = styled.div`
 
   .greeting-title {
     width: 100%;
+    max-width: 480px;
     padding-bottom: 32px;
     min-height: 32px;
     color: ${(props) => props.theme.login.headerColor};
@@ -159,7 +160,10 @@ const LoginContainer = styled.div`
           align-items: flex-start;
 
           svg {
-            margin-right: 8px !important;
+            ${({ theme }) =>
+              theme.interfaceDirection === "rtl"
+                ? `margin-left: 8px !important;`
+                : `margin-right: 8px !important;`}
             rect {
               fill: ${(props) => props.theme.checkbox.fillColor};
               stroke: ${(props) => props.theme.checkbox.borderColor};

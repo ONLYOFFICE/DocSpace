@@ -311,8 +311,8 @@
     <value>Yarat, düzenle, kaydet ve paylaş. Gerçek zamanlı olarak işbirliği yapın. MS Office formatları ile %100 uyum garantisi verilir.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Yarat, düzenle, kaydet ve paylaş. Gerçek zamanlı olarak işbirliği yapın.
-MS Office formatları ile %100 uyum garantisi verilir.</value>
+    <value>Ofis belgelerini gerçek zamanlı olarak düzenleyin, paylaşın ve üzerlerinde iş birliği yapın. Tüm ekibin erişebileceği ortak dokümanlar oluşturun ve yönetin.
+docx, xlsx, pptx ile en yüksek uyumluluk.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Paylaşılan belgeleri görüntüleyin ve indirin. Dosyaları paylaşılan klasörlere yükleyin. docx, xlsx, pptx ile %100 uyumluluk garantisi.</value>
@@ -415,5 +415,8 @@ MS Office formatları ile %100 uyum garantisi verilir.</value>
   </data>
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Oda Yöneticisi</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>Harici Bağlantı</value>
   </data>
 </root>

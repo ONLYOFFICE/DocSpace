@@ -29,6 +29,7 @@ const themes = {
 };
 
 const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
+const systemTheme = getSystemTheme();
 
 const initArticleAlertsData = () => {
   const savedArticleAlertsData = localStorage.getItem("articleAlertsData");
@@ -59,14 +60,7 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
-  theme = isDesktopEditors
-    ? window.RendererProcessVariable?.theme?.type === "dark"
-      ? Dark
-      : Base
-    : window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? Dark
-    : Base;
+  theme = themes[systemTheme];
   trustedDomains = [];
   trustedDomainsType = 0;
   ipRestrictionEnable = false;
@@ -99,6 +93,7 @@ class SettingsStore {
   logoUrl = "";
 
   isDesktopClient = isDesktopEditors;
+  isDesktopClientInit = false;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
@@ -177,9 +172,12 @@ class SettingsStore {
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
   articleAlertsData = initArticleAlertsData();
+  cspDomains = [];
   publicRoomKey = "";
 
-  interfaceDirection = localStorage.getItem("interfaceDirection") || "ltr";
+  numberAttempt = null;
+  blockingTime = null;
+  checkPeriod = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -285,8 +283,16 @@ class SettingsStore {
     return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`;
   }
 
+  get welcomePageSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacetitle`;
+  }
+
   get dnsSettingsUrl() {
     return `${this.helpLink}/administration/docspace-settings.aspx#alternativeurl`;
+  }
+
+  get renamingSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacerenaming`;
   }
 
   get passwordStrengthSettingsUrl() {
@@ -301,8 +307,20 @@ class SettingsStore {
     return `${this.helpLink}/administration/docspace-settings.aspx#TrustedDomain`;
   }
 
+  get ipSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#ipsecurity`;
+  }
+
+  get bruteForceProtectionUrl() {
+    return `${this.helpLink}/administration/configuration.aspx#loginsettings`;
+  }
+
   get administratorMessageSettingsUrl() {
     return `${this.helpLink}/administration/docspace-settings.aspx#administratormessage`;
+  }
+
+  get lifetimeSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#sessionlifetime`;
   }
 
   get dataBackupUrl() {
@@ -318,7 +336,7 @@ class SettingsStore {
   }
 
   get sdkLink() {
-    return `${this.apiDocsLink}/docspace/jssdk`;
+    return `${this.apiDocsLink}/docspace/jssdk/`;
   }
 
   get apiBasicLink() {
@@ -328,6 +346,10 @@ class SettingsStore {
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
   }
+
+  setIsDesktopClientInit = (isDesktopClientInit) => {
+    this.isDesktopClientInit = isDesktopClientInit;
+  };
 
   get isPublicRoom() {
     return window.location.pathname === "/rooms/share";
@@ -445,6 +467,10 @@ class SettingsStore {
     }
   };
 
+  get isPortalDeactivate() {
+    return this.tenantStatus === TenantStatus.PortalDeactivate;
+  }
+
   init = async () => {
     this.setIsLoading(true);
     const requests = [];
@@ -452,11 +478,14 @@ class SettingsStore {
     requests.push(
       this.getPortalSettings(),
       this.getAppearanceTheme(),
-      this.getWhiteLabelLogoUrls(),
-      this.getBuildVersionInfo()
+      this.getWhiteLabelLogoUrls()
     );
 
     await Promise.all(requests);
+
+    if (!this.isPortalDeactivate) {
+      await this.getBuildVersionInfo();
+    }
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
@@ -835,6 +864,26 @@ class SettingsStore {
     return res;
   };
 
+  setBruteForceProtectionSettings = (settings) => {
+    this.numberAttempt = settings.attemptCount;
+    this.blockingTime = settings.blockTime;
+    this.checkPeriod = settings.checkPeriod;
+  };
+
+  getBruteForceProtection = async () => {
+    const res = await api.settings.getBruteForceProtection();
+
+    this.setBruteForceProtectionSettings(res);
+  };
+
+  setBruteForceProtection = async (AttemptCount, BlockTime, CheckPeriod) => {
+    return api.settings.setBruteForceProtection(
+      AttemptCount,
+      BlockTime,
+      CheckPeriod
+    );
+  };
+
   setIsBurgerLoading = (isBurgerLoading) => {
     this.isBurgerLoading = isBurgerLoading;
   };
@@ -926,10 +975,34 @@ class SettingsStore {
       (alert) => alert !== alertToRemove
     );
     this.updateArticleAlertsData({ available: filteredAvailable });
-    setInterfaceDirection = (direction) => {
-      this.interfaceDirection = direction;
-      localStorage.setItem("interfaceDirection", direction);
-    };
+  };
+
+  setInterfaceDirection = (direction) => {
+    this.interfaceDirection = direction;
+    localStorage.setItem("interfaceDirection", direction);
+  };
+  setCSPDomains = (domains) => {
+    this.cspDomains = domains;
+  };
+
+  getCSPSettings = async () => {
+    const { domains } = await api.settings.getCSPSettings();
+
+    this.setCSPDomains(domains || []);
+
+    return domains;
+  };
+
+  setCSPSettings = async (data) => {
+    try {
+      const { domains } = await api.settings.setCSPSettings(data);
+
+      this.setCSPDomains(domains);
+
+      return domains;
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 }
 
