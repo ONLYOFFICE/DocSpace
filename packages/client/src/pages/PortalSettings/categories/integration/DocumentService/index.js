@@ -100,8 +100,8 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
             <InputBlock
               id="editingAdress"
               type="text"
-              autocomplete="off"
-              tabindex={1}
+              autoComplete="off"
+              tabIndex={1}
               scale
               iconButtonClassName={"icon-button"}
               value={apiUrl}
@@ -118,8 +118,8 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
             <InputBlock
               id="fromDocspaceAdress"
               type="text"
-              autocomplete="off"
-              tabindex={2}
+              autoComplete="off"
+              tabIndex={2}
               scale
               iconButtonClassName={"icon-button"}
               value={internalUrl}
@@ -136,8 +136,8 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
             <InputBlock
               id="fromDocServiceAdress"
               type="text"
-              autocomplete="off"
-              tabindex={3}
+              autoComplete="off"
+              tabIndex={3}
               scale
               iconButtonClassName={"icon-button"}
               value={portalUrl}
