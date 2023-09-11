@@ -123,7 +123,7 @@ public class SocketManager : SocketServiceClient
 
         SendNotAwaitableRequest("markasnew-file", result);
     }
-    
+
     public async Task ExecMarkAsNewFoldersAsync(IEnumerable<Tag> tags)
     {
         var result = await tags.ToAsyncEnumerable()
@@ -156,24 +156,11 @@ public class SocketManager : SocketServiceClient
 
     private async Task<string> SerializeFile<T>(File<T> file)
     {
-        return JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), GetSerializerSettings());
+        return JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), typeof(FileDto<T>), FileEntryDtoContext.Default);
     }
 
     private async Task<string> SerializeFolder<T>(Folder<T> folder)
     {
-        return JsonSerializer.Serialize(await _folderDtoHelper.GetAsync(folder), GetSerializerSettings()); ;
-    }
-
-    public static JsonSerializerOptions GetSerializerSettings()
-    {
-        var serializerSettings = new JsonSerializerOptions()
-        {
-            WriteIndented = false,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-        serializerSettings.Converters.Add(new ApiDateTimeConverter());
-        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-        return serializerSettings;
+        return JsonSerializer.Serialize(await _folderDtoHelper.GetAsync(folder), typeof(FolderDto<T>), FileEntryDtoContext.Default);
     }
 }
