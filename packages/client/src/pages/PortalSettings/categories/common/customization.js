@@ -22,7 +22,6 @@ const StyledComponent = styled.div`
   }
 
   .category-description {
-    margin-top: 5px;
     line-height: 20px;
     color: ${(props) => props.theme.client.settings.common.descriptionColor};
     margin-bottom: 20px;

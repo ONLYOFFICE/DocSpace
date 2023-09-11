@@ -56,7 +56,7 @@ export const MainContainer = styled.div`
   }
 
   @media ${smallTablet} {
-    margin-top: 13px;
+    margin-top: 8px;
   }
 `;
 
