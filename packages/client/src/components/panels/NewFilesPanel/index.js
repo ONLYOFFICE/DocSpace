@@ -8,6 +8,8 @@ import Row from "@docspace/components/row";
 import Button from "@docspace/components/button";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
+import Portal from "@docspace/components/portal";
+import { isMobileOnly } from "react-device-detect";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,
@@ -247,7 +249,7 @@ const NewFilesPanel = (props) => {
     });
   }, [onNewFileClick, getItemIcon]);
 
-  return (
+  const element = (
     <StyledAsidePanel visible={visible}>
       <Backdrop
         onClick={onClose}
@@ -297,6 +299,8 @@ const NewFilesPanel = (props) => {
       </Aside>
     </StyledAsidePanel>
   );
+
+  return isMobileOnly ? <Portal element={element} /> : element;
 };
 
 export default inject(
