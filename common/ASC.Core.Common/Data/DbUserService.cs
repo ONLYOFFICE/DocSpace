@@ -33,6 +33,11 @@ public class EFUserService : IUserService
     private readonly MachinePseudoKeys _machinePseudoKeys;
     private readonly IMapper _mapper;
 
+    private static readonly Expression<Func<UserWithGroup, int>> _orderByUserType = u => 
+        u.Group == null ? 2 : 
+        u.Group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : 
+        u.Group.UserGroupId == Users.Constants.GroupCollaborator.ID ? 3 : 4;
+
     public EFUserService(
         IDbContextFactory<UserDbContext> dbContextFactory,
         MachinePseudoKeys machinePseudoKeys,
@@ -232,7 +237,27 @@ public class EFUserService : IUserService
             .ToListAsync();
     }
 
-    public IQueryable<UserInfo> GetUsers(
+    public async Task<int> GetUsersCountAsync(
+        int tenant,
+        bool isDocSpaceAdmin,
+        EmployeeStatus? employeeStatus,
+        List<List<Guid>> includeGroups,
+        List<Guid> excludeGroups,
+        List<Tuple<List<List<Guid>>, List<Guid>>> combinedGroups,
+        EmployeeActivationStatus? activationStatus,
+        AccountLoginType? accountLoginType,
+        string text)
+    {
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = GetUserQuery(userDbContext, tenant);
+
+        q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text);
+
+        return await q.CountAsync();
+    }
+
+    public async IAsyncEnumerable<UserInfo> GetUsers(
         int tenant,
         bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
@@ -245,49 +270,34 @@ public class EFUserService : IUserService
         string sortBy,
         bool sortOrderAsc,
         long limit,
-        long offset,
-        out int total,
-        out int count)
+        long offset)
     {
-        var userDbContext = _dbContextFactory.CreateDbContext();
-        var totalQuery = GetUserQuery(userDbContext, tenant);
-        totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text);
-        total = totalQuery.Count();
+        if (limit <= 0)
+        {
+            yield break;
+        }
+
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
 
         var q = GetUserQuery(userDbContext, tenant);
 
         q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text);
 
-        var orderedQuery = q.OrderBy(r => r.ActivationStatus == EmployeeActivationStatus.Pending);
+        var orderedQuery = q.OrderBy(r => r.ActivationStatus);
         q = orderedQuery;
 
         if (!string.IsNullOrEmpty(sortBy))
         {
             if (sortBy == "type")
             {
-                var q1 = from user in q
-                         join userGroup in userDbContext.UserGroups.Where(g => !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID
-                                 || g.UserGroupId == Users.Constants.GroupCollaborator.ID))
-                         on user.Id equals userGroup.Userid into joinedGroup
-                         from @group in joinedGroup.DefaultIfEmpty()
-                         select new { user, @group };
+                var q1 = (from user in q
+                    join userGroup in userDbContext.UserGroups.Where(g =>
+                        !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID ||
+                                       g.UserGroupId == Users.Constants.GroupCollaborator.ID)) on user.Id equals userGroup.Userid into joinedGroup
+                    from @group in joinedGroup.DefaultIfEmpty()
+                    select new UserWithGroup { User = user, Group = @group }).OrderBy(r => r.User.ActivationStatus);
 
-                if (sortOrderAsc)
-                {
-                    q = q1.OrderBy(r => r.user.ActivationStatus == EmployeeActivationStatus.Pending)
-                        .ThenBy(r => r.group == null ? 2 :
-                            r.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 :
-                            r.group.UserGroupId == Users.Constants.GroupCollaborator.ID ? 3 : 4)
-                        .Select(r => r.user);
-                }
-                else
-                {
-                    q = q1.OrderBy(r => r.user.ActivationStatus == EmployeeActivationStatus.Pending)
-                        .ThenByDescending(u => u.group == null ? 2 :
-                            u.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 :
-                            u.group.UserGroupId == Users.Constants.GroupCollaborator.ID ? 3 : 4)
-                        .Select(r => r.user);
-                }
+                q = (sortOrderAsc ? q1.ThenBy(_orderByUserType) : q1.ThenByDescending(_orderByUserType)).Select(r => r.User);
             }
             else
             {
@@ -295,19 +305,17 @@ public class EFUserService : IUserService
             }
         }
 
-        if (offset != 0)
+        if (offset > 0)
         {
             q = q.Skip((int)offset);
         }
 
-        if (limit != 0)
+        q = q.Take((int)limit);
+
+        await foreach (var user in q.ToAsyncEnumerable())
         {
-            q = q.Take((int)limit);
+            yield return _mapper.Map<User, UserInfo>(user);
         }
-
-        count = q.Count();
-
-        return q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider);
     }
 
     public IQueryable<UserInfo> GetUsers(int tenant, out int total)
@@ -791,6 +799,12 @@ public class DbUserSecurity
 {
     public User User { get; set; }
     public UserSecurity UserSecurity { get; set; }
+}
+
+public class UserWithGroup
+{
+    public User User { get; set; }
+    public UserGroup Group { get; set; }
 }
 
 static file class Queries
