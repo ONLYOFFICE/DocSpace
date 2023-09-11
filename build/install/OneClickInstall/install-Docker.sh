@@ -544,6 +544,7 @@ while [ "$1" != "" ]; do
 done
 
 root_checking () {
+	PID=$$
 	if [ ! $( id -u ) -eq 0 ]; then
 		echo "To perform this action you must be logged in with root rights"
 		exit 1;
@@ -1058,7 +1059,12 @@ get_available_version () {
 
 	LATEST_TAG=$(echo $TAG_LIST | tr ',' '\n' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | awk '/./{line=$0} END{print line}');
 
-	echo "$LATEST_TAG" | sed "s/\"//g"
+	if [ ! -z "${LATEST_TAG}" ]; then
+		echo "${LATEST_TAG}" | sed "s/\"//g"
+	else
+		echo "Unable to retrieve tag from ${1} repository" >&2
+		kill -s TERM $PID
+	fi
 }
 
 set_docs_url_external () {
