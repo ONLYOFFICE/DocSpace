@@ -95,6 +95,7 @@ const Details = ({
               title={selection.title}
               isArchive={selection.isArchive}
               size="96px"
+              radius="16px"
             />
           ) : (
             <img

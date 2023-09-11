@@ -12,7 +12,7 @@ const StyledIcon = styled.div`
   .room-background {
     height: ${(props) => props.size};
     width: ${(props) => props.size};
-    border-radius: 6px;
+    border-radius: ${(props) => props.radius};
     vertical-align: middle;
     background: ${(props) =>
       props.isArchive
@@ -39,7 +39,13 @@ const StyledIcon = styled.div`
 
 StyledIcon.defaultProps = { theme: Base };
 
-const RoomIcon = ({ title, isArchive, color, size = "32px" }) => {
+const RoomIcon = ({
+  title,
+  isArchive,
+  color,
+  size = "32px",
+  radius = "6px",
+}) => {
   const titleWithoutSpaces = title.replace(/\s+/g, " ").trim();
   const indexAfterLastSpace = titleWithoutSpaces.lastIndexOf(" ");
   const secondCharacter =
@@ -50,7 +56,7 @@ const RoomIcon = ({ title, isArchive, color, size = "32px" }) => {
   const roomTitle = (title[0] + secondCharacter).toUpperCase();
 
   return (
-    <StyledIcon color={color} size={size} isArchive={isArchive}>
+    <StyledIcon color={color} size={size} radius={radius} isArchive={isArchive}>
       <div className="room-background" />
       <Text className="room-title">{roomTitle}</Text>
     </StyledIcon>
