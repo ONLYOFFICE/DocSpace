@@ -15,5 +15,6 @@
   "DomainName": "Domain name",
   "PortalStats": "Rooms: {{roomCount}} | Users: {{userCount}} | Storage space used:",
   "PortalExists": "Portal already exists",
-  "EnterName": "Enter space name"
+  "EnterName": "Enter space name",
+  "CurrentSpace": "Current space"
 }
