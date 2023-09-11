@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
-import { tablet } from "../utils/device";
 import { isMobileOnly } from "react-device-detect";
 
 export const StyledSubmenu = styled.div`
@@ -78,8 +77,16 @@ export const StyledSubmenuItem = styled.div.attrs((props) => ({
   flex-direction: column;
   padding-top: 4px;
   line-height: 20px;
-  margin-right: 17px;
-
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: 17px;
+        `
+      : css`
+          &:not(:last-child) {
+            margin-right: 17px;
+          }
+        `}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
@@ -101,7 +108,6 @@ StyledSubmenuItemText.defaultProps = { theme: Base };
 export const StyledSubmenuItemLabel = styled.div`
   z-index: 1;
   width: 100%;
-  //margin-left: -14px;
   height: 4px;
   bottom: 0px;
   border-radius: 4px 4px 0 0;
@@ -119,9 +125,16 @@ export const SubmenuScroller = styled.div`
   scrollbar-width: none; // Firefox
   &::-webkit-scrollbar {
     display: none; // Safari + Chrome
-  },
+  }
   overflow-x: auto;
   overflow-y: hidden;
+
+  ${(props) =>
+    !props.scale &&
+    css`
+      display: grid;
+      flex: 0 1 auto;
+    `}
 `;
 
 export const SubmenuRoot = styled.div`
@@ -140,7 +153,7 @@ export const SubmenuScrollbarSize = styled.div`
   overflow-y: hidden;
   // Hide dimensionless scrollbar on macOS
   scrollbar-width: none; // Firefox
-  &::-webkit-scrollbar{
+  &::-webkit-scrollbar {
     display: none; // Safari + Chrome
-  },
+  }
 `;

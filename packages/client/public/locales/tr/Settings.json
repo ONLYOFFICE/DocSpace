@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Kurtarma hatası. Kurtarma dosyası seçilmedi.",
   "RestoreBackup": "Veri Geri Yükleme",
   "RestoreBackupDescription": "Alanda bulunan tüm verileri dosya olarak almak istiyorsanız bu seçeneği kullanın.",
-  "RestoreBackupResetInfoWarningText": "Tüm mevcut şifreler sıfırlanacak. Alan kullanıcıları, erişim geri yükleme bağlantısını içeren bir e-posta alacaktır.",
-  "RestoreBackupWarningText": "Geri yükleme esnasında alan erişilemez olacaktır. Geri yükleme tamamlandıktan sonra geri yükleme tarihinden sonra yapılan tüm değişiklikler kaybedilecektir.",
   "RestoreDefaultButton": "Fabrika ayarlarına geri dön",
   "RoomsModule": "Odayı yedekle",
   "RoomsModuleDescription": "Yedekleme için özel olarak yeni bir oda oluşturabilir, mevcut odalardan birini seçebilir veya kopyayı onların {{roomName}} odasına kaydedebilirsiniz.",

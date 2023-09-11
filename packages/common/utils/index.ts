@@ -17,7 +17,7 @@ import BackgroundPatternBlackReactSvgUrl from "PUBLIC_DIR/images/background.patt
 
 import moment from "moment";
 
-import { LANGUAGE, ThemeKeys } from "../constants";
+import { LANGUAGE, ThemeKeys, RtlLanguages } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 import TopLoaderService from "@docspace/components/top-loading-indicator";
@@ -197,8 +197,8 @@ export function getCookie(name) {
   let matches = document.cookie.match(
     new RegExp(
       "(?:^|; )" +
-      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-      "=([^;]*)"
+        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+        "=([^;]*)"
     )
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
@@ -287,6 +287,8 @@ export function getProviderTranslation(provider, t, linked = false) {
       return t("Common:SignInWithMicrosoft");
     case "sso":
       return t("Common:SignInWithSso");
+    case "zoom":
+      return t("Common:SignInWithZoom");
   }
 }
 
@@ -309,6 +311,33 @@ export function getLanguage(lng) {
 
   return lng;
 }
+
+export const isLanguageRtl = (lng: string) => {
+  if (!lng) return;
+
+  const splittedLng = lng.split("-");
+  return RtlLanguages.includes(splittedLng[0]);
+};
+
+// temporary function needed to replace rtl language in Editor to ltr
+export const getLtrLanguageForEditor = (
+  userLng: string,
+  portalLng: string,
+  isEditor: boolean = false
+): string => {
+  let isEditorPath;
+  if (typeof window !== "undefined") {
+    isEditorPath = window?.location.pathname.indexOf("doceditor") !== -1;
+  }
+  const isUserLngRtl = isLanguageRtl(userLng);
+  const isPortalLngRtl = isLanguageRtl(portalLng);
+
+  if ((!isEditor && !isEditorPath) || (userLng && !isUserLngRtl))
+    return userLng;
+  if (portalLng && !isPortalLngRtl) return portalLng;
+
+  return "en";
+};
 
 export function loadScript(url, id, onLoad, onError) {
   try {
@@ -372,7 +401,7 @@ export function isElementInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-    (window.innerHeight || document.documentElement.clientHeight) &&
+      (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -570,8 +599,11 @@ export const getFileExtension = (fileTitle: string) => {
 export const getSystemTheme = () => {
   const isDesktopClient = window["AscDesktopEditor"] !== undefined;
   const desktopClientTheme = window?.RendererProcessVariable?.theme;
-  const isDark = desktopClientTheme?.id === "theme-dark" || desktopClientTheme?.id === "theme-contrast-dark" ||
-    (desktopClientTheme?.id === "theme-system" && desktopClientTheme?.system === "dark");
+  const isDark =
+    desktopClientTheme?.id === "theme-dark" ||
+    desktopClientTheme?.id === "theme-contrast-dark" ||
+    (desktopClientTheme?.id === "theme-system" &&
+      desktopClientTheme?.system === "dark");
 
   return isDesktopClient
     ? isDark
@@ -579,6 +611,6 @@ export const getSystemTheme = () => {
       : ThemeKeys.BaseStr
     : window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? ThemeKeys.DarkStr
-      : ThemeKeys.BaseStr;
+    ? ThemeKeys.DarkStr
+    : ThemeKeys.BaseStr;
 };

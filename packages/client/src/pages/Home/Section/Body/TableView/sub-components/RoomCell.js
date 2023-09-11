@@ -36,17 +36,17 @@ const RoomCell = ({ sideColor, item }) => {
       color={sideColor}
       className="row_update-text"
       truncate
-      data-for={"" + item.id}
+      data-tooltip-id={"" + item.id}
       data-tip={""}
-      data-place={"bottom"}
     >
       {originRoomTitle || originTitle || "—"}
     </StyledText>,
 
     <Tooltip
-      id={"" + item.id}
+      float
+      place="bottom"
       key={"tooltip"}
-      effect={"float"}
+      id={"" + item.id}
       afterShow={getPath}
       getContent={() => (
         <span>

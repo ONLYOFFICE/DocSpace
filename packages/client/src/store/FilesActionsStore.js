@@ -1489,9 +1489,9 @@ class FilesActionStore {
     this.dialogsStore.setConflictResolveDialogVisible(true);
   };
 
-  setSelectedItems = () => {
-    const selectionLength = this.filesStore.selection.length;
-    const selectionTitle = this.filesStore.selectionTitle;
+  setSelectedItems = (title, length) => {
+    const selectionLength = length ? length : this.filesStore.selection.length;
+    const selectionTitle = title ? title : this.filesStore.selectionTitle;
 
     if (selectionLength !== undefined && selectionTitle) {
       this.uploadDataStore.secondaryProgressDataStore.setItemsSelectionLength(
@@ -2041,7 +2041,7 @@ class FilesActionStore {
   onMarkAsRead = (item) => this.markAsRead([], [`${item.id}`], item);
 
   openFileAction = (item) => {
-    const { openDocEditor, isPrivacyFolder } = this.filesStore;
+    const { openDocEditor, isPrivacyFolder, setSelection } = this.filesStore;
 
     const { isLoading } = this.clientLoadingStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
@@ -2084,6 +2084,8 @@ class FilesActionStore {
 
       const state = { title, isRoot: false, rootFolderType, isRoom };
 
+      setSelection([]);
+
       window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
     } else {
       if (canConvert) {
@@ -2097,7 +2099,9 @@ class FilesActionStore {
 
       if (canWebEdit || canViewedDocs) {
         let tab =
-          !this.authStore.settingsStore.isDesktopClient && !isFolder
+          !this.authStore.settingsStore.isDesktopClient &&
+          window.DocSpaceConfig?.editor?.openOnNewPage &&
+          !isFolder
             ? window.open(
                 combineUrl(
                   window.DocSpaceConfig?.proxy?.url,

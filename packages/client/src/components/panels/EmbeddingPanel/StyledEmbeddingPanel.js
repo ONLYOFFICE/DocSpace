@@ -5,13 +5,20 @@ import { Base } from "@docspace/components/themes";
 const StyledEmbeddingPanel = styled.div`
   .embedding-panel {
     .scroll-body {
-      padding-right: 0 !important;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding-left: 0 !important;
+            `
+          : css`
+              padding-right: 0 !important;
+            `}
     }
   }
 
   .embedding_header {
     padding: 0 16px;
-    border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
+    border-bottom: ${props => props.theme.filesPanels.sharing.borderBottom};
 
     .hotkeys_heading {
       font-weight: 700;
@@ -38,7 +45,14 @@ const StyledBody = styled.div`
     .embedding-panel_link {
       box-sizing: border-box;
 
-      margin-right: 8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 8px;
+            `
+          : css`
+              margin-right: 8px;
+            `}
 
       border: 1px solid #eceef1;
       border-radius: 16px;
@@ -59,7 +73,14 @@ const StyledBody = styled.div`
     margin-top: 16px;
 
     .embedding-panel_input {
-      margin-right: 8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 8px;
+            `
+          : css`
+              margin-right: 8px;
+            `}
       width: 94px;
     }
   }
@@ -77,7 +98,14 @@ const StyledBody = styled.div`
     position: absolute;
     z-index: 1;
     margin: 8px;
-    right: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 16px;
+          `
+        : css`
+            right: 16px;
+          `}
   }
 
   .embedding-panel_preview-button {

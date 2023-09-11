@@ -32,5 +32,5 @@ public interface IBackupStorage
     Task<string> GetPublicLinkAsync(string storagePath);
     Task<string> UploadAsync(string storageBasePath, string localPath, Guid userId);
     Task DeleteAsync(string storagePath);
-    Task DownloadAsync(string storagePath, string targetLocalPath);
+    Task<string> DownloadAsync(string storagePath, string targetLocalPath);
 }

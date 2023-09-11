@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Tehokäyttäjät voivat luoda ja muokata huoneen tiedostoja, mutta eivät voi luoda huoneita, hallita käyttäjiä ja heillä ei ole pääsyä asetuksiin.",
   "RoleReviewer": "Tarkastaja",
   "RoleReviewerDescription": "Toimenpiteet olemassaolevien tiedostojen kanssa: katselu, tarkistaminen, kommentointi.",
-  "RoleRoomAdminDescription": "Huoneen järjstelmänvalvojat voi luoda ja hallita heille määrättyjä huoneita, kutsua uusia käyttäjiä ja määrätä rooleja alapuolellaan. Kaikilla järjestelmänvalvojilla on pääsy Henkilökohtaista-osioon.",
   "RoleUserDescription": "Käyttäjät pääsevät huoneisiin vain, jos järjestelmänvalvojat ovat kutsuneet heidät. He eivät voi luoda omia huoneita, kansioita tai tiedostoja.",
   "RoleViewer": "Katselija",
   "RoleViewerDescription": "Tiedoston katseleminen",

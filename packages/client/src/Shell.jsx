@@ -421,7 +421,8 @@ const ShellWrapper = inject(({ auth, backup }) => {
 const ThemeProviderWrapper = inject(({ auth, loginStore }) => {
   const { settingsStore } = auth;
   let currentColorScheme = false;
-  const { theme, interfaceDirection } = settingsStore;
+  const { theme } = settingsStore;
+  const { i18n } = useTranslation();
 
   if (loginStore) {
     currentColorScheme = loginStore.currentColorScheme;
@@ -429,7 +430,10 @@ const ThemeProviderWrapper = inject(({ auth, loginStore }) => {
     currentColorScheme = settingsStore.currentColorScheme || false;
   }
 
-  return { theme: { ...theme, interfaceDirection }, currentColorScheme };
+  return {
+    theme: { ...theme, interfaceDirection: i18n.dir() },
+    currentColorScheme,
+  };
 })(observer(ThemeProvider));
 
 export default () => (

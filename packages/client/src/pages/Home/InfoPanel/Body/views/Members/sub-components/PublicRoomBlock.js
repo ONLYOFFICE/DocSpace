@@ -47,8 +47,10 @@ const PublicRoomBlock = (props) => {
             </Text>
 
             <div
-              data-for="emailTooltip"
-              data-tip={t("Files:MaximumNumberOfExternalLinksCreated")}
+              data-tooltip-id="emailTooltip"
+              data-tooltip-content={t(
+                "Files:MaximumNumberOfExternalLinksCreated"
+              )}
             >
               <IconButton
                 className="link-to-viewing-icon"
@@ -61,11 +63,11 @@ const PublicRoomBlock = (props) => {
 
               {externalLinks.length >= LINKS_LIMIT_COUNT && (
                 <Tooltip
+                  float
                   id="emailTooltip"
-                  getContent={(dataTip) => (
-                    <Text fontSize="12px">{dataTip}</Text>
+                  getContent={({ content }) => (
+                    <Text fontSize="12px">{content}</Text>
                   )}
-                  effect="float"
                   place="bottom"
                 />
               )}

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
@@ -21,12 +21,17 @@ const StyledComponent = styled.div`
   }
 
   .category-item-wrapper {
-    padding-bottom: 20px;
+    padding-bottom: 22px;
 
     .category-item-heading {
       padding-bottom: 8px;
       svg {
         padding-bottom: 5px;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl" &&
+          css`
+            transform: scaleX(-1);
+          `}
       }
       .category-item_paid {
         .paid-badge {
@@ -34,6 +39,11 @@ const StyledComponent = styled.div`
         }
         display: flex;
         svg {
+          ${(props) =>
+            props.theme.interfaceDirection === "rtl" &&
+            css`
+              transform: scaleX(-1);
+            `}
           margin-top: auto;
         }
       }
@@ -42,18 +52,22 @@ const StyledComponent = styled.div`
     .category-item-description {
       color: ${(props) => props.theme.client.settings.common.descriptionColor};
       font-size: 13px;
+      font-weight: 400px;
       max-width: 1024px;
       line-height: 20px;
     }
 
     .inherit-title-link {
-      margin-right: 4px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 4px;
+            `
+          : css`
+              margin-right: 4px;
+            `}
       font-size: 16px;
       font-weight: 700;
-    }
-    .link-learn-more {
-      line-height: 15px;
-      font-weight: 600;
     }
   }
 `;
@@ -62,15 +76,11 @@ StyledComponent.defaultProps = { theme: Base };
 
 const CustomizationNavbar = ({
   t,
-  theme,
   isLoaded,
   tReady,
   setIsLoadedCustomizationNavbar,
   isLoadedPage,
   isSettingPaid,
-  currentColorScheme,
-  languageAndTimeZoneSettingsUrl,
-  dnsSettingsUrl,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
   const navigate = useNavigate();
@@ -103,19 +113,8 @@ const CustomizationNavbar = ({
           <StyledArrowRightIcon size="small" color="#333333" />
         </div>
         <Text className="category-item-description">
-          {t("LanguageAndTimeZoneSettingsDescription")}
+          {t("LanguageAndTimeZoneSettingsNavDescription")}
         </Text>
-        <Box paddingProp="10px 0 3px 0">
-          <Link
-            className="link-learn-more"
-            color={currentColorScheme.main.accent}
-            target="_blank"
-            isHovered={true}
-            href={languageAndTimeZoneSettingsUrl}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </Box>
       </div>
       <div className="category-item-wrapper">
         <div className="category-item-heading">
@@ -132,7 +131,7 @@ const CustomizationNavbar = ({
           <StyledArrowRightIcon size="small" color="#333333" />
         </div>
         <Text className="category-item-description">
-          {t("CustomTitlesSettingsDescription")}
+          {t("CustomTitlesSettingsNavDescription")}
         </Text>
       </div>
 
@@ -159,18 +158,8 @@ const CustomizationNavbar = ({
           </div>
         </div>
         <Text className="category-item-description">
-          {t("DNSSettingsDescription")}
+          {t("DNSSettingsNavDescription")}
         </Text>
-        <Box paddingProp="10px 0 3px 0">
-          <Link
-            color={currentColorScheme.main.accent}
-            target="_blank"
-            isHovered={true}
-            href={dnsSettingsUrl}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </Box>
       </div>
 
       <div className="category-item-wrapper">
@@ -186,28 +175,18 @@ const CustomizationNavbar = ({
           <StyledArrowRightIcon size="small" color="#333333" />
         </div>
         <Text className="category-item-description">
-          {t("PortalRenamingDescription")}
+          {t("PortalRenamingNavDescription")}
         </Text>
       </div>
     </StyledComponent>
   );
 };
 
-export default inject(({ auth, common }) => {
-  const {
-    theme,
-    currentColorScheme,
-    languageAndTimeZoneSettingsUrl,
-    dnsSettingsUrl,
-  } = auth.settingsStore;
+export default inject(({ common }) => {
   const { isLoaded, setIsLoadedCustomizationNavbar } = common;
   return {
-    theme,
     isLoaded,
     setIsLoadedCustomizationNavbar,
-    currentColorScheme,
-    languageAndTimeZoneSettingsUrl,
-    dnsSettingsUrl,
   };
 })(
   withCultureNames(

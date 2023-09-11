@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./Customization/language-and-time-zone";
@@ -45,7 +45,14 @@ const StyledComponent = styled.div`
     font-weight: bold;
     font-size: 16px;
     line-height: 22px;
-    margin-right: 4px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 4px;
+          `
+        : css`
+            margin-right: 4px;
+          `}
   }
 
   .settings-block {

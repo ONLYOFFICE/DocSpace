@@ -155,8 +155,6 @@
   "RecoveryFileNotSelected": "복원 오류입니다. 복원 파일이 선택되지 않았습니다",
   "RestoreBackup": "데이터 복원",
   "RestoreBackupDescription": "이전에 저장한 백업 파일에서 스페이스를 복원하기 위해 이 옵션을 사용하세요.",
-  "RestoreBackupResetInfoWarningText": "사용 중인 모든 비밀번호가 리셋됩니다. 스페이스 사용자는 액세스 복원 링크가 포함된 이메일을 받게 됩니다.",
-  "RestoreBackupWarningText": "복원 프로세스 동안 스페이스를 사용할 수 없게 됩니다. 복원이 완료되면 선택한 복원 지점 날짜 이후의 모든 변경 사항이 손실됩니다.",
   "RestoreDefaultButton": "기본값으로 복원",
   "RoomsModule": "백업 방",
   "RoomsModuleDescription": "특별히 백업용으로 새 방을 만들거나 기존 방 중 하나를 선택하거나 {{roomName}} 방에 사본을 저장할 수 있습니다.",

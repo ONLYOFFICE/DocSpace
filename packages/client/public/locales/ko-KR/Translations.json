@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "고급 사용자는 방에서 파일을 생성하고 편집할 수 있지만 방을 만들거나 사용자를 관리하거나 설정에 액세스할 수는 없습니다. ",
   "RoleReviewer": "검토자",
   "RoleReviewerDescription": "기존 파일 작업: 보기, 검토, 주석 달기.",
-  "RoleRoomAdminDescription": "방 관리자는 할당된 방을 생성 및 관리하고, 새 사용자를 초대하고, 관리자 아래 레벨의 역할을 할당할 수 있습니다. 모든 관리자는 개인 섹션에 액세스할 수 있습니다.",
   "RoleUserDescription": "사용자는 관리자에게 초대 받은 방에만 액세스할 수 있습니다. 방이나 폴더 또는 파일을 생성할 수 없습니다.",
   "RoleViewer": "확인자",
   "RoleViewerDescription": "파일 보기",

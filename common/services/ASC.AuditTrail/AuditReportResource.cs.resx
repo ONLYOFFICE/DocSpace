@@ -718,4 +718,10 @@
   <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
     <value>Nastavení dvoufázového ověřování aktualizováno: Ověřovací aplikace byla povolena</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Město</value>
+  </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>Země</value>
+  </data>
 </root>

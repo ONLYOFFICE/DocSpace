@@ -710,17 +710,13 @@ public class BackupPortalTask : PortalTaskBase
             foreach (var file in group)
             {
                 var storage = await StorageFactory.GetStorageAsync(TenantId, group.Key);
-                var file1 = file;
-                Stream fileStream = null;
-                await ActionInvoker.Try(async state =>
+                try
                 {
-                    var f = (BackupFileInfo)state;
-                    fileStream = await storage.GetReadStreamAsync(f.Domain, f.Path);
-                }, file, 5, error => _logger.WarningCanNotBackupFile(file1.Module, file1.Path, error));
-                if(fileStream != null)
+                    await writer.WriteEntryAsync(file.GetZipKey(), file.Domain, file.Path, storage);
+                }
+                catch(Exception error)
                 {
-                    await writer.WriteEntryAsync(file1.GetZipKey(), fileStream);
-                    fileStream.Dispose();
+                    _logger.WarningCanNotBackupFile(file.Module, file.Path, error);
                 }
                 SetCurrentStepProgress((int)(++filesProcessed * 100 / (double)filesCount));
             }

@@ -20,6 +20,7 @@ export const Days = ({
         setSelectedScene={setSelectedScene}
         minDate={minDate}
         maxDate={maxDate}
+        isMobile={isMobile}
       />
       <DaysBody
         observedDate={observedDate}

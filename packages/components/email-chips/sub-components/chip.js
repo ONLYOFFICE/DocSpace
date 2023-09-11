@@ -43,7 +43,6 @@ const Chip = (props) => {
   const [chipWidth, setChipWidth] = useState(0);
   const [isChipOverLimit, setIsChipOverLimit] = useState(false);
 
-  const tooltipRef = useRef(null);
   const warningRef = useRef(null);
   const chipRef = useRef(null);
   const chipInputRef = useRef(null);
@@ -66,7 +65,6 @@ const Chip = (props) => {
     }
   }, [newValue]);
 
-  useClickOutside(warningRef, () => tooltipRef.current.hideTooltip());
   useClickOutside(
     chipInputRef,
     () => {
@@ -122,12 +120,10 @@ const Chip = (props) => {
   if (value?.email === currentChip?.email) {
     return (
       <StyledContainer>
-        {isChipOverLimit && (
-          <Tooltip getContent={() => {}} id="input" effect="float" />
-        )}
+        {isChipOverLimit && <Tooltip id="input" float />}
         <StyledChipInput
-          data-for="input"
-          data-tip={chipOverLimitText}
+          data-tooltip-id="input"
+          data-tooltip-content={chipOverLimitText}
           value={newValue}
           forwardedRef={chipInputRef}
           onChange={onChange}
@@ -156,16 +152,11 @@ const Chip = (props) => {
           <IconButton
             iconName={WarningIconSvgUrl}
             size={12}
-            className="warning_icon_wrap warning_icon "
-            data-for="group"
-            data-tip={invalidEmailText}
+            className="warning_icon_wrap warning_icon"
+            data-tooltip-id="group"
+            data-tooltip-content={invalidEmailText}
           />
-          <Tooltip
-            getContent={() => {}}
-            id="group"
-            reference={tooltipRef}
-            place={"top"}
-          />
+          <Tooltip id="group" place={"top"} />
         </div>
       )}
       {/*dir="auto" for correct truncate email view (asd@gmai..., ...خالد@الدوح)*/}

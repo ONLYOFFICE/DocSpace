@@ -1,0 +1,95 @@
+#!/bin/bash
+
+set -e
+
+PRODUCT="docspace"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DOCKERCOMPOSE=$(dirname "$DIR")
+LETSENCRYPT="/etc/letsencrypt/live";
+DHPARAM_FILE="/etc/ssl/certs/dhparam.pem"
+
+if [ "$#" -ge "2" ]; then
+  if [ "$1" != "-f" ]; then 
+    MAIL=$1
+    DOMAIN=$2
+    LETSENCRYPT_ENABLE="true"
+
+    if [ -f "${DOCKERCOMPOSE}/proxy.yml" ]; then 
+      docker-compose -f ${DOCKERCOMPOSE}/proxy.yml down
+    elif [ -f "/app/onlyoffice/proxy.yml" ]; then
+      DOCKERCOMPOSE="/app/onlyoffice"
+      DIR="/app/onlyoffice/config"
+    else
+      echo "Error: proxy configuration file not found." && exit 1
+    fi
+
+    echo "Generating Let's Encrypt SSL Certificates..."
+
+    # Request and generate Let's Encrypt SSL certificate
+    docker run -it --rm \
+    -v /etc/letsencrypt:/etc/letsencrypt \
+    -v /var/lib/letsencrypt:/var/lib/letsencrypt \
+    certbot/certbot certonly \
+    --webroot --non-interactive --agree-tos --email ${MAIL} -d ${DOMAIN}
+  else
+    echo "Using specified files to configure SSL..."
+
+    CERTIFICATE_FILE=$2
+    PRIVATEKEY_FILE=$3
+  fi
+
+  [[ ! -f "${DHPARAM_FILE}" ]] && openssl dhparam -out ${DHPARAM_FILE} 4096
+
+  CERTIFICATE_FILE="${CERTIFICATE_FILE:-"${LETSENCRYPT}/${DOMAIN}/fullchain.pem"}"
+  PRIVATEKEY_FILE="${PRIVATEKEY_FILE:-"${LETSENCRYPT}/${DOMAIN}/privkey.pem"}"
+
+  if [ -f "${CERTIFICATE_FILE}" -a -f ${PRIVATEKEY_FILE} ]; then
+    if [ -f ${DOCKERCOMPOSE}/.env -a -f ${DOCKERCOMPOSE}/proxy-ssl.yml ]; then
+      sed -i "s~\(APP_URL_PORTAL=\).*~\1\"https://${DOMAIN:-$(hostname --fqdn)}\"~g" ${DOCKERCOMPOSE}/.env
+      sed -i "s~\(CERTIFICATE_PATH=\).*~\1\"${CERTIFICATE_FILE}\"~g" ${DOCKERCOMPOSE}/.env
+      sed -i "s~\(CERTIFICATE_KEY_PATH=\).*~\1\"${PRIVATEKEY_FILE}\"~g" ${DOCKERCOMPOSE}/.env
+      sed -i "s~\(DHPARAM_PATH=\).*~\1\"${DHPARAM_FILE}\"~g" ${DOCKERCOMPOSE}/.env
+
+      if [[ "${LETSENCRYPT_ENABLE}" = "true" ]]; then
+        # Create and set permissions for docspace-renew-letsencrypt
+        echo '#!/bin/bash' > ${DIR}/${PRODUCT}-renew-letsencrypt
+        echo "docker-compose -f ${DOCKERCOMPOSE}/proxy-ssl.yml down" >> ${DIR}/${PRODUCT}-renew-letsencrypt
+        echo 'docker run -it --rm \' >> ${DIR}/${PRODUCT}-renew-letsencrypt
+        echo '    -v /etc/letsencrypt:/etc/letsencrypt \' >> ${DIR}/${PRODUCT}-renew-letsencrypt
+        echo '    -v /var/lib/letsencrypt:/var/lib/letsencrypt \' >> ${DIR}/${PRODUCT}-renew-letsencrypt
+        echo '    certbot/certbot renew' >> ${DIR}/${PRODUCT}-renew-letsencrypt
+        echo "docker-compose -f ${DOCKERCOMPOSE}/proxy-ssl.yml up -d" >> ${DIR}/${PRODUCT}-renew-letsencrypt
+
+        chmod a+x ${DIR}/${PRODUCT}-renew-letsencrypt
+
+        # Add cron job if /etc/cron.d directory exists
+        if [ -d /etc/cron.d ]; then
+          echo -e "@weekly root ${DIR}/${PRODUCT}-renew-letsencrypt" | tee /etc/cron.d/${PRODUCT}-letsencrypt
+        fi
+      fi
+
+      docker-compose -f ${DOCKERCOMPOSE}/proxy-ssl.yml up -d
+
+      echo "OK"
+    else
+      echo "Error: proxy configuration file not found." && exit 1
+    fi
+  else
+    echo "Error: certificate or private key file not found." && exit 1
+  fi
+else
+  echo ""
+  echo "This script provided to automatically setup SSL Certificates for DocSpace"
+  echo "Automatically get Let's Encrypt SSL Certificates:"
+  echo "  docspace-ssl-setup EMAIL DOMAIN"
+  echo "    EMAIL         Email used for registration and recovery contact."
+  echo "                  Use comma to register multiple emails, ex:"
+  echo "                  u1@example.com,u2@example.com."
+  echo "    DOMAIN        Domain name to apply"
+  echo ""
+  echo "Using your own certificates via the -f parameter:"
+  echo "  docspace-ssl-setup -f CERTIFICATE PRIVATEKEY"
+  echo "    CERTIFICATE   Path to the certificate file for the domain."
+  echo "    PRIVATEKEY    Path to the private key file for the certificate."
+  echo ""
+fi

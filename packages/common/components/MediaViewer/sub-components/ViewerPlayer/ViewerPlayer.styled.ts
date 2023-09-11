@@ -6,15 +6,15 @@ export const ContainerPlayer = styled.div<{ $isFullScreen: boolean }>`
   position: fixed;
   inset: 0;
   z-index: 305;
-  background-color: ${(props) =>
+  background-color: ${props =>
     props.$isFullScreen ? "#000" : "rgba(55, 55, 55, 0.6)"};
   touch-action: none;
 `;
 
 export const VideoWrapper = styled(animated.div)<{ $visible: boolean }>`
   inset: 0;
-  visibility: ${(props) => (props.$visible ? "visible" : "hidden")};
-  opacity: ${(props) => (props.$visible ? 1 : 0)};
+  visibility: ${props => (props.$visible ? "visible" : "hidden")};
+  opacity: ${props => (props.$visible ? 1 : 0)};
   height: 100%;
   width: 100%;
   touch-action: none;
@@ -46,8 +46,8 @@ export const StyledPlayerControls = styled.div<{ $isShow: boolean }>`
   width: 100%;
   height: 188px;
 
-  visibility: ${(props) => (props.$isShow ? "visible" : "hidden")};
-  opacity: ${(props) => (props.$isShow ? "1" : "0")};
+  visibility: ${props => (props.$isShow ? "visible" : "hidden")};
+  opacity: ${props => (props.$isShow ? "1" : "0")};
 
   background: linear-gradient(
     rgba(0, 0, 0, 0) 0%,
@@ -75,7 +75,14 @@ export const ControlContainer = styled.div`
   css`
     margin-top: 8px;
     .player_right-control {
-      margin-right: -8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: -8px;
+            `
+          : css`
+              margin-right: -8px;
+            `}
     }
   `}
 `;

@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Eroare la recuperarea. Fișierul de recuperare nu a fost selectat.",
   "RestoreBackup": "Restaurarea datelor",
   "RestoreBackupDescription": "Utilizați această opțiune pentru a restaura spațiul dvs dintr-o copie de rezervă existentă.",
-  "RestoreBackupResetInfoWarningText": "Toate parolele curente vor fi resetate. Utilizatorii spațiului vor primi un e-mail cu link-ul pentru restaurarea accesului.",
-  "RestoreBackupWarningText": "Spațiul va deveni indisponibil în curs de restaurare. Odată ce procesul de restaurare este finalizat, toate modificările efectuate după crearea unui punct de restaurare vor fi pierdute.",
   "RestoreDefaultButton": "Restabilirea setărilor implicite",
   "RoomsModule": "Copiere de rezervă a sălii",
   "RoomsModuleDescription": "Puteți crea o sală nouă destinată special pentru copiere de rezervă, alege una dintre sălile existente sau salva copia în sala {{roomName}}.",
