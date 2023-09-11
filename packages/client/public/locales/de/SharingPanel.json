@@ -9,6 +9,7 @@
   "ExternalLink": "Externer Link",
   "FormFilling": "Ausfüllen von Formularen",
   "InternalLink": "Interner Link",
+  "LinkName": "Linkname",
   "Notify users": "Benutzer benachrichtigen",
   "ReadOnly": "Schreibgeschützt",
   "ShareEmailBody": "Ihnen wurde Zugriff auf das Dokument {{itemName}} erteilt. Zum Öffnen klicken Sie auf den Link: {{shareLink}}.",

@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Power users kunnen bestanden in de ruimte aanmaken en bewerken, maar kunnen geen ruimtes aanmaken, gebruikers beheren of instellingen openen.",
   "RoleReviewer": "Beoordelaar",
   "RoleReviewerDescription": "Bewerkingen met bestaande bestanden: bekijken, herzien, opmerkingen plaatsen.",
-  "RoleRoomAdminDescription": "Ruimtebeheerders kunnen de toegewezen ruimtes creëren en beheren, nieuwe gebruikers uitnodigen en rollen onder hun niveau toewijzen. Alle beheerders hebben toegang tot de Persoonlijke sectie.",
   "RoleUserDescription": "Gebruikers hebben alleen toegang tot de ruimtes waarvoor zij door beheerders zijn uitgenodigd. Zij kunnen geen eigen kamers, mappen of bestanden aanmaken.",
   "RoleViewer": "Kijker",
   "RoleViewerDescription": "Bestand bekijken",

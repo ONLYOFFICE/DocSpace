@@ -5,26 +5,23 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import { isMobile } from "react-device-detect";
 
 import SSO from "./SingleSignOn";
 import ThirdParty from "./ThirdPartyServicesSettings";
 
-import AppLoader from "@docspace/common/components/AppLoader";
-import SSOLoader from "./sub-components/ssoLoader";
-import DocumentService from "./DocumentService";
 import SMTPSettings from "./SMTPSettings";
+import DocumentService from "./DocumentService";
 
 const IntegrationWrapper = (props) => {
   const { t, tReady, baseDomain, enablePlugins, toDefault, isSSOAvailable } =
     props;
-  const [currentTab, setCurrentTab] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
-      isSSOAvailable && toDefault();
+      isSSOAvailable &&
+        !window.location.pathname.includes("single-sign-on") &&
+        toDefault();
     };
   }, []);
 
@@ -53,17 +50,13 @@ const IntegrationWrapper = (props) => {
   };
   if (baseDomain) data.push(documentServiceData);
 
-  const load = async () => {
+  const getCurrentTab = () => {
     const path = location.pathname;
     const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) setCurrentTab(currentTab);
-
-    setIsLoading(true);
+    return currentTab !== -1 ? currentTab : 0;
   };
 
-  useEffect(() => {
-    load();
-  }, []);
+  const currentTab = getCurrentTab();
 
   const onSelect = (e) => {
     navigate(
@@ -74,9 +67,6 @@ const IntegrationWrapper = (props) => {
       )
     );
   };
-
-  if (!isLoading && !tReady)
-    return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
 
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };

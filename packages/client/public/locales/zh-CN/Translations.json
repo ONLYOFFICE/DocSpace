@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "高级用户可以在房间里创建和编辑文件，但不能创建房间，管理用户，或访问设置。",
   "RoleReviewer": "可审阅",
   "RoleReviewerDescription": "现有文件操作：查看、审阅、评论。",
-  "RoleRoomAdminDescription": "房间管理员可创建并管理已指派的房间、邀请新用户并指派低于其级别的角色。所有管理员都有访问“个人”分区的权限。",
   "RoleUserDescription": "用户仅可访问管理员已邀请其加入的房间。其不能创建房间、文件夹或文件。",
   "RoleViewer": "可查看",
   "RoleViewerDescription": "文件查看",

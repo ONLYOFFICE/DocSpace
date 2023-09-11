@@ -276,6 +276,22 @@ export const settingsTree = [
         link: "single-sign-on",
         tKey: "SingleSignOn",
         isCategory: true,
+        children: [
+          {
+            id: "portal-settings_catalog-single-sign-on-sp-settings",
+            key: "4-1-0",
+            icon: "",
+            link: "sp-settings",
+            tKey: "SingleSignOn:ServiceProviderSettings",
+          },
+          {
+            id: "portal-settings_catalog-single-sign-on-sp-metadata",
+            key: "4-1-1",
+            icon: "",
+            link: "sp-metadata",
+            tKey: "SingleSignOn:SpMetadata",
+          },
+        ],
       },
       {
         id: "portal-settings_catalog-plugins",
