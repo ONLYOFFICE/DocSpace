@@ -1,10 +1,8 @@
 import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
-import NoUserSelect from "@docspace/components/utils/commonStyles";
 import Text from "@docspace/components/text";
 
 const StyledIcon = styled.div`
-  ${NoUserSelect}
   display: flex;
   justify-content: center;
   align-items: center;
