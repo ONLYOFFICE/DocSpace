@@ -454,11 +454,7 @@ class SettingsStore {
       this.getWhiteLabelLogoUrls()
     );
 
-    await Promise.all(requests).then(() => {
-      if (this.standalone && !this.wizardToken) {
-        this.getSpaces();
-      }
-    });
+    await Promise.all(requests);
 
     if (!this.isPortalDeactivate) {
       await this.getBuildVersionInfo();

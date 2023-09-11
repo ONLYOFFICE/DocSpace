@@ -99,6 +99,8 @@ class AuthStore {
     const isPortalRestore =
       this.settingsStore.tenantStatus === TenantStatus.PortalRestore;
 
+    const { user } = this.userStore;
+
     if (
       this.settingsStore.isLoaded &&
       this.settingsStore.socketUrl &&
@@ -131,7 +133,18 @@ class AuthStore {
       }
     }
 
-    return Promise.all(requests);
+    return Promise.all(requests).then(() => {
+      const { user } = this.userStore;
+
+      if (
+        this.settingsStore.standalone &&
+        !this.settingsStore.wizardToken &&
+        this.isAuthenticated &&
+        user.isAdmin
+      ) {
+        requests.push(this.settingsStore.getSpaces());
+      }
+    });
   };
 
   get isEnterprise() {
