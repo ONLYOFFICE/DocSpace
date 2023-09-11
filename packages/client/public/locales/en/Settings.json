@@ -7,6 +7,7 @@
   "AccessRightsUsersFromList": "{{users}} from the list",
   "AddAllowedIP": "Add allowed IP address",
   "AdditionalResources": "Additional resources",
+  "AdditionalResourcesSubtitle": "Configure the display of links to helpful resources for your users.",
   "AdditionalResourcesDescription": "Choose whether you want to display links to additional resources in DocSpace menu.",
   "AddTrustedDomain": "Add trusted domain",
   "Admins": "Admins",

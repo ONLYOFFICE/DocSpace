@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Studio.Core.SMS;
 
-[Serializable]
 public class StudioSmsNotificationSettings : TfaSettingsBase<StudioSmsNotificationSettings>
 {
     [JsonIgnore]

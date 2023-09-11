@@ -3,7 +3,6 @@ import PlusThemeSvgUrl from "PUBLIC_DIR/images/plus.theme.svg?url";
 import styled, { css } from "styled-components";
 
 const StyledComponent = styled.div`
-  padding-top: 3px;
   width: 100%;
   max-width: 575px;
 

@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Tenants;
 
-[Serializable]
 public class TenantCookieSettings : ISettings<TenantCookieSettings>
 {
     public int Index { get; set; }
