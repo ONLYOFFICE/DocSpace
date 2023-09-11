@@ -1489,9 +1489,9 @@ class FilesActionStore {
     this.dialogsStore.setConflictResolveDialogVisible(true);
   };
 
-  setSelectedItems = () => {
-    const selectionLength = this.filesStore.selection.length;
-    const selectionTitle = this.filesStore.selectionTitle;
+  setSelectedItems = (title, length) => {
+    const selectionLength = length ? length : this.filesStore.selection.length;
+    const selectionTitle = title ? title : this.filesStore.selectionTitle;
 
     if (selectionLength !== undefined && selectionTitle) {
       this.uploadDataStore.secondaryProgressDataStore.setItemsSelectionLength(

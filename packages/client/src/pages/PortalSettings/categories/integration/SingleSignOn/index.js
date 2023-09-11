@@ -1,58 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { isMobile, isDesktop } from "react-device-detect";
+import { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@docspace/components/box";
 
-import Certificates from "./Certificates";
-import FieldMapping from "./FieldMapping";
 import HideButton from "./sub-components/HideButton";
-import IdpSettings from "./IdpSettings";
+import SPSettings from "./SPSettings";
 import ProviderMetadata from "./ProviderMetadata";
 import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
 import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
-import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
+import SSOLoader from "./sub-components/ssoLoader";
 
-import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
-import { setDocumentTitle } from "SRC_DIR/helpers/utils";
+import MobileView from "./MobileView";
+import { useIsMobileView } from "../../../utils/useIsMobileView";
 
 const SERVICE_PROVIDER_SETTINGS = "serviceProviderSettings";
 const SP_METADATA = "spMetadata";
 
 const SingleSignOn = (props) => {
-  const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
+  const {
+    init,
+    serviceProviderSettings,
+    spMetadata,
+    isSSOAvailable,
+    setDocumentTitle,
+    isInit,
+  } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
-  const [isSmallWindow, setIsSmallWindow] = useState(false);
+  const isMobileView = useIsMobileView();
 
   useEffect(() => {
-    isSSOAvailable && load();
-    onCheckView();
-    window.addEventListener("resize", onCheckView);
+    isSSOAvailable && init();
     setDocumentTitle(t("Settings:SingleSignOn"));
-
-    return () => window.removeEventListener("resize", onCheckView);
   }, []);
 
-  const onCheckView = () => {
-    if (isDesktop && window.innerWidth < 795) {
-      setIsSmallWindow(true);
-    } else {
-      setIsSmallWindow(false);
-    }
-  };
-
-  if (isSmallWindow)
-    return (
-      <BreakpointWarning
-        sectionName={t("Settings:SingleSignOn")}
-        isSmallWindow
-      />
-    );
-
-  if (isMobile)
-    return <BreakpointWarning sectionName={t("Settings:SingleSignOn")} />;
+  if (!isInit) return <SSOLoader />;
 
   return (
     <StyledSsoPage
@@ -61,54 +44,50 @@ const SingleSignOn = (props) => {
       isSettingPaid={isSSOAvailable}
     >
       <ToggleSSO isSSOAvailable={isSSOAvailable} />
+      {isMobileView ? (
+        <MobileView />
+      ) : (
+        <>
+          <HideButton
+            id="sp-settings-hide-button"
+            text={t("ServiceProviderSettings")}
+            label={SERVICE_PROVIDER_SETTINGS}
+            value={serviceProviderSettings}
+            isDisabled={!isSSOAvailable}
+          />
 
-      <HideButton
-        id="sp-settings-hide-button"
-        text={t("ServiceProviderSettings")}
-        label={SERVICE_PROVIDER_SETTINGS}
-        value={serviceProviderSettings}
-        isDisabled={!isSSOAvailable}
-      />
+          <SPSettings />
+          <StyledSettingsSeparator />
 
-      <Box className="service-provider-settings">
-        <IdpSettings />
+          <HideButton
+            id="sp-metadata-hide-button"
+            text={t("SpMetadata")}
+            label={SP_METADATA}
+            value={spMetadata}
+            isDisabled={!isSSOAvailable}
+          />
 
-        <Certificates provider="IdentityProvider" />
-
-        <Certificates provider="ServiceProvider" />
-
-        <FieldMapping />
-
-        <SubmitResetButtons />
-      </Box>
-
-      <StyledSettingsSeparator />
-
-      <HideButton
-        id="sp-metadata-hide-button"
-        text={t("SpMetadata")}
-        label={SP_METADATA}
-        value={spMetadata}
-        isDisabled={!isSSOAvailable}
-      />
-
-      <Box className="sp-metadata">
-        <ProviderMetadata />
-      </Box>
+          <Box className="sp-metadata">
+            <ProviderMetadata />
+          </Box>
+        </>
+      )}
     </StyledSsoPage>
   );
 };
 
 export default inject(({ auth, ssoStore }) => {
-  const { currentQuotaStore } = auth;
+  const { currentQuotaStore, setDocumentTitle } = auth;
   const { isSSOAvailable } = currentQuotaStore;
 
-  const { load, serviceProviderSettings, spMetadata } = ssoStore;
+  const { init, serviceProviderSettings, spMetadata, isInit } = ssoStore;
 
   return {
-    load,
+    init,
     serviceProviderSettings,
     spMetadata,
     isSSOAvailable,
+    setDocumentTitle,
+    isInit,
   };
 })(observer(SingleSignOn));

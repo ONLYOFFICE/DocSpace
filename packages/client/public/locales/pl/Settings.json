@@ -156,7 +156,7 @@
   "RecoveryFileNotSelected": "Błąd odzyskiwania. Nie wybrano pliku odzyskiwania.",
   "RestoreBackup": "Odzyskiwanie danych",
   "RestoreBackupDescription": "Użyj tej opcji do przywrócenia portalu z wcześniej zapisanego pliku kopii zapasowej.",
- "RestoreDefaultButton": "Przywróć ustawienia domyślne",
+  "RestoreDefaultButton": "Przywróć ustawienia domyślne",
   "RoomsModule": "Stwórz kopię zapasową pokoju",
   "RoomsModuleDescription": "Możesz utworzyć nowy pokój specjalnie do kopii zapasowej, wybrać jeden z istniejących pokoi lub zapisać kopię w jej pokoju {{roomName}}.",
   "SelectFileInGZFormat": "Wybierz plik w formacie .GZ",

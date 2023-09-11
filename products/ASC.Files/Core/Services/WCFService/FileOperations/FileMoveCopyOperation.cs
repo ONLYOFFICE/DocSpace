@@ -307,7 +307,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
-            else if (checkPermissions && !await FilesSecurity.CanDownloadAsync(folder))
+            else if (checkPermissions && folder.RootFolderType != FolderType.TRASH && !await FilesSecurity.CanDownloadAsync(folder))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
             }
