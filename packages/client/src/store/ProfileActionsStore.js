@@ -241,7 +241,7 @@ class ProfileActionsStore {
     });
 
     const management =
-      isOwner && standalone
+      isAdmin && standalone
         ? {
             key: "spaces-management-settings",
             id: "spaces",
