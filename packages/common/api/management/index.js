@@ -104,3 +104,16 @@ export const getAllPortals = async () => {
   });
   return res;
 };
+
+export const validateDomain = async (domain) => {
+  const data = {
+    HostName: domain,
+  };
+  const res = await request({
+    baseURL,
+    method: "post",
+    url: `/settings/checkdomain`,
+    data,
+  });
+  return res;
+};
