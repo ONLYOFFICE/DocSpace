@@ -2258,6 +2258,31 @@ public class FileStorageService //: IFileStorageService
         ErrorIf(await _userManager.IsUserAsync(userFrom), FilesCommonResource.ErrorMassage_SecurityException);
     }
 
+    public async Task<List<T>> GetPersonalFolderIdsAsync<T>(Guid userId)
+    {
+        var result = new List<T>();
+
+        var folderDao = GetFolderDao<T>();
+        if (folderDao == null)
+        {
+            return result;
+        }
+
+        var folderIdMy = await folderDao.GetFolderIDUserAsync(false, userId);
+        if (!Equals(folderIdMy, 0))
+        {
+            result.Add(folderIdMy);
+        }
+
+        var folderIdTrash = await folderDao.GetFolderIDTrashAsync(false, userId);
+        if (!Equals(folderIdTrash, 0))
+        {
+            result.Add(folderIdTrash);
+        }
+
+        return result;
+    }
+
     public async Task DeletePersonalDataAsync<T>(Guid userFromId, bool checkPermission = false)
     {
         if (checkPermission)
@@ -2307,7 +2332,7 @@ public class FileStorageService //: IFileStorageService
         }
     }
 
-    public async Task ReassignFoldersAsync<T>(Guid userFromId, Guid userToId, bool checkPermission = false)
+    public async Task ReassignFoldersAsync<T>(Guid userFromId, Guid userToId, IEnumerable<T> exceptFolderIds, bool checkPermission = false)
     {
         if (checkPermission)
         {
@@ -2322,10 +2347,10 @@ public class FileStorageService //: IFileStorageService
 
         _logger.InformationReassignFolders(userFromId, userToId);
 
-        await folderDao.ReassignFoldersAsync(userFromId, userToId);
+        await folderDao.ReassignFoldersAsync(userFromId, userToId, exceptFolderIds);
     }
 
-    public async Task ReassignFilesAsync<T>(Guid userFromId, Guid userToId, bool checkPermission = false)
+    public async Task ReassignFilesAsync<T>(Guid userFromId, Guid userToId, IEnumerable<T> exceptFolderIds, bool checkPermission = false)
     {
         if (checkPermission)
         {
@@ -2340,7 +2365,7 @@ public class FileStorageService //: IFileStorageService
 
         _logger.InformationReassignFiles(userFromId, userToId);
 
-        await fileDao.ReassignFilesAsync(userFromId, userToId);
+        await fileDao.ReassignFilesAsync(userFromId, userToId, exceptFolderIds);
     }
 
     #endregion

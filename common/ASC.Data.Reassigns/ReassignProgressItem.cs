@@ -95,7 +95,16 @@ public class ReassignProgressItem : DistributedTaskProgress
             Percentage = 10;
             PublishChanges();
 
-            await fileStorageService.DeletePersonalDataAsync<int>(FromUser);
+            List<int> personalFolderIds = null;
+
+            if (_deleteProfile)
+            {
+                await fileStorageService.DeletePersonalDataAsync<int>(FromUser);
+            }
+            else
+            {
+                personalFolderIds = await fileStorageService.GetPersonalFolderIdsAsync<int>(FromUser);
+            }
 
             Percentage = 30;
             PublishChanges();
@@ -105,12 +114,12 @@ public class ReassignProgressItem : DistributedTaskProgress
             Percentage = 50;
             PublishChanges();
 
-            await fileStorageService.ReassignFoldersAsync<int>(FromUser, ToUser);
+            await fileStorageService.ReassignFoldersAsync<int>(FromUser, ToUser, personalFolderIds);
 
             Percentage = 70;
             PublishChanges();
 
-            await fileStorageService.ReassignFilesAsync<int>(FromUser, ToUser);
+            await fileStorageService.ReassignFilesAsync<int>(FromUser, ToUser, personalFolderIds);
 
             Percentage = 90;
             PublishChanges();

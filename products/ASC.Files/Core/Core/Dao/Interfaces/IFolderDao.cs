@@ -227,7 +227,8 @@ public interface IFolderDao<T>
     /// </summary>
     /// <param name="oldOwnerId"></param>
     /// <param name="newOwnerId"></param>
-    Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId);
+    /// <param name="exceptFolderIds"></param>
+    Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId, IEnumerable<T> exceptFolderIds);
 
 
     /// <summary>
