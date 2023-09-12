@@ -327,7 +327,6 @@ internal class ProviderAccountDao : IProviderDao
 
             toUpdateCount++;
         }
-        filesDbContext.UpdateRange(toUpdate);
 
         await filesDbContext.SaveChangesAsync();
 
@@ -797,6 +796,7 @@ static file class Queries
         ThirdpartyAccountsByLinkIdAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int linkId) =>
                 ctx.ThirdpartyAccount
+                    .AsTracking()
                     .Where(r => r.Id == linkId)
                     .Where(r => r.TenantId == tenantId));
 

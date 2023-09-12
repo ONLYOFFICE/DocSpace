@@ -446,6 +446,8 @@ public class EFUserService : IUserService
 
         var user = await Queries.UserAsync(userDbContext, tenant, userId);
         user.LastModified = DateTime.UtcNow;
+        userDbContext.Update(user);
+
         await userDbContext.SaveChangesAsync();
     }
 

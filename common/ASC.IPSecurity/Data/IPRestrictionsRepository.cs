@@ -55,10 +55,9 @@ public class IPRestrictionsRepository
 
         var ipsList = ips.Select(r => new TenantIpRestrictions
         {
-                TenantId = tenant,
+            TenantId = tenant,
             Ip = r.Ip,
             ForAdmin = r.ForAdmin
-
         });
 
         tenantDbContext.TenantIpRestrictions.AddRange(ipsList);
