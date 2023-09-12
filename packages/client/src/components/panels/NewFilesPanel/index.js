@@ -291,7 +291,7 @@ const NewFilesPanel = (props) => {
           <StyledFooter>
             <Button
               className="new_files_panel-button new_file_panel-first-button"
-              label={t("MarkAsRead")}
+              label={t("Viewed")}
               size="normal"
               primary
               onClick={onMarkAsRead}
