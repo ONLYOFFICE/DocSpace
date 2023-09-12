@@ -2,7 +2,7 @@ import styled from "styled-components";
 import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
-import { mobile } from "@docspace/components/utils/device";
+import { mobile, smallTablet } from "@docspace/components/utils/device";
 
 export const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -71,44 +71,6 @@ export const StyledTooltip = styled.div`
     margin-bottom: 10px;
   }
 `;
-
-export const StyledMobileCategoryWrapper = styled.div`
-  margin-bottom: 20px;
-
-  .category-item-heading {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-
-  .category-item-subheader {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 5px;
-  }
-
-  .category-item-description {
-    color: ${(props) => props.theme.client.settings.security.descriptionColor};
-    font-size: 13px;
-    max-width: 1024px;
-    line-height: 20px;
-  }
-
-  .inherit-title-link {
-    ${({ theme }) =>
-      theme.interfaceDirection === "rtl"
-        ? `margin-left: 7px;`
-        : `margin-right: 7px;`}
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  .link-text {
-    margin: 0;
-  }
-`;
-
-StyledMobileCategoryWrapper.defaultProps = { theme: Base };
 
 export const LearnMoreWrapper = styled.div`
   display: none;

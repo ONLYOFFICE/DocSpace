@@ -1,8 +1,8 @@
 import React from "react";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import Box from "@docspace/components/box";
 import Checkbox from "@docspace/components/checkbox";
 
 const checkboxesNames = {
@@ -18,6 +18,20 @@ const checkboxesNames = {
     "spEncryptAssertions",
   ],
 };
+
+const StyledWrapper = styled.div`
+  margin: 16px 0;
+  .checkbox-input {
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin: 10px 0 6px 8px;
+          `
+        : css`
+            margin: 10px 8px 6px 0;
+          `}
+  }
+`;
 
 const CheckboxSet = (props) => {
   const { t } = useTranslation("SingleSignOn");
@@ -36,7 +50,7 @@ const CheckboxSet = (props) => {
   } = props;
 
   return (
-    <Box marginProp="16px 0">
+    <StyledWrapper>
       <Checkbox
         id={
           prefix === "idp"
@@ -106,7 +120,7 @@ const CheckboxSet = (props) => {
           isChecked={spEncryptAssertions}
         />
       )}
-    </Box>
+    </StyledWrapper>
   );
 };
 

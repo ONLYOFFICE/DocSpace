@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Studio.Core;
 
-[Serializable]
 public class CustomNavigationSettings : ISettings<CustomNavigationSettings>
 {
     public List<CustomNavigationItem> Items { get; set; }
@@ -45,7 +44,6 @@ public class CustomNavigationSettings : ISettings<CustomNavigationSettings>
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class CustomNavigationItem
 {
     /// <summary>ID</summary>

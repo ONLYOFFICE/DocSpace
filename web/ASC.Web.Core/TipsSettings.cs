@@ -28,7 +28,6 @@ namespace ASC.Web.Studio.Core;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class TipsSettings : ISettings<TipsSettings>
 {
     /// <summary>Specifies if the tips will be shown or not</summary>

@@ -41,7 +41,6 @@ public enum FileStatus
 }
 
 [Transient]
-[Serializable]
 [DebuggerDisplay("{Title} ({Id} v{Version})")]
 public class File<T> : FileEntry<T>, IFileEntry<T>
 {

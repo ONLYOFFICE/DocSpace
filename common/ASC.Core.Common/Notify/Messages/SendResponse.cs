@@ -26,7 +26,6 @@
 
 namespace ASC.Notify.Messages;
 
-[Serializable]
 public class SendResponse
 {
     public SendResponse()
