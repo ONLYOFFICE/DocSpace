@@ -28,7 +28,6 @@ using UnknownImageFormatException = SixLabors.ImageSharp.UnknownImageFormatExcep
 
 namespace ASC.Web.Core.WhiteLabel;
 
-[Serializable]
 public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
 {
     public const string DefaultLogoText = BaseWhiteLabelSettings.DefaultLogoText;
@@ -237,13 +236,13 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
         switch (type)
         {
             case WhiteLabelLogoTypeEnum.LightSmall:
-                if (dark) 
+                if (dark)
                 {
                     DarkLogoLightSmallExt = fileExt;
                 }
                 else
                 {
-                LogoLightSmallExt = fileExt;
+                    LogoLightSmallExt = fileExt;
                 }
                 break;
             case WhiteLabelLogoTypeEnum.LoginPage:
@@ -253,7 +252,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
                 }
                 else
                 {
-                LogoDarkExt = fileExt;
+                    LogoDarkExt = fileExt;
                 }
                 break;
             case WhiteLabelLogoTypeEnum.Favicon:
@@ -263,7 +262,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
                 }
                 else
                 {
-                LogoFaviconExt = fileExt;
+                    LogoFaviconExt = fileExt;
                 }
                 break;
             case WhiteLabelLogoTypeEnum.DocsEditor:
@@ -273,7 +272,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
                 }
                 else
                 {
-                LogoDocsEditorExt = fileExt;
+                    LogoDocsEditorExt = fileExt;
                 }
                 break;
             case WhiteLabelLogoTypeEnum.DocsEditorEmbed:
@@ -283,7 +282,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
                 }
                 else
                 {
-                LogoDocsEditorEmbedExt = fileExt;
+                    LogoDocsEditorEmbedExt = fileExt;
                 }
                 break;
             case WhiteLabelLogoTypeEnum.LeftMenu:
@@ -293,7 +292,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
                 }
                 else
                 {
-                LogoLeftMenuExt = fileExt;
+                    LogoLeftMenuExt = fileExt;
                 }
                 break;
             case WhiteLabelLogoTypeEnum.AboutPage:
@@ -303,7 +302,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
                 }
                 else
                 {
-                LogoAboutPageExt = fileExt;
+                    LogoAboutPageExt = fileExt;
                 }
                 break;
         }
@@ -626,7 +625,7 @@ public class TenantWhiteLabelSettingsHelper
         }
     }
 
-    public async Task SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt,  Stream fileStream, bool dark, IDataStore storage = null)
+    public async Task SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream, bool dark, IDataStore storage = null)
     {
         var data = GetData(fileStream);
 
@@ -634,12 +633,12 @@ public class TenantWhiteLabelSettingsHelper
         if (dark)
         {
             canSet = CanBeDark(type);
-            }
+        }
         if (data != null && canSet)
-            {
+        {
             await SetLogoAsync(tenantWhiteLabelSettings, type, fileExt, data, dark, storage);
             tenantWhiteLabelSettings.SetExt(type, fileExt, dark);
-            }
+        }
 
         tenantWhiteLabelSettings.SetIsDefault(type, false);
     }
@@ -724,7 +723,7 @@ public class TenantWhiteLabelSettingsHelper
         }
 
         var logoPath = BuildLogoFileName(type, partnerSettings.GetExt(type, dark), dark);
- 
+
         return (await partnerStorage.IsFileAsync(logoPath)) ? (await partnerStorage.GetUriAsync(logoPath)).ToString() : null;
     }
 

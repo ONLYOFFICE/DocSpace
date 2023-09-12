@@ -26,7 +26,6 @@
 
 namespace ASC.Notify.Recipients;
 
-[Serializable]
 public class DirectRecipient
     : IDirectRecipient
 {

@@ -219,7 +219,12 @@ public class ChunkedUploaderHandlerService
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
 
-        return context.Response.WriteAsync(JsonSerializer.Serialize(new { success, data, message }, SocketManager.GetSerializerSettings()));
+        return context.Response.WriteAsync(JsonSerializer.Serialize(new { success, data, message }, new JsonSerializerOptions()
+        {
+            WriteIndented = false,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        }));
     }
 
     private async Task<object> ToResponseObject<T>(File<T> file)

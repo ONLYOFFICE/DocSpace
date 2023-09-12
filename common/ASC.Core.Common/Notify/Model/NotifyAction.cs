@@ -26,7 +26,6 @@
 
 namespace ASC.Notify.Model;
 
-[Serializable]
 public class NotifyAction : INotifyAction
 {
     public string ID { get; private set; }

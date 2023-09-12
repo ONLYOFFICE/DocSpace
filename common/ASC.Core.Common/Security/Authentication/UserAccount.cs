@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Security.Authentication;
 
-[Serializable]
 class UserAccount : MarshalByRefObject, IUserAccount
 {
     public Guid ID { get; private set; }

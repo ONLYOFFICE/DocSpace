@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Tenants;
 
-[Serializable]
 public class TenantTooShortException : Exception
 {
     public int MinLength { get; set; }
@@ -46,7 +45,6 @@ public class TenantTooShortException : Exception
         : base(info, context) { }
 }
 
-[Serializable]
 public class TenantIncorrectCharsException : Exception
 {
     public TenantIncorrectCharsException(string message)
@@ -56,7 +54,6 @@ public class TenantIncorrectCharsException : Exception
         : base(info, context) { }
 }
 
-[Serializable]
 public class TenantAlreadyExistsException : Exception
 {
     public IEnumerable<string> ExistsTenants { get; private set; }

@@ -4,7 +4,6 @@ import { UnavailableStyles } from "../../../../utils/commonSettingsStyles";
 const StyledSsoPage = styled.div`
   box-sizing: border-box;
   outline: none;
-  padding-top: 5px;
 
   .intro-text {
     width: 100%;

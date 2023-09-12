@@ -28,7 +28,6 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 
-[Serializable]
 public class SsoUserData
 {
     [JsonPropertyName("nameID")]
@@ -61,7 +60,6 @@ public class SsoUserData
     }
 }
 
-[Serializable]
 public class LogoutSsoUserData
 {
     [JsonPropertyName("nameID")]
