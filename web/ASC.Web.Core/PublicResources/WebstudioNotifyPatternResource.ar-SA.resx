@@ -1,0 +1,1864 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>قبول</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بانشاء مستند جديد: &lt;a href={1}&gt;{2}&lt;/a&gt; في الغرفة: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بتعديل المستند: &lt;a href={1}&gt;{2}&lt;/a&gt; في الغرفة: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام برفع مستند جديد: &lt;a href={1}&gt;{2}&lt;/a&gt; في الغرفة: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بإضافة تعليق جديد إلى نسخة المستند: &lt;a href={1}&gt;{2}&lt;/a&gt; في الغرفة: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بنقل الغرفة: &lt;a href={1}&gt;{2}&lt;/a&gt; إلى الأرشيف - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بإنشاء غرفة جديدة: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بحذف الغرفة: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; أعاد تسمية الغرفة: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; تم تعيينه كـ &lt;b&gt;{1}&lt;/b&gt; iفي الغرفة: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; تم إضافته للغرفة : &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>تم إضافة مستخدم DocSpace جديد: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; تم إزالته من الغرفة: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; قام بتغير مستوى وصول المستخدمين &lt;b&gt;{1}&lt;/b&gt; to &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>تم تحديث مستخدم DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>قبول</value>
+  </data>
+  <data name="ButtonAccessControlPanel" xml:space="preserve">
+    <value>لوحة التحكم بالوصول</value>
+  </data>
+  <data name="ButtonAccessYourPortal" xml:space="preserve">
+    <value>ادخل إلى بوابتك</value>
+  </data>
+  <data name="ButtonAccessYouWebOffice" xml:space="preserve">
+    <value>الوصول إلى مكتب الويب الخاص بك</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>انقر هنا لتنشيط عنوان بريدك الإلكتروني</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>قم بتغيير عنوان البريد الإلكتروني</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>قم بتغيير كلمة المرور</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>غير رقم الهاتف المحمول</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>تهيئة تطبيق المصادقة</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>تعاون في DocSpace</value>
+  </data>
+  <data name="ButtonConfigureRightNow" xml:space="preserve">
+    <value>التهيئة الآن</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>تأكيد</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>تأكيد دعوة DocSpace</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>تأكيد</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>تأكيد تغيير عنوان البوابة</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>تأكيد تحديث مالك البوابة</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>تأكيد دعوة الغرفة</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>تأكيد إغلاق الحساب</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>تعطيل البوابة</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>حذف البوابة الإلكترونية</value>
+  </data>
+  <data name="ButtonInviteRightNow" xml:space="preserve">
+    <value>دعوة الآن</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>انقر هنا للانضمام إلى البوابة</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>اترك تعليق</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>إزالة ملف التعريف</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>جدد الآن</value>
+  </data>
+  <data name="ButtonRequestCallButton" xml:space="preserve">
+    <value>طلب مكالمة</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>حدد خطط التسعير الآن</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>بدء الفترة التجريبية</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>استخدام الخصم</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>زيارة قسم المدفوعات</value>
+  </data>
+  <data name="subject_activate_email" xml:space="preserve">
+    <value>${LetterLogoText}. يرجى تفعيل عنوان بريدك الإلكتروني</value>
+  </data>
+  <data name="subject_backup_created" xml:space="preserve">
+    <value>${LetterLogoText}. ${__VirtualRootPath} تم إنشاء النسخ الاحتياطي للبوابة الإلكترونية</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>تأكيد تغيير بريدك الإلكتروني</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} مساعدة كلمة المرور</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>تأكيد تغيير كلمة المرور الخاصة بك</value>
+  </data>
+  <data name="subject_change_phone" xml:space="preserve">
+    <value>${LetterLogoText}. طلب تغيير الهاتف المحمول</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. إشعار الأمان</value>
+  </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. تغيير مالك البوابة الإلكترونية</value>
+  </data>
+  <data name="subject_dns_change" xml:space="preserve">
+    <value>${LetterLogoText}.تغيير عنوان البوابة الإلكترونية</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>احصل على تطبيقات ONLYOFFICE المجانية</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>احصل على تطبيقات ONLYOFFICE المجانية</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>احصل على تطبيقات ONLYOFFICE المجانية</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>عدة نصائح للعمل الفعال على مستنداتك</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>عدة نصائح للعمل الفعال على مستنداتك</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>عدة نصائح للعمل الفعال على مستنداتك</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>عدة نصائح للعمل الفعال على مستنداتك</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>اكتشف اشتراك الأعمال في ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>اكتشف اشتراك الأعمال في ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>اكتشف اشتراك الأعمال في ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>اكتشف اشتراك الأعمال في ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>انضم إلى ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>انضم إلى ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>انضم إلى ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>انضم إلى ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_for_admin_notify" xml:space="preserve">
+    <value>رسالة مستخدم إلى المسؤولين</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>طلب قسم المبيعات</value>
+  </data>
+  <data name="subject_join" xml:space="preserve">
+    <value>دعوة للانضمام إلى بوابة ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. إنشاء صندوق البريد</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. تغيير كلمة مرور صندوق البريد</value>
+  </data>
+  <data name="subject_migration_error" xml:space="preserve">
+    <value>${LetterLogoText}. خطأ آخر في ترحيل مدخل المنطقة</value>
+  </data>
+  <data name="subject_migration_start" xml:space="preserve">
+    <value>${LetterLogoText}.  بدء ترحيل بوابة منطقة أخرى</value>
+  </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. اكتمل ترحيل بوابة منطقة أخرى بنجاح</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE للاستخدام الشخصي!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>مرحبا بكم في ONLYOFFICE الشخصي</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>قم بتسجيل الدخول إلى حساب ONLYOFFICE الشخصي الخاص بك</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE الشخصي. يرجى تفعيل عنوان بريدك الإلكتروني</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>إيقاف حساب ONLYOFFICE الشخصي</value>
+  </data>
+  <data name="subject_portal_deactivate" xml:space="preserve">
+    <value>إلغاء تنشيط بوابة ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete" xml:space="preserve">
+    <value>حذف مدخل ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>تم إلغاء تنشيط Onlyoffice DocSpace</value>
+  </data>
+  <data name="subject_portal_rename" xml:space="preserve">
+    <value>${LetterLogoText}.تغيير عنوان البوابة الإلكترونية</value>
+  </data>
+  <data name="subject_profile_delete" xml:space="preserve">
+    <value>حذف ملف التعريف الخاص بك من بوابة ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>قام المستخدم بحذف ملفه الشخصي</value>
+  </data>
+  <data name="subject_profile_updated" xml:space="preserve">
+    <value>تم تغيير ملف التعريف الخاص بك في ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}. اكتملت إعادة تعيين بيانات المستخدم</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. فشلت إعادة تعيين بيانات المستخدم</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. اكتملت إزالة بيانات المستخدم</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. فشلت إزالة بيانات المستخدم</value>
+  </data>
+  <data name="subject_request_license" xml:space="preserve">
+    <value>طلب ترخيص المؤسسة</value>
+  </data>
+  <data name="subject_request_tariff" xml:space="preserve">
+    <value>طلب خطة تسعير SaaS</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. اكتملت الاستعادة</value>
+  </data>
+  <data name="subject_restore_started" xml:space="preserve">
+    <value>${LetterLogoText}. بدأت الاستعادة</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>تكوين مساحة دوك سبيس الخاصة ب ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>سيتم حذف مساحة DocSpace الخاصة بك</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>انضم إلى ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>فترة السماح ل ONLYOFFICE DocSpace الخاص بك تنشيط</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>اشتراك Onlyoffice DocSpace على وشك الانتهاء</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>انتهت صلاحية فترة السماح ل ONLYOFFICE DocSpace الخاص بك</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>فترة السماح ل ONLYOFFICE DocSpace الخاص بك تنتهي غدا</value>
+  </data>
+  <data name="subject_self_profile_updated" xml:space="preserve">
+    <value>${__VirtualRootPath} إشعار تغيير ملف تعريف البوابة الإلكترونية</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>ما الجديد في البوابة الإلكترونية $Date</value>
+  </data>
+  <data name="subject_smtp_test" xml:space="preserve">
+    <value>رسالة اختبار SMTP</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. فشلت عملية فك التشفير</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. بدأت عملية فك التشفير</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. اكتملت عملية فك التشفير</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. فشلت عملية التشفير</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. بدأت عملية التشفير</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. اكتملت عملية التشفير</value>
+  </data>
+  <data name="subject_user_has_join" xml:space="preserve">
+    <value>تمت إضافة مستخدم جديد إلى بوابة ${LetterLogoText}</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>أنت مدعو للانضمام ${__VirtualRootPath}</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>مرحبا $UserName!
+
+اكتملت عملية تشفير الملفات على البوابة الإلكترونية "${PortalUrl}":"${PortalUrl}" بنجاح.
+
+البوابة الإلكترونية متاحة مرة أخرى.</value>
+  </data>
+  <data name="pattern_activate_email" xml:space="preserve">
+    <value>العنوان الرئيسي. قم بتنشيط بريدك الإلكتروني لبوابة "${__VirtualRootPath}":"$InviteLink".
+
+مرحباً!
+
+لبدء المشاركة في فترة صلاحية البوابة "${__VirtualRootPath}":"$InviteLink"تحتاج إلى تنشيط عنوان بريدك الإلكتروني. يتم ذلك لأسباب أمنية.
+
+$GreenButton
+
+هذا الرابط صالح لمدة 7 أيام فقط. يرجى إكمال تفعيل بريدك الإلكتروني خلال تلك الفترة.</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>هل تريد تغيير البريد الإلكتروني على حساب ${LetterLogoText} الخاص بك؟
+
+انقر فوق الزر أدناه وقم بتسجيل الدخول * إلى السحابة الخاصة بك.
+
+$GreenButton
+
+الرابط صالح لمدة 7 أيام.
+
+*إذا لم تقم بتسجيل الدخول إلى ${LetterLogoText} في هذا المتصفح، فستحتاج إلى استخدام بريدك الإلكتروني القديم للتأكيد. إذا كنت لا تتذكر ذلك، اتصل بمسؤول البوابة الإلكترونية.
+
+لا تريد تغيير بريدك الإلكتروني؟ فقط تجاهل هذه الرسالة.</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+أنت مدعو للانضمام الى "${__VirtualRootPath}":"${__VirtualRootPath}" كمستخدم ضيف. اقبل الدعوة بالنقر على الرابط:
+
+$GreenButton
+
+الرابط صالح لمدة 7 أيام فقط.
+
+ستحصل على مزيد من النصائح حول كيفية استخدام مكتب الويب الخاص بك. يمكنك إلغاء الاشتراكات على صفحة ملفك الشخصي في أي لحظة وكذلك إعادة تمكينها.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>عزيزي $UserName،
+
+     تم تغيير كلمة المرور لعلبة بريد &lt;b&gt;$Address&lt;/b&gt;
+
+      إذا تلقيت هذا البريد الإلكتروني عن طريق الخطأ، فيرجى تجاهله أو الاتصال بمسؤول البوابة الإلكترونية لمعرفة التفاصيل.</value>
+  </data>
+  <data name="pattern_user_has_join" xml:space="preserve">
+    <value>h1.عنوان رئيسي. تمت إضافة مستخدم جديد إلى بوابة "${__VirtualRootPath}":"${__VirtualRootPath}"  portal
+
+ "$__AuthorName":"$__AuthorUrl"انضم إلى البوابة الإلكترونية في "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+
+^إذا كنت لا ترغب في تلقي إشعارات حول المستخدمين الجدد ، فيرجى إدارة "إعدادات الاشتراك":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>تمت إضافة مستخدم جديد إلى بوابة [${__VirtualRootPath}](${__VirtualRootPath})
+[$__AuthorName]($__AuthorUrl) انضم إلى البوابة الإلكترونية في [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>مرحبا $UserName!
+
+لقد تمت دعوتك للانضمام إلى مكتب الويب الآمن والآمن لشركتك والذي من شأنه تعزيز تعاونك. عنوانها هو "${__VirtualRootPath}":"${__VirtualRootPath}".
+تعد إضافة هذا الرابط إلى إشاراتك المرجعية فكرة جيدة ، فمن المحتمل أن تستخدمه كثيرا.
+
+اقبل الدعوة باتباع الرابط أدناه واستخدم معلومات تسجيل الدخول وكلمة المرور من حساب الشركة لتسجيل الدخول.
+
+$GreenButton
+
+الرابط صالح لمدة 7 أيام فقط.</value>
+  </data>
+  <data name="pattern_backup_created" xml:space="preserve">
+    <value>العنوان الرئيسي ."${__VirtualRootPath}":"${__VirtualRootPath}" تم إنشاء النسخ الاحتياطي للبوابة الإلكترونية
+
+عزيزي $OwnerName،
+
+تم إنشاء ملف نسخ احتياطي يحتوي على بيانات من بوابة "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+لمعرفة المزيد حول إجراء النسخ الاحتياطي ، يرجى الرجوع إلى دليل المستخدم "النسخ الاحتياطي للبيانات":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block"
+
+
+إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة فلا تتردد في الاتصال بنا على "support.onlyoffice.com":"http://support.onlyoffice.com"
+
+مع خالص تحياتي
+فريق دعم ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath})
+تم إنشاء النسخ الاحتياطي للبوابة الإلكترونية
+
+عزيزي $OwnerName,
+
+تم إنشاء ملف نسخ احتياطي يحتوي على بيانات من بوابة [${__VirtualRootPath}](${__VirtualRootPath}).
+
+لمعرفة المزيد حول إجراء النسخ الاحتياطي ، يرجى الرجوع إلى دليل المستخدم [النسخ الاحتياطي للبيانات](${__HelpLink}/tipstricks/data-backup-restore.aspx).
+
+إذا كان لديك أي أسئلة أو كنت بحاجة إلى مساعدة ، فلا تتردد في الاتصال بنا على [support.onlyoffice.com](http://support.onlyoffice.com)
+
+مع خالص تحياتي
+فريق دعم ONLYOFFICE™ [www.onlyoffice.com] (http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>هل تريد تغيير كلمة المرور على حساب ONLYOFFICE الخاص بك؟ انقر فوق الزر أدناه للتأكيد.
+
+$GreenButton
+
+الرابط صالح لمدة 7 أيام.
+
+لا تريد تغيير بريدك الإلكتروني؟ فقط تجاهل هذه الرسالة</value>
+  </data>
+  <data name="pattern_change_phone" xml:space="preserve">
+    <value>العنوان الرئيسي. طلب تغيير الهاتف المحمول
+
+لقد طلبت تغيير هاتفك المحمول المستخدم للدخول إلى بوابة ${LetterLogoText}.
+
+يرجى اتباع الرابط أدناه لتغيير هاتفك المحمول:
+
+$GreenButton
+
+إذا كنت لا ترغب في تغيير هاتفك الجوال أو تلقيت هذا البريد الإلكتروني عن طريق الخطأ، فيرجى تجاهله أو الاتصال بمسؤول البوابة الإلكترونية لمعرفة التفاصيل.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>العنوان الرئيسي.إشعار الأمان
+
+تمت إعادة تعيين تكوين تطبيق المصادقة الذي تستخدمه للدخول إلى المدخل${LetterLogoText}.
+
+يرجى النقر فوق الزر أدناه للانتقال إلى صفحة تسجيل الدخول إلى البوابة وتكوين تطبيق المصادقة:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_confirm_owner_change" xml:space="preserve">
+    <value>العنوان الرئيسي. تغيير مالك البوابة الإلكترونية "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+عزيزي $OwnerName,
+
+كان هناك طلب لتغيير مالك البوابة الإلكترونية  "${__VirtualRootPath}":"${__VirtualRootPath}"الى $UserName.
+
+يرجى اتباع الرابط أدناه لتأكيد العملية:
+
+$GreenButton
+
+
+*ملاحظة*: هذا الرابط صالح لمدة 7 أيام فقط. يرجى إكمال عملية تغيير مالك البوابة خلال تلك الفترة.</value>
+  </data>
+  <data name="pattern_dns_change" xml:space="preserve">
+    <value>العنوان الرئيسي. تغيير عنوان البوابة الإلكترونية
+
+عزيزي $OwnerName ،
+
+كان هناك طلب لتغيير عنوان البوابة الإلكترونية "${__VirtualRootPath}":"${__VirtualRootPath}" الى "$PortalAddress":"$PortalAddress" #if($PortalDns != "") ("$PortalDns":"$PortalDns" )#end.
+
+يرجى اتباع الرابط أدناه لتأكيد العملية:
+
+$GreenButton
+
+*ملاحظة*: هذا الرابط صالح لمدة 7 أيام فقط. يرجى إكمال عملية تغيير عنوان البوابة خلال تلك الفترة.</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+لقد قمت للتو بإنشاء ONLYOFFICE DocSpace ، وهو مركز مستندات حيث يمكنك تعزيز التعاون مع فريقك وعملائك وشركائك والمزيد. عنوانها هو "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+يرجى تأكيد بريدك الإلكتروني (الرابط صالح لمدة 7 أيام):
+
+$GreenButton
+
+استمتع بطريقة جديدة للتعاون في المستندات!
+
+حقا لك:
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+احصل على تطبيقات ONLYOFFICE المجانية للعمل على المستندات من أي من أجهزتك.
+
+# للعمل على المستندات في وضع عدم الاتصال على أنظمة التشغيل Windows و Linux و Mac ، قم بتنزيل "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+# لتحرير لمستندات على الأجهزة المحمولة ، احصل على تطبيق مستندات ONLYOFFICE ل "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" 
+أو"Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+حقا لك، 
+فريق ONLYOFFICE 
+" www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+نأمل أن تستمتع باستخدام ONLYOFFICE DocSpace الخاص بك. فيما يلي بعض النصائح حول كيفية جعل العمل على المستندات أكثر فعالية.
+
+*#1. اختر طريقة عملك.* قم بتنظيم سير العمل حسب حاجتك من خلال إنشاء غرف تعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة بإعدادات مرنة لأي غرض.
+
+*#2. اعمل مع أي محتوى لديك.* قم بتخزين الملفات ذات التنسيقات المختلفة والعمل عليها داخل غرفك: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+*#3. شارك في التأليف بفعالية.* تعاون في العمل على المستندات باستخدام وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+*#4. قم بتوصيل سحابات الطرف الثالث.* قم بتوصيل أي تخزين سحابي واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+حقا لك، 
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+فيما يلي ثلاثة أسئلة بسيطة لك يمكن أن تساعدنا في جعل تجربة المستخدم الخاصة بك أكثر راحة.
+
+* هل لديك فريق كبير أو الكثير من العملاء والشركاء للتعاون معهم في ONLYOFFICE DocSpace الخاص بك؟
+
+* هل ترغب في إنشاء أي عدد من الغرف للعمل مع العديد من الوثائق؟
+
+* هل تريد استخدام ONLYOFFICE DocSpace تحت العلامة التجارية الخاصة بك؟
+
+إذا كان لديك إجابة واحدة على الأقل ب "نعم" ، فاختر خطة تعريفة للأعمال التي تسمح لك بإضافة أي عدد مطلوب من المديرين إلى ONLYOFFICE DocSpace بالإضافة إلى تطبيق خيارات العلامة التجارية.
+
+للقيام بذلك، يرجى الرجوع إلى "قسم المدفوعات ":"$PricingPage" من Onlyoffice DocSpace الخاص بك. هناك، ستجد رابطا فرديا إلى بوابة عملاء Stripe حيث يمكنك بسهولة التعامل مع جميع تفاصيل الدفع.
+
+
+_يرجى الملاحظة: الشخص الذي يدفع الاشتراك يصبح الدافع. فقط الدافع قادر على إجراء تغييرات على الاشتراك (ضبط عدد المديرين). لا يمكن للمستخدمين الوصول إلى تفاصيل الدفع. مالك حساب Onlyoffice DocSpace قادر على إعادة تعيين الدافع في أي وقت لاحق. _
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+مرحبا بكم في ONLYOFFICE DocSpace! تمت إضافة ملف تعريف المستخدم الخاص بك بنجاح إلى "${__VirtualRootPath}":"${__VirtualRootPath}" الان بإمكانك:
+
+* العمل مع مستخدمين آخرين في الغرفة التي تمت دعوتك إليها: * غرف التعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة مع إعدادات مرنة لأي غرض *.
+
+* * العمل مع ملفات بتنسيقات مختلفة *: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+* * التعاون في المستندات * مع وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+* * قم بتوصيل أي تخزين سحابي * واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+إذا كنت بحاجة إلى مساعدة، فتصفح "مركز المساعدة" "https://helpcenter.onlyoffice.com/" أو اسأل "فريق الدعم":" https://www.onlyoffice.com/support-contact-form.aspx".
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>مرحبا!
+
+أنت مدعو للانضمام إلى ONLYOFFICE DocSpace في "${__VirtualRootPath}":"${__VirtualRootPath}". اقبل الدعوة بالنقر على الرابط:
+
+$GreenButton
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+مرحبا بكم في ONLYOFFICE DocSpace! تمت إضافة ملف تعريف المستخدم الخاص بك بنجاح إلى "${__VirtualRootPath}":"${__VirtualRootPath}" الان بإمكانك:
+
+* العمل مع مستخدمين آخرين في الغرفة التي تمت دعوتك إليها: * غرف التعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة مع إعدادات مرنة لأي غرض *.
+
+* * العمل مع ملفات بتنسيقات مختلفة *: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+* * التعاون في المستندات * مع وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+* * قم بتوصيل أي تخزين سحابي * واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+إذا كنت بحاجة إلى مساعدة، فتصفح "مركز المساعدة" "https://helpcenter.onlyoffice.com/" أو اسأل "فريق الدعم":" https://www.onlyoffice.com/support-contact-form.aspx".
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+لقد قمت للتو بإنشاء ONLYOFFICE DocSpace ، وهو مركز مستندات حيث يمكنك تعزيز التعاون مع فريقك وعملائك وشركائك والمزيد. عنوانها هو "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+يرجى تأكيد بريدك الإلكتروني (الرابط صالح لمدة 7 أيام):
+
+$GreenButton
+
+استمتع بطريقة جديدة للتعاون في المستندات!
+
+حقا لك:
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+فيما يلي ثلاثة أسئلة بسيطة لك يمكن أن تساعدنا في جعل تجربة المستخدم الخاصة بك أكثر راحة.
+
+* هل لديك فريق كبير أو الكثير من العملاء والشركاء للتعاون معهم في ONLYOFFICE DocSpace الخاص بك؟
+
+* هل ترغب في إنشاء أي عدد من الغرف للعمل مع العديد من الوثائق؟
+
+* هل تريد استخدام ONLYOFFICE DocSpace تحت العلامة التجارية الخاصة بك؟
+
+إذا كان لديك إجابة واحدة على الأقل ب "نعم" ، فاختر خطة تعريفة للأعمال التي تسمح لك بإضافة أي عدد مطلوب من المديرين إلى ONLYOFFICE DocSpace بالإضافة إلى تطبيق خيارات العلامة التجارية.
+
+للقيام بذلك، يرجى الرجوع إلى "قسم المدفوعات ":"$PricingPage" من Onlyoffice DocSpace الخاص بك. هناك، ستجد رابطا فرديا إلى بوابة عملاء Stripe حيث يمكنك بسهولة التعامل مع جميع تفاصيل الدفع.
+
+
+_يرجى الملاحظة: الشخص الذي يدفع الاشتراك يصبح الدافع. فقط الدافع قادر على إجراء تغييرات على الاشتراك (ضبط عدد المديرين). لا يمكن للمستخدمين الوصول إلى تفاصيل الدفع. مالك حساب Onlyoffice DocSpace قادر على إعادة تعيين الدافع في أي وقت لاحق. _
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+دعاك $__AuthorName كمستخدم ضيف إلى "${__VirtualRootPath}":"${__VirtualRootPath}". اقبل الدعوة بالنقر على الرابط:
+
+$GreenButton
+
+الرابط صالح لمدة 7 أيام فقط.
+
+سوف تحصل على مزيد من النصائح حول كيفية استخدام مكتب الويب الخاص بك. يمكنك إلغاء الاشتراكات على صفحة ملفك الشخصي في أي لحظة وكذلك إعادة تمكينها.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+مرحبا بكم في ONLYOFFICE DocSpace! تمت إضافة ملف تعريف المستخدم الخاص بك بنجاح إلى "${__VirtualRootPath}":"${__VirtualRootPath}" الان بإمكانك:
+
+* العمل مع مستخدمين آخرين في الغرفة التي تمت دعوتك إليها: * غرف التعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة مع إعدادات مرنة لأي غرض *.
+
+* * العمل مع ملفات بتنسيقات مختلفة *: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+* * التعاون في المستندات * مع وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+* * قم بتوصيل أي تخزين سحابي * واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+إذا كنت بحاجة إلى مساعدة، فتصفح "مركز المساعدة" "https://helpcenter.onlyoffice.com/" أو اسأل "فريق الدعم":" https://www.onlyoffice.com/support-contact-form.aspx".
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>مرحبا!
+
+أنت مدعو للانضمام إلى ONLYOFFICE DocSpace في "${__VirtualRootPath}":"${__VirtualRootPath}". اقبل الدعوة بالنقر على الرابط:
+
+$GreenButton
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+مرحبا بكم في ONLYOFFICE DocSpace! تمت إضافة ملف تعريف المستخدم الخاص بك بنجاح إلى "${__VirtualRootPath}":"${__VirtualRootPath}" الان بإمكانك:
+
+* العمل مع مستخدمين آخرين في الغرفة التي تمت دعوتك إليها: * غرف التعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة مع إعدادات مرنة لأي غرض *.
+
+* * العمل مع ملفات بتنسيقات مختلفة *: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+* * التعاون في المستندات * مع وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+* * قم بتوصيل أي تخزين سحابي * واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+إذا كنت بحاجة إلى مساعدة، فتصفح "مركز المساعدة" "https://helpcenter.onlyoffice.com/" أو اسأل "فريق الدعم":" https://www.onlyoffice.com/support-contact-form.aspx".
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_admin_notify" xml:space="preserve">
+    <value>العنوان الرئيسي. رسالة من البوابة "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+البريد الإلكتروني: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>رسالة من البوابة [${__VirtualRootPath}](${__VirtualRootPath})\
+
+البريد الإلكتروني: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>العنوان الرئيسي. 
+رسالة من البوابة "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+الاسم: $UserName
+
+البريد الالكتروني: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_join" xml:space="preserve">
+    <value>h1.العنوان الرئيسي. دعوة للانضمام إلى البوابة "${__VirtualRootPath}":"$InviteLink"
+
+مرحبا،
+
+لقد طلبت الانضمام إلى بوابة "${__VirtualRootPath}":"$InviteLink" على ${LetterLogoText} - منصة لإدارة المستندات والمشاريع. انضم إلى البوابة وابدأ التعاون مع زملائك أو أصدقائك على الفور.
+
+لقبول الدعوة يرجى إدخال اسمك وكلمة المرور باتباع هذا الرابط:
+
+$GreenButton
+
+* ملاحظة *: هذا الرابط صالح لمدة 48 ساعة فقط. يرجى إكمال العملية خلال تلك الفترة.</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>عزيزي $UserName،
+
+قام المسؤول بإنشاء علبة بريد &lt;b&gt;$Address&lt;/b&gt; جديدة لك في البوابة "${__VirtualRootPath}":"${__VirtualRootPath}" 
+
+   استخدم الإعدادات التالية لبرامج البريد الإلكتروني الأخرى:
+     تسجيل دخول: &lt;b&gt;$Login&lt;/b&gt;
+     كلمة السر: "&lt;b&gt;set password&lt;/b&gt;":"$MyStaffLink"
+
+    البريد الوارد(IMAP):
+    الخادم: &lt;b&gt;$Server&lt;/b&gt;
+    المنفذ: &lt;b&gt;$ImapPort&lt;/b&gt;
+SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      البريد الصادر (SMTP): 
+      الخادم: &lt;b&gt;$Server&lt;/b&gt;
+SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+    يتطلب المصادقة: &lt;b&gt;نعم&lt;/b&gt;
+
+      إذا تلقيت هذا البريد الإلكتروني عن طريق الخطأ، فيرجى تجاهله أو الاتصال بمسؤول البوابة الإلكترونية لمعرفة التفاصيل.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>عزيزي $UserName،
+
+      قام المسؤول بإنشاء علبة بريد &lt;b&gt;$Address&lt;/b&gt; جديدة لك في البوابة "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      إذا تلقيت هذا البريد الإلكتروني عن طريق الخطأ، فيرجى تجاهله أو الاتصال بمسؤول البوابة الإلكترونية لمعرفة التفاصيل.</value>
+  </data>
+  <data name="pattern_migration_error" xml:space="preserve">
+    <value>العنوان الرئيسي. خطأ آخر في ترحيل بوابة المنطقة
+
+حدث خطأ أثناء الترحيل إلى منطقة $RegionName. من فضلك ، حاول مرة أخرى لاحقا.
+البوابة الإلكترونية متاحة الآن على العنوان القديم "$PortalUrl":"$PortalUrl"
+
+إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة ، فلا تتردد في الاتصال بنا على "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+مع خالص التحيات،
+فريق عمل ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^لتغيير نوع الإشعار، يرجى إدارة "إعدادات الاشتراك":$RecipientSubscriptionConfigURL".^"</value>
+  </data>
+  <data name="pattern_migration_server_failure" xml:space="preserve">
+    <value>العنوان الرئيسي. خطأ آخر في ترحيل بوابة المنطقة
+
+حدث خطأ أثناء الترحيل إلى منطقة أخرى. من فضلك ، حاول مرة أخرى لاحقا.
+البوابة الإلكترونية متاحة الآن على العنوان القديم "$PortalUrl":"$PortalUrl"
+
+إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة ، فلا تتردد في الاتصال بنا على "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+مع خالص التحيات،
+فريق عمل ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^لتغيير نوع الإشعار، يرجى إدارة "إعدادات الاشتراك":$RecipientSubscriptionConfigURL".^"</value>
+  </data>
+  <data name="pattern_migration_start" xml:space="preserve">
+    <value>العنوان الرئيسي. بدء ترحيل بوابة منطقة أخرى
+
+بدأ ترحيل البوابة الإلكترونية إلى منطقة $RegionName. قد يستغرق الأمر بعض الوقت بناء على مقدار بياناتك.
+
+*ملاحظة*: لن تكون البوابة متاحة أثناء عملية الترحيل. بعد اكتمال الترحيل، سيتم تغيير عنوان URL للبوابة الإلكترونية ولن يمكن الوصول إلى جميع روابط المستندات المشتركة.
+
+إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة ، فلا تتردد في الاتصال بنا على "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+مع خالص التحيات،
+فريق عمل ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>العنوان الرئيسي. ترحيل البوابة
+العنوان الرئيسي. "$PortalUrl":"$PortalUrl"
+
+تم ترحيل البوابة الإلكترونية إلى مجال جديد. يرجى استعادة وصولك إلى البوابة عن طريق تحديد كلمة المرور التي سيتم استخدامها لتسجيل الدخول.
+
+يرجى اتباع الرابط أدناه لتعيين كلمة المرور الخاصة بك للحساب:
+$GreenButton
+
+*ملاحظة*: هذا الرابط صالح لمدة 7 أيام فقط. أكمل عملية استعادة الوصول خلال تلك الفترة.
+
+إذا تلقيت هذا البريد الإلكتروني عن طريق الخطأ، فيرجى تجاهله أو الاتصال بمسؤول البوابة الإلكترونية "$PortalUrl":"$PortalUrl" لمعرفة التفاصيل.</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+لقد قمت للتو بإنشاء ONLYOFFICE DocSpace ، وهو مركز مستندات حيث يمكنك تعزيز التعاون مع فريقك وعملائك وشركائك والمزيد. عنوانها هو "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+يرجى تأكيد بريدك الإلكتروني (الرابط صالح لمدة 7 أيام):
+
+$GreenButton
+
+استمتع بطريقة جديدة للتعاون في المستندات!
+
+حقا لك:
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+نأمل أن تستمتع باستخدام ONLYOFFICE DocSpace الخاص بك. فيما يلي بعض النصائح حول كيفية جعل العمل على المستندات أكثر فعالية.
+
+*#1. اختر طريقة عملك.* قم بتنظيم سير العمل حسب حاجتك من خلال إنشاء غرف تعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة بإعدادات مرنة لأي غرض.
+
+*#2. اعمل مع أي محتوى لديك.* قم بتخزين الملفات ذات التنسيقات المختلفة والعمل عليها داخل غرفك: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+*#3. شارك في التأليف بفعالية.* تعاون في العمل على المستندات باستخدام وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+*#4. قم بتوصيل سحابات الطرف الثالث.* قم بتوصيل أي تخزين سحابي واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+حقا لك، 
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+فيما يلي ثلاثة أسئلة بسيطة لك يمكن أن تساعدنا في جعل تجربة المستخدم الخاصة بك أكثر راحة.
+
+* هل لديك فريق كبير أو الكثير من العملاء والشركاء للتعاون معهم في ONLYOFFICE DocSpace الخاص بك؟
+
+* هل ترغب في إنشاء أي عدد من الغرف للعمل مع العديد من الوثائق؟
+
+* هل تريد استخدام ONLYOFFICE DocSpace تحت العلامة التجارية الخاصة بك؟
+
+إذا كان لديك إجابة واحدة على الأقل ب "نعم" ، فاختر خطة تعريفة للأعمال التي تسمح لك بإضافة أي عدد مطلوب من المديرين إلى ONLYOFFICE DocSpace بالإضافة إلى تطبيق خيارات العلامة التجارية.
+
+للقيام بذلك، يرجى الرجوع إلى "قسم المدفوعات ":"$PricingPage" من Onlyoffice DocSpace الخاص بك. هناك، ستجد رابطا فرديا إلى بوابة عملاء Stripe حيث يمكنك بسهولة التعامل مع جميع تفاصيل الدفع.
+
+_يرجى الملاحظة: الشخص الذي يدفع الاشتراك يصبح الدافع. فقط الدافع قادر على إجراء تغييرات على الاشتراك (ضبط عدد المديرين). لا يمكن للمستخدمين الوصول إلى تفاصيل الدفع. مالك حساب Onlyoffice DocSpace قادر على إعادة تعيين الدافع في أي وقت لاحق. _
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>مرحباً!
+
+أنت مدعو للانضمام إلى "${__VirtualRootPath}":"${__VirtualRootPath}" كمستخدم ضيف. اقبل الدعوة بالنقر على الرابط:
+
+"$ActivateUrl":"$ActivateUrl"
+
+هذا الرابط صالح لمدة 7 أيام فقط.
+
+سوف تحصل على مزيد من النصائح حول كيفية استخدام مكتب الويب الخاص بك. يمكنك إلغاء الاشتراكات على صفحة ملفك الشخصي في أي لحظة وكذلك إعادة تمكينها.</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+مرحبا بكم في ONLYOFFICE DocSpace! تمت إضافة ملف تعريف المستخدم الخاص بك بنجاح إلى "${__VirtualRootPath}":"${__VirtualRootPath}" الان بإمكانك:
+
+* العمل مع مستخدمين آخرين في الغرفة التي تمت دعوتك إليها: * غرف التعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة مع إعدادات مرنة لأي غرض *.
+
+* * العمل مع ملفات بتنسيقات مختلفة *: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+* * التعاون في المستندات * مع وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+* * قم بتوصيل أي تخزين سحابي * واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+إذا كنت بحاجة إلى مساعدة، فتصفح "مركز المساعدة" "https://helpcenter.onlyoffice.com/" أو اسأل "فريق الدعم":" https://www.onlyoffice.com/support-contact-form.aspx".
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>مرحبا!
+
+أنت مدعو للانضمام إلى ONLYOFFICE DocSpace في "${__VirtualRootPath}":"${__VirtualRootPath}". اقبل الدعوة بالنقر على الرابط:
+
+$GreenButton
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+نأمل أن تستمتع باستخدام ONLYOFFICE DocSpace الخاص بك. فيما يلي بعض النصائح حول كيفية جعل العمل على المستندات أكثر فعالية.
+
+*#1. اختر طريقة عملك.* قم بتنظيم سير العمل حسب حاجتك من خلال إنشاء غرف تعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة بإعدادات مرنة لأي غرض.
+
+*#2. اعمل مع أي محتوى لديك.* قم بتخزين الملفات ذات التنسيقات المختلفة والعمل عليها داخل غرفك: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+*#3. شارك في التأليف بفعالية.* تعاون في العمل على المستندات باستخدام وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+*#4. قم بتوصيل سحابات الطرف الثالث.* قم بتوصيل أي تخزين سحابي واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+حقا لك، 
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+مرحبا بكم في ONLYOFFICE DocSpace! تمت إضافة ملف تعريف المستخدم الخاص بك بنجاح إلى "${__VirtualRootPath}":"${__VirtualRootPath}" الان بإمكانك:
+
+* العمل مع مستخدمين آخرين في الغرفة التي تمت دعوتك إليها: * غرف التعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة مع إعدادات مرنة لأي غرض *.
+
+* * العمل مع ملفات بتنسيقات مختلفة *: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+* * التعاون في المستندات * مع وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+* * قم بتوصيل أي تخزين سحابي * واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+إذا كنت بحاجة إلى مساعدة، فتصفح "مركز المساعدة" "https://helpcenter.onlyoffice.com/" أو اسأل "فريق الدعم":" https://www.onlyoffice.com/support-contact-form.aspx".
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>مرحباً، $UserName
+لقد تم تسجيلك بنجاح في ONLYOFFICE الشخصي "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+قم بتوصيل التخزين السحابي المفضل لديك: Dropbox أو Google Drive أو OneDrive أو Box لإنشاء مساحة عمل واحدة لمستنداتك يمكن الوصول إليها من أي مكان.
+
+تعرف على المزيد حول ONLYOFFICE Personal في "مدونتنا":"$TagBlogLink"."
+
+نحن سعداء بوجودك هنا. تابعنا!
+
+مع كامل الإخلاص،
+فريق ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>العنوان الرئيسي. مرحبا بكم في ONLYOFFICE الشخصي
+
+لقد قمت للتو بإنشاء مكتبك الشخصي في السحابة.
+
+العنوان الفرعي. إنها مساحة عمل افتراضية حيث يمكنك تحرير المستندات وتخزينها والعمل معها من أي مكان لتوفير الوصول إلى أصدقائك أو زملائك
+
+العنوان الفرعي. لبداية سريعة، إليك ما يمكنك القيام به في ONLYOFFICE:
+
+- إنشاء وعرض وتحرير المستندات النصية وجداول البيانات والعروض التقديمية.
+
+
+- العمل مع جميع التنسيقات الشائعة. أعلى توافق مع ملفات مايكروسوفت أوفيس.
+
+- إنشاء وتحرير "نماذج جاهزة للتعبئة":"https://www.onlyoffice.com/form-creator.aspx". 
+
+- المشاركة والتعاون في المستندات عبر الإنترنت.
+
+- استخدم العديد من المكونات الإضافية لتطبيق ميزات إضافية.
+
+- الوصول بسهولة إلى السحابة الشخصية الخاصة بك عبر "إضافة Chrome": https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+يمكنك أيضا تحرير المستندات في وضع عدم الاتصال باستخدام "برامج تحرير سطح المكتب" المجانية: ":https://www.onlyoffice.com/download-desktop.aspx"او احصل على مجموعة التحرير لجهازك المحمول
+ "iOS":"https://apps.apple.com/app/onlyoffice-"documents/id944896972
+أو "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents"
+
+مع كامل الإخلاص،
+فريق ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>مرحباً، $UserName!
+
+احصل على تطبيقات ONLYOFFICE المجانية للعمل على المستندات من أي من أجهزتك.
+
+# للعمل على المستندات في وضع عدم الاتصال على أنظمة التشغيل Windows و Linux و Mac ، قم بتنزيل ""ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+# لتحرير المستندات على الأجهزة المحمولة ، احصل على تطبيق مستندات ONLYOFFICE ل "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972"
+. أو "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+حقا لك،
+فريقONLYOFFICE "www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>مرحبًا بك!
+كانت هناك محاولة لتسجيل حساب " ONLYOFFICE شخصي ":"$PortalUrl" جديد باستخدام هذا البريد الإلكتروني. إذا كنت أنت ، فنحن نريد إبلاغك بأن الحساب موجود بالفعل - انتقل إلى ONLYOFFICE الشخصي وقم بتسجيل الدخول. 
+إذا فقدت كلمة المرور الخاصة بك ، فيمكنك استعادتها في "صفحة استعادة كلمة المرور":"$LinkToRecovery.
+إذا لم تحاول تسجيل حساب جديد ، فربما قام شخص آخر بذلك عن طريق الخطأ. في هذه الحالة ، يرجى تجاهل هذا البريد الإلكتروني.
+
+نتمنى لك يوم سعيد!
+فريق ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>هل تريد تغيير البريد الإلكتروني على حساب ONLYOFFICE الخاص بك؟
+
+انقر فوق الزر أدناه وقم بتسجيل الدخول * إلى السحابة الخاصة بك
+
+$GreenButton
+
+
+الرابط صالح لمدة 7 أيام.
+
+*إذا لم تقم بتسجيل الدخول إلى ONLYOFFICE في هذا المستعرض، فستحتاج إلى استخدام بريدك الإلكتروني القديم للتأكيد.
+
+لا تريد تغيير بريدك الإلكتروني؟ فقط تجاهل هذه الرسالة.</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>هل تريد تغيير كلمة المرور على حساب ONLYOFFICE الشخصي الخاص بك؟ انقر فوق الزر أدناه للتأكيد.
+
+$GreenButton
+
+الرابط صالح لمدة 7 أيام.
+
+لا تريد تغيير كلمة المرور الخاصة بك؟ فقط تجاهل هذه الرسالة.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>مرحباً،
+
+لقد قمت للتو بتسجيل حساب في حل ONLYOFFICE للاستخدام الشخصي. انقر فوق "هنا":"$InviteLink" لتأكيد التسجيل وإنشاء كلمة مرور.
+
+إذا لم تتمكن من فتح الرابط ، فيرجى نسخ التالي"$InviteLink":"$InviteLink"  ولصقها في شريط عنوان المتصفح.
+
+مع كامل الاحترام،
+فريق ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>لقد طلبت إنهاء حسابك الشخصي في personal.onlyoffice.com. اتبع الرابط لإكمال الطلب (الرابط نشط لمدة 7 أيام):
+
+$GreenButton
+
+* ملاحظة *: بعد الحذف، سيتم مسح حسابك وجميع البيانات المرتبطة به نهائيا وفقا ل "بيان الخصوصية":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"اقرأ المزيد عن إنهاء الحساب":"https://helpcenter.onlyoffice.com/administration/configuration.aspx".
+
+تجاهل هذا البريد الإلكتروني إذا كنت لا تريد المتابعة.
+
+إذا كان لديك أي أسئلة ، يرجى الاتصال بنا على "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+مع كامل الاحترام،
+فريق ONLYOFFICE</value>
+  </data>
+  <data name="pattern_portal_deactivate" xml:space="preserve">
+    <value>h1.العنوان الرئيسي. إلغاء تنشيط بوابة "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+عزيزي $OwnerName،
+
+لقد طلبت إلغاء تنشيط مؤقت لبوابة "${__VirtualRootPath}":"${__VirtualRootPath}" يرجى اتباع الرابط أدناه لتأكيد العملية:
+
+$GreenButton
+
+*ملاحظة*: هذا الرابط صالح لمدة 7 أيام فقط. يرجى إكمال عملية إلغاء تنشيط البوابة خلال تلك الفترة.
+
+يمكنك إعادة تنشيط البوابة الإلكترونية في أي وقت بالنقر فوق الرابط التالي: p=."Reactivate Portal":"$ActivateUrl" (هذا الرابط ليس له حد زمني)
+
+إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة فلا تتردد في الاتصال بنا على support@onlyoffice.com":"mailto:support@onlyoffice.com".
+
+مع أطيب التحيات،
+فريق دعم ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>إلغاء تنشيط بوابة [${__VirtualRootPath}](${__VirtualRootPath}
+
+عزيزي $OwnerName،
+
+لقد طلبت إلغاء تنشيط مؤقت لبوابة [${__VirtualRootPath}](${__VirtualRootPath})  يرجى اتباع الرابط أدناه لتأكيد العملية:
+
+$GreenButton
+
+_ملاحظة_: هذا الرابط صالح لمدة 7 أيام فقط. يرجى إكمال عملية إلغاء تنشيط البوابة خلال تلك الفترة.
+
+يمكنك إعادة تنشيط البوابة الإلكترونية في أي وقت بالنقر فوق الارتباط التالي:[Reactivate Portal]($ActivateUrl) (هذا الرابط ليس له حد زمني)
+
+إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة فلا تتردد في الاتصال بنا على [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+مع أطيب التحيات،
+فريق دعم ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete" xml:space="preserve">
+    <value>العنوان الرئيسي. حذف مساحة "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+عزيزي $OwnerName،
+
+لقد طلبت حذف مساحة "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+*مهم! ستفقد جميع البيانات المخزنة في مساحتك، بالإضافة إلى تفاصيل التسجيل الخاصة بك ولا يمكن استردادها.*
+
+#if($AutoRenew == "True")
+قبل حذف المساحة، يرجى التأكد من إيقاف الرسوم التلقائية. يمكنك التحقق من حالة الفوترة التلقائية في الحساب: https://secure.avangate.com/myaccount/"."
+#end
+
+إذا كنت لا تزال ترغب في حذف مساحة "$ "${__VirtualRootPath}":"${__VirtualRootPath}"، فيرجى اتباع الرابط أدناه لتأكيد العملية:
+
+$GreenButton
+
+*ملاحظة*: هذا الرابط صالح لمدة 7 أيام فقط. يرجى إكمال عملية حذف البوابة خلال تلك الفترة.
+
+إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة ، فلا تتردد في الاتصال بنا على"support@onlyoffice.com": "mailto:support@onlyoffice.com" 
+
+مع أطيب التحيات،
+فريق دعم ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>تم إلغاء تنشيط DocSpace الخاص بك ONLYOFFICE بنجاح. يرجى ملاحظة أنه سيتم حذف جميع بياناتك وفقا ل "سياسة الخصوصية":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+لماذا قررت المغادرة؟ شارك تجربتك معنا.
+
+$GreenButton
+
+شكرا لك ونتمنى لك التوفيق!
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>حذف البوابة [${__VirtualRootPath}](${__VirtualRootPath})
+
+عزيزي $OwnerName،
+
+لقد طلبت حذف بوابة [${__VirtualRootPath}](${__VirtualRootPath}) نهائياً
+
+- مهم! ستفقد جميع البيانات المخزنة على بوابتك ، وكذلك تفاصيل التسجيل الخاصة بك ولا يمكن استردادها.
+
+#if($AutoRenew == "True")
+
+قبل حذف البوابة، يرجى التأكد من إيقاف تشغيل الرسوم التلقائية. يمكنك التحقق من حالة الرسوم التلفائية في (حساب (Avangate https://secure.avangate.com/myaccount/""). الخاص بك
+#end
+
+إذا كنت لا تزال ترغب في حذف بوابة [${__VirtualRootPath}](${__VirtualRootPath})، فيرجى اتباع الرابط أدناه لتأكيد العملية:
+
+$GreenButton
+
+- ملاحظة- : هذا الرابط صالح لمدة 7 أيام فقط. يرجى إكمال عملية حذف البوابة خلال تلك الفترة.
+
+إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة فلا تتردد في الاتصال بنا على [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+ مع أطيب التحيات،
+
+فريق دعم ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_rename" xml:space="preserve">
+    <value>العنوان الرئيسي. تغيير عنوان البوابة الإلكترونية
+
+عزيزي $UserDisplayName،
+
+تم تغيير عنوان البوابة الإلكترونية $PortalUrl إلى عنوان "${__VirtualRootPath}":"${__VirtualRootPath}" جديد.
+
+*ملاحظة*: تتوقف إعدادات DNS وخيارات تسجيل الدخول لمرة واحدة عن العمل حتى تقوم بتغييرها.</value>
+  </data>
+  <data name="pattern_profile_delete" xml:space="preserve">
+    <value>العنوان الرئيسي. إزالة ملف التعريف من بوابة "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+لقد طلبت حذف ملف التعريف الخاص بك نهائيا من بوابة "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+إذا كنت لا تزال ترغب في حذف ملف التعريف الخاص بك، فيرجى اتباع الرابط أدناه لتأكيد العملية *
+
+$GreenButton
+
+*ملاحظة*: هذا الرابط صالح لمدة 7 أيام فقط. يرجى إكمال عملية حذف الملف الشخصي خلال تلك الفترة.</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>قام المستخدم "$FromUserName":"$FromUserLink" بحذف ملفه الشخصي ، وتم حظر هذا الملف الشخصي الآن. لا تزال جميع ملفات المستخدم مخصصة له/لها وتشغل مساحة على القرص.
+
+يمكنك إعادة تعيين مستندات المستخدم المشتركة مع الآخرين إلى مستخدم نشط آخر أو إزالتها لتحرير مساحة قرص البوابة الإلكترونية.
+
+يرجى الانتقال إلى ملف تعريف المستخدم باستخدام "هذا الرابط":"$FromUserLink" لإعادة تعيين المستندات لمستخدم آخر أو إزالة البيانات.</value>
+  </data>
+  <data name="pattern_profile_updated" xml:space="preserve">
+    <value>العنوان الرئيسي. تم تغيير ملفك الشخصي في "$__VirtualRootPath":"$__VirtualRootPath"
+
+عزيزي $UserName,
+
+تم تغيير تفاصيل ملف تعريف المستخدم الخاص بك في "$__VirtualRootPath":"$__VirtualRootPath" بواسطة 
+"$__AuthorName":"$__AuthorUrl".
+
+لعرض ملفك الشخصي اتبع الرابط أدناه: "$UserName":"$MyStaffLink"</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>تم تغيير ملفك الشخصي في [${__VirtualRootPath}](${__VirtualRootPath})
+
+عزيزي$UserName ،
+
+تم تغيير تفاصيل ملف تعريف المستخدم الخاص بك في [${__VirtualRootPath}](${__VirtualRootPath}) بواسطة [$__AuthorName]($__AuthorUrl).
+
+لعرض ملفك الشخصي اتبع الرابط أدناه: [$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_reassigns_completed" xml:space="preserve">
+    <value>عزيزي $UserName,
+
+اكتملت بنجاح عملية إعادة تعيين البيانات من المستخدم "$FromUserName":"$FromUserLink" إلى المستخدم 
+"$ToUserLink".</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>عزيزي $UserName,
+
+فشلت عملية إعادة تعيين البيانات من المستخدم "$FromUserName":"$FromUserLink" إلى المستخدم "$ToUserName":"$ToUserLink" 
+
+رسالة استثناء: $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>عزيزي $UserName,
+
+اكتملت عملية إزالة البيانات من المستخدم "$FromUserName":"$FromUserLink" بنجاح
+
+حذف البيانات الشخصية المسموح به مجانا:
+
+# مستندات - $DocsSpace
+# إدارة علاقات العملاء - $CrmSpace
+# البريد - $MailSpace
+# حديث - $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>عزيزي $UserName،
+
+فشلت عملية إزالة البيانات للمستخدم "$FromUserName":"$FromUserLink"
+
+رسالة استثناء: $Message</value>
+  </data>
+  <data name="pattern_request_license" xml:space="preserve">
+    <value>عنوان رئيسي. طلب ترخيص المؤسسة
+
+عنوان فرعي. الاسم الأول
+$UserName
+
+عنوان فرعي. اسم العائلة
+$UserLastName
+
+عنوان فرعي. الموقع
+$Position
+
+عنوان رئيسي. البريد الكتروني
+"$UserEmail":"mailto:$UserEmail"
+
+عنوان فرعي. الهاتف
+$Phone
+
+عنوان فرعي. الموقع الالكتروني للشركة
+$Website
+
+عنوان فرعي. اسم الشركة
+$CompanyTitle
+
+عنوان فرعي. حجم الشركة
+$CompanySize
+
+ عنوان فرعي. طلب محتوى
+$Body
+
+عنوان فرعي.عنوان البوابة
+"${__VirtualRootPath}":"${__VirtualRootPath}"</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>عنوان رئيسي. طلب التعريفة الجمركية SAAS لـ "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+عنوان فرعي. الاسم الأول
+$UserName
+
+عنوان فرعي. اسم العائلة
+$UserLastName
+
+عنوان فرعي. الموقع
+$Position
+
+عنوان رئيسي. البريد الكتروني
+"$UserEmail":"mailto:$UserEmail"
+
+عنوان فرعي. الهاتف
+$Phone
+
+عنوان فرعي. الموقع الالكتروني للشركة
+$Website
+
+عنوان فرعي. اسم الشركة
+$CompanyTitle
+
+عنوان فرعي. حجم الشركة
+$CompanySize
+
+ عنوان فرعي. طلب محتوى
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>عنوان رئيسي. استعادة البوابة
+عنوان رئيسي. "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+تمت استعادة البوابة الإلكترونية. للوصول إليه، تحتاج إلى تعيين كلمة مرور جديدة:
+
+$GreenButton
+
+*ملاحظة*: هذا الرابط صالح لمدة 7 أيام فقط.
+
+إذا تلقيت هذا البريد الإلكتروني عن طريق الخطأ، فيرجى تجاهله أو الاتصال بمسؤول البوابة الإلكترونية "${__VirtualRootPath}":"${__VirtualRootPath}" لمعرفة التفاصيل.</value>
+  </data>
+  <data name="pattern_restore_started" xml:space="preserve">
+    <value>عنوان رئيسي. تم بدء استعادة البوابة
+
+بدأت استعادة المدخل. قد يستغرق الأمر بعض الوقت بناء على مقدار بياناتك.
+
+*ملاحظة*: لن تكون البوابة متاحة أثناء عملية الاستعادة.
+
+إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة ، فلا تتردد في الاتصال بنا على "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+مع أطيب التحيات،
+فريق دعم ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)
+
+^لتغيير نوع الإشعار، يرجى إدارة "إعدادات الاشتراك""$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>مرحباً، $UserName!
+
+لقد قمت للتو بإنشاء ONLYOFFICE DocSpace ، وهو مركز مستندات حيث يمكنك تعزيز التعاون مع فريقك وعملائك وشركائك والمزيد. عنوانها هو "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+يرجى تأكيد بريدك الإلكتروني (الرابط صالح لمدة 7 أيام):
+
+$GreenButton
+
+الخطة التعريفة الحالية الخاصة بك هي STARTUP. إنه مجاني تماما ويشمل:
+
+* 1 مشرف ، 2 مستخدمين للطاقة
+* ما يصل إلى 12 غرفة
+* عدد غير محدود من المستخدمين في كل غرفة
+* 2 غيغابايت مساحة القرص
+
+استمتع بطريقة جديدة للتعاون في المستندات!
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+اضبط إعدادات الأمان الخاصة ب ONLYOFFICE DocSpace لجعله أكثر أمانا:
+
+* تعيين قوة كلمة المرور.
+
+* تمكين المصادقة الثنائية وتسجيل الدخول لمرة واحدة.
+
+* تحديد مجالات البريد الموثوق بها وعمر الجلسة.
+
+* تقييد الوصول من عناوين IP محددة.
+
+* السماح أو تقييد رسائل المسؤول.
+
+* إدارة حقوق وصول المسؤول.
+
+* عمل النسخ الاحتياطي للبيانات.
+
+$GreenButton
+
+تفضل بزيارة "مركز المساعدة":"https://helpcenter.onlyoffice.com/" لمعرفة المزيد حول تكوين وإدارة ONLYOFFICE DocSpace. نرحب أيضا بالرجوع إليها عندما تكون لديك أسئلة حول الوظيفة.
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>لم تقم بإدخال "${__VirtualRootPath}":"${__VirtualRootPath}" لأكثر من نصف عام.
+
+نظرا لأنك قررت عدم استخدامه بعد الآن ، حذف ONLYOFFICE DocSpace وجميع البيانات وفقا ل "سياسة الخصوصية" ":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+سنكون ممتنين لملاحظاتك. لماذا قررت التوقف عن استخدام ONLYOFFICE DocSpace؟
+
+$GreenButton
+
+إذا كنت تعتقد أن هذا خطأ وترغب في الاستمرار في استخدام ONLYOFFICE DocSpace، فيرجى الاتصال بـ "فريق الدعم": https://www.onlyoffice.com/support-contact-form.aspx".
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>مرحباً، $UserName!
+
+احصل على تطبيقات ONLYOFFICE المجانية للعمل على المستندات من أي من أجهزتك.
+
+# للعمل على المستندات في وضع عدم الاتصال على أنظمة التشغيل Windows و Linux و Mac ، قم بتنزيل ""ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+# لتحرير المستندات على الأجهزة المحمولة ، احصل على تطبيق مستندات ONLYOFFICE ل "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972"
+. أو "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+حقا لك،
+فريقONLYOFFICE "www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+نأمل أن تستمتع باستخدام ONLYOFFICE DocSpace الخاص بك. فيما يلي بعض النصائح حول كيفية جعل العمل على المستندات أكثر فعالية.
+
+*#1. اختر طريقة عملك.* قم بتنظيم سير العمل حسب حاجتك من خلال إنشاء غرف تعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة بإعدادات مرنة لأي غرض.
+
+*#2. اعمل مع أي محتوى لديك.* قم بتخزين الملفات ذات التنسيقات المختلفة والعمل عليها داخل غرفك: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+*#3. شارك في التأليف بفعالية.* تعاون في العمل على المستندات باستخدام وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+*#4. قم بتوصيل سحابات الطرف الثالث.* قم بتوصيل أي تخزين سحابي واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+حقا لك، 
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+فيما يلي ثلاثة أسئلة بسيطة لك يمكن أن تساعدنا في جعل تجربة المستخدم الخاصة بك أكثر راحة.
+
+* هل لديك فريق كبير أو الكثير من العملاء والشركاء للتعاون معهم في ONLYOFFICE DocSpace الخاص بك؟
+
+* هل ترغب في إنشاء أي عدد من الغرف للعمل مع العديد من الوثائق؟
+
+* هل تريد استخدام ONLYOFFICE DocSpace تحت العلامة التجارية الخاصة بك؟
+
+إذا كان لديك إجابة واحدة على الأقل ب "نعم" ، فاختر خطة تعريفة للأعمال التي تسمح لك بإضافة أي عدد مطلوب من المديرين إلى ONLYOFFICE DocSpace بالإضافة إلى تطبيق خيارات العلامة التجارية.
+
+للقيام بذلك، يرجى الرجوع إلى "قسم المدفوعات ":"$PricingPage" من Onlyoffice DocSpace الخاص بك. هناك، ستجد رابطا فرديا إلى بوابة عملاء Stripe حيث يمكنك بسهولة التعامل مع جميع تفاصيل الدفع.
+
+_يرجى الملاحظة: الشخص الذي يدفع الاشتراك يصبح الدافع. فقط الدافع قادر على إجراء تغييرات على الاشتراك (ضبط عدد المديرين). لا يمكن للمستخدمين الوصول إلى تفاصيل الدفع. مالك حساب Onlyoffice DocSpace قادر على إعادة تعيين الدافع في أي وقت لاحق. _
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>مرحبا!
+
+أنت مدعو للانضمام إلى ONLYOFFICE DocSpace على "${__VirtualRootPath}":"${__VirtualRootPath}". اقبل الدعوة بالنقر على الرابط:
+$GreenButton
+
+بعد النقر على رابط الدعوة ، يرجى تعيين كلمة مرور جديدة لحسابك. 
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":" http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>مرحبا!
+
+أنت مدعو للانضمام إلى "${__VirtualRootPath}":"${__VirtualRootPath}" كمستخدم ضيف. اقبل الدعوة بالنقر على الرابط:
+
+$GreenButton
+
+سوف نرسل لك أيضا نصائح مفيدة وآخر أخبارONLYOFFICE من حين لآخر. يمكنك إلغاء الاشتراكات على صفحة ملفك الشخصي في أي لحظة وكذلك إعادة تمكينها.
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+مرحبا بكم في ONLYOFFICE DocSpace! تمت إضافة ملف تعريف المستخدم الخاص بك بنجاح إلى "${__VirtualRootPath}":"${__VirtualRootPath}" الان بإمكانك:
+
+* العمل مع مستخدمين آخرين في الغرفة التي تمت دعوتك إليها: * غرف التعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة مع إعدادات مرنة لأي غرض*.
+
+* * العمل مع ملفات بتنسيقات مختلفة *: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+* * التعاون في المستندات * مع وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+* * قم بتوصيل أي تخزين سحابي * واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+إذا كنت بحاجة إلى مساعدة، فتصفح "مركز المساعدة" "https://helpcenter.onlyoffice.com/" أو اسأل "فريق الدعم":" https://www.onlyoffice.com/support-contact-form.aspx".
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+يرجى الأخذ في الاعتبار أنه تم تنشيط فترة السماح البالغة $PaymentDelay أيام ل ONLYOFFICE DocSpace.
+
+تأكد من دفع اشتراكك في الأعمال قبل استحقاق فترة السماح. وبالتالي، ستتمكن من استخدام جميع مزايا ONLYOFFICE DocSpace الخاصة بك.
+
+$GreenButton
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+يرجى الأخذ في الاعتبار أن اشتراك ONLYOFFICE DocSpace الخاص بك ينتهي في غضون ثلاثة أيام. بعد ذلك ، سيتم تنشيط فترة السماح البالغة $PaymentDelay يوما.
+
+نوصي بدفع اشتراك الأعمال الخاص بك الآن والاستمرار في استخدام جميع مزايا ONLYOFFICE DocSpace الخاص بك.
+
+$GreenButton
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>مرحبا $UserName!
+
+يرجى الأخذ في الاعتبار أن فترة السماح البالغة $PaymentDelay أيام ل ONLYOFFICE DocSpace قد انتهت.
+
+تأكد من دفع اشتراك الأعمال الخاص بك في أقرب وقت ممكن. وبالتالي، ستتمكن من استخدام جميع مزايا ONLYOFFICE DocSpace كما كان من قبل.
+
+$GreenButton
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+يرجى الأخذ في الاعتبار أن فترة السماح البالغة $PaymentDelay أيام ل ONLYOFFICE DocSpace ستنتهي غدا.
+
+تأكد من دفع اشتراك الأعمال الخاص بك اليوم. وبالتالي، ستتمكن من استخدام جميع مزايا ONLYOFFICE DocSpace الخاصة بك.
+
+$GreenButton
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>مرحبا!
+
+أنت مدعو للانضمام إلى $Message الغرفة على "${__VirtualRootPath}":"${__VirtualRootPath}". اقبل الدعوة بالنقر على الرابط:
+
+$GreenButton
+
+بعد النقر على رابط الدعوة ، يرجى تعيين كلمة مرور جديدة لحسابك.
+
+حقا لك،
+فريق ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>مرحبا!
+
+أنت مدعو للانضمام إلى ONLYOFFICE DocSpace في "${__VirtualRootPath}":"${__VirtualRootPath}". اقبل الدعوة بالنقر على الرابط:
+
+$GreenButton
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+مرحبا بكم في ONLYOFFICE DocSpace! تمت إضافة ملف تعريف المستخدم الخاص بك بنجاح إلى "${__VirtualRootPath}":"${__VirtualRootPath}" الان بإمكانك:
+
+* العمل مع مستخدمين آخرين في الغرفة التي تمت دعوتك إليها: * غرف التعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة مع إعدادات مرنة لأي غرض*.
+
+* * العمل مع ملفات بتنسيقات مختلفة *: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+* * التعاون في المستندات * مع وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+* * قم بتوصيل أي تخزين سحابي * واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+إذا كنت بحاجة إلى مساعدة، فتصفح "مركز المساعدة" "https://helpcenter.onlyoffice.com/" أو اسأل "فريق الدعم":" https://www.onlyoffice.com/support-contact-form.aspx".
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated" xml:space="preserve">
+    <value>عنوان رئيسي. إشعار تغيير ملف تعريف البوابة الإلكترونية "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+"$__AuthorName":"$__AuthorUrl" قام بتغيير تفاصيل ملفه الشخصي في بوابة "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+
+^إذا كنت لا ترغب في تلقي إشعارات حول تحديثات الملف الشخصي ، فيرجى إدارة "إعدادات الاشتراك": "$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>إشعار تغيير ملف تعريف البوابة الإلكترونية [${__VirtualRootPath}](${__VirtualRootPath})
+
+[$__AuthorName]($__AuthorUrl) قام بتغيير تفاصيل ملفه الشخصي في بوابة [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.عنوان رئيسي. إليك الميزات الجديدة في DocSpace على $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+  </data>
+  <data name="pattern_smtp_test" xml:space="preserve">
+    <value>رسالة اختبار SMTP
+
+تم إنشاء هذه الرسالة تلقائيا لاختبار إعدادات SMTP. إذا كنت تقوم بعرضه، فهذا يعني أن الإعدادات صحيحة ويمكنك استخدامها على البوابة الإلكترونية.
+
+
+مع أطيب التحيات،
+فريق ONLYOFFICE</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>مرحبا $UserName!
+
+فشلت عملية فك تشفير الملف على البوابة الإلكترونية "${PortalUrl}":"${PortalUrl}"
+
+تعذر فك تشفير بعض الملفات. يمكنك العثور على مزيد من التفاصيل في "لوحة التحكم":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>مرحبا $UserName!
+ 
+بدأت عملية فك تشفير الملف على البوابة الإلكترونية "${PortalUrl}":"${PortalUrl}".
+
+قد يستغرق فك التشفير بعض الوقت، لذلك لن يكون المدخل متاحا مؤقتا. بمجرد انتهاء فك التشفير ، ستتمكن من العمل مع بياناتك مرة أخرى.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>مرحبا $UserName!
+
+اكتملت عملية فك تشفير الملف على البوابة الإلكترونية "${PortalUrl}":"${PortalUrl}" بنجاح.
+
+البوابة الإلكترونية متاحة مرة أخرى.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>مرحبا $UserName!
+
+فشلت عملية تشفير الملفات على المدخل "${PortalUrl}":"${PortalUrl}"
+
+تعذر تشفير بعض الملفات. يمكنك العثور على مزيد من التفاصيل في "لوحة التحكم":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>مرحبا $UserName!
+
+بدأت عملية تشفير الملفات على البوابة الإلكترونية "${PortalUrl}":"${PortalUrl}".
+
+قد يستغرق التشفير بعض الوقت، لذلك لن يكون المدخل متاحا مؤقتا. بمجرد انتهاء التشفير ، ستتمكن من العمل مع بياناتك مرة أخرى.</value>
+  </data>
+</root>
