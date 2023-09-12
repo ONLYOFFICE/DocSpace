@@ -67,6 +67,7 @@ public class InstallerOptionsAction
         switch (_provider)
         {
             case Provider.MySql:
+                optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
                 optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CustomMySqlMigrationsSqlGenerator>();
                 optionsBuilder.UseMySql(connectionString.ConnectionString, ServerVersion.AutoDetect(connectionString.ConnectionString), providerOptions =>
                 {
@@ -80,6 +81,7 @@ public class InstallerOptionsAction
                 });
                 break;
             case Provider.PostgreSql:
+                optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
                 optionsBuilder.UseNpgsql(connectionString.ConnectionString, providerOptions =>
                 {
                     if (!string.IsNullOrEmpty(migrateAssembly))
@@ -121,7 +123,7 @@ public static class BaseDbContextExtension
         else
         {
             b.Entry(existingBlog).CurrentValues.SetValues(entity);
-
+            b.Entry(existingBlog).State = EntityState.Modified;
             return entity;
         }
     }
@@ -139,7 +141,7 @@ public static class BaseDbContextExtension
         else
         {
             b.Entry(existingBlog).CurrentValues.SetValues(entity);
-
+            b.Entry(existingBlog).State = EntityState.Modified;
             return entity;
         }
     }

@@ -196,6 +196,7 @@ internal class ProviderAccountDao : IProviderDao
         }
 
         forUpdate.FolderType = rootFolderType;
+        filesDbContext.Update(forUpdate);
 
         await filesDbContext.SaveChangesAsync();
 
@@ -213,6 +214,7 @@ internal class ProviderAccountDao : IProviderDao
         }
 
         forUpdate.HasLogo = hasLogo;
+        filesDbContext.Update(forUpdate);
 
         await filesDbContext.SaveChangesAsync();
 
@@ -234,6 +236,7 @@ internal class ProviderAccountDao : IProviderDao
         forUpdate.FolderType = FolderType.VirtualRooms;
         forUpdate.Private = @private;
         forUpdate.Title = title;
+        filesDbContext.Update(forUpdate);
 
         await filesDbContext.SaveChangesAsync();
 
@@ -324,6 +327,7 @@ internal class ProviderAccountDao : IProviderDao
 
             toUpdateCount++;
         }
+        filesDbContext.UpdateRange(toUpdate);
 
         await filesDbContext.SaveChangesAsync();
 
@@ -379,6 +383,7 @@ internal class ProviderAccountDao : IProviderDao
             thirdparty.Url = newAuthData.Url ?? "";
         }
 
+        filesDbContext.Update(thirdparty);
         await filesDbContext.SaveChangesAsync();
 
         return thirdparty.Id;
@@ -751,7 +756,7 @@ static file class Queries
         ThirdpartyAccountsByFilterAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int linkId, FolderType folderType, Guid userId, string searchText) =>
                 ctx.ThirdpartyAccount
-                    .AsNoTracking()
+                    
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) ||
                                 r.UserId == userId || r.FolderType == FolderType.ThirdpartyBackup)

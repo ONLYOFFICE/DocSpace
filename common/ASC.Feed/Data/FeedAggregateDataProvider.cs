@@ -183,7 +183,7 @@ public class FeedAggregateDataProvider
     {
         await using var feedDbContext = _dbContextFactory.CreateDbContext();
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-        var q = feedDbContext.FeedAggregates.AsNoTracking()
+        var q = feedDbContext.FeedAggregates
             .Where(r => r.TenantId == tenant.Id);
 
         var feeds = filter.History ? GetFeedsAsHistoryQuery(q, filter) : GetFeedsDefaultQuery(feedDbContext, q, filter);

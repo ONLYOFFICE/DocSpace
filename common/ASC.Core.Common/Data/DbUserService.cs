@@ -364,14 +364,15 @@ public class EFUserService : IUserService
                 ug.Removed = true;
                 ug.LastModified = DateTime.UtcNow;
             });
+            userDbContext.UpdateRange(userGroups);
 
             await groups.ForEachAsync(g =>
             {
                 g.Removed = true;
                 g.LastModified = DateTime.UtcNow;
             });
+            userDbContext.UpdateRange(groups);
         }
-
         await userDbContext.SaveChangesAsync();
     }
 
@@ -405,6 +406,7 @@ public class EFUserService : IUserService
                 ug.Removed = true;
                 ug.LastModified = DateTime.UtcNow;
             });
+            userDbContext.UpdateRange(userGroups);
 
             await users.ForEachAsync(u =>
             {
@@ -413,6 +415,7 @@ public class EFUserService : IUserService
                 u.TerminatedDate = DateTime.UtcNow;
                 u.Status = EmployeeStatus.Terminated;
             });
+            userDbContext.UpdateRange(users);
         }
         await userDbContext.SaveChangesAsync();
     }
@@ -438,8 +441,8 @@ public class EFUserService : IUserService
                 l.Removed = true;
                 l.LastModified = DateTime.UtcNow;
             });
+            userDbContext.UpdateRange(userGroups);
         }
-
 
         var user = await Queries.UserAsync(userDbContext, tenant, userId);
         user.LastModified = DateTime.UtcNow;

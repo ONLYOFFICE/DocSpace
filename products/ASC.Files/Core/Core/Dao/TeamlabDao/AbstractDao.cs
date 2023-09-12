@@ -218,7 +218,7 @@ static file class Queries
                 ctx.ThirdpartyIdMapping
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.HashId == hashId)
-                    .AsNoTracking()
+                    
                     .Select(r => r.Id)
                     .FirstOrDefault());
 }
