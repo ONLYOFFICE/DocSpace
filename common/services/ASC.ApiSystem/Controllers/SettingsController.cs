@@ -140,14 +140,35 @@ public class SettingsController : ControllerBase
             });
         }
 
-        var currentHostIps = await CommonMethods.GetHostIpsAsync();
-
-        var hostIps = await Dns.GetHostAddressesAsync(model.HostName);
-
-        return Ok(new
+        if (Uri.CheckHostName(model.HostName) != UriHostNameType.Dns)
         {
-            value = currentHostIps.Any(ip => Array.IndexOf(hostIps, ip) > -1)
-        });
+            return BadRequest(new
+            {
+                error = "hostNameInvalid",
+                message = "HostName is not valid"
+            });
+        }
+
+        try
+        {
+            var currentHostIps = await CommonMethods.GetHostIpsAsync();
+
+            var hostIps = await Dns.GetHostAddressesAsync(model.HostName);
+
+            return Ok(new
+            {
+                value = currentHostIps.Any(ip => Array.IndexOf(hostIps, ip) > -1)
+            });
+        }
+        catch (Exception ex)
+        {
+            Log.LogError(ex, "checkdomain " + model.HostName);
+
+            return Ok(new
+            {
+                value= false
+            });
+        }
     }
 
     #endregion
