@@ -51,7 +51,7 @@ public class StudioNotifyServiceHelper
 
     public async Task SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
     {
-        await SendNoticeToAsync(action, null, recipients, senderNames, false, args);
+        await SendNoticeToAsync(action, null, recipients, senderNames, false, null, args);
     }
 
     public async Task SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, string baseUri, params ITagValue[] args)
@@ -61,40 +61,15 @@ public class StudioNotifyServiceHelper
 
     public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
     {
-        await SendNoticeToAsync(action, objectID, recipients, senderNames, false, args);
+        await SendNoticeToAsync(action, objectID, recipients, senderNames, false, null, args);
     }
 
-    public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, params ITagValue[] args)
-    {
-        await SendNoticeToAsync(action, objectID, recipients, null, false, args);
-    }
-
-    public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, bool checkSubscription, params ITagValue[] args)
-    {
-        await SendNoticeToAsync(action, objectID, recipients, null, checkSubscription, args);
-    }
-
-    public async Task SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, params ITagValue[] args)
-    {
-        await SendNoticeToAsync(action, objectID, new[] { recipient }, null, false, args);
-    }
-
-    public async Task SendNoticeAsync(INotifyAction action, string objectID, params ITagValue[] args)
+    public async Task SendNoticeAsync(INotifyAction action, params ITagValue[] args)
     {
         var subscriptionSource = _studioNotifyHelper.NotifySource.GetSubscriptionProvider();
-        var recipients = await subscriptionSource.GetRecipientsAsync(action, objectID);
+        var recipients = await subscriptionSource.GetRecipientsAsync(action, null);
 
-        await SendNoticeToAsync(action, objectID, recipients, null, false, args);
-    }
-
-    public async Task SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, bool checkSubscription, params ITagValue[] args)
-    {
-        await SendNoticeToAsync(action, objectID, new[] { recipient }, null, checkSubscription, args);
-    }
-
-    public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubscription, params ITagValue[] args)
-    {
-        await SendNoticeToAsync(action, objectID, recipients, senderNames, checkSubscription, null, args);
+        await SendNoticeToAsync(action, null, recipients, null, false, null, args);
     }
 
     public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, string baseUri, params ITagValue[] args)

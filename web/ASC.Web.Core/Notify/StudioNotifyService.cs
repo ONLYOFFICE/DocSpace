@@ -90,12 +90,12 @@ public class StudioNotifyService
 
     public async Task SendMsgToAdminAboutProfileUpdatedAsync()
     {
-        await _client.SendNoticeAsync(Actions.SelfProfileUpdated, null);
+        await _client.SendNoticeAsync(Actions.SelfProfileUpdated);
     }
 
     public async Task SendMsgToAdminFromNotAuthUserAsync(string email, string message)
     {
-        await _client.SendNoticeAsync(Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
+        await _client.SendNoticeAsync(Actions.UserMessageToAdmin, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
     }
 
     public async Task SendMsgToSalesAsync(string email, string userName, string message)
@@ -343,7 +343,7 @@ public class StudioNotifyService
     {
         if (!_coreBaseSettings.Personal)
         {
-            await _client.SendNoticeAsync(Actions.UserHasJoin, null);
+            await _client.SendNoticeAsync(Actions.UserHasJoin);
         }
     }
 
