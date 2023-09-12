@@ -267,7 +267,7 @@ save_undefined_param() {
 restart_services() {
 	chown -R ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $APP_DIR $PRODUCT_DIR $LOG_DIR /var/www/$PACKAGE_SYSNAME/Data
 
-	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i /usr/lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
+	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i ${SYSTEMD_DIR}/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
 	echo -n "Updating database... "
@@ -759,11 +759,13 @@ if command -v yum >/dev/null 2>&1; then
 	PACKAGE_MANAGER="rpm -q"
 	MYSQL_PACKAGE="mysqld"
 	REDIS_PACKAGE="redis"
+	SYSTEMD_DIR="/usr/lib/systemd/system"
 elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
 	PACKAGE_MANAGER="dpkg -s"
 	MYSQL_PACKAGE="mysql"
 	REDIS_PACKAGE="redis-server"
+	SYSTEMD_DIR="$(dirname $(dpkg-query -L ${PRODUCT}-api | grep systemd/system/))"
 fi
 
 install_json
