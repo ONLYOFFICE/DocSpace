@@ -111,7 +111,7 @@ const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent, t }) => {
     >
       <div className="user"> {{ fromUser }}</div>
       <div className="user"> {{ toUser }}</div>
-      {isReassignCurrentUser && <div className="user"> {{ you }}</div>}
+      {isReassignCurrentUser ? <div className="user"> {{ you }}</div> : ""}
     </Trans>
   );
 
