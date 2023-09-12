@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Globalization;
 
 namespace ASC.Notify.Textile;
 
@@ -39,7 +38,6 @@ public class TextileStyler : IPatternStyler
     private readonly IConfiguration _configuration;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly MailWhiteLabelSettingsHelper _mailWhiteLabelSettingsHelper;
-    private readonly UserManager _userManager;
     static TextileStyler()
     {
         const string file = "ASC.Notify.Textile.Resources.style.css";
@@ -52,14 +50,12 @@ public class TextileStyler : IPatternStyler
         CoreBaseSettings coreBaseSettings,
         IConfiguration configuration,
         InstanceCrypto instanceCrypto,
-        MailWhiteLabelSettingsHelper mailWhiteLabelSettingsHelper,
-        UserManager userManager)
+        MailWhiteLabelSettingsHelper mailWhiteLabelSettingsHelper)
     {
         _coreBaseSettings = coreBaseSettings;
         _configuration = configuration;
         _instanceCrypto = instanceCrypto;
         _mailWhiteLabelSettingsHelper = mailWhiteLabelSettingsHelper;
-        _userManager = userManager;
     }
 
     public void ApplyFormating(NoticeMessage message)
@@ -86,9 +82,8 @@ public class TextileStyler : IPatternStyler
         var mailSettings = GetMailSettings(message);
         var unsubscribeText = GetUnsubscribeText(message, mailSettings);
 
-
         InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent);
-        var direction = GetDirectionAsync(message).Result;
+        var rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
 
         message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
                                .Replace("%LOGO%", logoImg)
@@ -98,29 +93,10 @@ public class TextileStyler : IPatternStyler
                                .Replace("%FOOTERSOCIAL%", footerSocialContent)
                                .Replace("%TEXTFOOTER%", unsubscribeText)
                                .Replace("%IMAGEPATH%", imagePath)
-                               .Replace("%DIRECTION%", direction.Item1)
-                               .Replace("%AlignLeftOrRight%;", direction.Item2);
+                               .Replace("%CSSDIRECTION%", rtl ? "direction:rtl" : "direction:ltr")
+                               .Replace("%CSSALIGN%;", rtl ? "text-align:right" : "text-align:left");
     }
 
-    private async Task<(string, string)> GetDirectionAsync(NoticeMessage message)
-    {
-        var user = await _userManager.GetUserByEmailAsync(message.Recipient.ID);
-        var culture = user.GetCulture();
-        var direction = string.Empty;
-        var textAlign = string.Empty;
-
-        if (culture.TextInfo.IsRightToLeft)
-        {
-            direction = "direction:rtl";
-            textAlign = "text-align:right";
-        }
-        else
-        {
-            direction = "direction:ltr";
-            textAlign = "text-align:left";
-        }
-        return (direction, textAlign);
-    }
     private static string GetTemplate(NoticeMessage message)
     {
         var template = NotifyTemplateResource.HtmlMaster;
