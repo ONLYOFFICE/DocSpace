@@ -2348,6 +2348,11 @@ public class FileStorageService //: IFileStorageService
         _logger.InformationReassignFolders(userFromId, userToId);
 
         await folderDao.ReassignFoldersAsync(userFromId, userToId, exceptFolderIds);
+
+        var folderIdVirtualRooms = await folderDao.GetFolderIDVirtualRooms(false);
+        var folderVirtualRooms = await folderDao.GetFolderAsync(folderIdVirtualRooms);
+
+        await _fileMarker.RemoveMarkAsNewAsync(folderVirtualRooms, userFromId);
     }
 
     public async Task ReassignFilesAsync<T>(Guid userFromId, Guid userToId, IEnumerable<T> exceptFolderIds, bool checkPermission = false)
