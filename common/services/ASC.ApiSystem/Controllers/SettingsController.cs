@@ -153,11 +153,11 @@ public class SettingsController : ControllerBase
         {
             var currentHostIps = await CommonMethods.GetHostIpsAsync();
 
-            var hostIps = await Dns.GetHostAddressesAsync(model.HostName);
+            var hostIps = (await Dns.GetHostAddressesAsync(model.HostName)).Select(ip => ip.ToString());
 
             return Ok(new
             {
-                value = currentHostIps.Any(ip => Array.IndexOf(hostIps, ip) > -1)
+                value = currentHostIps.Any(ip => hostIps.Contains(ip))
             });
         }
         catch (Exception ex)
