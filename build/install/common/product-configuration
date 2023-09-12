@@ -581,8 +581,8 @@ setup_docs() {
 	sed "0,/proxy_pass .*;/{s#proxy_pass .*;#proxy_pass ${DOCUMENT_SERVER_URL_EXTERNAL:-http://$APP_HOST:$DOCUMENT_SERVER_PORT};#}" -i ${OPENRESTY_DIR}/conf.d/${PACKAGE_SYSNAME}.conf
 
 	#Save Docs address and JWT in .json
-	save_undefined_param "${USER_CONF}" "files.docservice.secret.value" "${DOCUMENT_SERVER_JWT_SECRET}" "$EXTERNAL_DOCS_FLAG"
-	save_undefined_param "${USER_CONF}" "files.docservice.secret.header" "${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}" "$EXTERNAL_DOCS_FLAG"
+	save_undefined_param "${USER_CONF}" "files.docservice.secret.value" "${DOCUMENT_SERVER_JWT_SECRET}" "rewrite"
+	save_undefined_param "${USER_CONF}" "files.docservice.secret.header" "${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}" "rewrite"
 	save_undefined_param "${USER_CONF}" "files.docservice.url.public" "${DOCUMENT_SERVER_URL_EXTERNAL:-"/ds-vpath/"}" "$EXTERNAL_DOCS_FLAG"
 	save_undefined_param "${USER_CONF}" "files.docservice.url.internal" "${DOCUMENT_SERVER_URL_EXTERNAL:-"http://$APP_HOST:$DOCUMENT_SERVER_PORT"}" "$EXTERNAL_DOCS_FLAG"
 	save_undefined_param "${USER_CONF}" "files.docservice.url.portal" "http://${APP_HOST}:${APP_PORT}" "$EXTERNAL_DOCS_FLAG"

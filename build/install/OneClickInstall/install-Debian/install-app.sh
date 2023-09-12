@@ -25,7 +25,7 @@ if [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
 			
 			debconf-get-selections | grep ^${ds_pkg_installed_name} | sed s/${ds_pkg_installed_name}/${ds_pkg_name}/g | debconf-set-selections
 						
-			apt-get remove -yq ${ds_pkg_installed_name}
+			DEBIAN_FRONTEND=noninteractive apt-get purge -yq ${ds_pkg_installed_name}
 			
 			apt-get install -yq ${ds_pkg_name}
 			
@@ -80,7 +80,7 @@ elif [ "$UPDATE" = "true" ] && [ "$PRODUCT_INSTALLED" = "true" ]; then
 	AVAILABLE_VERSIONS=$(apt show  ${product} 2>/dev/null | grep -E '^Version:' | awk '{print $2}')
 	if [[ "$AVAILABLE_VERSIONS" != *"$CURRENT_VERSION"* ]]; then
 		apt-get install -o DPkg::options::="--force-confnew" -y --only-upgrade ${product} elasticsearch=${ELASTIC_VERSION}
-	elif [ $RECONFIGURE_PRODUCT = "true" ]; then
+	elif [ "${RECONFIGURE_PRODUCT}" = "true" ]; then
 		DEBIAN_FRONTEND=noninteractive dpkg-reconfigure ${product}
 	fi
 fi
