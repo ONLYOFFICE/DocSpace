@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,30 +24,35 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Web.Studio.IntegrationEvents;
 
-namespace ASC.Studio.Notify;
 
-public class Startup : BaseWorkerStartup
+using ASC.Core;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
+
+namespace ASC.Web.Studio.IntegrationEvents;
+
+[Scope]
+public class NotifyItemIntegrationEventHandler : IIntegrationEventHandler<NotifyItemIntegrationEvent>
 {
-    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
-        : base(configuration, hostEnvironment)
-    {
+    private readonly StudioNotifyWorker _studioNotifyWorker;
+    private readonly ILogger _logger;
 
+    public NotifyItemIntegrationEventHandler(StudioNotifyWorker studioNotifyWorker, ILogger<NotifyItemIntegrationEventHandler> logger)
+    {
+        _studioNotifyWorker = studioNotifyWorker;
+        _logger = logger;
     }
 
-    public override void ConfigureServices(IServiceCollection services)
+    public async Task Handle(NotifyItemIntegrationEvent @event)
     {
-        base.ConfigureServices(services);
+        CustomSynchronizationContext.CreateContext();
 
-        services.AddHttpClient();
+        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
+        {
+            _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-        DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
-        services.AddAutoMapper(GetAutoMapperProfileAssemblies());//toDo
-        services.AddHostedService<ServiceLauncher>();
-        DIHelper.TryAdd<ServiceLauncher>();
-        NotifyConfigurationExtension.Register(DIHelper);
-        DIHelper.TryAdd<EmailSenderSink>();
-        DIHelper.TryAdd<NotifyItemIntegrationEventHandler>();
+            await _studioNotifyWorker.OnMessageAsync(@event);
+        }
     }
 }
