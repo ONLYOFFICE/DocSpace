@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Chystáte se odstranit tento soubor. Určitě chcete pokračovat?",
-  "DeleteFolder": "Chystáte se odstranit tuto složku. Určitě chcete pokračovat?",
-  "DeleteItems": "Chystáte se odstranit tyto položky. Určitě chcete pokračovat?",
+  "DeleteFile": "Chystáte se odstranit tento soubor.",
+  "DeleteFolder": "Chystáte se odstranit tuto složku.",
+  "DeleteItems": "Chystáte se odstranit tyto položky. ",
   "DeleteRoom": "Chystáte se odstranit tuto místnost. Nebudete ji moci obnovit.",
   "DeleteRooms": "Tyto místnosti se chystáte smazat. Nebudete je moci obnovit.",
   "MoveToTrashButton": "Přesunout do koše",

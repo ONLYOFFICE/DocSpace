@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Vous êtes sur le point de supprimer ce fichier. Êtes-vous sûr de vouloir continuer ?",
-  "DeleteFolder": "Vous êtes sur le point de supprimer ce dossier. Êtes-vous sûr de vouloir continuer ?",
-  "DeleteItems": "Vous êtes sur le point de supprimer ces éléments. Êtes-vous sûr de vouloir continuer ?",
+  "DeleteFile": "Vous êtes sur le point de supprimer ce fichier.",
+  "DeleteFolder": "Vous êtes sur le point de supprimer ce dossier. ",
+  "DeleteItems": "Vous êtes sur le point de supprimer ces éléments. ",
   "DeleteRoom": "Vous êtes sur le point de supprimer cette salle. Vous ne pourrez pas la restaurer.",
   "DeleteRooms": "Vous êtes sur le point de supprimer ces salles. Vous ne pourrez pas les restaurer.",
   "MoveToTrashButton": "Mettre dans la corbeille",

@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Stai per eliminare questo file. Sei sicuro di voler continuare?",
-  "DeleteFolder": "Stai per eliminare questa cartella. Sei sicuro di voler continuare?",
-  "DeleteItems": "Stai per eliminare questi elementi. Sei sicuro di voler continuare?",
+  "DeleteFile": "Stai per eliminare questo file.",
+  "DeleteFolder": "Stai per eliminare questa cartella. ",
+  "DeleteItems": "Stai per eliminare questi elementi. ",
   "DeleteRoom": "Stai per eliminare questa stanza. Non sarai in grado di ripristinarla.",
   "DeleteRooms": "Stai per eliminare queste stanze. Non sarai in grado di ripristinarli.",
   "MoveToTrashButton": "Spostare nel Cestino",
