@@ -58,6 +58,7 @@ if [ "$#" -ge "2" ]; then
   if [ -f "${CERTIFICATE_FILE}" -a -f ${PRIVATEKEY_FILE} ]; then
     if [ -f ${DOCKERCOMPOSE}/.env -a -f ${DOCKERCOMPOSE}/proxy-ssl.yml ]; then
       docker-compose -f ${DOCKERCOMPOSE}/proxy.yml down
+      docker-compose -f ${DOCKERCOMPOSE}/docspace.yml stop onlyoffice-files
 
       sed -i "s~\(APP_URL_PORTAL=\).*~\1\"https://${DOMAIN:-$(hostname --fqdn)}\"~g" ${DOCKERCOMPOSE}/.env
       sed -i "s~\(CERTIFICATE_PATH=\).*~\1\"${CERTIFICATE_FILE}\"~g" ${DOCKERCOMPOSE}/.env
@@ -83,6 +84,7 @@ if [ "$#" -ge "2" ]; then
       fi
 
       docker-compose -f ${DOCKERCOMPOSE}/proxy-ssl.yml up -d
+      docker-compose -f ${DOCKERCOMPOSE}/docspace.yml up -d onlyoffice-files
 
       echo "OK"
     else
