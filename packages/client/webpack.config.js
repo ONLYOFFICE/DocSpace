@@ -4,6 +4,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin =
   require("webpack").container.ModuleFederationPlugin;
 const DefinePlugin = require("webpack").DefinePlugin;
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
@@ -361,6 +363,10 @@ module.exports = (env, argv) => {
   };
 
   config.plugins.push(new DefinePlugin(defines));
+
+  if (env.mode === "analyze") {
+    config.plugins.push(new BundleAnalyzerPlugin());
+  }
 
   return config;
 };
