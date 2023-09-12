@@ -573,6 +573,10 @@ const StyledSharingBody = styled(Scrollbar)`
       font-size: 13px;
     }
   }
+
+  .row-loader {
+    margin-left: 4px;
+  }
 `;
 
 const StyledFooter = styled.div`
