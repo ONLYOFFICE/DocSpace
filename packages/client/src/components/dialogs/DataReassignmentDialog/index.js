@@ -6,6 +6,7 @@ import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 import ModalDialog from "@docspace/components/modal-dialog";
 import toastr from "@docspace/components/toast/toastr";
 import { useNavigate } from "react-router-dom";
+import Backdrop from "@docspace/components/backdrop";
 import Body from "./sub-components/Body";
 import Footer from "./sub-components/Footer";
 import api from "@docspace/common/api";
@@ -88,6 +89,10 @@ const DataReassignmentDialog = ({
     setDataReassignmentDialogVisible(false);
   };
 
+  const onClosePeopleSelector = () => {
+    setSelectorVisible(false);
+  };
+
   const onAccept = (item) => {
     setSelectorVisible(false);
     setSelectedUser({ ...item[0] });
@@ -130,6 +135,36 @@ const DataReassignmentDialog = ({
     setIsLoadingReassign(false);
   }, [user, selectedUser, isDeleteProfile]);
 
+  if (selectorVisible) {
+    return (
+      <StyledModalDialog
+        displayType="aside"
+        visible={visible}
+        onClose={onClosePeopleSelector}
+        containerVisible={selectorVisible}
+        withFooterBorder
+        withBodyScroll
+      >
+        <Backdrop
+          onClick={onClosePeopleSelector}
+          visible={selectorVisible}
+          isAside={true}
+        />
+        <ModalDialog.Container>
+          <PeopleSelector
+            acceptButtonLabel={t("Common:SelectAction")}
+            excludeItems={[user.id]}
+            onAccept={onAccept}
+            onCancel={onClosePeopleSelector}
+            onBackClick={onTogglePeopleSelector}
+            withCancelButton={true}
+            withAbilityCreateRoomUsers={true}
+          />
+        </ModalDialog.Container>
+      </StyledModalDialog>
+    );
+  }
+
   return (
     <StyledModalDialog
       displayType="aside"
@@ -139,20 +174,6 @@ const DataReassignmentDialog = ({
       withFooterBorder
       withBodyScroll
     >
-      {selectorVisible && (
-        <ModalDialog.Container>
-          <PeopleSelector
-            acceptButtonLabel={t("Common:SelectAction")}
-            excludeItems={[user.id]}
-            onAccept={onAccept}
-            onCancel={onClose}
-            onBackClick={onTogglePeopleSelector}
-            withCancelButton={true}
-            withAbilityCreateRoomUsers={true}
-          />
-        </ModalDialog.Container>
-      )}
-
       <ModalDialog.Header>
         {t("DataReassignmentDialog:DataReassignment")}
       </ModalDialog.Header>
