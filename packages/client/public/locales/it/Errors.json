@@ -5,5 +5,9 @@
   "ErrorDeactivatedText": "Questo DocSpace è disattivato",
   "ErrorEmptyResponse": "Risposta vuota",
   "ErrorOfflineText": "Nessuna connessione a internet trovata",
-  "ErrorUnavailableText": "DocSpace non disponibile"
+  "ErrorUnavailableText": "DocSpace non disponibile",
+  "ExpiredLink": "Link scaduto",
+  "InvalidLink": "Link non valido",
+  "LinkDoesNotExist": "Il link che stai cercando di aprire non esiste.",
+  "LinkHasExpired": "Il link che hai seguito è scaduto."
 }

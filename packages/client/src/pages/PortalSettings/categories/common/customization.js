@@ -22,15 +22,14 @@ const StyledComponent = styled.div`
   }
 
   .category-description {
-    margin-top: 5px;
     line-height: 20px;
-    color: ${props => props.theme.client.settings.common.descriptionColor};
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
     margin-bottom: 20px;
     max-width: 700px;
   }
 
   .category-item-description {
-    color: ${props => props.theme.client.settings.common.descriptionColor};
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
     font-size: 12px;
     max-width: 1024px;
   }
@@ -45,7 +44,7 @@ const StyledComponent = styled.div`
     font-weight: bold;
     font-size: 16px;
     line-height: 22px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 4px;
@@ -69,7 +68,7 @@ const StyledComponent = styled.div`
 
 StyledComponent.defaultProps = { theme: Base };
 
-const Customization = props => {
+const Customization = (props) => {
   const {
     t,
     isLoaded,
@@ -77,6 +76,7 @@ const Customization = props => {
     setIsLoadedCustomization,
     isLoadedPage,
     viewMobile,
+    isSettingPaid,
   } = props;
 
   const isLoadedSetting = isLoaded && tReady;
@@ -92,7 +92,10 @@ const Customization = props => {
   }, [isLoadedSetting]);
 
   return viewMobile ? (
-    <CustomizationNavbar isLoadedPage={isLoadedPage} />
+    <CustomizationNavbar
+      isLoadedPage={isLoadedPage}
+      isSettingPaid={isSettingPaid}
+    />
   ) : (
     <StyledComponent>
       {!isLoadedPage ? (
@@ -113,12 +116,15 @@ const Customization = props => {
   );
 };
 
-export default inject(({ common }) => {
+export default inject(({ auth, common }) => {
+  const { currentQuotaStore } = auth;
+  const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
   const { isLoaded, setIsLoadedCustomization } = common;
 
   return {
     isLoaded,
     setIsLoadedCustomization,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(
   withLoading(withTranslation(["Settings", "Common"])(observer(Customization)))

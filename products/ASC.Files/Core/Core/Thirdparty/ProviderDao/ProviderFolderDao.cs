@@ -176,7 +176,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     }
 
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
-        bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
+        bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1, string roomId = default)
     {
         var selector = _selectorFactory.GetSelector(parentId);
         var folderDao = selector.GetFolderDao(parentId);
@@ -470,6 +470,13 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var selector = _selectorFactory.GetSelector(folderId);
         var folderDao = selector.GetFolderDao(folderId);
         return await folderDao.CreateDataWriteOperatorAsync(folderId, chunkedUploadSession, sessionHolder);
+    }
+
+    public async Task<string> GetBackupExtensionAsync(string folderId)
+    {
+        var selector = _selectorFactory.GetSelector(folderId);
+        var folderDao = selector.GetFolderDao(folderId);
+        return await folderDao.GetBackupExtensionAsync(folderId);
     }
 
     private IAsyncEnumerable<Folder<string>> FilterByProvider(IAsyncEnumerable<Folder<string>> folders, ProviderFilter provider)

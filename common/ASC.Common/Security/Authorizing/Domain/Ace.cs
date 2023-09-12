@@ -26,7 +26,6 @@
 
 namespace ASC.Common.Security.Authorizing;
 
-[Serializable]
 public class Ace
 {
     public Guid ActionId { get; set; }

@@ -25,7 +25,6 @@ class PasswordInput extends React.Component {
     const { inputValue, inputType, clipActionResource, emailInputName } = props;
 
     this.ref = React.createRef();
-    this.refTooltip = React.createRef();
 
     this.state = {
       type: inputType,
@@ -40,13 +39,8 @@ class PasswordInput extends React.Component {
     };
   }
 
-  hideTooltip = () => {
-    this.hideTooltip && this.refTooltip.current.hideTooltip();
-  };
-
   onBlur = (e) => {
     e.persist();
-    this.hideTooltip();
     if (this.props.onBlur) this.props.onBlur(e);
   };
 
@@ -56,7 +50,6 @@ class PasswordInput extends React.Component {
   };
 
   changeInputType = () => {
-    this.hideTooltip();
     const newType = this.state.type === "text" ? "password" : "text";
 
     this.setState({
@@ -395,9 +388,10 @@ class PasswordInput extends React.Component {
         ></InputBlock>
 
         <Tooltip
-          id="tooltipContent"
-          effect="solid"
           place="top"
+          clickable
+          openOnClick
+          anchorSelect="div[id='tooltipContent'] input"
           offsetLeft={this.props.tooltipOffsetLeft}
           offsetTop={this.props.tooltipOffsetTop}
           reference={this.refTooltip}
@@ -435,11 +429,9 @@ class PasswordInput extends React.Component {
           <>
             <div className="password-field-wrapper">
               <PasswordProgress
-                inputWidth={inputWidth}
-                data-for="tooltipContent"
-                data-tip=""
-                data-event="click"
+                id="tooltipContent"
                 ref={this.ref}
+                inputWidth={inputWidth}
                 isDisabled={isDisabled}
               >
                 {this.renderInputGroup()}

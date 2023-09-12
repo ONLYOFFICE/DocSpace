@@ -26,7 +26,6 @@
 
 
 namespace ASC.Web.Core.Notify;
-[Serializable]
 public class BadgesSettings : ISettings<BadgesSettings>
 {
     public bool EnableBadges { get; set; }
@@ -38,7 +37,8 @@ public class BadgesSettings : ISettings<BadgesSettings>
     }
     public BadgesSettings GetDefault()
     {
-        return new BadgesSettings() { 
+        return new BadgesSettings()
+        {
             EnableBadges = true
         };
     }

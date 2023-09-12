@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Prasmīgie lietotājI var izveidot un rediģēt failus telpā, bet nevar izveidot telpas, pārvaldīt lietotājus un piekļūt iestatījumiem.",
   "RoleReviewer": "Pārskatītājs (-a)",
   "RoleReviewerDescription": "Darbības ar esošajiem failiem: skatīšana, pārskatīšana, komentēšana.",
-  "RoleRoomAdminDescription": "Telpu administratori var izveidot un pārvaldīt piešķirtās telpas, uzaicināt jaunus lietotājus un piešķirt lomas zem viņu līmeņa. Visiem administratoriem ir piekļuve sadaļai Personisks (Personal).",
   "RoleUserDescription": "Lietotāji var piekļūt tikai tām telpām, uz kurām viņus ir uzaicinājuši administratori. Viņi nevar izveidot savas telpas, mapes vai failus.",
   "RoleViewer": "Skatītājs",
   "RoleViewerDescription": "Failu skatīšana",

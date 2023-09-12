@@ -16,10 +16,18 @@ class SelectionArea extends React.Component {
     this.selectableNodes = new Set();
 
     this.elemRect = {};
+    this.arrayOfTypes = [];
   }
 
   componentDidMount() {
     document.addEventListener("mousedown", this.onTapStart);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isRooms, viewAs } = this.props;
+    if (isRooms !== prevProps.isRooms || viewAs !== prevProps.viewAs) {
+      this.arrayOfTypes = [];
+    }
   }
 
   componentWillUnmount() {
@@ -36,88 +44,76 @@ class SelectionArea extends React.Component {
   isIntersects = (itemIndex, itemType) => {
     const { right, left, bottom, top } = this.areaRect;
     const { scrollTop } = this.scrollElement;
-    const {
-      viewAs,
-      countTilesInRow,
-      countOfMissingTiles,
-      countRowsOfFolders,
-      folderTileGap,
-      fileTileGap,
-      foldersTileHeight,
-      filesTileHeight,
-      filesHeaderHeight,
-      theme,
-    } = this.props;
+    const { viewAs, countTilesInRow, defaultHeaderHeight, arrayTypes, theme } =
+      this.props;
 
     const isRtl = theme.interfaceDirection === "rtl";
 
-    const itemHeight = this.props.itemHeight ?? this.elemRect.height;
-
     let itemTop, itemBottom, itemLeft, itemRight;
 
-    // Tile view
     if (viewAs === "tile") {
+      let countOfMissingTiles = 0;
+      const itemGap = arrayTypes.find((x) => x.type === itemType).rowGap;
+
+      // TOP/BOTTOM item position
       if (itemIndex === 0) {
         itemTop = this.elemRect.top - scrollTop;
-        itemBottom = itemTop + itemHeight;
-      } else if (itemType === "file") {
-        const folderHeight = foldersTileHeight + folderTileGap;
-        const fileHeight = filesTileHeight + fileTileGap;
-
-        const nextRow = Math.floor(
-          (itemIndex + countOfMissingTiles) / countTilesInRow
-        );
-
-        itemTop =
-          this.elemRect.top +
-          folderHeight * countRowsOfFolders +
-          filesHeaderHeight +
-          fileHeight * (nextRow - countRowsOfFolders) -
-          scrollTop;
-
-        itemBottom = itemTop + fileHeight - folderTileGap;
+        itemBottom = itemTop + this.elemRect.height;
       } else {
-        const rowIndex = Math.trunc(itemIndex / countTilesInRow);
+        const indexOfType = this.arrayOfTypes.findIndex(
+          (x) => x.type === itemType
+        );
+        const headersCount = indexOfType === 0 ? 0 : indexOfType;
 
-        itemTop =
-          this.elemRect.top +
-          (itemHeight + folderTileGap) * rowIndex -
-          scrollTop;
-        itemBottom = itemTop + itemHeight;
+        itemTop = headersCount * defaultHeaderHeight;
+        const itemHeight = this.arrayOfTypes[indexOfType].itemHeight + itemGap;
+
+        if (!headersCount) {
+          const rowIndex = Math.trunc(itemIndex / countTilesInRow);
+
+          itemTop += this.elemRect.top + itemHeight * rowIndex - scrollTop;
+          itemBottom = itemTop + itemHeight - itemGap;
+        } else {
+          let prevRowsCount = 0;
+
+          for (let i = 0; i < indexOfType; i++) {
+            const item = arrayTypes.find(
+              (x) => x.type === this.arrayOfTypes[i].type
+            );
+
+            countOfMissingTiles += item.countOfMissingTiles;
+            prevRowsCount += item.rowCount;
+
+            itemTop +=
+              (this.arrayOfTypes[i].itemHeight + item.rowGap) * item.rowCount;
+          }
+
+          const nextRow =
+            Math.floor((itemIndex + countOfMissingTiles) / countTilesInRow) -
+            prevRowsCount;
+
+          itemTop += this.elemRect.top + itemHeight * nextRow - scrollTop;
+          itemBottom = itemTop + itemHeight - itemGap;
+        }
       }
 
-      // Set left/right for item
-      let fileIndex = itemIndex % countTilesInRow;
-      if (itemType === "file") {
-        fileIndex = (itemIndex + countOfMissingTiles) % countTilesInRow;
-      }
+      let columnIndex = (itemIndex + countOfMissingTiles) % countTilesInRow;
 
       // Mirror fileIndex for RTL interface (2, 1, 0 => 0, 1, 2)
       if (isRtl && viewAs === "tile") {
-        fileIndex = countTilesInRow - 1 - fileIndex;
+        columnIndex = countTilesInRow - 1 - columnIndex;
       }
 
-      if (fileIndex == 0) {
+      // LEFT/RIGHT item position
+      if (columnIndex == 0) {
         itemLeft = this.elemRect.left;
         itemRight = itemLeft + this.elemRect.width;
       } else {
         itemLeft =
-          this.elemRect.left + (this.elemRect.width + fileTileGap) * fileIndex;
+          this.elemRect.left + (this.elemRect.width + itemGap) * columnIndex;
         itemRight = itemLeft + this.elemRect.width;
       }
-    } else {
-      // Table/row view
 
-      if (itemIndex === 0) {
-        itemTop = this.elemRect.top - scrollTop;
-        itemBottom = itemTop + itemHeight;
-      } else {
-        itemTop = this.elemRect.top + itemHeight * itemIndex - scrollTop;
-        itemBottom = itemTop + itemHeight;
-      }
-    }
-
-    if (viewAs === "tile") {
       return (
         right > itemLeft &&
         left < itemRight &&
@@ -125,6 +121,15 @@ class SelectionArea extends React.Component {
         top < itemBottom
       );
     } else {
+      const itemHeight = this.elemRect.height;
+      if (itemIndex === 0) {
+        itemTop = this.elemRect.top - scrollTop;
+        itemBottom = itemTop + itemHeight;
+      } else {
+        itemTop = this.elemRect.top + itemHeight * itemIndex - scrollTop;
+        itemBottom = itemTop + itemHeight;
+      }
+
       return bottom > itemTop && top < itemBottom;
     }
   };
@@ -211,8 +216,13 @@ class SelectionArea extends React.Component {
       const itemType = splitItem[0];
       const itemIndex = splitItem[4];
 
-      // console.log("node", node);
-      // console.log("node", node.getBoundingClientRect());
+      //TODO: maybe do this line little bit better
+      if (this.arrayOfTypes.findIndex((x) => x.type === itemType) === -1) {
+        this.arrayOfTypes.push({
+          type: itemType,
+          itemHeight: node.getBoundingClientRect().height,
+        });
+      }
 
       const isIntersects = this.isIntersects(+itemIndex, itemType);
 
@@ -330,14 +340,12 @@ class SelectionArea extends React.Component {
       this.elemRect.left = scroll.scrollLeft + itemsContainerRect.left;
     }
 
-    if (viewAs === "tile") {
-      const elemRect = itemsContainer[0]
-        .getElementsByClassName(selectableClass)[0]
-        .getBoundingClientRect();
+    const elemRect = itemsContainer[0]
+      .getElementsByClassName(selectableClass)[0]
+      .getBoundingClientRect();
 
-      this.elemRect.width = elemRect.width;
-      this.elemRect.height = elemRect.height;
-    }
+    this.elemRect.width = elemRect.width;
+    this.elemRect.height = elemRect.height;
   };
 
   onMove = (e) => {

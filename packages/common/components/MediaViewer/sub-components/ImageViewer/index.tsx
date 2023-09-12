@@ -54,6 +54,7 @@ function ImageViewer({
   isTiff,
   contextModel,
   errorTitle,
+  someDialogIsOpen,
 }: ImageViewerProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
@@ -106,7 +107,7 @@ function ImageViewer({
     return () => {
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, []);
+  }, [someDialogIsOpen]);
 
   const restartScaleAndSize = () => {
     if (!imgRef.current || style.scale.isAnimating) return;
@@ -138,7 +139,7 @@ function ImageViewer({
   };
 
   const changeSource = React.useCallback(
-    (src) => {
+    (src: any) => {
       if (!window.DocSpaceConfig.imageThumbnails) return;
       changeSourceTimeoutRef.current = setTimeout(() => {
         if (imgRef.current && !unmountRef.current) {
@@ -545,6 +546,8 @@ function ImageViewer({
   const onKeyDown = (event: KeyboardEvent) => {
     const { code, ctrlKey } = event;
 
+    if (someDialogIsOpen) return;
+
     switch (code) {
       case KeyboardEventKeys.ArrowLeft:
       case KeyboardEventKeys.ArrowRight:
@@ -555,9 +558,13 @@ function ImageViewer({
         }
         break;
       case KeyboardEventKeys.ArrowUp:
+      case KeyboardEventKeys.NumpadAdd:
+      case KeyboardEventKeys.Equal:
         zoomIn();
         break;
       case KeyboardEventKeys.ArrowDown:
+      case KeyboardEventKeys.NumpadSubtract:
+      case KeyboardEventKeys.Minus:
         zoomOut();
         break;
       case KeyboardEventKeys.Digit1:

@@ -94,7 +94,7 @@ public class DeletePortalTask : PortalTaskBase
             var domains = StorageFactoryConfig.GetDomainList(module);
             foreach (var domain in domains)
             {
-                await ActionInvoker.Try(async state => await storage.DeleteFilesAsync((string)state, "\\", "*.*", true), domain, 5,
+                await ActionInvoker.TryAsync(async state => await storage.DeleteFilesAsync((string)state, "\\", "*.*", true), domain, 5,
                               onFailure: error => _logger.WarningCanNotDeleteFilesForDomain(domain, error));
             }
             await storage.DeleteFilesAsync("\\", "*.*", true);

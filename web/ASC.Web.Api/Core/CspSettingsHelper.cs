@@ -139,6 +139,7 @@ public class CspSettingsHelper
 
         var def = csp.ByDefaultAllow
             .FromSelf()
+            .From("data:")
             .From(_filesLinkUtility.DocServiceUrl);
 
         var scriptBuilder = csp.AllowScripts
@@ -161,7 +162,9 @@ public class CspSettingsHelper
             .AllowUnsafeInline();
 
         var imageBuilder = csp.AllowImages
-            .FromSelf();
+            .FromSelf()
+            .From("data:")
+            .From("blob:");
 
         var frameBuilder = csp.AllowFraming
             .FromSelf();

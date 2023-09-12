@@ -73,7 +73,7 @@
   "LinkDeletedSuccessfully": "Link deleted successfully",
   "LinkDisabledSuccessfully": "Link disabled successfully",
   "LinkEditedSuccessfully": "Link edited successfully",
-  "LinkEnabledSuccessfully": "Link enable successfully",
+  "LinkEnabledSuccessfully": "Link enabled successfully",
   "LinkForPortalUsers": "Link for DocSpace users",
   "LinkForRoomMembers": "Link for room members",
   "Links": "Links",
@@ -156,5 +156,6 @@
   "ViewTiles": "Tiles",
   "WantToRestoreTheRoom": "All external links in this room will become active, and its contents will be available to everyone with the link. Do you want to restore the room?",
   "WantToRestoreTheRooms": "All external links in restored rooms will become active, and their contents will be available to everyone with the room links. Do you want to restore the rooms?",
-  "WithSubfolders": "With subfolders"
+  "WithSubfolders": "With subfolders",
+  "AddedToClipboard": "Items added to clipboard"
 }

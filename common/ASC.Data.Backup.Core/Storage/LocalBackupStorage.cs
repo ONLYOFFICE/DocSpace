@@ -45,10 +45,11 @@ public class LocalBackupStorage : IBackupStorage, IGetterWriteOperator
         return Task.FromResult(storagePath);
     }
 
-    public Task DownloadAsync(string storagePath, string targetLocalPath)
+    public Task<string> DownloadAsync(string storagePath, string targetLocalPath)
     {
+        var tempPath = Path.Combine(storagePath, Path.GetFileName(targetLocalPath));
         File.Copy(storagePath, targetLocalPath, true);
-        return Task.CompletedTask;
+        return Task.FromResult(tempPath);
     }
 
     public Task DeleteAsync(string storagePath)
@@ -70,5 +71,10 @@ public class LocalBackupStorage : IBackupStorage, IGetterWriteOperator
     public Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId)
     {
         return Task.FromResult<IDataWriteOperator>(null);
+    }
+
+    public Task<string> GetBackupExtensionAsync(string storageBasePath)
+    {
+        return Task.FromResult("tar.gz");
     }
 }

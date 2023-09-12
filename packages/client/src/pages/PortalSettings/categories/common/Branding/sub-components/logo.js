@@ -1,4 +1,5 @@
 import React from "react";
+import { isMobileOnly } from "react-device-detect";
 import { getLogoFromPath } from "@docspace/common/utils";
 
 import Text from "@docspace/components/text";
@@ -19,6 +20,10 @@ const Logo = (props) => {
 
   const currentLogo = getLogoFromPath(src);
 
+  const onLogoClick = () => {
+    isMobileOnly && document.getElementById(inputId).click();
+  };
+
   return (
     <div>
       <div className="logo-item">
@@ -32,7 +37,7 @@ const Logo = (props) => {
           </Text>
         )}
         {isEditor ? (
-          <div className="logos-editor-wrapper">
+          <div className="logos-editor-wrapper" onClick={onLogoClick}>
             <img
               className="logo-docs-editor background-green"
               src={currentLogo}
@@ -47,7 +52,7 @@ const Logo = (props) => {
             />
           </div>
         ) : (
-          <img className={imageClass} src={currentLogo} />
+          <img className={imageClass} src={currentLogo} onClick={onLogoClick} />
         )}
       </div>
       <label>

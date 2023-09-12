@@ -21,7 +21,7 @@ const EmptyFilterContent = styled.div`
   display: flex;
 
   .emptyFilterText {
-    margin-left: 40px;
+    margin-inline-start: 40px;
   }
 
   .clearFilter {
@@ -31,7 +31,7 @@ const EmptyFilterContent = styled.div`
   }
 
   .clearFilterIcon {
-    margin-right: 8px;
+    margin-inline-end: 8px;
   }
 
   .emptyFilterHeading {
@@ -49,28 +49,44 @@ const EmptyFilter = (props) => {
       formatFilters({
         deliveryDate: null,
         status: [],
-      }),
+      })
     );
   };
 
   return (
     <EmptyFilterWrapper>
       <EmptyFilterContent>
-        <img src={theme.isBase ? EmptyFilterImg : EmptyFilterDarkImg} alt="Empty filter" />
+        <img
+          src={theme.isBase ? EmptyFilterImg : EmptyFilterDarkImg}
+          alt="Empty filter"
+        />
         <div className="emptyFilterText">
-          <Text fontSize="16px" fontWeight={700} as="p" className="emptyFilterHeading">
+          <Text
+            fontSize="16px"
+            fontWeight={700}
+            as="p"
+            className="emptyFilterHeading"
+          >
             {t("Common:NotFoundTitle")}
           </Text>
-          <Text fontSize="12px" color={theme.isBase ? "#555F65" : "rgba(255, 255, 255, 0.6)"}>
+          <Text
+            fontSize="12px"
+            color={theme.isBase ? "#555F65" : "rgba(255, 255, 255, 0.6)"}
+          >
             {t("NoResultsMatched")}
           </Text>
           <span className="clearFilter" onClick={clearFilters}>
-            <img src={ClearEmptyFilterIcon} alt={t("ClearFilter")} className="clearFilterIcon" />
+            <img
+              src={ClearEmptyFilterIcon}
+              alt={t("ClearFilter")}
+              className="clearFilterIcon"
+            />
             <Link
               color={theme.isBase ? "#657077" : "inherit"}
               isHovered
               fontWeight={600}
-              type="action">
+              type="action"
+            >
               {t("Common:ClearFilter")}
             </Link>
           </span>

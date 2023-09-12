@@ -88,7 +88,7 @@ const CertificatesTable = (props) => {
         <ContextMenuButton
           className="context-btn"
           getData={getOptions}
-          usePortal={false}
+          usePortal={true}
         />
       </div>
     );

@@ -958,7 +958,7 @@ $GreenButton
 
 此致！
 ONLYOFFICE 团队
-"www.onlyoffice.com":*http://onlyoffice.com/zh*</value>
+"www.onlyoffice.com":"http://onlyoffice.com/zh"</value>
   </data>
   <data name="pattern_for_sales_notify" xml:space="preserve">
     <value>h1.来自"${__VirtualRootPath}"的消息:"${__VirtualRootPath}"门户

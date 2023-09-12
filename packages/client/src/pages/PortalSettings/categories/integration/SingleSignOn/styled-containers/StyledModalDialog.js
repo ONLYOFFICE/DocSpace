@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import ModalDialog from "@docspace/components/modal-dialog";
+import { smallTablet } from "@docspace/components/utils/device";
 
 const StyledModalDialog = styled(ModalDialog)`
   .heading {
@@ -19,6 +20,10 @@ const StyledModalDialog = styled(ModalDialog)`
     &-label {
       font-weight: 600;
       margin-bottom: 5px;
+    }
+
+    @media ${smallTablet} {
+      width: 100% !important;
     }
   }
   .text-area-label {

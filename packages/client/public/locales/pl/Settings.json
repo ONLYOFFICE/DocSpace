@@ -156,8 +156,6 @@
   "RecoveryFileNotSelected": "Błąd odzyskiwania. Nie wybrano pliku odzyskiwania.",
   "RestoreBackup": "Odzyskiwanie danych",
   "RestoreBackupDescription": "Użyj tej opcji do przywrócenia portalu z wcześniej zapisanego pliku kopii zapasowej.",
-  "RestoreBackupResetInfoWarningText": "Wszystkie aktualne hasła zostaną zresetowane. Użytkownicy portalu otrzymają wiadomość e-mail z linkiem umożliwiającym odzyskanie dostępu.",
-  "RestoreBackupWarningText": "Portal zostanie niedostępny podczas procesu przywracania. Po zakończeniu przywracania wszystkie zmiany dokonane po terminie wybranego punktu przywracania zostaną utracone.",
   "RestoreDefaultButton": "Przywróć ustawienia domyślne",
   "RoomsModule": "Stwórz kopię zapasową pokoju",
   "RoomsModuleDescription": "Możesz utworzyć nowy pokój specjalnie do kopii zapasowej, wybrać jeden z istniejących pokoi lub zapisać kopię w jej pokoju {{roomName}}.",
