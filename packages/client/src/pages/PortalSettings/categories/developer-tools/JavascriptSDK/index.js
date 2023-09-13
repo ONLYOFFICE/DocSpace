@@ -25,6 +25,8 @@ import GetCodeDialog from "./sub-components/GetCodeDialog";
 import CSP from "./sub-components/csp";
 import Button from "@docspace/components/button";
 
+const showPreviewThreshold = 720;
+
 const SDKContainer = styled(Box)`
   @media ${tablet} {
     width: 100%;
@@ -33,9 +35,15 @@ const SDKContainer = styled(Box)`
 
 const Controls = styled(Box)`
   max-width: 350px;
+  min-width: 350px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
+
+  @media ${tablet} {
+    min-width: 0;
+  }
 
   .label {
     min-width: fit-content;
@@ -164,11 +172,22 @@ const Preview = styled(Box)`
 
   @media ${tablet} {
     margin-top: 0;
+    min-width: 0;
   }
 `;
 
-const GetCodeButton = styled(Button)`
-  margin-top: 34px;
+const GetCodeButtonWrapper = styled.div`
+  padding-block: 30px;
+  position: sticky;
+  bottom: 0;
+  margin-top: 32px;
+  background-color: ${({ theme }) => theme.backgroundColor};
+
+  @media ${hugeMobile} {
+    position: fixed;
+    padding-inline: 16px;
+    inset-inline: 0;
+  }
 `;
 
 const FilesSelectorInputWrapper = styled.div`
@@ -211,6 +230,9 @@ const PortalIntegration = (props) => {
   const [height, setHeight] = useState("600");
   const [withSubfolders, setWithSubfolders] = useState(true);
   const [isGetCodeDialogOpened, setIsGetCodeDialogOpened] = useState(false);
+  const [showPreview, setShowPreview] = useState(
+    window.innerWidth > showPreviewThreshold
+  );
 
   const [config, setConfig] = useState({
     width: `${width}${widthDimension.label}`,
@@ -365,7 +387,21 @@ const PortalIntegration = (props) => {
   };
 
   const openGetCodeModal = () => setIsGetCodeDialogOpened(true);
+
   const closeGetCodeModal = () => setIsGetCodeDialogOpened(false);
+
+  const onResize = () => {
+    const isEnoughWidthForPreview = window.innerWidth > showPreviewThreshold;
+    if (isEnoughWidthForPreview !== showPreview)
+      setShowPreview(isEnoughWidthForPreview);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, [showPreview]);
 
   const codeBlock = `<div id="${frameId}">Fallback text</div>\n<script src="${scriptUrl}${params}"></script>`;
 
@@ -414,7 +450,7 @@ const PortalIntegration = (props) => {
       </CategoryDescription>
       <CategoryHeader>{t("CreateSampleHeader")}</CategoryHeader>
       <Container>
-        {!isMobileOnly && (
+        {showPreview && (
           <Preview>
             <TabContainer onSelect={onChangeTab} elements={dataTabs} />
           </Preview>
@@ -586,26 +622,29 @@ const PortalIntegration = (props) => {
             />
           </ControlsGroup>
         </Controls>
+      </Container>
 
-        {isMobileOnly && (
-          <>
-            <GetCodeButton
+      {!showPreview && (
+        <>
+          <GetCodeButtonWrapper>
+            <Button
               id="get-sdk-code-button"
               primary
               size="normal"
+              scale
               label={t("GetCode")}
               onClick={openGetCodeModal}
             />
+          </GetCodeButtonWrapper>
 
-            <GetCodeDialog
-              t={t}
-              visible={isGetCodeDialogOpened}
-              codeBlock={codeBlock}
-              onClose={closeGetCodeModal}
-            />
-          </>
-        )}
-      </Container>
+          <GetCodeDialog
+            t={t}
+            visible={isGetCodeDialogOpened}
+            codeBlock={codeBlock}
+            onClose={closeGetCodeModal}
+          />
+        </>
+      )}
     </SDKContainer>
   );
 };
