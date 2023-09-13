@@ -64,7 +64,6 @@ public class WebItemSettings : ISettings<WebItemSettings>
         return settings;
     }
 
-    [Serializable]
     public class WebItemOption
     {
         public Guid ItemID { get; set; }

@@ -54,7 +54,6 @@ const CategorySubHeader = styled.div`
 `;
 
 const CategoryDescription = styled(Box)`
-  margin-top: 20px;
   max-width: 700px;
 `;
 

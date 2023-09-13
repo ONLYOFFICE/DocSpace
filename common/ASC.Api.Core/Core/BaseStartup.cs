@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using JsonConverter = System.Text.Json.Serialization.JsonConverter;
+using Flurl.Util;
 
 namespace ASC.Api.Core;
 
@@ -38,7 +38,6 @@ public abstract class BaseStartup
     private readonly IHostEnvironment _hostEnvironment;
     private readonly string _corsOrigin;
 
-    protected virtual JsonConverter[] Converters { get; }
     protected virtual bool AddControllersAsServices { get; }
     protected virtual bool ConfirmAddScheme { get; }
     protected virtual bool AddAndUseSession { get; }
@@ -112,7 +111,7 @@ public abstract class BaseStartup
 
                 if (userId == null)
                 {
-                    return RateLimitPartition.GetNoLimiter("no_limiter");
+                    userId = httpContext?.Connection.RemoteIpAddress.ToInvariantString();
                 }
 
                 var permitLimit = 1500;
@@ -122,7 +121,7 @@ public abstract class BaseStartup
                 partitionKey = $"sw_{userId}";
 
                 return RedisRateLimitPartition.GetSlidingWindowRateLimiter(partitionKey, key => new RedisSlidingWindowRateLimiterOptions
-                { 
+                {
                     PermitLimit = permitLimit,
                     Window = TimeSpan.FromMinutes(1),
                     ConnectionMultiplexerFactory = () => connectionMultiplexer
@@ -136,7 +135,7 @@ public abstract class BaseStartup
 
                     if (userId == null)
                     {
-                        return RateLimitPartition.GetNoLimiter("no_limiter");
+                        userId = httpContext?.Connection.RemoteIpAddress.ToInvariantString();
                     }
 
                     if (String.Compare(httpContext.Request.Method, "GET", true) == 0)
@@ -157,17 +156,37 @@ public abstract class BaseStartup
                         QueueLimit = 0,
                         ConnectionMultiplexerFactory = () => connectionMultiplexer
                     });
-                }
+                }), 
+                PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                   {
+                       var userId = httpContext?.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+
+                       if (userId == null)
+                       {
+                           userId = httpContext?.Connection.RemoteIpAddress.ToInvariantString();
+                       }
+
+                       var partitionKey = $"fw_post_put_{userId}";
+                       var permitLimit = 10000;
+
+                       if (!(String.Compare(httpContext.Request.Method, "POST", true) == 0 ||
+                            String.Compare(httpContext.Request.Method, "PUT", true) == 0))
+                       {
+                           return RateLimitPartition.GetNoLimiter("no_limiter");
+                       }
+
+                       return RedisRateLimitPartition.GetFixedWindowRateLimiter(partitionKey, key => new RedisFixedWindowRateLimiterOptions
+                       {
+                           PermitLimit = permitLimit,
+                           Window = TimeSpan.FromDays(1),
+                           ConnectionMultiplexerFactory = () => connectionMultiplexer
+                       });
+                   }
             ));
 
-            options.AddPolicy("sensitive_api", httpContext => {
+            options.AddPolicy("sensitive_api", httpContext =>
+            {
                 var userId = httpContext?.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
-
-                if (userId == null)
-                {
-                    return RateLimitPartition.GetNoLimiter("no_limiter");
-                }
-
                 var permitLimit = 5;
                 var partitionKey = $"sensitive_api_{userId}";
 
@@ -178,7 +197,7 @@ public abstract class BaseStartup
                     ConnectionMultiplexerFactory = () => connectionMultiplexer
                 });
             });
-            
+
             options.OnRejected = (context, ct) => RateLimitMetadata.OnRejected(context.HttpContext, context.Lease, ct);
         });
 
@@ -210,15 +229,6 @@ public abstract class BaseStartup
             {
                 options.JsonSerializerOptions.WriteIndented = false;
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
-
-                if (Converters != null)
-                {
-                    foreach (var c in Converters)
-                    {
-                        options.JsonSerializerOptions.Converters.Add(c);
-                    }
-                }
             };
 
         services.AddControllers().AddJsonOptions(jsonOptions);

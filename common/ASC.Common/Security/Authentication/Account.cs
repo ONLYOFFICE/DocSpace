@@ -26,7 +26,6 @@
 
 namespace ASC.Common.Security.Authentication;
 
-[Serializable]
 public class Account : IAccount
 {
     public Guid ID { get; private set; }

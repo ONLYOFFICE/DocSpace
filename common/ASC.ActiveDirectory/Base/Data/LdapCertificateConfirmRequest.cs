@@ -25,7 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.ActiveDirectory.Base.Data;
-[Serializable]
 public class LdapCertificateConfirmRequest
 {
     private volatile bool _approved;

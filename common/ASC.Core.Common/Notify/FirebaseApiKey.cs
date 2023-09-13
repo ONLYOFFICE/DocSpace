@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Core.Common.Notify;
-[Serializable]
+
 class FirebaseApiKey
 {
     private readonly IConfiguration _configuration;

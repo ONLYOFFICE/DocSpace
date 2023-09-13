@@ -180,8 +180,21 @@ public class UserManager
 
         return await users.ToArrayAsync();
     }
+    
+    public Task<int> GetUsersCountAsync(
+        bool isDocSpaceAdmin,
+        EmployeeStatus? employeeStatus,
+        List<List<Guid>> includeGroups,
+        List<Guid> excludeGroups,
+        List<Tuple<List<List<Guid>>, List<Guid>>> combinedGroups,
+        EmployeeActivationStatus? activationStatus,
+        AccountLoginType? accountLoginType,
+        string text)
+    {
+        return _userService.GetUsersCountAsync(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text);
+    }
 
-    public IQueryable<UserInfo> GetUsers(
+    public IAsyncEnumerable<UserInfo> GetUsers(
         bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
         List<List<Guid>> includeGroups,
@@ -193,11 +206,9 @@ public class UserManager
         string sortBy,
         bool sortOrderAsc,
         long limit,
-        long offset,
-        out int total,
-        out int count)
+        long offset)
     {
-        return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
+        return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text, sortBy, sortOrderAsc, limit, offset);
     }
 
     public async Task<string[]> GetUserNamesAsync(EmployeeStatus status)

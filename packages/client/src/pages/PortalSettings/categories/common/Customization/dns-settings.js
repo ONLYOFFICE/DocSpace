@@ -83,14 +83,6 @@ const DNSSettings = (props) => {
       setHasScroll(scrollPortalName);
     }
 
-    // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile =
-      document.getElementsByClassName("settings-mobile")[0];
-
-    if (settingsMobile) {
-      settingsMobile.style.display = "none";
-    }
-
     return () => window.removeEventListener("resize", checkInnerWidth);
   }, []);
 
@@ -249,11 +241,7 @@ const DNSSettings = (props) => {
           {t("Common:LearnMore")}
         </Link>
       </div>
-      {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-        <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
-      ) : (
-        <> {settingsBlock}</>
-      )}
+      {settingsBlock}
       <div className="send-request-container">{buttonContainer}</div>
     </StyledSettingsComponent>
   );
