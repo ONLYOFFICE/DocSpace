@@ -15,5 +15,8 @@
   "editor": {
     "openOnNewPage": true,
     "requestClose": false
+  },
+  "management": {
+    "checkDomain": true
   }
 }
