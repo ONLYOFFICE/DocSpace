@@ -8,6 +8,9 @@ newInstance
   .use(HttpBackend)
   .use(initReactI18next)
   .init({
+    load: "currentOnly",
+    ns: ["Common"],
+    defaultNS: "Common",
     backend: {
       backendOptions: [
         {

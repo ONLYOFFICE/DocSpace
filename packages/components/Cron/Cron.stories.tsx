@@ -1,13 +1,44 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { useTranslation } from "react-i18next";
+import i18nextStoryDecorator from "../.storybook/decorators/i18nextStoryDecorator";
 
 import Cron, { getNextSynchronization } from ".";
 import TextInput from "../text-input/text-input";
 import Button from "../button";
+import CronProps from "./Cron.props";
 
-type CronType = typeof Cron;
+type CronType = FC<{ locale: string } & CronProps>;
 
 type Story = StoryObj<CronType>;
+
+const locales = [
+  "az",
+  "ar-SA",
+  "zh-cn",
+  "cs",
+  "nl",
+  "en",
+  "fi",
+  "fr",
+  "de",
+  "de-ch",
+  "el",
+  "it",
+  "ja",
+  "ko",
+  "lv",
+  "pl",
+  "pt",
+  "pt-br",
+  "ru",
+  "sk",
+  "sl",
+  "es",
+  "tr",
+  "uk",
+  "vi",
+];
 
 const meta: Meta<CronType> = {
   title: "Components/Cron",
@@ -23,21 +54,29 @@ const meta: Meta<CronType> = {
       description:
         "Triggered when the cron component detects an error with the value.",
     },
+    locale: { control: "select", options: locales },
   },
+  decorators: [i18nextStoryDecorator],
 };
 
 export default meta;
 
 export const Default: Story = {
-  args: {},
+  args: {
+    locale: "en",
+  },
 
-  render: ({ value: defaultValue }, context) => {
+  render: ({ value: defaultValue, locale }) => {
+    const { i18n } = useTranslation();
+
     const [input, setInput] = useState(defaultValue);
 
     const [cron, setCron] = useState(defaultValue);
     const [error, setError] = useState<Error>();
 
-    const { locale } = context.globals;
+    useEffect(() => {
+      i18n.changeLanguage(locale);
+    }, [locale]);
 
     const onError = (error?: Error) => {
       setError(error);

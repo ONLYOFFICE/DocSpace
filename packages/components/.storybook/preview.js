@@ -11,8 +11,6 @@ import lightTheme from "./lightTheme";
 import darkTheme from "./darkTheme";
 import StorybookGlobalStyles from "./styles/StorybookGlobalStyles";
 
-import i18nextStoryDecorator from "./decorators/i18nextStoryDecorator";
-
 const preview = {
   globalTypes,
   parameters: {
@@ -48,7 +46,6 @@ const preview = {
         </ThemeWrapper>
       );
     },
-    i18nextStoryDecorator,
   ],
 };
 
