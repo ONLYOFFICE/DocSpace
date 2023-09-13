@@ -83,11 +83,14 @@ public class OnlyoShortener : IUrlShortener
 {
     private readonly IDbContextFactory<UrlShortenerDbContext> _contextFactory;
     private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly TenantManager _tenantManager;
     public OnlyoShortener(IDbContextFactory<UrlShortenerDbContext> contextFactory,
-        CommonLinkUtility commonLinkUtility)
+        CommonLinkUtility commonLinkUtility,
+        TenantManager tenantManager)
     {
         _contextFactory = contextFactory;
         _commonLinkUtility = commonLinkUtility;
+        _tenantManager = tenantManager;
     }
 
     public async Task<string> GetShortenLinkAsync(string shareLink)
@@ -113,7 +116,8 @@ public class OnlyoShortener : IUrlShortener
                         {
                             Id = id,
                             Link = shareLink,
-                            Short = key
+                            Short = key,
+                            TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id
                         };
                         await context.ShortLinks.AddAsync(newShortLink);
                         await context.SaveChangesAsync();
@@ -137,7 +141,7 @@ public static class ShortUrl
     public static string GenerateRandomKey()
     {
         var rand = new Random();
-        var length = rand.Next(5, 8);
+        var length = 15;
         var result = "";
         for (var i = 0; i < length; i++)
         {

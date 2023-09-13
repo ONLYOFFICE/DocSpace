@@ -29,14 +29,18 @@ namespace ASC.Core.Common.EF.Model;
 public class ShortLink
 {
     public long Id { get; set; }
+    public int TenantId { get; set; }
     public string Short { get; set; }
     public string Link { get; set; }
+
+    public DbTenant Tenant { get; set; }
 }
 
 public static class ShortLinksExtension
 {
     public static ModelBuilderWrapper AddShortLinks(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<ShortLink>().Navigation(e => e.Tenant).AutoInclude(false);
         modelBuilder
             .Add(MySqlAddShortLinks, Provider.MySql)
             .Add(PgSqlAddShortLinks, Provider.PostgreSql);
@@ -58,6 +62,9 @@ public static class ShortLinksExtension
             entity.HasKey(e => e.Id)
                 .HasName("PRIMARY");
 
+            entity.HasIndex(e => e.TenantId)
+                .HasDatabaseName("tenant_id");
+
             entity.Property(e => e.Id)
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd()
@@ -65,10 +72,15 @@ public static class ShortLinksExtension
 
             entity.Property(e => e.Short)
                 .HasColumnName("short")
-                .HasColumnType("varchar(12)")
+                .HasColumnType("varchar(15)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci")
                 .IsRequired(false);
+
+            entity.Property(e => e.TenantId)
+                .IsRequired()
+                .HasColumnName("tenant_id")
+                .HasColumnType("int(10)");
 
             entity.Property(e => e.Link)
                 .HasColumnName("link")
@@ -92,6 +104,9 @@ public static class ShortLinksExtension
             entity.HasKey(e => e.Id)
                 .HasName("PRIMARY");
 
+            entity.HasIndex(e => e.TenantId)
+                .HasDatabaseName("tenant_id");
+
             entity.Property(e => e.Id)
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd()
@@ -99,7 +114,7 @@ public static class ShortLinksExtension
 
             entity.Property(e => e.Short)
                 .HasColumnName("short")
-                .HasColumnType("varchar(12)")
+                .HasColumnType("varchar(15)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci")
                 .IsRequired(false);
@@ -109,6 +124,11 @@ public static class ShortLinksExtension
                 .HasColumnType("text")
                 .UseCollation("utf8_bin")
                 .IsRequired(false);
+
+            entity.Property(e => e.TenantId)
+                .IsRequired()
+                .HasColumnName("tenant_id")
+                .HasColumnType("int(10)");
         });
     }
 }
