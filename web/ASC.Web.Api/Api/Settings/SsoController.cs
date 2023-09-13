@@ -72,17 +72,28 @@ public class SsoController : BaseSettingsController
     [AllowAnonymous]
     public async Task<SsoSettingsV2> GetSsoSettingsV2()
     {
-        await CheckSsoPermissionsAsync(!_authContext.IsAuthenticated);
-
         var settings = await _settingsManager.LoadAsync<SsoSettingsV2>();
 
         if (!_authContext.IsAuthenticated)
         {
+            bool hideAuthPage;
+            try
+            {
+                await CheckSsoPermissionsAsync(true);
+                hideAuthPage = settings.HideAuthPage;
+            }
+            catch (BillingException)
+            {
+                hideAuthPage = false;
+            }
+
             return new SsoSettingsV2
             {
-                HideAuthPage = settings.HideAuthPage
+                HideAuthPage = hideAuthPage
             };
         }
+
+        await CheckSsoPermissionsAsync();
 
         if (string.IsNullOrEmpty(settings.SpLoginLabel))
         {
@@ -205,12 +216,13 @@ public class SsoController : BaseSettingsController
             throw new Exception(Resource.SsoSettingsCantSaveSettings);
         }
 
-        if (!settings.EnableSso)
+        var enableSso = settings.EnableSso.GetValueOrDefault();
+        if (!enableSso)
         {
             await ConverSsoUsersToOrdinaryAsync();
         }
 
-        var messageAction = settings.EnableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
+        var messageAction = enableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
 
         await _messageService.SendAsync(messageAction);
 

@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Sie möchten diese Datei löschen. Fortfahren?",
-  "DeleteFolder": "Sie möchten diesen Ordner löschen. Fortfahren?",
-  "DeleteItems": "Sie löschen diese Objekte. Fortfahren?",
+  "DeleteFile": "Sie möchten diese Datei löschen.",
+  "DeleteFolder": "Sie möchten diesen Ordner löschen. ",
+  "DeleteItems": "Sie löschen diese Objekte. ",
   "DeleteRoom": "Sie löschen diesen Raum. Dies kann nicht rückgängig gemacht.",
   "DeleteRooms": "Sie möchten diese Räume löschen. Dies kann nicht rückgängig gemacht.",
   "MoveToTrashButton": "In den Papierkorb verschieben",

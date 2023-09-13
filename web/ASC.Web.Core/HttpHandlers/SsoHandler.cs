@@ -136,7 +136,7 @@ public class SsoHandlerService
                 return;
             }
 
-            if (!settings.EnableSso)
+            if (!settings.EnableSso.GetValueOrDefault())
             {
                 throw new SSOException("Single sign-on is disabled", MessageKey.SsoSettingsDisabled);
             }
@@ -190,7 +190,7 @@ public class SsoHandlerService
                 {
                     userInfo = await AddUserAsync(userInfo);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _log.WarningWithException("Failed to save user", ex);
                 }
@@ -255,9 +255,9 @@ public class SsoHandlerService
     //TODO
     private async Task WriteErrorToResponse(HttpContext context, MessageKey messageKey)
     {
-         context.Response.StatusCode = 500;
-         context.Response.ContentType = "text/plain";
-         await context.Response.WriteAsync(((int)messageKey).ToString());
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "text/plain";
+        await context.Response.WriteAsync(((int)messageKey).ToString());
     }
 
     private async Task<UserInfo> AddUserAsync(UserInfo userInfo)

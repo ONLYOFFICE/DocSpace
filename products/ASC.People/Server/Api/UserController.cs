@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.AspNetCore.RateLimiting;
-
 namespace ASC.People.Api;
 
 public class UserController : PeopleControllerBase
@@ -65,6 +63,7 @@ public class UserController : PeopleControllerBase
     private readonly UsersQuotaSyncOperation _usersQuotaSyncOperation;
     private readonly CountUserChecker _countUserChecker;
     private readonly UsersInRoomChecker _usersInRoomChecker;
+    private readonly IUrlShortener _urlShortener;
 
     public UserController(
         ICache cache,
@@ -105,7 +104,8 @@ public class UserController : PeopleControllerBase
         CountPaidUserChecker countPaidUserChecker,
         CountUserChecker activeUsersChecker,
         UsersInRoomChecker usersInRoomChecker,
-        IQuotaService quotaService)
+        IQuotaService quotaService,
+        IUrlShortener urlShortener)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
@@ -141,6 +141,7 @@ public class UserController : PeopleControllerBase
         _usersInRoomChecker = usersInRoomChecker;
         _quotaService = quotaService;
         _usersQuotaSyncOperation = usersQuotaSyncOperation;
+        _urlShortener = urlShortener;
     }
 
     /// <summary>
@@ -363,9 +364,9 @@ public class UserController : PeopleControllerBase
 
             var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
             var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, invite.Type, _authContext.CurrentAccount.ID);
+            var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
 
-            await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, link);
-            _logger.Debug(link);
+            await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, shortenLink);
         }
 
         var result = new List<EmployeeDto>();
@@ -391,6 +392,7 @@ public class UserController : PeopleControllerBase
     /// <path>api/2.0/people/{userid}/password</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}/password")]
+    [EnableRateLimiting("sensitive_api")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
     public async Task<EmployeeFullDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
     {
@@ -1054,7 +1056,9 @@ public class UserController : PeopleControllerBase
                 }
 
                 var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, type, _authContext.CurrentAccount.ID);
-                await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, link);
+                var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
+
+                await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, shortenLink);
             }
             else
             {

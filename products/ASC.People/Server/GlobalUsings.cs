@@ -76,6 +76,7 @@ global using ASC.Web.Core.Mobile;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Users;
+global using ASC.Web.Core.Utility;
 global using ASC.Web.Files;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
@@ -85,6 +86,7 @@ global using Autofac;
 
 global using Microsoft.AspNetCore.Http.Extensions;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.RateLimiting;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 
