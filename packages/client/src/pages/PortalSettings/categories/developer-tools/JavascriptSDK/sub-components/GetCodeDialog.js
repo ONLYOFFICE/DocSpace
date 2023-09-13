@@ -3,6 +3,7 @@ import copy from "copy-to-clipboard";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Textarea from "@docspace/components/textarea";
 import Button from "@docspace/components/button";
+import toastr from "@docspace/components/toast/toastr";
 
 const GetCodeDialog = (props) => {
   const { t, codeBlock, visible, onClose } = props;
@@ -10,6 +11,7 @@ const GetCodeDialog = (props) => {
   const onCopyClick = () => {
     copy(codeBlock);
     onClose();
+    toastr.success(t("EmbedCodeSuccessfullyCopied"));
   };
 
   return (
