@@ -4697,6 +4697,9 @@ namespace ASC.Migrations.MySql.SaaS.Migrations
                     b.HasKey("NotifyId")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("CreationDate")
+                        .HasDatabaseName("creation_date");
+
                     b.HasIndex("TenantId");
 
                     b.ToTable("notify_queue", (string)null);
@@ -5200,6 +5203,15 @@ namespace ASC.Migrations.MySql.SaaS.Migrations
 
                     b.HasIndex("TenantId", "UserName")
                         .HasDatabaseName("username");
+
+                    b.HasIndex("TenantId", "ActivationStatus", "Email")
+                        .HasDatabaseName("tenant_activation_status_email");
+
+                    b.HasIndex("TenantId", "ActivationStatus", "FirstName")
+                        .HasDatabaseName("tenant_activation_status_firstname");
+
+                    b.HasIndex("TenantId", "ActivationStatus", "LastName")
+                        .HasDatabaseName("tenant_activation_status_lastname");
 
                     b.ToTable("core_user", (string)null);
 

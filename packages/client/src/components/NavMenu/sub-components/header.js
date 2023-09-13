@@ -36,7 +36,7 @@ const Header = styled.header`
 
   .header-logo-icon {
     position: absolute;
-    right: 50%;
+    right: 50%; /* Just centering. Does not require rtl mirroring */
     transform: translateX(50%);
     height: 24px;
     cursor: pointer;
@@ -53,7 +53,11 @@ const Header = styled.header`
 
   .header-items-wrapper {
     display: flex;
-    margin-left: 82px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 82px;`
+        : `margin-left: 82px;`}
   }
 `;
 
@@ -86,13 +90,18 @@ const versionBadgeProps = {
 const StyledNavigationIconsWrapper = styled.div`
   height: 20px;
   position: absolute;
-  left: ${isMobile ? "254px" : "275px"};
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `right: ${isMobile ? "254px" : "275px"};`
+      : `left: ${isMobile ? "254px" : "275px"};`}
   display: ${isMobileOnly ? "none" : "flex"};
   justify-content: flex-start;
   align-items: center;
 
   @media ${tablet} {
-    left: 254px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `right: 254px;` : `left: 254px;`}
   }
 
   @media ${mobile} {

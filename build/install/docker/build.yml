@@ -120,12 +120,12 @@ services:
       target: login
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}"
     
-  onlyoffice-proxy:
+  onlyoffice-router:
     build:
       context:  ./
       dockerfile: "${DOCKERFILE}"
-      target: proxy
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
+      target: router
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-router:${DOCKER_TAG}"
 
   onlyoffice-migration-runner:
     build:

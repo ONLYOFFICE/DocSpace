@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Ekspert istifadəçilər otaqda fayllar yarada və redaktə edə bilərlər, lakin otaqlar yarada, istifadəçiləri idarə edə və ya parametrlərə daxil ola bilməzlər.",
   "RoleReviewer": "Rəyçi",
   "RoleReviewerDescription": "Mövcud fayllarla əməliyyatlar: baxmaq, nəzərdən keçirmək, şərh etmək.",
-  "RoleRoomAdminDescription": "Otaq adminləri təyin olunmuş otaqları yarada və idarə edə, yeni istifadəçiləri dəvət edə və səviyyələrindən aşağı rollar təyin edə bilər. Bütün adminlərin Şəxsi bölməyə girişi var.",
   "RoleUserDescription": "İstifadəçilər yalnız adminlər tərəfindən dəvət olunduqları otaqlara daxil ola bilərlər. Onlar öz otaqlarını, qovluqlarını və ya fayllarını yarada bilməzlər.",
   "RoleViewer": "İzləyici",
   "RoleViewerDescription": "Fayla baxış",

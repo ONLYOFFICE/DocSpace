@@ -10,18 +10,31 @@ export const ArrowIcon = styled.span`
 
   ${(props) =>
     props.next &&
-    css`
-      transform: rotate(-45deg);
-      top: 11.5px;
-      left: 12.5px;
-    `}
+    (props.isMobile
+      ? css`
+          transform: rotate(-45deg);
+          top: 11.5px;
+          left: 12.5px;
+        `
+      : css`
+          transform: rotate(-45deg);
+          top: 9px;
+          left: 9.5px;
+        `)}
+
   ${(props) =>
     props.previous &&
-    css`
-      transform: rotate(135deg);
-      top: 14px;
-      left: 12.5px;
-    `}
+    (props.isMobile
+      ? css`
+          transform: rotate(135deg);
+          top: 14px;
+          left: 12.5px;
+        `
+      : css`
+          transform: rotate(135deg);
+          top: 11px;
+          left: 9.5px;
+        `)}
 `;
 
 ArrowIcon.defaultProps = { theme: Base };

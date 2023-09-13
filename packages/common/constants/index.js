@@ -2,6 +2,8 @@ import ShareGoogleReactSvgUrl from "PUBLIC_DIR/images/share.google.react.svg?url
 import ShareFacebookReactSvgUrl from "PUBLIC_DIR/images/share.facebook.react.svg?url";
 import ShareTwitterReactSvgUrl from "PUBLIC_DIR/images/share.twitter.react.svg?url";
 import ShareLinkedinReactSvgUrl from "PUBLIC_DIR/images/share.linkedin.react.svg?url";
+import ShareMicrosoftReactSvgUrl from "PUBLIC_DIR/images/share.microsoft.react.svg?url";
+import ShareZoomReactSvgUrl from "PUBLIC_DIR/images/share.zoom.react.svg?url";
 
 export const LANGUAGE = "asc_language";
 export const COOKIE_EXPIRATION_YEAR = 31536000000;
@@ -266,6 +268,14 @@ export const providersData = Object.freeze({
     label: "linkedin",
     icon: ShareLinkedinReactSvgUrl,
   },
+  microsoft: {
+    label: "microsoft",
+    icon: ShareMicrosoftReactSvgUrl,
+  },
+  zoom: {
+    label: "zoom",
+    icon: ShareZoomReactSvgUrl,
+  },
 });
 export const LoaderStyle = {
   title: "",
@@ -466,3 +476,18 @@ export const FilterSelectorTypes = Object.freeze({
   people: "people-selector",
   rooms: "rooms-selector",
 });
+
+export const RtlLanguages = [
+  "ar",
+  "arc",
+  "dv",
+  "fa",
+  "ha",
+  "he",
+  "khw",
+  "ks",
+  "ku",
+  "ps",
+  "ur",
+  "yi",
+];

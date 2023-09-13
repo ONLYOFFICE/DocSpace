@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
@@ -23,7 +23,14 @@ const MainContainer = styled.div`
   .password-slider {
     width: 160px;
     height: 8px;
-    margin: 24px 16px 24px 0px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin: 24px 0px 24px 16px;
+          `
+        : css`
+            margin: 24px 16px 24px 0px;
+          `}
   }
 
   .checkboxes {
@@ -37,7 +44,7 @@ const MainContainer = styled.div`
   }
 `;
 
-const PasswordStrength = (props) => {
+const PasswordStrength = props => {
   const {
     t,
 
@@ -126,11 +133,11 @@ const PasswordStrength = (props) => {
       navigate("/portal-settings/security/access-portal");
   };
 
-  const onSliderChange = (e) => {
+  const onSliderChange = e => {
     setPasswordLen(Number(e.target.value));
   };
 
-  const onClickCheckbox = (e) => {
+  const onClickCheckbox = e => {
     switch (e.target.value) {
       case "upperCase":
         setUseUpperCase(e.target.checked);
@@ -188,23 +195,24 @@ const PasswordStrength = (props) => {
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="learn-subtitle">
-          {t("SettingPasswordStrengthHelper")}
+        <Text fontSize="13px" fontWeight="400">
+          {t("SettingPasswordDescription")}
+        </Text>
+        <Text fontSize="13px" fontWeight="400" className="learn-subtitle">
+          <Trans t={t} i18nKey="SettingPasswordDescriptionSave" />
         </Text>
         <Link
+          className="link-learn-more"
           color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
-          href={passwordStrengthSettingsUrl}
-        >
+          href={passwordStrengthSettingsUrl}>
           {t("Common:LearnMore")}
         </Link>
       </LearnMoreWrapper>
-
       <Text fontSize="14px" fontWeight="600" className="length-subtitle">
         {t("PasswordMinLenght")}
       </Text>
-
       <Box displayProp="flex" flexDirection="row" alignItems="center">
         <Slider
           className="password-slider"
@@ -221,7 +229,6 @@ const PasswordStrength = (props) => {
           })}
         </Text>
       </Box>
-
       <Box className="checkboxes">
         <Checkbox
           className="use-upper-case"
@@ -245,7 +252,6 @@ const PasswordStrength = (props) => {
           value="special"
         />
       </Box>
-
       <SaveCancelButtons
         className="save-cancel-buttons"
         onSaveClick={onSaveClick}

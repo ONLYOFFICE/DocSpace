@@ -25,7 +25,7 @@ const HistoryRowWrapper = styled.div`
 
   .historyIconLoader {
     display: inline-block;
-    margin-right: 16px;
+    margin-inline-end: 16px;
   }
 
   .historyContentLoader {
@@ -37,7 +37,11 @@ const HistoryRowWrapper = styled.div`
 export const WebhookHistoryLoader = () => {
   const HistoryRowLoader = () => (
     <HistoryRowWrapper>
-      <Loaders.Rectangle width="20px" height="20px" className="historyIconLoader" />
+      <Loaders.Rectangle
+        width="20px"
+        height="20px"
+        className="historyIconLoader"
+      />
       <Loaders.Rectangle height="20px" className="historyContentLoader" />
     </HistoryRowWrapper>
   );

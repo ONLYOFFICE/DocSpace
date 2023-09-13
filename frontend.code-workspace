@@ -38,7 +38,10 @@
       "🚀 @docspace/client",
       "📄 @docspace/editor",
       "📦 @docspace/common"
-    ]
+    ],
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
   },
   "extensions": {
     "recommendations": [

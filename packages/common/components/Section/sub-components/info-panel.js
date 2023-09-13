@@ -20,7 +20,7 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   user-select: none;
   height: auto;
   width: auto;
-  background: ${(props) => props.theme.infoPanel.blurColor};
+  background: ${props => props.theme.infoPanel.blurColor};
   backdrop-filter: blur(3px);
   z-index: 300;
   @media ${tablet} {
@@ -48,8 +48,17 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
 const StyledInfoPanel = styled.div`
   height: 100%;
   width: 400px;
-  background-color: ${(props) => props.theme.infoPanel.backgroundColor};
-  border-left: ${(props) => `1px solid ${props.theme.infoPanel.borderColor}`};
+  background-color: ${props => props.theme.infoPanel.backgroundColor};
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          border-right: ${props =>
+            `1px solid ${props.theme.infoPanel.borderColor}`};
+        `
+      : css`
+          border-left: ${props =>
+            `1px solid ${props.theme.infoPanel.borderColor}`};
+        `}
   display: flex;
   flex-direction: column;
 
@@ -60,7 +69,14 @@ const StyledInfoPanel = styled.div`
   @media ${tablet} {
     position: absolute;
     border: none;
-    right: 0;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 0;
+          `
+        : css`
+            right: 0;
+          `}
     width: 480px;
     max-width: calc(100vw - 69px);
   }
@@ -70,7 +86,14 @@ const StyledInfoPanel = styled.div`
     @media ${tablet} {
       position: absolute;
       border: none;
-      right: 0;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              left: 0;
+            `
+          : css`
+              right: 0;
+            `}
       width: 480px;
       max-width: calc(100vw - 69px);
     }
@@ -101,7 +124,14 @@ const StyledControlContainer = styled.div`
     display: flex;
 
     top: 18px;
-    left: -27px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            right: -27px;
+          `
+        : css`
+            left: -27px;
+          `}
   }
 
   ${isMobile &&
@@ -109,7 +139,14 @@ const StyledControlContainer = styled.div`
     @media ${tablet} {
       display: flex;
       top: 18px;
-      left: -27px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              right: -27px;
+            `
+          : css`
+              left: -27px;
+            `}
     }
   `}
 
@@ -117,7 +154,14 @@ const StyledControlContainer = styled.div`
     display: flex;
 
     top: -27px;
-    right: 10px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 10px;
+          `
+        : css`
+            right: 10px;
+          `}
     left: unset;
   }
 `;
@@ -129,7 +173,7 @@ const StyledCrossIcon = styled(CrossIcon)`
   height: 17px;
   z-index: 455;
   path {
-    fill: ${(props) => props.theme.catalog.control.fill};
+    fill: ${props => props.theme.catalog.control.fill};
   }
 `;
 
@@ -146,7 +190,7 @@ const InfoPanel = ({
   const closeInfoPanel = () => setIsVisible(false);
 
   useEffect(() => {
-    const onMouseDown = (e) => {
+    const onMouseDown = e => {
       if (e.target.id === "InfoPanelWrapper") closeInfoPanel();
     };
 
@@ -166,13 +210,11 @@ const InfoPanel = ({
     <StyledInfoPanelWrapper
       isRowView={viewAs === "row"}
       className="info-panel"
-      id="InfoPanelWrapper"
-    >
+      id="InfoPanelWrapper">
       <StyledInfoPanel isRowView={viewAs === "row"}>
         <StyledControlContainer
           isRowView={viewAs === "row"}
-          onClick={closeInfoPanel}
-        >
+          onClick={closeInfoPanel}>
           <StyledCrossIcon />
         </StyledControlContainer>
 

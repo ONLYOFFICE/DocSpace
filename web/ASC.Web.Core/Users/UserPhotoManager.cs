@@ -171,11 +171,12 @@ public class UserPhotoManagerCache
             return null;
         }
 
-        if (size != Size.Empty && !val.TryGetValue(UserPhotoManager.ToCache(size), out fileName))
+        if (!val.TryGetValue(UserPhotoManager.ToCache(size), out fileName))
         {
             return null;
         }
-        else if (String.IsNullOrEmpty(fileName))
+
+        if (String.IsNullOrEmpty(fileName))
         {
             fileName = val.Values.FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
         }
@@ -562,6 +563,9 @@ public class UserPhotoManager
 
             await Task.WhenAll(t1, t2, t3, t4, t5);
         }
+        
+        _userPhotoManagerCache.AddToCache(userID, Size.Empty, fileName, await _tenantManager.GetCurrentTenantIdAsync());
+        
         return (photoUrl, fileName);
     }
 

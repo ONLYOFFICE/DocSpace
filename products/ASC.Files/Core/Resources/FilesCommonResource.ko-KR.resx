@@ -179,7 +179,8 @@
     <value>생성, 수정, 저장하고 문서를 공유 할 수 있습니다. 귀하의 Google 드라이브, Dropbox 및 Box 계정을 연결하고 한 곳에서 모든 문서가 있습니다.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>생성, 수정, 저장하고 문서를 공유 할 수 있습니다. 귀하의 Google 드라이브, Dropbox 및 Box 계정을 연결하고 한 곳에서 모든 문서가 있습니다.</value>
+    <value>오피스 문서를 생성, 편집 및 공유하고 실시간으로 공동 작업하세요.
+docx, xlsx, pptx와 최고의 호환성이 보장됩니다.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>문서</value>
@@ -282,5 +283,140 @@
   </data>
   <data name="UnknownLastName" xml:space="preserve">
     <value>성</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>폴더를 이동할 수 있는 권한이 없습니다</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>파일을 이동할 수 있는 권한이 없습니다</value>
+  </data>
+  <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
+    <value>이 사용자를 선택할 수 없습니다</value>
+  </data>
+  <data name="DocuSignStatusVoided" xml:space="preserve">
+    <value>해제되었습니다</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>공유 문서를 확인하고 다운로드하세요. 공유 폴더에 파일을 업로드하세요. docx, xlsx, pptx와 최고의 호환성이 보장됩니다.</value>
+  </data>
+  <data name="ErrorMassage_UserNotFound" xml:space="preserve">
+    <value>사용자를 찾을 수 없습니다</value>
+  </data>
+  <data name="AppAccessDenied" xml:space="preserve">
+    <value>파일 작업을 하려면 액세스 권한을 부여해야 합니다</value>
+  </data>
+  <data name="DocuSignStatusError" xml:space="preserve">
+    <value>전송 작업 중 오류가 발생했습니다</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>OFORM 사본이 {0} 폴더에 생성되었습니다. 양식을 작성하고 결과를 PDF 또는 DOCX 파일로 다운로드하세요.</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>텍스트를 입력할 수 있는 OFORM 문서가 준비되었습니다. {0}에 저장되었습니다</value>
+  </data>
+  <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
+    <value>저장하려고 시도할 때 파일이 손상되었습니다</value>
+  </data>
+  <data name="UnlockComment" xml:space="preserve">
+    <value>파일의 잠금이 해제되었습니다</value>
+  </data>
+  <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
+    <value>{0}님이 편집을 위해 파일을 열어 둔 상태입니다. 현재 이 파일 형식에는 공동 편집 기능이 지원되지 않습니다.</value>
+  </data>
+  <data name="ErrorMassage_EditingMobile" xml:space="preserve">
+    <value>{0}님이 모바일 애플리케이션에서 편집을 위해 파일을 열어 둔 상태입니다</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>파일은 더 이상 양식을 작성하기 위한 초안이 아닙니다.</value>
+  </data>
+  <data name="ErrorMassage_LockedFile" xml:space="preserve">
+    <value>파일이 현재 다른 사용자에 의해 잠겨 있습니다</value>
+  </data>
+  <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
+    <value>제3자 폴더의 콘텐츠를 사용할 수 없습니다. 계정을 다시 연결해보세요.</value>
+  </data>
+  <data name="DocuSignStatusNotSended" xml:space="preserve">
+    <value>DocuSign을 통한 문서 전송이 취소되었습니다</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>문서 콘텐츠에서 검색</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>저장되었습니다</value>
+  </data>
+  <data name="AceStatusEnum_Review" xml:space="preserve">
+    <value>리뷰</value>
+  </data>
+  <data name="CommentRevert" xml:space="preserve">
+    <value>{0}의 리비전에서 복원되었습니다</value>
+  </data>
+  <data name="CommentRevertChanges" xml:space="preserve">
+    <value>{0}의 문서 변경에서 복원되었습니다</value>
+  </data>
+  <data name="CommentOverwrite" xml:space="preserve">
+    <value>덮어쓰기 되었습니다</value>
+  </data>
+  <data name="AceShareLink" xml:space="preserve">
+    <value>외부 포털</value>
+  </data>
+  <data name="ErrorMassage_InvalidTitle" xml:space="preserve">
+    <value>잘못된 제목입니다</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>양식 채우기</value>
+  </data>
+  <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
+    <value>{0}보다 큰 파일은 이동되지 않습니다</value>
+  </data>
+  <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
+    <value>{0}보다 큰 파일은 편집되지 않습니다</value>
+  </data>
+  <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
+    <value>{0}보다 큰 파일은 복사되지 않습니다</value>
+  </data>
+  <data name="ErrorMassage_FileSizeConvert" xml:space="preserve">
+    <value>{0}보다 큰 파일은 변환되지 않습니다</value>
+  </data>
+  <data name="ErrorMassage_StartEditing" xml:space="preserve">
+    <value>파일 편집 시작 오류</value>
+  </data>
+  <data name="MessageFileCreated" xml:space="preserve">
+    <value>"{0}" 폴더에 파일이 생성되었습니다</value>
+  </data>
+  <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
+    <value>저장할 파일을 가져오지 못했습니다</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>외부 링크</value>
+  </data>
+  <data name="ErrorMassage_DocServiceException" xml:space="preserve">
+    <value>문서 서비스에서 오류가 발생했습니다</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>암호화되었습니다</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>암호화로 편집되었습니다</value>
+  </data>
+  <data name="DocuSignStatusSended" xml:space="preserve">
+    <value>문서가 DocuSign을 통해 서명하도록 전송되었습니다</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>양식을 채우기 위해 생성되었습니다</value>
+  </data>
+  <data name="CommentCopy" xml:space="preserve">
+    <value>복사되었습니다</value>
+  </data>
+  <data name="CommentConvert" xml:space="preserve">
+    <value>{0}에서 변환되었습니다</value>
+  </data>
+  <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
+    <value>변환에 너무 많은 시간이 소요됩니다.</value>
+  </data>
+  <data name="CommentChangeOwner" xml:space="preserve">
+    <value>소유자가 변경되었습니다</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
+    <value>제공된 자격 증명으로 {0} 제공자에서 인증할 수 없습니다.</value>
   </data>
 </root>

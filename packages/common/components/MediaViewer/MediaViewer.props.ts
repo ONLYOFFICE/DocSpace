@@ -17,6 +17,8 @@ export interface MediaViewerProps {
   extsMediaPreviewed: string[];
   extsImagePreviewed: string[];
 
+  someDialogIsOpen: boolean;
+
   deleteDialogVisible: boolean;
   errorLabel: string;
   isPreviewFile: boolean;
