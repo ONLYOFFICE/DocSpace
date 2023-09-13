@@ -31,11 +31,13 @@ export default meta;
 export const Default: Story = {
   args: {},
 
-  render: ({ value: defaultValue }) => {
+  render: ({ value: defaultValue }, context) => {
     const [input, setInput] = useState(defaultValue);
 
     const [cron, setCron] = useState(defaultValue);
     const [error, setError] = useState<Error>();
+
+    const { locale } = context.globals;
 
     const onError = (error?: Error) => {
       setError(error);
@@ -86,7 +88,10 @@ export const Default: Story = {
         {date && (
           <p>
             <strong>Next synchronization: </strong>{" "}
-            {date.toUTC().setLocale("en-GB").toFormat("DDDD tt")}
+            {date
+              .toUTC()
+              .setLocale(locale ?? "en")
+              .toFormat("DDDD tt")}
           </p>
         )}
       </div>

@@ -15,6 +15,9 @@ const globalTypes = {
     description: "Internationalization locale",
     toolbar: {
       icon: "globe",
+      defaultValue: "en",
+      dynamicTitle: true,
+      showName: true,
       items: [
         { value: "ar-SA", title: "عربي (المملكة العربية السعودية)" },
         { value: "az", title: "Azərbaycan (Latın, Azərbaycan)" },
@@ -45,7 +48,6 @@ const globalTypes = {
         { value: "vi", title: "Tiếng Việt (Việt Nam)" },
         { value: "zh-CN", title: "中文（简体，中国）" },
       ],
-      showName: true,
     },
   },
 };
