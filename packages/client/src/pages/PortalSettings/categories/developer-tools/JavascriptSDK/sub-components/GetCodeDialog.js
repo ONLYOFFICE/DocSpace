@@ -4,9 +4,12 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Textarea from "@docspace/components/textarea";
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
+import { useTheme } from "styled-components";
 
 const GetCodeDialog = (props) => {
   const { t, codeBlock, visible, onClose } = props;
+
+  const theme = useTheme();
 
   const onCopyClick = () => {
     copy(codeBlock);
@@ -18,7 +21,12 @@ const GetCodeDialog = (props) => {
     <ModalDialog visible={visible} isLarge onClose={onClose}>
       <ModalDialog.Header>{t("CopyWindowCode")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Textarea isReadOnly heightTextArea={180} placeholder={codeBlock} />
+        <Textarea
+          color={theme.textInput.placeholderColor}
+          isReadOnly
+          heightTextArea={180}
+          value={codeBlock}
+        />
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
