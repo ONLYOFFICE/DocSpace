@@ -57,6 +57,7 @@ const Navigation = ({
   burgerLogo,
   isPublicRoom,
   titleIcon,
+
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);

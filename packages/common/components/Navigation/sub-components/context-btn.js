@@ -42,7 +42,7 @@ const ContextButton = (props) => {
         ref={menuRef}
         onHide={onHide}
         scaled={false}
-        leftOffset={isDesktop() ? (isTrashFolder ? 188 : 150) : 0}
+        leftOffset={isTrashFolder ? 188 : isDesktop() ? 150 : 0}
       />
     </div>
   );

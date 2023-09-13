@@ -108,7 +108,7 @@ class FilesStore {
   mainButtonMobileVisible = true;
   filesIsLoading = false;
 
-  isEmptyPage = false;
+  isEmptyPage = true;
   isLoadedFetchFiles = false;
 
   tempActionFilesIds = [];
@@ -2803,10 +2803,10 @@ class FilesStore {
 
     const items = [...newFolders, ...this.files];
 
-    const isItemsEmpty = items.length === 0;
-
-    if (this.isEmptyPage !== isItemsEmpty) {
-      this.setIsEmptyPage(isItemsEmpty);
+    if (items.length > 0 && this.isEmptyPage) {
+      this.setIsEmptyPage(false);
+    } else if (items.length === 0 && !this.isEmptyPage) {
+      this.setIsEmptyPage(true);
     }
 
     const newItem = items.map((item) => {

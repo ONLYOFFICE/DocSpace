@@ -223,11 +223,9 @@ const SectionHeader = (props) => {
     settingsStudio = false,
     className,
     isEmptyPage,
+    isTrashFolder,
     ...rest
   } = props;
-
-  const pathname = window.location.pathname.toLowerCase();
-  const isTrashFolder = pathname.indexOf("trash") !== -1;
 
   return (
     <StyledSectionHeader
