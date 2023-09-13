@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
 namespace ASC.Notify.Textile;
 
 [Scope]
@@ -38,6 +37,7 @@ public class TextileStyler : IPatternStyler
     private readonly IConfiguration _configuration;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly MailWhiteLabelSettingsHelper _mailWhiteLabelSettingsHelper;
+
     static TextileStyler()
     {
         const string file = "ASC.Notify.Textile.Resources.style.css";
