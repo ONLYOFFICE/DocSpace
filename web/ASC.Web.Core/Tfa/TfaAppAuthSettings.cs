@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Studio.Core.TFA;
 
-[Serializable]
 public class TfaAppAuthSettings : TfaSettingsBase<TfaAppAuthSettings>
 {
     [JsonIgnore]

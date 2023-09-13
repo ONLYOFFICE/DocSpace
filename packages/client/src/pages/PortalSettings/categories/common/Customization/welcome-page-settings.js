@@ -135,14 +135,6 @@ const WelcomePageSettings = (props) => {
       setState((val) => ({ ...val, hasScroll: scrollLngTZSettings }));
     }
 
-    // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile =
-      document.getElementsByClassName("settings-mobile")[0];
-
-    if (settingsMobile) {
-      settingsMobile.style.display = "none";
-    }
-
     if (greetingSettings !== prevProps.greetingSettings) {
       setState((val) => ({ ...val, greetingTitle: greetingSettings }));
     }
@@ -342,11 +334,7 @@ const WelcomePageSettings = (props) => {
           {t("Common:LearnMore")}
         </Link>
       </div>
-      {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-        <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
-      ) : (
-        <> {settingsBlock}</>
-      )}
+      {settingsBlock}
       <SaveCancelButtons
         tabIndex={6}
         id="buttonsWelcomePage"

@@ -26,7 +26,6 @@
 
 namespace ASC.Common.Security.Authorizing;
 
-[Serializable]
 public class AuthorizingException : Exception
 {
     public ISubject Subject { get; internal set; }

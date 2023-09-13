@@ -28,7 +28,6 @@ namespace ASC.Core;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class TenantVersion
 {
     /// <summary>ID</summary>

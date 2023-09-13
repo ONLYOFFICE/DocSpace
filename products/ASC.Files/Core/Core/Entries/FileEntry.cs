@@ -28,7 +28,6 @@ using static ASC.Files.Core.Security.FileSecurity;
 
 namespace ASC.Files.Core;
 
-[Serializable]
 public abstract class FileEntry : ICloneable
 {
     [JsonIgnore]
@@ -108,8 +107,6 @@ public interface IFileEntry<in T>
     string UniqID { get; }
 }
 
-
-[Serializable]
 public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
 {
     public T Id { get; set; }
@@ -152,8 +149,8 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
             if (!ModifiedOn.Equals(default) && Equals(FolderIdDisplay, _globalFolderHelper.FolderTrashAsync.Result) && _filesSettingsHelper.AutomaticallyCleanUp.IsAutoCleanUp)
             {
                 return _fileDateTime.GetModifiedOnWithAutoCleanUp(ModifiedOn, _filesSettingsHelper.AutomaticallyCleanUp.Gap);
-            } 
-            
+            }
+
             return default;
         }
     }
