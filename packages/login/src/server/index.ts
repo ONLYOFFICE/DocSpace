@@ -59,7 +59,7 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
 
   try {
     initialState = await getInitialState(query);
-    const hideAuthPage = false;
+    const hideAuthPage = initialState?.ssoSettings?.hideAuthPage;
     const ssoUrl = initialState?.capabilities?.ssoUrl;
 
     if (hideAuthPage && ssoUrl && query.skipssoredirect !== "true") {
