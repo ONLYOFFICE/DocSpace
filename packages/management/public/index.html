@@ -44,8 +44,37 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+
+    <script src="/static/scripts/browserDetector.js"></script>
     <script>
       console.log("It's Management INIT");
+      fetch("/static/scripts/config.json")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+          }
+          return response.json();
+        })
+        .then((config) => {
+          window.DocSpaceConfig = {
+            ...config,
+          };
+
+          if (
+            window.navigator.userAgent.includes("ZoomWebKit") ||
+            window.navigator.userAgent.includes("ZoomApps")
+          ) {
+            window.DocSpaceConfig.editor = {
+              openOnNewPage: false,
+              requestClose: true,
+            };
+          }
+
+          //console.log({ DocSpaceConfig: window.DocSpaceConfig });
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     </script>
   </body>
 </html>
