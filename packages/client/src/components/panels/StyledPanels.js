@@ -1,12 +1,13 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@docspace/components/scrollbar";
+import Link from "@docspace/components/link";
 import { desktop, mobile, tablet } from "@docspace/components/utils/device";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { Base } from "@docspace/components/themes";
 
 const PanelStyles = css`
   .panel_combo-box {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 10px;
@@ -16,7 +17,7 @@ const PanelStyles = css`
           `}
 
     .optionalBlock {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-left: 4px;
@@ -53,7 +54,7 @@ const StyledAsidePanel = styled.div`
     width: 100%;
     font-weight: 700;
     margin: 14px 0;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-left: 10px;
@@ -64,7 +65,7 @@ const StyledAsidePanel = styled.div`
   }
   .upload_panel-header {
     font-weight: 700;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding: 19px 17px 19px auto;
@@ -78,7 +79,8 @@ const StyledAsidePanel = styled.div`
     position: fixed;
     left: 0;
     right: 0;
-    background-color: ${props => props.theme.filesPanels.aside.backgroundColor};
+    background-color: ${(props) =>
+      props.theme.filesPanels.aside.backgroundColor};
     height: ${isMobile ? "55px" : "48px"};
   }
   .upload-panel_header-content::after {
@@ -86,7 +88,7 @@ const StyledAsidePanel = styled.div`
     width: 100%;
     max-width: 468px;
     height: 1px;
-    background: ${props => props.theme.filesPanels.sharing.borderBottom};
+    background: ${(props) => props.theme.filesPanels.sharing.borderBottom};
     content: "";
     top: 48px;
     width: calc(100% - 32px);
@@ -98,12 +100,12 @@ const StyledAsidePanel = styled.div`
 
   .modal-dialog-aside {
     padding: 0;
-    transform: translateX(${props => (props.visible ? "0" : "500px")});
+    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
     width: 500px;
 
     @media (max-width: 550px) {
       width: 320px;
-      transform: translateX(${props => (props.visible ? "0" : "320px")});
+      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
     }
   }
 
@@ -117,7 +119,7 @@ const StyledVersionHistoryPanel = styled.div`
 
   .version-history-modal-dialog {
     transition: unset;
-    transform: translateX(${props => (props.visible ? "0" : "480px")});
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
     width: 480px;
     max-width: 480px;
   }
@@ -125,7 +127,7 @@ const StyledVersionHistoryPanel = styled.div`
   .version-history-panel-header {
     margin-bottom: 12px;
     height: 53px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 0px;
@@ -141,8 +143,8 @@ const StyledVersionHistoryPanel = styled.div`
   }
 
   .version-history-panel-body {
-    padding-bottom: ${props => (props.isLoading ? "0px" : null)};
-    ${props =>
+    padding-bottom: ${(props) => (props.isLoading ? "0px" : null)};
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 16px;
@@ -155,7 +157,7 @@ const StyledVersionHistoryPanel = styled.div`
     box-sizing: border-box;
 
     .version-comment-wrapper {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-right: 85px;
@@ -166,7 +168,7 @@ const StyledVersionHistoryPanel = styled.div`
     }
 
     .version_edit-comment {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               padding-right: 7px;
@@ -189,10 +191,11 @@ const StyledContent = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: ${props => props.theme.filesPanels.content.backgroundColor};
+  background-color: ${(props) =>
+    props.theme.filesPanels.content.backgroundColor};
 
   .upload-panel_header-content {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 0 !important;
@@ -203,7 +206,7 @@ const StyledContent = styled.div`
   }
 
   .header_aside-panel-plus-icon {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: auto;
@@ -216,7 +219,7 @@ const StyledContent = styled.div`
   .sharing-access-combo-box-icon {
     height: 16px;
     path {
-      fill: ${props =>
+      fill: ${(props) =>
         props.isDisabled
           ? props.theme.filesPanels.content.disabledFill
           : props.theme.filesPanels.content.fill};
@@ -232,7 +235,7 @@ const StyledContent = styled.div`
 
   .panel-loader-wrapper {
     margin-top: 8px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-right: 32px;
@@ -243,7 +246,7 @@ const StyledContent = styled.div`
   }
   .panel-loader {
     display: inline;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 10px;
@@ -255,7 +258,7 @@ const StyledContent = styled.div`
 
   .layout-progress-bar {
     position: fixed;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             left: 15px;
@@ -278,7 +281,7 @@ const StyledHeaderContent = styled.div`
   align-items: center;
   padding: 0 16px;
 
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-left: -16px;
@@ -287,11 +290,11 @@ const StyledHeaderContent = styled.div`
           margin-right: -16px;
         `}
 
-  border-bottom: ${props => props.theme.filesPanels.sharing.borderBottom};
+  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
   .upload_panel-icons-container {
     display: flex;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: auto;
@@ -322,7 +325,7 @@ StyledHeaderContent.defaultProps = { theme: Base };
 
 const StyledBody = styled.div`
   &.files-operations-body {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding: 0 16px 0 0;
@@ -335,7 +338,7 @@ const StyledBody = styled.div`
     height: calc(100vh - 125px);
 
     .styled-element {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-right: -2px;
@@ -392,7 +395,7 @@ const StyledBody = styled.div`
 
   .sharing-access-combo-box-icon {
     path {
-      fill: ${props => props.theme.filesPanels.body.fill};
+      fill: ${(props) => props.theme.filesPanels.body.fill};
     }
   }
 `;
@@ -423,7 +426,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing-row {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-right: 16px;
@@ -464,7 +467,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing_panel-link-combo-box {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: auto;
@@ -486,7 +489,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing_panel-owner-icon {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-left: 19px;
@@ -497,7 +500,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing_panel-remove-icon {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: auto;
@@ -517,7 +520,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .panel_combo-box {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 0px;
@@ -570,6 +573,10 @@ const StyledSharingBody = styled(Scrollbar)`
       font-size: 13px;
     }
   }
+
+  .row-loader {
+    margin-left: 4px;
+  }
 `;
 
 const StyledFooter = styled.div`
@@ -581,8 +588,9 @@ const StyledFooter = styled.div`
   margin: auto;
   left: 0;
   right: 0;
-  background-color: ${props => props.theme.filesPanels.footer.backgroundColor};
-  border-top: ${props => props.theme.filesPanels.footer.borderTop};
+  background-color: ${(props) =>
+    props.theme.filesPanels.footer.backgroundColor};
+  border-top: ${(props) => props.theme.filesPanels.footer.borderTop};
   box-sizing: border-box;
 
   .sharing_panel-checkbox {
@@ -592,7 +600,7 @@ const StyledFooter = styled.div`
     }
 
     .checkbox {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-left: 6px;
@@ -604,7 +612,7 @@ const StyledFooter = styled.div`
   }
 
   .sharing_panel-button {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: auto;
@@ -615,7 +623,7 @@ const StyledFooter = styled.div`
   }
 
   .new_file_panel-first-button {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 8px;
@@ -647,7 +655,7 @@ const StyledFooter = styled.div`
 StyledFooter.defaultProps = { theme: Base };
 
 const StyledLinkRow = styled.div`
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-left: -16px;
@@ -657,11 +665,12 @@ const StyledLinkRow = styled.div`
         `}
   padding: 0 16px;
   box-sizing: border-box;
-  background-color: ${props => props.theme.filesPanels.linkRow.backgroundColor};
+  background-color: ${(props) =>
+    props.theme.filesPanels.linkRow.backgroundColor};
 
   .sharing-access-combo-box-icon {
     path {
-      fill: ${props =>
+      fill: ${(props) =>
         props.isDisabled
           ? props.theme.filesPanels.linkRow.disabledFill
           : props.theme.filesPanels.linkRow.fill};
@@ -675,7 +684,7 @@ const StyledLinkRow = styled.div`
       a {
         text-decoration: none;
 
-        ${props =>
+        ${(props) =>
           props.isDisabled &&
           css`
             :hover {
@@ -687,7 +696,7 @@ const StyledLinkRow = styled.div`
   }
 
   .link-row {
-    ${props => !props.withToggle && "border-bottom:none;"}
+    ${(props) => !props.withToggle && "border-bottom:none;"}
   }
 
   .sharing-row__toggle-button {
@@ -734,7 +743,7 @@ const StyledModalRowContainer = styled.div`
   }
 
   .panel_combo-box {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 0px;
@@ -751,7 +760,7 @@ const StyledModalRowContainer = styled.div`
     }
 
     .optionalBlock {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-left: 4px;
@@ -770,7 +779,7 @@ const StyledModalRowContainer = styled.div`
     .sharing-access-combo-box-icon {
       height: 16px;
       path {
-        fill: ${props =>
+        fill: ${(props) =>
           props.isDisabled
             ? props.theme.filesPanels.modalRow.disabledFill
             : props.theme.filesPanels.modalRow.fill};
@@ -797,7 +806,7 @@ const StyledModalRowContainer = styled.div`
     position: absolute;
     z-index: 1;
     margin: 8px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             left: 0px;
@@ -811,7 +820,7 @@ const StyledModalRowContainer = styled.div`
     display: flex;
 
     .embedding-panel_link {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-left: 8px;
@@ -831,7 +840,7 @@ const StyledModalRowContainer = styled.div`
     display: flex;
 
     .embedding-panel_input {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-left: 8px;
@@ -855,7 +864,7 @@ const StyledModalRowContainer = styled.div`
     position: absolute;
     z-index: 1;
     margin: 8px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             left: 0;
@@ -867,7 +876,7 @@ const StyledModalRowContainer = styled.div`
 
   .panel-loader-wrapper {
     margin-top: 8px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-right: 32px;
@@ -878,7 +887,7 @@ const StyledModalRowContainer = styled.div`
   }
   .panel-loader {
     display: inline;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 10px;
@@ -896,6 +905,10 @@ const StyledModalRowContainer = styled.div`
   }
 `;
 
+const StyledLink = styled(Link)`
+  color: ${(props) => props.theme.filesPanels.color};
+`;
+
 StyledModalRowContainer.defaultProps = { theme: Base };
 
 export {
@@ -909,4 +922,5 @@ export {
   StyledFooter,
   StyledLinkRow,
   StyledModalRowContainer,
+  StyledLink,
 };

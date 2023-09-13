@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Bu faylı silmək üzrəsiniz. Davam etmək istədiyinizə əminsiniz?",
-  "DeleteFolder": "Bu qovluğu silmək üzrəsiniz. Davam etmək istədiyinizə əminsiniz?",
-  "DeleteItems": "Bu elementləri silmək üzrəsiniz. Davam etmək istədiyinizə əminsiniz?",
+  "DeleteFile": "Bu faylı silmək üzrəsiniz.",
+  "DeleteFolder": "Bu qovluğu silmək üzrəsiniz.",
+  "DeleteItems": "Bu elementləri silmək üzrəsiniz. ",
   "DeleteRoom": "Siz bu otağı silmək üzrəsiniz. Siz onu bərpa edə bilməzsiniz.",
   "DeleteRooms": "Bu otaqları silmək üzrəsiniz. Onları bərpa edə bilməzsiniz.",
   "MoveToTrashButton": "Zibil qutusuna yerləşdir",
