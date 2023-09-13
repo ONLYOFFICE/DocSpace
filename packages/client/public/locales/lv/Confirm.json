@@ -28,6 +28,5 @@
   "SetAppTitle": "Konfigurējiet savu autentifikācijas lietojumprogrammu",
   "SuccessDeactivate": "Jūsu konts ir veiksmīgi deaktivizēts. Pēc 10 sekundēm jūs tiksiet novirzīts uz <1>vietni</1>.",
   "SuccessReactivate": "Jūsu konts ir veiksmīgi atkārtoti aktivizēts. Pēc 10 sekundēm jūs tiksiet novirzīts uz <1>portālu</1>.",
-  "SuccessRemoved": "Jūsu konts ir veiksmīgi noņemts. Jūs tiksiet novirzīts uz <1>vietni</1> pēc 10 sekundēm.",
-  "WelcomeUser": "Laipni lūdzam pievienoties mūsu DocSpace!\nLai sāktu, reģistrējieties vai piesakieties, izmantojot sociālo tīklu."
+  "SuccessRemoved": "Jūsu konts ir veiksmīgi noņemts. Jūs tiksiet novirzīts uz <1>vietni</1> pēc 10 sekundēm."
 }
