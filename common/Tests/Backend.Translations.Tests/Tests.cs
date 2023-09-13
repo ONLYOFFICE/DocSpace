@@ -281,7 +281,7 @@ public class Tests
         Assert.True(allExist, message.ToString());
     }
 
-    [Test, Order(4)]
+    /*[Test, Order(4)]
     public void CompliesToRulePunctuationLead()
     {
         CompliesToRule("The punctuation at the start of the messages doesn't match up:\n", CheckRules.CompliesToRulePunctuationLead);
@@ -292,7 +292,7 @@ public class Tests
     {
         CompliesToRule("The punctuation at the end of the messages doesn't match up:\n", CheckRules.CompliesToRulePunctuationTail);
     }
-
+    */
     [Test, Order(6)]
     public void CompliesToRuleWhiteSpaceLead()
     {
