@@ -41,7 +41,7 @@ const CreatePortalDialog = () => {
   const [restrictAccess, setRestrictAccess] = React.useState<boolean>(false);
 
   const { spacesStore, authStore } = useStore();
-  const { domain } = authStore.settingsStore;
+  const { domain, tenantAlias, baseDomain } = authStore.settingsStore;
 
   const {
     createPortalDialogVisible: visible,
@@ -69,10 +69,17 @@ const CreatePortalDialog = () => {
     };
     try {
       const res = await createNewPortal(data);
+      const protocol = window?.location?.protocol;
+
       if (visit) {
-        const protocol = window?.location?.protocol;
         return window.open(`${protocol}//${res?.tenant?.domain}/`, "_self");
       }
+
+      const host = `${tenantAlias}.${baseDomain}`;
+
+      if (window.location.hostname !== host)
+        return window.open(`${protocol}//${res?.tenant?.domain}/`, "_self");
+
       await authStore.settingsStore.getAllPortals();
     } catch (error) {
       toastr.error(t("PortalExists"));
