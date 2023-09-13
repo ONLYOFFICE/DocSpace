@@ -3172,7 +3172,9 @@ public class FileStorageService //: IFileStorageService
             }
 
             var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, share.Access, _authContext.CurrentAccount.ID);
-            await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, link);
+            var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
+
+            await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, shortenLink);
         }
     }
 
