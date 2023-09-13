@@ -14,10 +14,12 @@ export const getCalendarDays = (date) => {
     .startOf("week")
     .date();
 
+  let yearMonthDate = observedDate.clone().format("YYYY-MM-");
+
   for (let i = 1; i <= observedDate.clone().daysInMonth(); i++) {
     currentMonthDays.push({
-      key: observedDate.clone().format("YYYY-MM") + "-" + i,
-      value: i,
+      key: yearMonthDate + moment(yearMonthDate + i, "YYYY-MM-D").format("D"),
+      value: moment(yearMonthDate + i, "YYYY-MM-D").format("D"),
     });
   }
 
@@ -26,16 +28,21 @@ export const getCalendarDays = (date) => {
       .clone()
       .subtract(1, "months")
       .daysInMonth();
+
+    yearMonthDate = observedDate
+      .clone()
+      .subtract(1, "months")
+      .format("YYYY-MM-");
+
     for (let i = firstCalendarMonday; i <= prevMonthLength; i++) {
       prevMonthDays.push({
-        key:
-          observedDate.clone().subtract(1, "months").format("YYYY-MM") +
-          "-" +
-          i,
-        value: i,
+        key: yearMonthDate + moment(yearMonthDate + i, "YYYY-MM-D").format("D"),
+        value: moment(yearMonthDate + i, "YYYY-MM-D").format("D"),
       });
     }
   }
+
+  yearMonthDate = observedDate.clone().add(1, "months").format("YYYY-MM-");
 
   for (
     let i = 1;
@@ -43,8 +50,8 @@ export const getCalendarDays = (date) => {
     i++
   ) {
     nextMonthDays.push({
-      key: observedDate.clone().add(1, "months").format("YYYY-MM") + "-" + i,
-      value: i,
+      key: yearMonthDate + moment(yearMonthDate + i, "YYYY-MM-D").format("D"),
+      value: moment(yearMonthDate + i, "YYYY-MM-D").format("D"),
     });
   }
 
