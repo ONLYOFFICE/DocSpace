@@ -28,7 +28,6 @@ namespace ASC.Web.Core.WhiteLabel;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class MailWhiteLabelSettings : ISettings<MailWhiteLabelSettings>
 {
     private readonly MailWhiteLabelSettingsHelper _mailWhiteLabelSettingsHelper;

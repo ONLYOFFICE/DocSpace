@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Core.Sms;
 
-[Serializable]
 public abstract class TfaSettingsBase<T> : ISettings<T> where T : ISettings<T>
 {
     [JsonPropertyName("Enable")]

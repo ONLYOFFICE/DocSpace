@@ -28,7 +28,6 @@ using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.TFA;
 
-[Serializable]
 public class BackupCode
 {
     public bool IsUsed { get; set; }

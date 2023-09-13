@@ -26,8 +26,6 @@
 
 using Flurl.Util;
 
-using JsonConverter = System.Text.Json.Serialization.JsonConverter;
-
 namespace ASC.Api.Core;
 
 public abstract class BaseStartup
@@ -40,7 +38,6 @@ public abstract class BaseStartup
     private readonly IHostEnvironment _hostEnvironment;
     private readonly string _corsOrigin;
 
-    protected virtual JsonConverter[] Converters { get; }
     protected virtual bool AddControllersAsServices { get; }
     protected virtual bool ConfirmAddScheme { get; }
     protected virtual bool AddAndUseSession { get; }
@@ -232,15 +229,6 @@ public abstract class BaseStartup
             {
                 options.JsonSerializerOptions.WriteIndented = false;
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
-
-                if (Converters != null)
-                {
-                    foreach (var c in Converters)
-                    {
-                        options.JsonSerializerOptions.Converters.Add(c);
-                    }
-                }
             };
 
         services.AddControllers().AddJsonOptions(jsonOptions);

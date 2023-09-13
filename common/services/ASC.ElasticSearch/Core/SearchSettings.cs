@@ -26,7 +26,6 @@
 
 namespace ASC.ElasticSearch.Core;
 
-[Serializable]
 public class SearchSettings : ISettings<SearchSettings>
 {
     public string Data { get; set; }
@@ -187,7 +186,6 @@ public class SearchSettingsHelper
     }
 }
 
-[Serializable]
 public class SearchSettingsItem
 {
     public string ID { get; set; }
