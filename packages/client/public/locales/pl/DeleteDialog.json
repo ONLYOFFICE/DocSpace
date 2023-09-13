@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Zamierzasz usunąć ten plik. Czy na pewno chcesz kontynuować?",
-  "DeleteFolder": "Zamierzasz usunąć ten katalog. Czy na pewno chcesz kontynuować?",
-  "DeleteItems": "Zamierzasz usunąć te pozycje. Czy na pewno chcesz kontynuować?",
+  "DeleteFile": "Zamierzasz usunąć ten plik. ",
+  "DeleteFolder": "Zamierzasz usunąć ten katalog. ",
+  "DeleteItems": "Zamierzasz usunąć te pozycje. ",
   "DeleteRoom": "Zamierzasz usunąć ten pokój. Nie będziesz w stanie go odzyskać.",
   "DeleteRooms": "Zamierzasz usunąć te pokoje. Nie będziesz w stanie ich odzyskać.",
   "MoveToTrashButton": "Przenieś do kosza",

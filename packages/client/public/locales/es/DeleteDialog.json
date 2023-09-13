@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Está a punto de eliminar este archivo. ¿Está seguro de que desea continuar?",
-  "DeleteFolder": "Está a punto de eliminar esta carpeta. ¿Está seguro de que desea continuar?",
-  "DeleteItems": "Está a punto de eliminar estos elementos. ¿Está seguro de que desea continuar?",
+  "DeleteFile": "Está a punto de eliminar este archivo.",
+  "DeleteFolder": "Está a punto de eliminar esta carpeta. ",
+  "DeleteItems": "Está a punto de eliminar estos elementos. ",
   "DeleteRoom": "Está a punto de eliminar esta sala. No podrá restaurarla.",
   "DeleteRooms": "Está a punto de eliminar estas salas. No podrá restaurarlas.",
   "MoveToTrashButton": "Mover a la papelera",
