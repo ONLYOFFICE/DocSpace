@@ -34,6 +34,7 @@ public class SsoController : BaseSettingsController
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly UserManager _userManager;
     private readonly MessageService _messageService;
+    private readonly AuthContext _authContext;
 
     public SsoController(
         TenantManager tenantManager,
@@ -45,7 +46,8 @@ public class SsoController : BaseSettingsController
         PermissionContext permissionContext,
         CoreBaseSettings coreBaseSettings,
         UserManager userManager,
-        MessageService messageService) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        MessageService messageService,
+        AuthContext authContext) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
@@ -53,6 +55,7 @@ public class SsoController : BaseSettingsController
         _coreBaseSettings = coreBaseSettings;
         _userManager = userManager;
         _messageService = messageService;
+        _authContext = authContext;
     }
 
     /// <summary>
@@ -66,11 +69,31 @@ public class SsoController : BaseSettingsController
     /// <path>api/2.0/settings/ssov2</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2")]
+    [AllowAnonymous]
     public async Task<SsoSettingsV2> GetSsoSettingsV2()
     {
-        await CheckSsoPermissionsAsync();
-
         var settings = await _settingsManager.LoadAsync<SsoSettingsV2>();
+
+        if (!_authContext.IsAuthenticated)
+        {
+            bool hideAuthPage;
+            try
+            {
+                await CheckSsoPermissionsAsync(true);
+                hideAuthPage = settings.HideAuthPage;
+            }
+            catch (BillingException)
+            {
+                hideAuthPage = false;
+            }
+
+            return new SsoSettingsV2
+            {
+                HideAuthPage = hideAuthPage
+            };
+        }
+
+        await CheckSsoPermissionsAsync();
 
         if (string.IsNullOrEmpty(settings.SpLoginLabel))
         {
@@ -193,12 +216,13 @@ public class SsoController : BaseSettingsController
             throw new Exception(Resource.SsoSettingsCantSaveSettings);
         }
 
-        if (!settings.EnableSso)
+        var enableSso = settings.EnableSso.GetValueOrDefault();
+        if (!enableSso)
         {
             await ConverSsoUsersToOrdinaryAsync();
         }
 
-        var messageAction = settings.EnableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
+        var messageAction = enableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
 
         await _messageService.SendAsync(messageAction);
 
@@ -259,9 +283,12 @@ public class SsoController : BaseSettingsController
         return Uri.TryCreate(uriName, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
     }
 
-    private async Task CheckSsoPermissionsAsync()
+    private async Task CheckSsoPermissionsAsync(bool allowAnonymous = false)
     {
-        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        if (!allowAnonymous)
+        {
+            await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        }
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())

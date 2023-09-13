@@ -5125,6 +5125,15 @@ namespace ASC.Migrations.MySql.SaaS.Migrations
                     b.HasIndex("TenantId", "UserName")
                         .HasDatabaseName("username");
 
+                    b.HasIndex("TenantId", "ActivationStatus", "Email")
+                        .HasDatabaseName("tenant_activation_status_email");
+
+                    b.HasIndex("TenantId", "ActivationStatus", "FirstName")
+                        .HasDatabaseName("tenant_activation_status_firstname");
+
+                    b.HasIndex("TenantId", "ActivationStatus", "LastName")
+                        .HasDatabaseName("tenant_activation_status_lastname");
+
                     b.ToTable("core_user", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");

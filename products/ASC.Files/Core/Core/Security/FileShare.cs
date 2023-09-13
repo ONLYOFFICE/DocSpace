@@ -29,6 +29,7 @@ namespace ASC.Files.Core.Security;
 /// <summary>
 /// </summary>
 [EnumExtensions]
+[JsonConverter(typeof(FileShareConverter))]
 public enum FileShare
 {
     None,

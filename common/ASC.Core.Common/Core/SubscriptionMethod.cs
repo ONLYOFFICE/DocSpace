@@ -28,7 +28,6 @@ using Profile = AutoMapper.Profile;
 
 namespace ASC.Core;
 
-[Serializable]
 public class SubscriptionMethod : IMapFrom<DbSubscriptionMethod>
 {
     public int Tenant { get; set; }

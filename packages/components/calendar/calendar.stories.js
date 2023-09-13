@@ -13,6 +13,7 @@ export default {
       type: "select",
       options: [
         "az",
+        "ar-SA",
         "zh-cn",
         "cs",
         "nl",

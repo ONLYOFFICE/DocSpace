@@ -28,7 +28,6 @@ namespace ASC.Web.Core.Utility;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public sealed class PasswordSettings : ISettings<PasswordSettings>
 {
     [JsonIgnore]

@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Billing;
 
-[Serializable]
 public class PaymentInfo
 {
     public int ID { get; set; }

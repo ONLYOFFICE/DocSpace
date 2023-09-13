@@ -26,7 +26,6 @@
 
 namespace ASC.Common.Security.Authorizing;
 
-[Serializable]
 public sealed class Role : IRole
 {
     public const string Everyone = "Everyone";

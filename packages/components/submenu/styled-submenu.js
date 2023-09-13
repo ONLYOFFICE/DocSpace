@@ -32,7 +32,7 @@ export const StyledSubmenu = styled.div`
   `}
 
   .sticky-indent {
-    height: 15px;
+    height: 20px;
   }
 `;
 
