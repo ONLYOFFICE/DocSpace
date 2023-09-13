@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Sunteţi pe cale să ştergeţi acest fişier. Sigur doriţi să continuați?",
-  "DeleteFolder": "Sunteţi pe cale să ştergeţi acest dosar. Sigur doriţi să continuați?",
-  "DeleteItems": "Sunteţi pe cale să ştergeţi aceste elemente. Sigur doriţi să continuați?",
+  "DeleteFile": "Sunteţi pe cale să ştergeţi acest fişier. ",
+  "DeleteFolder": "Sunteţi pe cale să ştergeţi acest dosar. ",
+  "DeleteItems": "Sunteţi pe cale să ştergeţi aceste elemente. ",
   "DeleteRoom": "Sunteţi pe cale să ştergeţi această sală. Nu o veţi putea restaura.",
   "DeleteRooms": "Sunteţi pe cale să ştergeţi aceste săli. Nu le veţi putea restaura.",
   "MoveToTrashButton": "Mutare la Coșul de gunoi",
