@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import TextInput from "@docspace/components/text-input";
 import Text from "@docspace/components/text";
+import toastr from "@docspace/components/toast/toastr";
 import { ConfigurationWrapper } from "../StyledSpaces";
 import { parseAddress } from "@docspace/components/utils/email";
 import { useStore } from "SRC_DIR/store";
@@ -10,12 +11,24 @@ import { useStore } from "SRC_DIR/store";
 const ConfigurationSection = ({ t }) => {
   const [domain, setDomain] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const { spacesStore, authStore } = useStore();
 
-  const { validatePortalName, setPortalSettings } = spacesStore;
+  const { validateDomain, setPortalSettings } = spacesStore;
 
   const onConfigurationPortal = async () => {
+    if (window?.DocSpaceConfig?.management?.checkDomain) {
+      setIsLoading(true);
+      const res = await validateDomain(domain).finally(() =>
+        setIsLoading(false)
+      );
+      const isValidDomain = res?.value;
+
+      if (!isValidDomain)
+        return toastr.error("Введенное доменное имя не зарегистрировано"); // TODO: add translation
+    }
+
     await setPortalSettings(domain, name);
     await authStore.settingsStore.getAllPortals();
   };
@@ -77,6 +90,7 @@ const ConfigurationSection = ({ t }) => {
 
       <Button
         isDisabled={!(name && domain) || isDomainError || isNameError}
+        isLoading={isLoading}
         size="normal"
         className="spaces-button"
         label={t("Common:Connect")}
