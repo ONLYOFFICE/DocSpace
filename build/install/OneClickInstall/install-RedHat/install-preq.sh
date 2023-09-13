@@ -92,10 +92,20 @@ autorefresh=1
 type=rpm-md
 END
 
+# add nginx repo
+cat > /etc/yum.repos.d/nginx.repo <<END
+[nginx-stable]
+name=nginx stable repo
+baseurl=https://nginx.org/packages/centos/$REV/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+END
+
 rpm --import https://openresty.org/package/pubkey.gpg
 OPENRESTY_REPO_FILE=$( [[ "$REV" -ge 9 ]] && echo "openresty2.repo" || echo "openresty.repo" )
 curl -o /etc/yum.repos.d/openresty.repo "https://openresty.org/package/centos/${OPENRESTY_REPO_FILE}"
-systemctl list-units --type=service | grep -q nginx && systemctl stop nginx && systemctl disable nginx
 
 ${package_manager} -y install epel-release \
 			python3 \
@@ -103,7 +113,6 @@ ${package_manager} -y install epel-release \
 			dotnet-sdk-7.0 \
 			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
-			openresty \
 			postgresql \
 			postgresql-server \
 			rabbitmq-server$rabbitmq_version \
@@ -120,4 +129,4 @@ postgresql-setup initdb	|| true
 
 semanage permissive -a httpd_t
 
-package_services="rabbitmq-server postgresql redis openresty mysqld"
+package_services="rabbitmq-server postgresql redis mysqld"
