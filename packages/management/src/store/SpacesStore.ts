@@ -6,6 +6,7 @@ import {
   setDomainName,
   setPortalName,
   createNewPortal,
+  validateDomain,
   getPortalStatus,
 } from "@docspace/common/api/management";
 import { TNewPortalData } from "SRC_DIR/types/spaces";
@@ -57,6 +58,11 @@ class SpacesStore {
     this.authStore.settingsStore.setPortalDomain(settings);
     if (!portalName) return;
     const name = await setPortalName(portalName);
+  };
+
+  validateDomain = async (domain) => {
+    const res = await validateDomain(domain);
+    return res;
   };
 
   createNewPortal = async (data: TNewPortalData) => {
