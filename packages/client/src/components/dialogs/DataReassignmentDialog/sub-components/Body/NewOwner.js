@@ -18,7 +18,11 @@ const ChoiceNewOwner = ({
     return (
       <StyledSelectedOwnerContainer>
         <StyledSelectedOwner currentColorScheme={currentColorScheme}>
-          <Text className="text">{selectedUser.label}</Text>
+          <Text className="text">
+            {selectedUser.displayName
+              ? selectedUser.displayName
+              : selectedUser.label}
+          </Text>
         </StyledSelectedOwner>
 
         <Link
