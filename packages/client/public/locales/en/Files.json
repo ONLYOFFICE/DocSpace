@@ -1,4 +1,5 @@
 {
+  "AddedToClipboard": "Items added to clipboard",
   "AddMembersDescription": "You can add new team members manually or invite them via link.",
   "AddNewExternalLink": "Add new external link",
   "AddNewLink": "Add new link",
@@ -156,6 +157,5 @@
   "ViewTiles": "Tiles",
   "WantToRestoreTheRoom": "All external links in this room will become active, and its contents will be available to everyone with the link. Do you want to restore the room?",
   "WantToRestoreTheRooms": "All external links in restored rooms will become active, and their contents will be available to everyone with the room links. Do you want to restore the rooms?",
-  "WithSubfolders": "With subfolders",
-  "AddedToClipboard": "Items added to clipboard"
+  "WithSubfolders": "With subfolders"
 }

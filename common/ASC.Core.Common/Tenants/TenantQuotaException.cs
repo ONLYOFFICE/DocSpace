@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Tenants;
 
-[Serializable]
 public class TenantQuotaException : Exception
 {
     public TenantQuotaException(string message)

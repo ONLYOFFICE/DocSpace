@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Este está prestes a apagar este ficheiro. Tem a certeza de que quer continuar?",
-  "DeleteFolder": "Está prestes a eliminar esta pasta. Tem a certeza que quer continuar?",
-  "DeleteItems": "Está prestes a eliminar estes itens. Tem a certeza que quer continuar?",
+  "DeleteFile": "Este está prestes a apagar este ficheiro. ",
+  "DeleteFolder": "Está prestes a eliminar esta pasta. ",
+  "DeleteItems": "Está prestes a eliminar estes itens. ",
   "DeleteRoom": "Está prestes a apagar esta sala. Não será possível restaurá-la.",
   "DeleteRooms": "Está prestes a eliminar estas salas. Não será possível restaurá-las.",
   "MoveToTrashButton": "Mover para o Lixo",

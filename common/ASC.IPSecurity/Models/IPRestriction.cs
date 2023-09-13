@@ -28,7 +28,6 @@ namespace ASC.IPSecurity;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class IPRestriction : IpRestrictionBase, IMapFrom<TenantIpRestrictions>
 {
     /// <summary>Restiction ID</summary>

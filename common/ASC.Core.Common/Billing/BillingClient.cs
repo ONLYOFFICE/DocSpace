@@ -349,7 +349,6 @@ public static class BillingHttplClientExtension
     }
 }
 
-[Serializable]
 public class BillingException : Exception
 {
     public BillingException(string message, object debugInfo = null) : base(message + (debugInfo != null ? " Debug info: " + debugInfo : string.Empty))
@@ -365,7 +364,6 @@ public class BillingException : Exception
     }
 }
 
-[Serializable]
 public class BillingNotFoundException : BillingException
 {
     public BillingNotFoundException(string message, object debugInfo = null) : base(message, debugInfo)
@@ -377,7 +375,6 @@ public class BillingNotFoundException : BillingException
     }
 }
 
-[Serializable]
 public class BillingNotConfiguredException : BillingException
 {
     public BillingNotConfiguredException(string message, object debugInfo = null) : base(message, debugInfo)

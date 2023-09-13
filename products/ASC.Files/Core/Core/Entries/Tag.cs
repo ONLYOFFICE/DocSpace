@@ -42,7 +42,6 @@ public enum TagType
     Origin = 256
 }
 
-[Serializable]
 [DebuggerDisplay("{Name} ({Id}) entry {EntryType} ({EntryId})")]
 public sealed class Tag : IMapFrom<DbFilesTag>
 {
@@ -117,9 +116,9 @@ public sealed class Tag : IMapFrom<DbFilesTag>
 
     public static Tag Origin<T>(T entryId, FileEntryType type, T originId, Guid owner)
     {
-        return new Tag(originId.ToString(), TagType.Origin, owner, 0) 
-        { 
-            EntryId = entryId, 
+        return new Tag(originId.ToString(), TagType.Origin, owner, 0)
+        {
+            EntryId = entryId,
             EntryType = type
         };
     }

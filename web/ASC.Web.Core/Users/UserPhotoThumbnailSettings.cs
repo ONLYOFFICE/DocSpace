@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Core.Users;
 
-[Serializable]
 public class UserPhotoThumbnailSettings : ISettings<UserPhotoThumbnailSettings>
 {
     [JsonIgnore]

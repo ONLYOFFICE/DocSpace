@@ -26,7 +26,6 @@
 
 namespace ASC.Notify.Cron;
 
-[Serializable]
 public class CronExpression : ICloneable, IDeserializationCallback
 {
     protected const int Second = 0;

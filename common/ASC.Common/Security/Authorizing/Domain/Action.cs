@@ -26,7 +26,6 @@
 
 namespace ASC.Common.Security.Authorizing;
 
-[Serializable]
 public class Action : IAction
 {
     public Guid ID { get; private set; }

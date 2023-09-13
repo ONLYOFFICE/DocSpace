@@ -8,6 +8,7 @@
   "AddAllowedIP": "Add allowed IP address",
   "AdditionalResources": "Additional resources",
   "AdditionalResourcesDescription": "Choose whether you want to display links to additional resources in DocSpace menu.",
+  "AdditionalResourcesSubtitle": "Configure the display of links to helpful resources for your users.",
   "AddTrustedDomain": "Add trusted domain",
   "Admins": "Admins",
   "AdminsMessage": "Administrator Message Settings",
