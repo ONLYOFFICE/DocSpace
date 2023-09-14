@@ -466,9 +466,6 @@ setup_openresty(){
 
 	cp -rf ${APP_DIR}/openresty/nginx.conf.template ${OPENRESTY_CONF}
 	[ ! -f "${OPENRESTY_DIR}/mime.types" ] && cp -rf "$(dirname ${OPENRESTY_CONF})/mime.types" ${OPENRESTY_DIR}
-	
-	#If there is an old nginx configs from version 1.1.1 in nginx directory, remove it 
-	[ -f /etc/nginx/conf.d/onlyoffice.conf ] && rm -rf /etc/nginx/conf.d/onlyoffice*
 
 	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${APP_PORT}'\3\4/' -i ${OPENRESTY_DIR}/conf.d/${PACKAGE_SYSNAME}-proxy.conf
 	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i "${OPENRESTY_CONF}"
@@ -544,7 +541,6 @@ setup_openresty(){
 		fi
 	fi
 
-	systemctl list-units --type=service | grep -q nginx && systemctl reload nginx
 	chown nginx:nginx ${OPENRESTY_DIR}* -R
 	systemctl enable openresty >/dev/null 2>&1
 	systemctl restart openresty
