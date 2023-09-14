@@ -40,8 +40,6 @@ public class ReassignProgressItem : DistributedTaskProgress
     public Guid ToUser { get; private set; }
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    //private readonly IFileStorageService _docService;
-    //private readonly ProjectsReassign _projectsReassign;
 
     private IDictionary<string, StringValues> _httpHeaders;
     private int _tenantId;
@@ -49,11 +47,11 @@ public class ReassignProgressItem : DistributedTaskProgress
     private bool _notify;
     private bool _deleteProfile;
 
+    private CancellationToken _cancellationToken;
+
     public ReassignProgressItem(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
-        //_docService = Web.Files.Classes.Global.FileStorageService;
-        //_projectsReassign = new ProjectsReassign();
     }
 
     public void Init(IDictionary<string, StringValues> httpHeaders, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool notify, bool deleteProfile)
@@ -72,6 +70,13 @@ public class ReassignProgressItem : DistributedTaskProgress
         IsCompleted = false;
     }
 
+    public override async Task RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
+    {
+        _cancellationToken = cancellationToken;
+
+        await base.RunJob(distributedTask, cancellationToken);
+    }
+
     protected override async Task DoJob()
     {
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
@@ -82,18 +87,13 @@ public class ReassignProgressItem : DistributedTaskProgress
 
         try
         {
-            Percentage = 0;
-            Status = DistributedTaskStatus.Running;
-
             await securityContext.AuthenticateMeWithoutCookieAsync(_currentUserId);
 
-            Percentage = 5;
-            PublishChanges();
+            SetPercentageAndCheckCancellation(5, true);
 
             await fileStorageService.DemandPermissionToReassignDataAsync(FromUser, ToUser);
 
-            Percentage = 10;
-            PublishChanges();
+            SetPercentageAndCheckCancellation(10, true);
 
             List<int> personalFolderIds = null;
 
@@ -106,36 +106,36 @@ public class ReassignProgressItem : DistributedTaskProgress
                 personalFolderIds = await fileStorageService.GetPersonalFolderIdsAsync<int>(FromUser);
             }
 
-            Percentage = 30;
-            PublishChanges();
+            SetPercentageAndCheckCancellation(30, true);
 
             await fileStorageService.ReassignProvidersAsync<string>(FromUser, ToUser);
 
-            Percentage = 50;
-            PublishChanges();
+            SetPercentageAndCheckCancellation(50, true);
 
             await fileStorageService.ReassignFoldersAsync<int>(FromUser, ToUser, personalFolderIds);
 
-            Percentage = 70;
-            PublishChanges();
+            SetPercentageAndCheckCancellation(70, true);
 
             await fileStorageService.ReassignFilesAsync<int>(FromUser, ToUser, personalFolderIds);
 
-            Percentage = 90;
-            PublishChanges();
+            SetPercentageAndCheckCancellation(90, true);
 
             await SendSuccessNotifyAsync(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
 
-            Percentage = 95;
-            PublishChanges();
+            SetPercentageAndCheckCancellation(95, true);
 
             if (_deleteProfile)
             {
                 await DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper);
             }
 
-            Percentage = 100;
+            SetPercentageAndCheckCancellation(100, false);
+
             Status = DistributedTaskStatus.Completed;
+        }
+        catch (OperationCanceledException)
+        {
+            Status = DistributedTaskStatus.Canceled;
         }
         catch (Exception ex)
         {
@@ -146,7 +146,7 @@ public class ReassignProgressItem : DistributedTaskProgress
         }
         finally
         {
-            logger.LogInformation("data reassignment is complete");
+            logger.LogInformation($"data reassignment {Status.ToString().ToLowerInvariant()}");
             IsCompleted = true;
         }
 
@@ -156,6 +156,18 @@ public class ReassignProgressItem : DistributedTaskProgress
     public object Clone()
     {
         return MemberwiseClone();
+    }
+
+    private void SetPercentageAndCheckCancellation(double percentage, bool publish)
+    {
+        Percentage = percentage;
+
+        if (publish)
+        {
+            PublishChanges();
+        }
+
+        _cancellationToken.ThrowIfCancellationRequested();
     }
 
     private async Task SendSuccessNotifyAsync(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
