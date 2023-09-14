@@ -32,6 +32,7 @@ public class TaskProgressResponseDto
     public string Error { get; set; }
     public int Percentage { get; set; }
     public bool IsCompleted { get; set; }
+    public DistributedTaskStatus Status { get; set; }
 
     public static TaskProgressResponseDto Get(DistributedTaskProgress progressItem)
     {
@@ -42,7 +43,8 @@ public class TaskProgressResponseDto
                     Id = progressItem.Id,
                     Error = progressItem.Exception?.Message,
                     Percentage = (int)progressItem.Percentage,
-                    IsCompleted = progressItem.IsCompleted
+                    IsCompleted = progressItem.IsCompleted,
+                    Status = progressItem.Status
                 };
     }
 }
