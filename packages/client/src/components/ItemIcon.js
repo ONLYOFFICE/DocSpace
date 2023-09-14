@@ -30,9 +30,7 @@ const IconWrapper = styled.div`
         right: 0px;
         bottom: 0px;
         left: 0px;
-        border: 1px solid
-          ${(props) =>
-            props.default ? "none" : props.theme.itemIcon.borderColor};
+        border: 1px solid ${(props) => props.theme.itemIcon.borderColor};
         border-radius: 5px;
         overflow: hidden;
       }
@@ -47,14 +45,14 @@ const EncryptedFileIcon = styled.div`
   position: absolute;
   width: 16px;
   margin-top: 14px;
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
-              margin-right: 12px;
-            `
+          margin-right: 12px;
+        `
       : css`
-              margin-left: 12px;
-            `}
+          margin-left: 12px;
+        `}
 `;
 
 const ItemIcon = ({
@@ -62,32 +60,24 @@ const ItemIcon = ({
   fileExst,
   isPrivacy,
   isRoom,
-  defaultRoomIcon,
   title,
   logo,
   color,
   isArchive,
 }) => {
-  const [showDefaultIcon, setShowDefaultIcon] = React.useState(isRoom);
-
-  React.useEffect(() => {
-    if (!isRoom || defaultRoomIcon === icon) return;
-    setShowDefaultIcon(false);
-  }, [isRoom, defaultRoomIcon, icon, setShowDefaultIcon]);
-
-  const isLoadedRoomIcon = !!logo?.large;
+  const isLoadedRoomIcon = !!logo?.medium;
   const showDefaultRoomIcon = !isLoadedRoomIcon && isRoom;
 
   return (
     <>
-      <IconWrapper isRoom={isRoom} default={showDefaultIcon}>
+      <IconWrapper isRoom={isRoom}>
         {showDefaultRoomIcon ? (
           <RoomIcon color={color} title={title} isArchive={isArchive} />
         ) : (
           <StyledIcon
             className={`react-svg-icon`}
             isRoom={isRoom}
-            src={showDefaultIcon ? defaultRoomIcon : icon}
+            src={isRoom ? logo?.medium : icon}
           />
         )}
       </IconWrapper>

@@ -75,9 +75,6 @@ const FileTile = (props) => {
       icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
-      defaultRoomIcon={
-        item.isRoom && item.icon ? item.icon : item.defaultRoomIcon
-      }
       title={item.title}
       logo={item.logo}
       color={item.logo?.color}
