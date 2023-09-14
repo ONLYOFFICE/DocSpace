@@ -1,5 +1,5 @@
 import Progress from "./Progress";
-import Loader from "./Loader";
+import DataReassignmentLoader from "@docspace/common/components/Loaders/DataReassignmentLoader";
 import AccountInfo from "./AccountInfo";
 import Description from "./Description";
 import NewOwner from "./NewOwner";
@@ -15,14 +15,18 @@ const Body = ({
   currentColorScheme,
   onTogglePeopleSelector,
 }) => {
-  if (!tReady) return <Loader />;
+  if (!tReady) return <DataReassignmentLoader />;
 
   if (showProgress)
     return (
       <Progress
         isReassignCurrentUser={isReassignCurrentUser}
         fromUser={user.displayName}
-        toUser={selectedUser.label}
+        toUser={
+          selectedUser.displayName
+            ? selectedUser.displayName
+            : selectedUser.label
+        }
         percent={percent}
       />
     );

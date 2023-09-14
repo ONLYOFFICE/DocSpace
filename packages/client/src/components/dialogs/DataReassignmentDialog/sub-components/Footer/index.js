@@ -10,7 +10,6 @@ const Footer = ({
   onToggleDeleteProfile,
   selectedUser,
   onReassign,
-  isLoadingReassign,
   percent,
   onClose,
 }) => {
@@ -52,7 +51,6 @@ const Footer = ({
           scale
           isDisabled={!selectedUser}
           onClick={onReassign}
-          isLoading={isLoadingReassign}
         />
 
         <Button

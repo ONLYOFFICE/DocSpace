@@ -1,52 +1,10 @@
 import RectangleLoader from "@docspace/common/components/Loaders/RectangleLoader";
 import CircleLoader from "@docspace/common/components//Loaders/CircleLoader";
-import styled from "styled-components";
+import StyledDataReassignmentLoader from "./StyledDataReassignmentLoader";
 
-const StyledLoader = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-
-  .user {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .name {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .avatar {
-    width: 80px;
-    height: 80px;
-  }
-
-  .new-owner_header {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-bottom: 12px;
-  }
-
-  .new-owner_add {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .description {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-`;
-
-const Loader = () => {
+const DataReassignmentLoader = () => {
   return (
-    <StyledLoader>
+    <StyledDataReassignmentLoader>
       <div className="user">
         <CircleLoader className="avatar" radius="40" x="40" y="40" />
 
@@ -73,8 +31,8 @@ const Loader = () => {
         <RectangleLoader width="223" height="20" />
         <RectangleLoader width="160" height="20" />
       </div>
-    </StyledLoader>
+    </StyledDataReassignmentLoader>
   );
 };
 
-export default Loader;
+export default DataReassignmentLoader;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -37,21 +37,19 @@ const DataReassignmentDialog = ({
   dataReassignment,
   dataReassignmentProgress,
   currentColorScheme,
-  idCurrentUser,
+  currentUser,
   deleteProfile,
-  deleteAdministrator,
+  isDeleteUserReassignmentYourself,
   t,
   tReady,
   setFilter,
-  setDataReassignmentDeleteAdministrator,
+  setIsDeleteUserReassignmentYourself,
 }) => {
   const [selectorVisible, setSelectorVisible] = useState(false);
-
-  if (deleteAdministrator)
-    deleteAdministrator.label = deleteAdministrator.displayName;
-
-  const [selectedUser, setSelectedUser] = useState(deleteAdministrator);
-  const [isLoadingReassign, setIsLoadingReassign] = useState(false);
+  const defaultSelectedUser = isDeleteUserReassignmentYourself
+    ? currentUser
+    : null;
+  const [selectedUser, setSelectedUser] = useState(defaultSelectedUser);
   const [isDeleteProfile, setIsDeleteProfile] = useState(deleteProfile);
   const [showProgress, setShowProgress] = useState(false);
   const [isReassignCurrentUser, setIsReassignCurrentUser] = useState(false);
@@ -72,10 +70,13 @@ const DataReassignmentDialog = ({
 
   useEffect(() => {
     //If click Delete user
-    if (deleteAdministrator) onReassign();
+    if (isDeleteUserReassignmentYourself) onReassign();
 
-    return () => setDataReassignmentDeleteAdministrator(null);
-  }, [deleteAdministrator]);
+    return () => {
+      setIsDeleteUserReassignmentYourself(false);
+      clearInterval(timerId);
+    };
+  }, [isDeleteUserReassignmentYourself]);
 
   const onToggleDeleteProfile = () => {
     setIsDeleteProfile((remove) => !remove);
@@ -99,7 +100,7 @@ const DataReassignmentDialog = ({
   };
 
   const checkReassignCurrentUser = () => {
-    setIsReassignCurrentUser(idCurrentUser === selectedUser.id);
+    setIsReassignCurrentUser(currentUser.id === selectedUser.id);
   };
 
   const checkProgress = (id) => {
@@ -117,9 +118,8 @@ const DataReassignmentDialog = ({
       });
   };
 
-  const onReassign = useCallback(() => {
+  const onReassign = () => {
     checkReassignCurrentUser();
-    setIsLoadingReassign(true);
     setShowProgress(true);
 
     dataReassignment(user.id, selectedUser.id, isDeleteProfile)
@@ -131,9 +131,7 @@ const DataReassignmentDialog = ({
       .catch((error) => {
         toastr.error(error?.response?.data?.error?.message);
       });
-
-    setIsLoadingReassign(false);
-  }, [user, selectedUser, isDeleteProfile]);
+  };
 
   if (selectorVisible) {
     return (
@@ -199,7 +197,6 @@ const DataReassignmentDialog = ({
           onToggleDeleteProfile={onToggleDeleteProfile}
           selectedUser={selectedUser}
           onReassign={onReassign}
-          isLoadingReassign={isLoadingReassign}
           percent={percent}
           onClose={onClose}
         />
@@ -212,13 +209,13 @@ export default inject(({ auth, peopleStore, setup }) => {
   const {
     setDataReassignmentDialogVisible,
     dataReassignmentDeleteProfile,
-    dataReassignmentDeleteAdministrator,
-    setDataReassignmentDeleteAdministrator,
+    isDeleteUserReassignmentYourself,
+    setIsDeleteUserReassignmentYourself,
   } = peopleStore.dialogStore;
   const { currentColorScheme } = auth.settingsStore;
   const { dataReassignment, dataReassignmentProgress } = setup;
 
-  const { id: idCurrentUser } = peopleStore.authStore.userStore.user;
+  const { user: currentUser } = peopleStore.authStore.userStore;
 
   const { setFilterParams: setFilter } = peopleStore.filterStore;
 
@@ -227,12 +224,12 @@ export default inject(({ auth, peopleStore, setup }) => {
     theme: auth.settingsStore.theme,
     currentColorScheme,
     dataReassignment,
-    idCurrentUser,
+    currentUser,
     dataReassignmentProgress,
     deleteProfile: dataReassignmentDeleteProfile,
     setFilter,
-    deleteAdministrator: dataReassignmentDeleteAdministrator,
-    setDataReassignmentDeleteAdministrator,
+    isDeleteUserReassignmentYourself,
+    setIsDeleteUserReassignmentYourself,
   };
 })(
   observer(
