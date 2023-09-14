@@ -174,6 +174,8 @@ const StyledContainer = styled.div`
     .title-icon {
       min-width: 16px;
       min-height: 16px;
+      width: 16px;
+      height: 16px;
 
       svg {
         path,
