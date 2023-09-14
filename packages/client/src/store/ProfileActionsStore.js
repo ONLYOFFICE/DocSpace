@@ -129,8 +129,9 @@ class ProfileActionsStore {
   };
 
   onSupportClick = () => {
-    const supportUrl = this.authStore.settingsStore.additionalResourcesData
-      ?.feedbackAndSupportUrl;
+    const supportUrl =
+      this.authStore.settingsStore.additionalResourcesData
+        ?.feedbackAndSupportUrl;
 
     window.open(supportUrl, "_blank");
   };
@@ -293,18 +294,26 @@ class ProfileActionsStore {
         label: t("Common:AboutCompanyTitle"),
         onClick: this.onAboutClick,
       },
-      {
-        isSeparator: true,
-        key: "separator3",
-      },
-      {
-        key: "user-menu-logout",
-        icon: LogoutReactSvgUrl,
-        label: t("Common:LogoutButton"),
-        onClick: this.onLogoutClick,
-        isButton: true,
-      },
     ];
+
+    if (
+      !window.navigator.userAgent.includes("ZoomWebKit") &&
+      !window.navigator.userAgent.includes("ZoomApps")
+    ) {
+      actions.push(
+        {
+          isSeparator: true,
+          key: "separator3",
+        },
+        {
+          key: "user-menu-logout",
+          icon: LogoutReactSvgUrl,
+          label: t("Common:LogoutButton"),
+          onClick: this.onLogoutClick,
+          isButton: true,
+        }
+      );
+    }
 
     if (debugInfo) {
       actions.splice(4, 0, {
@@ -338,12 +347,13 @@ class ProfileActionsStore {
       return actionsArray;
     }
 
-    const feedbackAndSupportEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.feedbackAndSupportEnabled;
-    const videoGuidesEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.videoGuidesEnabled;
-    const helpCenterEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.helpCenterEnabled;
+    const feedbackAndSupportEnabled =
+      this.authStore.settingsStore.additionalResourcesData
+        ?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled =
+      this.authStore.settingsStore.additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled =
+      this.authStore.settingsStore.additionalResourcesData?.helpCenterEnabled;
 
     if (!feedbackAndSupportEnabled) {
       const index = actionsArray.findIndex(
