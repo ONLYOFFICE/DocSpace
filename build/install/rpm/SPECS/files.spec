@@ -32,6 +32,7 @@
 %defattr(-, onlyoffice, onlyoffice, -)
 %config %attr(640, onlyoffice, onlyoffice) %{_sysconfdir}/onlyoffice/%{product}/*
 %exclude %{_sysconfdir}/onlyoffice/%{product}/openresty
+%exclude %{_sysconfdir}/onlyoffice/%{product}/nginx
 %{_docdir}/%{name}-%{version}-%{release}/
 %config %{_sysconfdir}/logrotate.d/%{product}-common
 %{_var}/log/onlyoffice/%{product}/
