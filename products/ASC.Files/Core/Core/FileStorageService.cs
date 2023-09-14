@@ -3171,7 +3171,7 @@ public class FileStorageService //: IFileStorageService
                 continue;
             }
 
-            var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, share.Access, _authContext.CurrentAccount.ID);
+            var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, share.Access, _authContext.CurrentAccount.ID, id.ToString());
             var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
 
             await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, shortenLink);

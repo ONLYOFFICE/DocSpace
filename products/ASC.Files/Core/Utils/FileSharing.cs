@@ -229,7 +229,7 @@ public class FileSharingAceHelper
 
             if (emailInvite)
             {
-                var link = await _invitationLinkService.GetInvitationLinkAsync(w.Email, share, _authContext.CurrentAccount.ID);
+                var link = await _invitationLinkService.GetInvitationLinkAsync(w.Email, share, _authContext.CurrentAccount.ID, entry.Id.ToString());
                 var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
 
                 await _studioNotifyService.SendEmailRoomInviteAsync(w.Email, entry.Title, shortenLink);
