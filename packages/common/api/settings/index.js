@@ -724,6 +724,14 @@ export function getOforms(url) {
   return axios.get(url);
 }
 
+export function submitToGallery(file, fileName, language) {
+  return axios.post("https://oforms.teamlab.info/api/upload", {
+    file,
+    fileName,
+    language,
+  });
+}
+
 export function getStorageRegions() {
   const options = {
     method: "get",

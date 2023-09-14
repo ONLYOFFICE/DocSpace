@@ -35,6 +35,11 @@ class OformsStore {
     });
   };
 
+  submitToFormGallery = async (file, fileName, language) => {
+    const res = await api.settings.submitToGallery(file, fileName, language);
+    return res;
+  };
+
   setOformFiles = (oformFiles) => {
     this.oformFiles = oformFiles;
   };

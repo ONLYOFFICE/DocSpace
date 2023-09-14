@@ -4,81 +4,31 @@ import React, { useState } from "react";
 import { observer, inject } from "mobx-react";
 import { Trans, withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
-import styled from "styled-components";
-// import SelectFileDialog from "@docspace/client/src/components/panels/SelectFileDialog";
 import FilesSelector from "@docspace/client/src/components/FilesSelector";
 import { FilesSelectorFilterTypes } from "@docspace/common/constants";
-export const StyledModalDialog = styled(ModalDialog)`
-  .modal-body {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: center;
-    gap: 16px;
 
-    font-weight: 400;
-    line-height: 20px;
-  }
-`;
+//
+import { request } from "@docspace/common/api/client";
+import { getFileInfo } from "@docspace/common/api/files";
+import { combineUrl, toUrlParams } from "@docspace/common/utils";
 
-export const StyledFormItem = styled.div`
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  padding: 8px 16px;
-  align-items: center;
-  justify-content: start;
-  gap: 8px;
-  border-radius: 6px;
-  background: ${(props) => props.theme.infoPanel.history.fileBlockBg};
-
-  .icon {
-    margin: 4px;
-    width: 24px;
-    height: 24px;
-    svg {
-      width: 24px;
-      height: 24px;
-    }
-  }
-
-  .item-title {
-    margin: 8px 0;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 16px;
-    display: flex;
-    min-width: 0;
-    gap: 0;
-
-    .name {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
-    .exst {
-      flex-shrink: 0;
-      color: ${(props) => props.theme.infoPanel.history.fileExstColor};
-    }
-  }
-`;
+import * as Styled from "./index.styled";
 
 const SubmitToFormGallery = ({
   t,
   visible,
   setVisible,
-  selectFileDialogVisible,
-  setSelectFileDialogVisible,
   formItem,
   setFormItem,
   getIcon,
   currentColorScheme,
   canSubmitToFormGallery,
+  submitToFormGallery,
 }) => {
   const [isSelectingForm, setIsSelectingForm] = useState(false);
   const onOpenFormSelector = () => setIsSelectingForm(true);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (formItem) {
     const splitted = formItem.title.split(".");
@@ -91,7 +41,45 @@ const SubmitToFormGallery = ({
   const onSelectForm = (data) => setFormItem(data);
 
   //TODO-mushka add final step to form submition
-  const onSubmitToGallery = () => onClose();
+  const onSubmitToGallery = async () => {
+    if (!formItem) return;
+
+    setIsSubmitting(true);
+
+    let file = null;
+    const src = `${combineUrl(
+      window.DocSpaceConfig?.proxy?.url
+    )}/filehandler.ashx?action=download&fileid=${formItem.id}`;
+
+    await fetch(src)
+      .then((res) => {
+        if (!res.ok) throw new Error(res.statusText);
+        return res.blob();
+      })
+      .then((res) => {
+        const reader = new FileReader();
+        reader.onload = (e) => (file = e.target?.result);
+        reader.readAsArrayBuffer(res);
+      })
+      .catch((event) => console.error(event))
+      .finally(() => setIsSubmitting(false));
+
+    // fetch("https://oforms.teamlab.info/api/upload", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     file: file,
+    //     fileName: formItem.title,
+    //     language: "en",
+    //   }),
+    //   headers: {
+    //     "Content-type": "multipart/form-data",
+    //   },
+    // });
+
+    await submitToFormGallery(file, formItem.title, "en");
+
+    onClose();
+  };
 
   const onCloseSelectFormDialog = () => setIsSelectingForm(false);
 
@@ -115,7 +103,11 @@ const SubmitToFormGallery = ({
     );
 
   return (
-    <StyledModalDialog visible={visible} onClose={onClose} autoMaxHeight>
+    <Styled.SubmitToGalleryDialog
+      visible={visible}
+      onClose={onClose}
+      autoMaxHeight
+    >
       <ModalDialog.Header>{t("Common:SubmitToFormGallery")}</ModalDialog.Header>
       <ModalDialog.Body>
         <div>{t("FormGallery:SubmitToGalleryDialogMainInfo")}</div>
@@ -142,7 +134,7 @@ const SubmitToFormGallery = ({
         </div>
 
         {formItem && (
-          <StyledFormItem>
+          <Styled.FormItem>
             <ReactSVG className="icon" src={getIcon(24, formItem.exst)} />
             <div className="item-title">
               {formItem.title ? (
@@ -160,7 +152,7 @@ const SubmitToFormGallery = ({
                 <span className="name">{formItem.exst}</span>
               )}
             </div>
-          </StyledFormItem>
+          </Styled.FormItem>
         )}
       </ModalDialog.Body>
       <ModalDialog.Footer>
@@ -170,6 +162,7 @@ const SubmitToFormGallery = ({
             size="normal"
             label={t("FormGallery:SelectForm")}
             onClick={onOpenFormSelector}
+            isLoading={isSubmitting}
             scale
           />
         ) : (
@@ -188,20 +181,19 @@ const SubmitToFormGallery = ({
           scale
         />
       </ModalDialog.Footer>
-    </StyledModalDialog>
+    </Styled.SubmitToGalleryDialog>
   );
 };
 
 export default inject(
-  ({ auth, accessRightsStore, dialogsStore, settingsStore }) => ({
+  ({ auth, accessRightsStore, dialogsStore, settingsStore, oformsStore }) => ({
     visible: dialogsStore.submitToGalleryDialogVisible,
     setVisible: dialogsStore.setSubmitToGalleryDialogVisible,
-    selectFileDialogVisible: dialogsStore.selectFileDialogVisible,
-    setSelectFileDialogVisible: dialogsStore.setSelectFileDialogVisible,
     formItem: dialogsStore.formItem,
     setFormItem: dialogsStore.setFormItem,
     getIcon: settingsStore.getIcon,
     currentColorScheme: auth.settingsStore.currentColorScheme,
     canSubmitToFormGallery: accessRightsStore.canSubmitToFormGallery,
+    submitToFormGallery: oformsStore.submitToFormGallery,
   })
 )(withTranslation("Common", "FormGallery")(observer(SubmitToFormGallery)));
