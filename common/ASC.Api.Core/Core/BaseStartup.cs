@@ -119,7 +119,7 @@ public abstract class BaseStartup
                 partitionKey = $"sw_{userId}";
 
                 return RedisRateLimitPartition.GetSlidingWindowRateLimiter(partitionKey, key => new RedisSlidingWindowRateLimiterOptions
-                { 
+                {
                     PermitLimit = permitLimit,
                     Window = TimeSpan.FromMinutes(1),
                     ConnectionMultiplexerFactory = () => connectionMultiplexer
@@ -157,7 +157,8 @@ public abstract class BaseStartup
                 }
             ));
 
-            options.AddPolicy("sensitive_api", httpContext => {
+            options.AddPolicy("sensitive_api", httpContext =>
+            {
                 var userId = httpContext?.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
 
                 if (userId == null)
@@ -175,7 +176,7 @@ public abstract class BaseStartup
                     ConnectionMultiplexerFactory = () => connectionMultiplexer
                 });
             });
-            
+
             options.OnRejected = (context, ct) => RateLimitMetadata.OnRejected(context.HttpContext, context.Lease, ct);
         });
 
@@ -350,6 +351,12 @@ public abstract class BaseStartup
         services.AddAutoMapper(GetAutoMapperProfileAssemblies());
 
         services.AddBillingHttpClient();
+
+        services.AddSingleton(Channel.CreateUnbounded<NotifyRequest>());
+        services.AddSingleton(svc => svc.GetRequiredService<Channel<NotifyRequest>>().Reader);
+        services.AddSingleton(svc => svc.GetRequiredService<Channel<NotifyRequest>>().Writer);
+        services.AddActivePassiveHostedService<NotifySenderService>(DIHelper);
+        services.AddActivePassiveHostedService<NotifySchedulerService>(DIHelper);
 
 
         if (!_hostEnvironment.IsDevelopment())

@@ -26,7 +26,6 @@
 
 using Actions = ASC.Web.Studio.Core.Notify.Actions;
 using ConfigurationConstants = ASC.Core.Configuration.Constants;
-using Context = ASC.Notify.Context;
 
 namespace ASC.Files.Core.Services.NotifyService;
 
@@ -43,14 +42,13 @@ public class NotifyClient
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
     private readonly StudioNotifyHelper _studioNotifyHelper;
-    private readonly Context _notifyContext;
-    private readonly NotifyEngineQueue _notifyEngineQueue;
+    private readonly WorkContext _notifyContext;
     private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
     private readonly FileSecurity _fileSecurity;
+    private readonly IServiceProvider _serviceProvider;
 
     public NotifyClient(
-        Context notifyContext,
-        NotifyEngineQueue notifyEngineQueue,
+        WorkContext notifyContext,
         NotifySource notifySource,
         SecurityContext securityContext,
         FilesLinkUtility filesLinkUtility,
@@ -62,10 +60,10 @@ public class NotifyClient
         TenantManager tenantManager,
         StudioNotifyHelper studioNotifyHelper,
         RoomsNotificationSettingsHelper roomsNotificationSettingsHelper,
-        FileSecurity fileSecurity)
+        FileSecurity fileSecurity,
+        IServiceProvider serviceProvider)
     {
         _notifyContext = notifyContext;
-        _notifyEngineQueue = notifyEngineQueue;
         _notifySource = notifySource;
         _securityContext = securityContext;
         _filesLinkUtility = filesLinkUtility;
@@ -78,11 +76,12 @@ public class NotifyClient
         _studioNotifyHelper = studioNotifyHelper;
         _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
         _fileSecurity = fileSecurity;
+        _serviceProvider = serviceProvider;
     }
 
     public async Task SendDocuSignCompleteAsync<T>(File<T> file, string sourceTitle)
     {
-        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
+        var client = _notifyContext.RegisterClient(_serviceProvider, _notifySource);
         var recipient = await _notifySource.GetRecipientsProvider().GetRecipientAsync(_securityContext.CurrentAccount.ID.ToString());
 
         await client.SendNoticeAsync(
@@ -98,7 +97,7 @@ public class NotifyClient
 
     public async Task SendDocuSignStatusAsync(string subject, string status)
     {
-        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
+        var client = _notifyContext.RegisterClient(_serviceProvider, _notifySource);
 
         var recipient = await _notifySource.GetRecipientsProvider().GetRecipientAsync(_securityContext.CurrentAccount.ID.ToString());
 
@@ -114,7 +113,7 @@ public class NotifyClient
 
     public async Task SendMailMergeEndAsync(Guid userId, int countMails, int countError)
     {
-        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
+        var client = _notifyContext.RegisterClient(_serviceProvider, _notifySource);
 
         var recipient = await _notifySource.GetRecipientsProvider().GetRecipientAsync(userId.ToString());
 
@@ -135,7 +134,7 @@ public class NotifyClient
             return;
         }
 
-        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
+        var client = _notifyContext.RegisterClient(_serviceProvider, _notifySource);
 
         var folderDao = _daoFactory.GetFolderDao<T>();
         if (fileEntry.FileEntryType == FileEntryType.File && await folderDao.GetFolderAsync(((File<T>)fileEntry).ParentId) == null)
@@ -207,14 +206,14 @@ public class NotifyClient
             return;
         }
 
-        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
+        var client = _notifyContext.RegisterClient(_serviceProvider, _notifySource);
 
         var recipientsProvider = _notifySource.GetRecipientsProvider();
 
         var folderDao = _daoFactory.GetFolderDao<int>();
 
         var (roomId, roomTitle) = await folderDao.GetParentRoomInfoFromFileEntryAsync(file);
-        var roomUrl = _pathProvider.GetRoomsUrl(roomId);       
+        var roomUrl = _pathProvider.GetRoomsUrl(roomId);
 
         var room = await folderDao.GetFolderAsync(roomId);
 
@@ -262,7 +261,7 @@ public class NotifyClient
             return;
         }
 
-        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
+        var client = _notifyContext.RegisterClient(_serviceProvider, _notifySource);
         var recipientsProvider = _notifySource.GetRecipientsProvider();
 
         var folderId = folder.Id.ToString();

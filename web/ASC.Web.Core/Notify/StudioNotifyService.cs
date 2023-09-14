@@ -88,11 +88,6 @@ public class StudioNotifyService
         _studioNotifyHelper = studioNotifyHelper;
     }
 
-    public async Task SendMsgToAdminAboutProfileUpdatedAsync()
-    {
-        await _client.SendNoticeAsync(Actions.SelfProfileUpdated);
-    }
-
     public async Task SendMsgToAdminFromNotAuthUserAsync(string email, string message)
     {
         await _client.SendNoticeAsync(Actions.UserMessageToAdmin, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
@@ -258,56 +253,6 @@ public class StudioNotifyService
                 new[] { EMailSenderName },
                 new TagValue(Tags.InviteLink, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl));
-    }
-
-    #endregion
-
-    #region MailServer
-
-    public async Task SendMailboxCreatedAsync(List<string> toEmails, string username, string address)
-    {
-        await SendMailboxCreatedAsync(toEmails, username, address, null, null, -1, -1, null);
-    }
-
-    public async Task SendMailboxCreatedAsync(List<string> toEmails, string username, string address, string server,
-        string encyption, int portImap, int portSmtp, string login, bool skipSettings = false)
-    {
-        var tags = new List<ITagValue>
-            {
-                new TagValue(Tags.UserName, username ?? string.Empty),
-                new TagValue(Tags.Address, address ?? string.Empty)
-            };
-
-        if (!skipSettings)
-        {
-            var link = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/addons/mail/#accounts/changepwd={address}";
-
-            tags.Add(new TagValue(Tags.MyStaffLink, link));
-            tags.Add(new TagValue(Tags.Server, server));
-            tags.Add(new TagValue(Tags.Encryption, encyption ?? string.Empty));
-            tags.Add(new TagValue(Tags.ImapPort, portImap.ToString(CultureInfo.InvariantCulture)));
-            tags.Add(new TagValue(Tags.SmtpPort, portSmtp.ToString(CultureInfo.InvariantCulture)));
-            tags.Add(new TagValue(Tags.Login, login));
-        }
-
-        await _client.SendNoticeToAsync(
-        skipSettings
-            ? Actions.MailboxWithoutSettingsCreated
-            : Actions.MailboxCreated,
-        null,
-            await _studioNotifyHelper.RecipientFromEmailAsync(toEmails, false),
-        new[] { EMailSenderName });
-    }
-
-    public async Task SendMailboxPasswordChangedAsync(List<string> toEmails, string username, string address)
-    {
-        await _client.SendNoticeToAsync(
-        Actions.MailboxPasswordChanged,
-        null,
-           await _studioNotifyHelper.RecipientFromEmailAsync(toEmails, false),
-        new[] { EMailSenderName },
-        new TagValue(Tags.UserName, username ?? string.Empty),
-        new TagValue(Tags.Address, address ?? string.Empty));
     }
 
     #endregion

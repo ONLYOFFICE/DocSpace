@@ -132,8 +132,8 @@ public class StudioNotifyServiceSender
 [Scope]
 public class StudioNotifyWorker
 {
-    private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly WorkContext _workContext;
+    private readonly IServiceProvider _serviceProvider;
     private readonly TenantManager _tenantManager;
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly CommonLinkUtility _commonLinkUtility;
@@ -142,14 +142,14 @@ public class StudioNotifyWorker
         TenantManager tenantManager,
         StudioNotifyHelper studioNotifyHelper,
         CommonLinkUtility baseCommonLinkUtility,
-        NotifyEngineQueue notifyEngineQueue,
-        WorkContext workContext)
+        WorkContext workContext,
+        IServiceProvider serviceProvider)
     {
         _tenantManager = tenantManager;
         _studioNotifyHelper = studioNotifyHelper;
         _commonLinkUtility = baseCommonLinkUtility;
-        _notifyEngineQueue = notifyEngineQueue;
         _workContext = workContext;
+        _serviceProvider = serviceProvider;
     }
 
     public async Task OnMessageAsync(NotifyItemIntegrationEvent item)
@@ -157,7 +157,7 @@ public class StudioNotifyWorker
         _commonLinkUtility.ServerUri = item.BaseUrl;
         await _tenantManager.SetCurrentTenantAsync(item.TenantId);
 
-        var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+        var client = _workContext.RegisterClient(_serviceProvider, _studioNotifyHelper.NotifySource);
 
         await client.SendNoticeToAsync(
             (NotifyAction)item.Action,

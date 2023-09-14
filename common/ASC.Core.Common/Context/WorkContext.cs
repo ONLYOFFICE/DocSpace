@@ -44,14 +44,12 @@ public class WorkContext
     private readonly PushSender _pushSender;
     private static bool _notifyStarted;
     private static bool? _isMono;
-    private static string _monoVersion;
-
 
     public NotifyContext NotifyContext { get; private set; }
     public NotifyEngine NotifyEngine { get; private set; }
 
     public static string[] DefaultClientSenders => new[] { Constants.NotifyEMailSenderSysName };
-
+    public event Action<NotifyContext, INotifyClient> NotifyClientRegistration;
     public static bool IsMono
     {
         get
@@ -63,20 +61,10 @@ public class WorkContext
 
             var monoRuntime = Type.GetType("Mono.Runtime");
             _isMono = monoRuntime != null;
-            if (monoRuntime != null)
-            {
-                var dispalayName = monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
-                if (dispalayName != null)
-                {
-                    _monoVersion = dispalayName.Invoke(null, null) as string;
-                }
-            }
 
             return _isMono.Value;
         }
     }
-
-    public static string MonoVersion => IsMono ? _monoVersion : null;
 
     public WorkContext(
         IServiceProvider serviceProvider,
@@ -170,6 +158,16 @@ public class WorkContext
     {
         NotifyEngine.UnregisterSendMethod(method);
     }
+
+    public INotifyClient RegisterClient(IServiceProvider serviceProvider, INotifySource source)
+    {
+        //ValidateNotifySource(source);
+        var client = serviceProvider.GetService<NotifyClientImpl>();
+        client.Init(source);
+        NotifyClientRegistration?.Invoke(NotifyContext, client);
+
+        return client;
+    }
 }
 
 [Scope]
@@ -206,5 +204,6 @@ public static class WorkContextExtension
         dIHelper.TryAdd<JabberSenderSinkMessageCreator>();
         dIHelper.TryAdd<PushSenderSinkMessageCreator>();
         dIHelper.TryAdd<EmailSenderSinkMessageCreator>();
+        dIHelper.TryAdd<NotifyClientImpl>();
     }
 }

@@ -24,29 +24,48 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.Notify.Engine;
+using System.Threading.Channels;
 
-namespace ASC.Core.Common.Log;
-public static partial class NotifyEngineLogger
+namespace ASC.Core.Common.Notify.Engine;
+
+[Singletone]
+public class NotifySenderService : BackgroundService
 {
-    [LoggerMessage(Level = LogLevel.Warning, Message = "error styling message")]
-    public static partial void WarningErrorStyling(this ILogger logger, Exception exception);
+    private readonly NotifyEngine _notifyEngine;
+    private readonly ChannelReader<NotifyRequest> _channelReader;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ILogger<NotifySenderService> _logger;
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "InvokeSendMethod")]
-    public static partial void ErrorInvokeSendMethod(this ILogger logger, Exception exception);
+    public NotifySenderService(
+        NotifyEngine notifyEngine,
+        ChannelReader<NotifyRequest> channelReader,
+        IServiceScopeFactory serviceScopeFactory,
+        ILogger<NotifySenderService> logger)
+    {
+        _notifyEngine = notifyEngine;
+        _channelReader = channelReader;
+        _serviceScopeFactory = serviceScopeFactory;
+        _logger = logger;
+    }
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "NotifyScheduler")]
-    public static partial void ErrorNotifyScheduler(this ILogger<NotifySenderService> logger, Exception exception);
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        await foreach (var request in _channelReader.ReadAllAsync())
+        {
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
+            foreach (var action in _notifyEngine.Actions)
+            {
+                ((INotifyEngineAction)scope.ServiceProvider.GetRequiredService(action)).AfterTransferRequest(request);
+            }
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "SendNotify")]
-    public static partial void ErrorSendNotify(this ILogger<NotifySenderService> logger, Exception exception);
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "NotifySender")]
-    public static partial void ErrorNotifySender(this ILogger<NotifySenderService> logger, Exception exception);
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "Prepare")]
-    public static partial void ErrorPrepare(this ILogger logger, Exception exception);
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "UpdateScheduleDate")]
-    public static partial void ErrorUpdateScheduleDate(this ILogger logger, Exception exception);
+            try
+            {
+                await _notifyEngine.SendNotify(request, scope);
+            }
+            catch (Exception e)
+            {
+                _logger.ErrorSendNotify(e);
+            }
+        }
+    }
 }

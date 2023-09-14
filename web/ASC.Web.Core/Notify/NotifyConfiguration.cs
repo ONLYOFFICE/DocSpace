@@ -52,7 +52,7 @@ public class NotifyConfiguration
             {
                 _configured = true;
                 _workContext.NotifyStartUp();
-                _workContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
+                _workContext.NotifyClientRegistration += NotifyClientRegisterCallback;
                 _notifyEngine.AddAction<NotifyTransferRequest>();
             }
         }
