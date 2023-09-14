@@ -16,7 +16,7 @@ const FilesItemTitle = ({ t, selection, isSeveralItems }) => {
   if (isSeveralItems) return <></>;
 
   const icon = selection.icon;
-  const isLoadedRoomIcon = !!selection.logo?.large;
+  const isLoadedRoomIcon = !!selection.logo?.medium;
   const showDefaultRoomIcon = !isLoadedRoomIcon && selection.isRoom;
 
   return (
