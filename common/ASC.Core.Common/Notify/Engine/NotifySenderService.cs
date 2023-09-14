@@ -50,7 +50,7 @@ public class NotifySenderService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await foreach (var request in _channelReader.ReadAllAsync())
+        await foreach (var request in _channelReader.ReadAllAsync(stoppingToken))
         {
             await using var scope = _serviceScopeFactory.CreateAsyncScope();
             foreach (var action in _notifyEngine.Actions)
