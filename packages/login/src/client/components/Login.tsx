@@ -163,9 +163,8 @@ const Login: React.FC<ILoginProps> = ({
         if (!providersData[item.provider]) return;
         if (index > 1) return;
 
-        const { icon, label, iconOptions, className } = providersData[
-          item.provider
-        ];
+        const { icon, label, iconOptions, className } =
+          providersData[item.provider];
 
         return (
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
@@ -194,8 +193,12 @@ const Login: React.FC<ILoginProps> = ({
     setMoreAuthVisible(false);
   };
 
-  const onRecoverDialogVisible = () => {
-    setRecoverDialogVisible(!recoverDialogVisible);
+  const openRecoverDialog = () => {
+    setRecoverDialogVisible(true);
+  };
+
+  const closeRecoverDialog = () => {
+    setRecoverDialogVisible(false);
   };
 
   const bgPattern = getBgPattern(currentColorScheme?.id);
@@ -259,7 +262,7 @@ const Login: React.FC<ILoginProps> = ({
               isLoading={isLoading}
               hashSettings={portalSettings?.passwordHash}
               setIsLoading={setIsLoading}
-              onRecoverDialogVisible={onRecoverDialogVisible}
+              openRecoverDialog={openRecoverDialog}
               match={match}
               enableAdmMess={enableAdmMess}
               cookieSettingsEnabled={cookieSettingsEnabled}
@@ -278,7 +281,7 @@ const Login: React.FC<ILoginProps> = ({
 
           <RecoverAccessModalDialog
             visible={recoverDialogVisible}
-            onClose={onRecoverDialogVisible}
+            onClose={closeRecoverDialog}
             textBody={t("RecoverTextBody")}
             emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
             id="recover-access-modal"
