@@ -1,6 +1,5 @@
-import React from "react";
+import { useState, useEffect, useMemo } from "react";
 import Backdrop from "@docspace/components/backdrop";
-import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
 import Text from "@docspace/components/text";
 import Heading from "@docspace/components/heading";
@@ -9,6 +8,8 @@ import Row from "@docspace/components/row";
 import Button from "@docspace/components/button";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
+import Portal from "@docspace/components/portal";
+import { isMobileOnly } from "react-device-detect";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,
@@ -17,6 +18,7 @@ import {
   StyledBody,
   StyledFooter,
   StyledSharingBody,
+  StyledLink,
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
@@ -31,104 +33,110 @@ import FilesFilter from "@docspace/common/api/files/filter";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
-class NewFilesPanel extends React.Component {
-  state = { readingFiles: [], inProgress: false };
+const NewFilesPanel = (props) => {
+  const {
+    setNewFilesPanelVisible,
+    getIcon,
+    getFolderIcon,
+    newFiles,
+    markAsRead,
+    setMediaViewerData,
+    addFileToRecentlyViewed,
+    playlist,
+    currentFolderId,
+    setIsLoading,
+    t,
+    visible,
+    isLoading,
+  } = props;
 
-  onClose = () => {
-    if (this.state.inProgress) return;
-    this.props.setNewFilesPanelVisible(false);
+  const [listFiles, setListFiles] = useState(newFiles);
+  const [inProgress, setInProgress] = useState(false);
+  const [currentOpenFileId, setCurrentOpenFileId] = useState(null);
+
+  const onClose = () => {
+    if (inProgress) return;
+    setNewFilesPanelVisible(false);
   };
 
-  getItemIcon = (item) => {
+  const getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
-      ? this.props.getIcon(24, extension)
-      : this.props.getFolderIcon(item.providerKey, 24);
+      ? getIcon(24, extension)
+      : getFolderIcon(item.providerKey, 24);
+
+    const svgLoader = () => <div style={{ width: "24px" }} />;
 
     return (
       <ReactSVG
         beforeInjection={(svg) => svg.setAttribute("style", "margin-top: 4px")}
         src={icon}
-        loading={this.svgLoader}
+        loading={svgLoader}
       />
     );
   };
 
-  onMarkAsRead = () => {
-    const { inProgress, readingFiles } = this.state;
+  const onMarkAsRead = () => {
     if (inProgress) return;
-
-    this.setState({ inProgress: true });
+    setInProgress(true);
 
     const files = [];
     const folders = [];
 
-    for (let item of this.props.newFiles) {
+    for (let item of listFiles) {
       if (item.fileExst) files.push(item);
       else folders.push(item);
     }
 
-    const fileIds = files
-      .filter((f) => !readingFiles.includes(f.id.toString()))
-      .map((f) => f.id);
+    const fileIds = files.map((f) => f.id);
+    const folderIds = folders.map((f) => f.id);
 
-    const folderIds = folders
-      .filter((f) => !readingFiles.includes(f.id.toString()))
-      .map((f) => f.id);
-
-    this.props
-      .markAsRead(folderIds, fileIds)
-      //.then(() => this.setNewBadgeCount())
+    markAsRead(folderIds, fileIds)
       .then(() => {
-        const { hasNew, refreshFiles } = this.props;
-
         return Promise.resolve(); //hasNew ? refreshFiles() :
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
-        this.setState({ inProgress: false }, () => {
-          this.onClose();
-        });
+        setInProgress(false);
+        onClose();
       });
   };
 
-  onNewFileClick = (e) => {
-    if (this.state.inProgress) return;
+  const onNewFileClick = (e) => {
+    if (inProgress) return;
 
-    this.setState({ inProgress: true });
+    setInProgress(true);
 
     const { id, extension: fileExst } = e.target.dataset;
 
-    const { /* updateFolderBadge, */ markAsRead, newFiles, refreshFiles } =
-      this.props;
-    const readingFiles = this.state.readingFiles;
+    setCurrentOpenFileId(id);
 
     const fileIds = fileExst ? [id] : [];
     const folderIds = fileExst ? [] : [id];
 
     const item = newFiles.find((file) => file.id.toString() === id);
 
-    if (readingFiles.includes(id)) {
-      this.setState({ inProgress: false });
-      return this.onFileClick(item);
-    }
-
     markAsRead(folderIds, fileIds, item)
       .then(() => {
-        //updateFolderBadge(folderId, 1);
+        onFileClick(item);
 
-        readingFiles.push(id);
-        this.setState({ readingFiles, inProgress: false });
+        const newListFiles = listFiles.filter(
+          (file) => file.id.toString() !== id
+        );
 
-        this.onFileClick(item);
+        setListFiles(newListFiles);
+        if (!newListFiles.length) onClose();
       })
-      .then(() => {
-        // refreshFiles();
+      .catch((err) => {
+        toastr.error(err);
       })
-      .catch((err) => toastr.error(err));
+      .finally(() => {
+        setInProgress(false);
+        setCurrentOpenFileId(null);
+      });
   };
 
-  onFileClick = (item) => {
+  const onFileClick = (item) => {
     const {
       id,
       fileExst,
@@ -139,15 +147,6 @@ class NewFilesPanel extends React.Component {
 
       title,
     } = item;
-    const {
-      setMediaViewerData,
-
-      addFileToRecentlyViewed,
-      playlist,
-
-      currentFolderId,
-      setIsLoading,
-    } = this.props;
 
     if (!fileExst) {
       const categoryType = getCategoryTypeByFolderType(rootFolderType, id);
@@ -162,9 +161,8 @@ class NewFilesPanel extends React.Component {
 
       window.DocSpace.navigate(`${url}?${filter.toUrlParams()}`, { state });
 
-      this.setState({ inProgress: false }, () => {
-        this.onClose();
-      });
+      setInProgress(false);
+      onClose();
     } else {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
 
@@ -208,21 +206,20 @@ class NewFilesPanel extends React.Component {
           const url = getCategoryUrl(categoryType, item.folderId);
 
           const filter = FilesFilter.getDefault();
-          filter.folder = id;
+          filter.folder = item.folderId;
 
           window.DocSpace.navigate(`${url}?${filter.toUrlParams()}`, { state });
 
           const mediaItem = { visible: true, id };
           setMediaViewerData(mediaItem);
 
-          this.setState({ inProgress: false }, () => {
-            this.onClose();
-          });
+          setInProgress(false);
+          onClose();
         } else {
           const mediaItem = { visible: true, id };
           setMediaViewerData(mediaItem);
 
-          return this.onClose();
+          return onClose();
         }
 
         return;
@@ -232,142 +229,102 @@ class NewFilesPanel extends React.Component {
     }
   };
 
-  // setNewBadgeCount = () => {
-  //   const {
-  //     newFilesIds,
-  //     updateFoldersBadge,
-  //     updateFilesBadge,
-  //     updateRootBadge,
-  //     updateFolderBadge,
-  //     pathParts,
-  //     newFiles,
-  //   } = this.props;
+  const filesListNode = useMemo(() => {
+    return listFiles.map((file) => {
+      const element = getItemIcon(file);
 
-  //   const { readingFiles } = this.state;
-
-  //   const filesCount = newFiles.filter(
-  //     (f) => !readingFiles.includes(f.id.toString())
-  //   ).length;
-  // updateRootBadge(+newFilesIds[0], filesCount);
-
-  // if (newFilesIds.length <= 1) {
-  //   if (pathParts[0] === +newFilesIds[0]) {
-  //     updateFoldersBadge();
-  //     updateFilesBadge();
-  //   }
-  // } else {
-  //   updateFolderBadge(newFilesIds[newFilesIds.length - 1], filesCount);
-  // }
-  //};
-
-  render() {
-    //console.log("NewFiles panel render");
-    const { t, visible, isLoading, newFiles, theme } = this.props;
-    const { inProgress } = this.state;
-    const zIndex = 310;
-
-    return (
-      <StyledAsidePanel visible={visible}>
-        <Backdrop
-          onClick={this.onClose}
-          visible={visible}
-          zIndex={zIndex}
-          isAside={true}
-        />
-        <Aside
-          className="header_aside-panel"
-          visible={visible}
-          onClose={this.onClose}
+      return (
+        <Row
+          key={file.id}
+          element={element}
+          inProgress={currentOpenFileId === file.id.toString()}
         >
-          <StyledContent>
-            <StyledHeaderContent>
-              <Heading
-                className="files-operations-header"
-                size="medium"
-                truncate
-              >
-                {t("NewFiles")}
-              </Heading>
-            </StyledHeaderContent>
-            {!isLoading ? (
-              <StyledBody className="files-operations-body">
-                <StyledSharingBody stype="mediumBlack" style={SharingBodyStyle}>
-                  {newFiles.map((file) => {
-                    const element = this.getItemIcon(file);
+          <StyledLink
+            onClick={onNewFileClick}
+            containerWidth="100%"
+            type="page"
+            fontWeight={600}
+            isTextOverflow
+            truncate
+            title={file.title}
+            fontSize="14px"
+            className="files-new-link"
+            data-id={file.id}
+            data-extension={file.fileExst}
+          >
+            {file.title}
+          </StyledLink>
+        </Row>
+      );
+    });
+  }, [onNewFileClick, getItemIcon, currentOpenFileId]);
 
-                    return (
-                      <Row key={file.id} element={element}>
-                        <Link
-                          onClick={this.onNewFileClick}
-                          containerWidth="100%"
-                          type="page"
-                          fontWeight={600}
-                          color={theme.filesPanels.color}
-                          isTextOverflow
-                          truncate
-                          title={file.title}
-                          fontSize="14px"
-                          className="files-new-link"
-                          data-id={file.id}
-                          data-extension={file.fileExst}
-                        >
-                          {file.title}
-                        </Link>
-                      </Row>
-                    );
-                  })}
-                </StyledSharingBody>
-              </StyledBody>
-            ) : (
-              <div key="loader" className="panel-loader-wrapper">
-                <Loader type="oval" size="16px" className="panel-loader" />
-                <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                  "Common:LoadingDescription"
-                )}`}</Text>
-              </div>
-            )}
-            <StyledFooter>
-              <Button
-                className="new_files_panel-button new_file_panel-first-button"
-                label={t("MarkAsRead")}
-                size="normal"
-                primary
-                onClick={this.onMarkAsRead}
-                isLoading={inProgress}
-              />
-              <Button
-                className="new_files_panel-button"
-                label={t("Common:CloseButton")}
-                size="normal"
-                isDisabled={inProgress}
-                onClick={this.onClose}
-              />
-            </StyledFooter>
-          </StyledContent>
-        </Aside>
-      </StyledAsidePanel>
-    );
-  }
-}
+  const element = (
+    <StyledAsidePanel visible={visible}>
+      <Backdrop
+        onClick={onClose}
+        visible={visible}
+        zIndex={310}
+        isAside={true}
+      />
+      <Aside className="header_aside-panel" visible={visible} onClose={onClose}>
+        <StyledContent>
+          <StyledHeaderContent>
+            <Heading className="files-operations-header" size="medium" truncate>
+              {t("NewFiles")}
+            </Heading>
+          </StyledHeaderContent>
+          {!isLoading ? (
+            <StyledBody className="files-operations-body">
+              <StyledSharingBody stype="mediumBlack" style={SharingBodyStyle}>
+                {filesListNode}
+              </StyledSharingBody>
+            </StyledBody>
+          ) : (
+            <div key="loader" className="panel-loader-wrapper">
+              <Loader type="oval" size="16px" className="panel-loader" />
+              <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                "Common:LoadingDescription"
+              )}`}</Text>
+            </div>
+          )}
+          <StyledFooter>
+            <Button
+              className="new_files_panel-button new_file_panel-first-button"
+              label={t("Viewed")}
+              size="normal"
+              primary
+              onClick={onMarkAsRead}
+              isLoading={inProgress}
+            />
+            <Button
+              className="new_files_panel-button"
+              label={t("Common:CloseButton")}
+              size="normal"
+              isDisabled={inProgress}
+              onClick={onClose}
+            />
+          </StyledFooter>
+        </StyledContent>
+      </Aside>
+    </StyledAsidePanel>
+  );
+
+  return isMobileOnly ? <Portal element={element} /> : element;
+};
 
 export default inject(
   ({
     auth,
     filesStore,
     mediaViewerDataStore,
-    treeFoldersStore,
     filesActionsStore,
     selectedFolderStore,
     dialogsStore,
     settingsStore,
     clientLoadingStore,
   }) => {
-    const {
-      addFileToRecentlyViewed,
-
-      hasNew,
-      refreshFiles,
-    } = filesStore;
+    const { addFileToRecentlyViewed, hasNew, refreshFiles } = filesStore;
 
     const { setIsSectionFilterLoading, isLoading } = clientLoadingStore;
 
@@ -375,7 +332,6 @@ export default inject(
       setIsSectionFilterLoading(param);
     };
 
-    //const { updateRootBadge } = treeFoldersStore;
     const { playlist, setMediaViewerData, setCurrentItem } =
       mediaViewerDataStore;
     const { getIcon, getFolderIcon } = settingsStore;
@@ -395,22 +351,18 @@ export default inject(
       newFiles,
       newFilesIds,
       isLoading,
-
       playlist,
       setCurrentItem,
       currentFolderId,
-
       setMediaViewerData,
       addFileToRecentlyViewed,
       getIcon,
       getFolderIcon,
       markAsRead,
       setNewFilesPanelVisible,
-
       theme: auth.settingsStore.theme,
       hasNew,
       refreshFiles,
-
       setIsLoading,
     };
   }

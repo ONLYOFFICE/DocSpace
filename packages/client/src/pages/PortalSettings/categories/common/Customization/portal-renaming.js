@@ -100,14 +100,6 @@ const PortalRenaming = (props) => {
       setHasScroll(scrollPortalName);
     }
 
-    // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile =
-      document.getElementsByClassName("settings-mobile")[0];
-
-    if (settingsMobile) {
-      settingsMobile.style.display = "none";
-    }
-
     return () => window.removeEventListener("resize", checkInnerWidth);
   }, []);
 
@@ -326,11 +318,7 @@ const PortalRenaming = (props) => {
           {t("Common:LearnMore")}
         </Link>
       </div>
-      {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-        <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
-      ) : (
-        <> {settingsBlock}</>
-      )}
+      {settingsBlock}
       <SaveCancelButtons
         tabIndex={11}
         id="buttonsPortalRenaming"

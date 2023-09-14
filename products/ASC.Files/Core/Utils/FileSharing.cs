@@ -44,10 +44,9 @@ public class FileSharingAceHelper
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly InvitationLinkService _invitationLinkService;
     private readonly StudioNotifyService _studioNotifyService;
-    private readonly UsersInRoomChecker _usersInRoomChecker;
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly CountPaidUserChecker _countPaidUserChecker;
-    private readonly ILogger _logger;
+    private readonly IUrlShortener _urlShortener;
 
     public FileSharingAceHelper(
         FileSecurity fileSecurity,
@@ -64,10 +63,9 @@ public class FileSharingAceHelper
         FilesSettingsHelper filesSettingsHelper,
         InvitationLinkService invitationLinkService,
         StudioNotifyService studioNotifyService,
-        ILoggerProvider loggerProvider,
-        UsersInRoomChecker usersInRoomChecker,
         UserManagerWrapper userManagerWrapper,
-        CountPaidUserChecker countPaidUserChecker)
+        CountPaidUserChecker countPaidUserChecker,
+        IUrlShortener urlShortener)
     {
         _fileSecurity = fileSecurity;
         _coreBaseSettings = coreBaseSettings;
@@ -83,10 +81,9 @@ public class FileSharingAceHelper
         _filesSettingsHelper = filesSettingsHelper;
         _invitationLinkService = invitationLinkService;
         _studioNotifyService = studioNotifyService;
-        _usersInRoomChecker = usersInRoomChecker;
-        _logger = loggerProvider.CreateLogger("ASC.Files");
         _userManagerWrapper = userManagerWrapper;
         _countPaidUserChecker = countPaidUserChecker;
+        _urlShortener = urlShortener;
     }
 
     public async Task<(bool, string)> SetAceObjectAsync<T>(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings)
@@ -233,8 +230,9 @@ public class FileSharingAceHelper
             if (emailInvite)
             {
                 var link = await _invitationLinkService.GetInvitationLinkAsync(w.Email, share, _authContext.CurrentAccount.ID);
-                await _studioNotifyService.SendEmailRoomInviteAsync(w.Email, entry.Title, link);
-                _logger.Debug(link);
+                var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
+
+                await _studioNotifyService.SendEmailRoomInviteAsync(w.Email, entry.Title, shortenLink);
             }
 
             if (w.Id == FileConstant.ShareLinkId)
@@ -439,6 +437,7 @@ public class FileSharing
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly InvitationLinkService _invitationLinkService;
     private readonly ExternalShare _externalShare;
+    private readonly IUrlShortener _urlShortener;
 
     public FileSharing(
         Global global,
@@ -452,7 +451,8 @@ public class FileSharing
         FileSharingHelper fileSharingHelper,
         FilesSettingsHelper filesSettingsHelper,
         InvitationLinkService invitationLinkService,
-        ExternalShare externalShare)
+        ExternalShare externalShare,
+        IUrlShortener urlShortener)
     {
         _global = global;
         _fileSecurity = fileSecurity;
@@ -466,6 +466,7 @@ public class FileSharing
         _logger = logger;
         _invitationLinkService = invitationLinkService;
         _externalShare = externalShare;
+        _urlShortener = urlShortener;
     }
 
     public async Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
@@ -563,10 +564,12 @@ public class FileSharing
                 {
                     continue;
                 }
-                
-                w.Link = r.SubjectType == SubjectType.InvitationLink ?
-                    _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) :
-                    await _externalShare.GetLinkAsync(r.Subject);
+
+                var link = r.SubjectType == SubjectType.InvitationLink 
+                    ? _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) 
+                    : await _externalShare.GetLinkAsync(r.Subject);
+
+                w.Link = await _urlShortener.GetShortenLinkAsync(link);
                 w.SubjectGroup = true;
                 w.CanEditAccess = false;
                 w.FileShareOptions.Password = await _externalShare.GetPasswordAsync(w.FileShareOptions.Password);

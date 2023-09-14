@@ -126,7 +126,7 @@ public class CapabilitiesController : ControllerBase
             {
                 var settings = await _settingsManager.LoadAsync<SsoSettingsV2>();
 
-                if (settings.EnableSso)
+                if (settings.EnableSso.GetValueOrDefault())
                 {
                     result.SsoUrl = settings.IdpSettings.SsoUrl;
                     result.SsoLabel = settings.SpLoginLabel;

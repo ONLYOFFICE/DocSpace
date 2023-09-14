@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "U staat op het punt dit bestand te verwijderen. Weet u zeker dat u door wilt gaan?",
-  "DeleteFolder": "U staat op het punt deze map te verwijderen. Weet u zeker dat u door wilt gaan?",
-  "DeleteItems": "U staat op het punt deze items te verwijderen. Weet u zeker dat u door wilt gaan?",
+  "DeleteFile": "U staat op het punt dit bestand te verwijderen. ",
+  "DeleteFolder": "U staat op het punt deze map te verwijderen. ",
+  "DeleteItems": "U staat op het punt deze items te verwijderen. ",
   "DeleteRoom": "U staat op het punt deze kamer te verwijderen. U kunt dit niet meer herstellen.",
   "DeleteRooms": "U staat op het punt deze kamers te verwijderen. U kunt ze niet meer herstellen.",
   "MoveToTrashButton": "Verplaats naar Prullenbak",

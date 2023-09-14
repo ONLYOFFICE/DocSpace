@@ -197,8 +197,10 @@ public class PortalController : ControllerBase
             return string.Empty;
         }
 
-        return await _commonLinkUtility.GetConfirmationEmailUrlAsync(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
+        var link = await _commonLinkUtility.GetConfirmationEmailUrlAsync(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
                 + $"&emplType={employeeType:d}";
+
+        return await _urlShortener.GetShortenLinkAsync(link);
     }
 
     /// <summary>

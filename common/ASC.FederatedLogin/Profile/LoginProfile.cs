@@ -26,7 +26,6 @@
 
 namespace ASC.FederatedLogin.Profile;
 
-[Serializable]
 [DebuggerDisplay("{DisplayName} ({Id})")]
 public class LoginProfile
 {

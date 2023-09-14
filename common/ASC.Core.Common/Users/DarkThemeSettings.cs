@@ -28,7 +28,6 @@ namespace ASC.Web.Core.Users;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class DarkThemeSettings : ISettings<DarkThemeSettings>
 {
     /// <summary>ID</summary>
