@@ -28,6 +28,5 @@
   "SetAppTitle": "Nastavení aplikace autentizačního zařízení",
   "SuccessDeactivate": "Váš účet byl úspěšně deaktivován. Za 10 sekund budete přesměrováni na <1>stránku</1>.",
   "SuccessReactivate": "Váš účet byl úspěšně reaktivován. Za 10 sekund budete přesměrováni na <1>prostor</1>.",
-  "SuccessRemoved": "Váš účet byl úspěšně odstraněn. Za 10 sekund budete přesměrováni na <1>stránku</1>.",
-  "WelcomeUser": "Vítejte na našem DocSpace!\nChcete-li začít, zaregistrujte se nebo se přihlaste prostřednictvím sociálních sítí."
+  "SuccessRemoved": "Váš účet byl úspěšně odstraněn. Za 10 sekund budete přesměrováni na <1>stránku</1>."
 }

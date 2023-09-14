@@ -28,6 +28,5 @@
   "SetAppTitle": "Configurarea aplicației de autentificare dvs.",
   "SuccessDeactivate": "Contul dvs a fost dezactivat cu succes. Veţi fi redirecţionat în 10 secunde către <1>site-ul</1>.",
   "SuccessReactivate": "Contul dvs a fost reactivat cu succes. Veți fi redirecționat către <1>portal</1> după 10 secunde.",
-  "SuccessRemoved": "Contul dvs a fost eliminat cu succes. Veţi fi redirecţionat în 10 secunde către <1>site-ul</1>.",
-  "WelcomeUser": "Bine ați venit în spațiul DocSpace!\nPentru a începe lucrul, vă înregistrați sau vă conectați prin intermediu rețelelor de socializare."
+  "SuccessRemoved": "Contul dvs a fost eliminat cu succes. Veţi fi redirecţionat în 10 secunde către <1>site-ul</1>."
 }

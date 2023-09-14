@@ -1,6 +1,6 @@
 ﻿import SsoReactSvgUrl from "PUBLIC_DIR/images/sso.react.svg?url";
 import React, { useEffect, useState, useCallback } from "react";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import PropTypes from "prop-types";
 import { createUser, signupOAuth } from "@docspace/common/api/people";
 import { inject, observer } from "mobx-react";
@@ -52,6 +52,8 @@ const CreateUserForm = (props) => {
   const inputRef = React.useRef(null);
 
   const emailFromLink = linkData?.email ? linkData.email : "";
+  const toRoom = linkData?.toRoom;
+  const roomName = "First room"; //TODO: get from server
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [ssoLabel, setSsoLabel] = useState("");
@@ -435,7 +437,25 @@ const CreateUserForm = (props) => {
                 )}
 
                 <div className="tooltip">
-                  <span className="tooltiptext">{t("WelcomeUser")}</span>
+                  <p className="tooltiptext">
+                    {toRoom ? (
+                      <Trans
+                        t={t}
+                        i18nKey="WelcomeToRoomName"
+                        ns="Confirm"
+                        key={roomName}
+                      >
+                        Welcome to the <strong>{{ roomName }}</strong> room!
+                      </Trans>
+                    ) : (
+                      t("WelcomeToDocspace")
+                    )}
+                  </p>
+                  <p className="tooltiptext">
+                    {oauthDataExists()
+                      ? t("WelcomeRegisterViaSocial")
+                      : t("WelcomeRegister")}
+                  </p>
                 </div>
               </>
             )}

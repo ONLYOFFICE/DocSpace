@@ -93,7 +93,7 @@ public class SsoSettingsV2 : ISettings<SsoSettingsV2>
 
     /// <summary>Specifies if SSO is enabled or not</summary>
     /// <type>System.Boolean, System</type>
-    public bool EnableSso { get; set; }
+    public bool? EnableSso { get; set; }
 
     /// <summary>IDP settings</summary>
     /// <type>ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoIdpSettings, ASC.Web.Core</type>

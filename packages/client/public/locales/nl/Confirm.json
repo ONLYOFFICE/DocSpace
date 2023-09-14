@@ -28,6 +28,5 @@
   "SetAppTitle": "Configureer uw authenticatietoepassing",
   "SuccessDeactivate": "Uw account is succesvol gedeactiveerd. Over 10 seconden wordt u doorgestuurd naar de <1>site</1>.",
   "SuccessReactivate": "Uw account is succesvol opnieuw geactiveerd. Over 10 seconden wordt u doorgestuurd naar de <1>ruimte</1>.",
-  "SuccessRemoved": "Uw account is succesvol verwijderd. Over 10 seconden wordt u doorgestuurd naar de <1>site</1>.",
-  "WelcomeUser": "Welkom bij ons DocSpace!\nOm te beginnen kunt u zich inschrijven, of inloggen via sociale netwerken."
+  "SuccessRemoved": "Uw account is succesvol verwijderd. Over 10 seconden wordt u doorgestuurd naar de <1>site</1>."
 }
