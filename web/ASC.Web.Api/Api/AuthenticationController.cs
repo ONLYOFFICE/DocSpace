@@ -76,6 +76,7 @@ public class AuthenticationController : ControllerBase
     private readonly ILogger<AuthenticationController> _logger;
     private readonly InvitationLinkService _invitationLinkService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMapper _mapper;
 
     public AuthenticationController(
         UserManager userManager,
@@ -114,7 +115,8 @@ public class AuthenticationController : ControllerBase
         EmailValidationKeyProvider emailValidationKeyProvider,
         ILogger<AuthenticationController> logger,
         InvitationLinkService invitationLinkService,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor, 
+        IMapper mapper)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -153,6 +155,7 @@ public class AuthenticationController : ControllerBase
         _logger = logger;
         _invitationLinkService = invitationLinkService;
         _httpContextAccessor = httpContextAccessor;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -398,16 +401,16 @@ public class AuthenticationController : ControllerBase
     /// <returns type="ASC.Security.Cryptography.EmailValidationKeyProvider.ValidationResult, ASC.Security.Cryptography">Validation result: Ok, Invalid, or Expired</returns>
     [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
-    public async Task<ValidationResult> CheckConfirm(EmailValidationKeyModel inDto)
+    public async Task<ConfirmDto> CheckConfirm(EmailValidationKeyModel inDto)
     {
         if (inDto.Type != ConfirmType.LinkInvite)
         {
-            return await _emailValidationKeyModelHelper.ValidateAsync(inDto);
+            return new ConfirmDto { Result = await _emailValidationKeyModelHelper.ValidateAsync(inDto)};
         }
 
-        var linkData = await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, inDto.Email, inDto.EmplType ?? default, inDto.UiD ?? default);
+        var result = await _invitationLinkService.ValidateAsync(inDto.Key, inDto.Email, inDto.EmplType ?? default, inDto.RoomId);
 
-        return linkData.Result;
+        return _mapper.Map<Validation, ConfirmDto>(result);
     }
 
     /// <summary>
