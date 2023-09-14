@@ -331,14 +331,22 @@ public class UserManager
         return findUsers.ToArray();
     }
 
-    public async Task<UserInfo> UpdateUserInfo(UserInfo u)
+    public async Task<UserInfo> UpdateUserInfo(UserInfo u, bool afterInvite = false)
     {
         if (IsSystemUser(u.Id))
         {
             return SystemUsers[u.Id];
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+        if (afterInvite)
+        {
+            _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id, this.GetUserType(u.Id)), Constants.Action_AddRemoveUser);
+        }
+        else
+        {
+            _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+        }
+        
 
         if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
         {
