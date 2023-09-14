@@ -231,7 +231,7 @@ const EditLinkPanel = (props) => {
             scale
             primary
             size="normal"
-            label={isEdit ? t("Common:Save") : t("Common:Create")}
+            label={isEdit ? t("Common:SaveButton") : t("Common:Create")}
             isDisabled={isLoading || !linkNameIsValid || isExpired}
             onClick={onSave}
           />
