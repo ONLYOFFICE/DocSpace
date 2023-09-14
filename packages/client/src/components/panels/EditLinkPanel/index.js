@@ -113,7 +113,7 @@ const EditLinkPanel = (props) => {
         } else {
           copy(link?.sharedTo?.shareLink);
 
-          toastr.success(t("Files:LinkAddedSuccessfully"));
+          toastr.success(t("Files:LinkCreatedSuccessfully"));
         }
       })
       .catch((err) => toastr.error(err?.message))
@@ -179,13 +179,14 @@ const EditLinkPanel = (props) => {
       >
         <div className="edit-link_header">
           <Heading className="edit-link_heading">
-            {isEdit ? t("Files:EditLink") : t("Files:AddNewLink")}
+            {isEdit ? t("Files:EditLink") : t("Files:CreateNewLink")}
           </Heading>
         </div>
         <StyledScrollbar stype="mediumBlack">
           <div className="edit-link_body">
             <LinkBlock
               t={t}
+              isEdit={isEdit}
               isLoading={isLoading}
               shareLink={shareLink}
               linkNameValue={linkNameValue}
@@ -230,7 +231,7 @@ const EditLinkPanel = (props) => {
             scale
             primary
             size="normal"
-            label={t("Common:SaveButton")}
+            label={isEdit ? t("Common:SaveButton") : t("Common:Create")}
             isDisabled={isLoading || !linkNameIsValid || isExpired}
             onClick={onSave}
           />
