@@ -10,11 +10,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.AppleIdLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "appleID",
+		  "key": "appleid",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "appleID",
+		  "key": "appleid",
 		  "type": "ASC.FederatedLogin.LoginProviders.AppleIdLoginProvider, ASC.FederatedLogin"
 		}
       ],
