@@ -42,7 +42,6 @@ class PluginStore {
 
   settingsPluginDialogVisible = false;
   currentSettingsDialogPlugin = null;
-  isAdminSettingsDialog = false;
 
   pluginDialogVisible = false;
   pluginDialogProps = null;
@@ -69,10 +68,6 @@ class PluginStore {
 
   setSettingsPluginDialogVisible = (value) => {
     this.settingsPluginDialogVisible = value;
-  };
-
-  setIsAdminSettingsDialog = (value) => {
-    this.isAdminSettingsDialog = value;
   };
 
   setPluginDialogVisible = (value) => {
@@ -230,13 +225,13 @@ class PluginStore {
   };
 
   changePluginStatus = async (id, status) => {
-    if (status === "true") {
+    if (status) {
       this.activatePlugin(id);
     } else {
       this.deactivatePlugin(id);
     }
 
-    const plugin = await api.plugins.activatePlugin(id, status === "true");
+    const plugin = await api.plugins.activatePlugin(id, status);
 
     return plugin;
   };

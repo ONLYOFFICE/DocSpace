@@ -38,7 +38,7 @@ export const messageActions = (
       case PluginActions.updateContext:
         if (message.contextProps) {
           message.contextProps.forEach((prop) => {
-            updatePropsContext(prop.name, prop.props);
+            updatePropsContext && updatePropsContext(prop.name, prop.props);
           });
         }
         break;
@@ -102,39 +102,40 @@ export const messageActions = (
 
       case PluginActions.showModal:
         if (message.modalDialogProps) {
-          setPluginDialogVisible(true);
-          setPluginDialogProps(message.modalDialogProps);
+          setPluginDialogVisible && setPluginDialogVisible(true);
+          setPluginDialogProps &&
+            setPluginDialogProps(message.modalDialogProps);
         }
 
         break;
 
       case PluginActions.closeModal:
-        setPluginDialogVisible(false);
-        setPluginDialogProps(null);
+        setPluginDialogVisible && setPluginDialogVisible(false);
+        setPluginDialogProps && setPluginDialogProps(null);
         break;
 
       case PluginActions.updateContextMenuItems:
-        updateContextMenuItems(pluginId);
+        updateContextMenuItems && updateContextMenuItems(pluginId);
 
         break;
       case PluginActions.updateInfoPanelItems:
-        updateInfoPanelItems(pluginId);
+        updateInfoPanelItems && updateInfoPanelItems(pluginId);
 
         break;
       case PluginActions.updateMainButtonItems:
-        updateMainButtonItems(pluginId);
+        updateMainButtonItems && updateMainButtonItems(pluginId);
 
         break;
       case PluginActions.updateProfileMenuItems:
-        updateProfileMenuItems(pluginId);
+        updateProfileMenuItems && updateProfileMenuItems(pluginId);
 
         break;
       case PluginActions.updateEventListenerItems:
-        updateEventListenerItems(pluginId);
+        updateEventListenerItems && updateEventListenerItems(pluginId);
 
         break;
       case PluginActions.updateFileItems:
-        updateFileItems(pluginId);
+        updateFileItems && updateFileItems(pluginId);
 
         break;
 

@@ -28,7 +28,6 @@ const useFiles = ({
 
   isAccountsPage,
   isSettingsPage,
-  isPluginsSettingsPage,
 
   location,
 
@@ -86,7 +85,7 @@ const useFiles = ({
   };
 
   React.useEffect(() => {
-    if (isAccountsPage || isSettingsPage || isPluginsSettingsPage) return;
+    if (isAccountsPage || isSettingsPage) return;
     setIsLoading(true);
 
     if (!window.location.href.includes("#preview")) {
@@ -272,13 +271,7 @@ const useFiles = ({
       .finally(() => {
         setIsLoading(false);
       });
-  }, [
-    location.pathname,
-    location.search,
-    isAccountsPage,
-    isSettingsPage,
-    isPluginsSettingsPage,
-  ]);
+  }, [location.pathname, location.search, isAccountsPage, isSettingsPage]);
 
   return { onDrop };
 };

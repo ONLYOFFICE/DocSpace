@@ -5,8 +5,6 @@ import PluginHeader from "./PluginHeader";
 import PluginInfo from "./PluginInfo";
 import PluginSettings from "./PluginSettings";
 
-import { PluginSettingsType } from "SRC_DIR/helpers/plugins/constants";
-
 import { PluginScopes } from "../constants";
 
 const StyledPlugin = styled.div`
@@ -57,20 +55,9 @@ const Plugin = ({
 
   isLast,
 }) => {
-  const withSettings = scopes.includes(PluginScopes.Settings);
-
   const pluginSettings = isUserSettings
     ? userPluginSettings
     : adminPluginSettings;
-
-  const showPluginSettingsPage =
-    withSettings &&
-    pluginSettings &&
-    (pluginSettings.type === PluginSettingsType.both ||
-      pluginSettings.type === PluginSettingsType.settingsPage);
-
-  const showModalPluginSettings =
-    withSettings && pluginSettings?.type && !showPluginSettingsPage;
 
   return (
     <StyledPlugin>

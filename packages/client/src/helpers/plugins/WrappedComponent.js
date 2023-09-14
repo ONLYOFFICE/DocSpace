@@ -46,10 +46,14 @@ const ComponentPure = ({
   } = React.useContext(PropsContext);
 
   React.useEffect(() => {
-    if (!component.contextName || !contextProps[component.contextName]) return;
+    if (
+      !component.contextName ||
+      (contextProps && !contextProps[component.contextName])
+    )
+      return;
 
-    setElementProps(contextProps[component.contextName]);
-  }, [contextProps[component.contextName]]);
+    contextProps && setElementProps(contextProps[component.contextName]);
+  }, [contextProps && contextProps[component.contextName]]);
 
   React.useEffect(() => {
     setElementProps(component.props);
@@ -62,7 +66,7 @@ const ComponentPure = ({
       case PluginComponents.box: {
         const childrenComponents = elementProps?.children?.map(
           (item, index) => (
-            <Component
+            <PluginComponent
               key={`box-${index}-${item.component}`}
               component={item}
               pluginId={pluginId}
@@ -194,13 +198,24 @@ const ComponentPure = ({
       }
 
       case PluginComponents.button: {
-        const { withLoadingAfterClick, disableWhileRequestRunning, ...rest } =
-          elementProps;
+        const {
+          withLoadingAfterClick,
+          disableWhileRequestRunning,
+          isSaveButton,
+          modalRequestRunning,
+          setSettingsModalRequestRunning,
+          onCloseAction,
+          ...rest
+        } = elementProps;
 
         const onClickAction = async () => {
           if (withLoadingAfterClick) {
-            setIsRequestRunning(true);
+            setIsRequestRunning && setIsRequestRunning(true);
             setModalRequestRunning && setModalRequestRunning(true);
+            if (isSaveButton) {
+              setSettingsModalRequestRunning &&
+                setSettingsModalRequestRunning(true);
+            }
           }
           const message = await elementProps.onClick();
 
@@ -224,16 +239,26 @@ const ComponentPure = ({
             updateFileItems
           );
 
-          setIsRequestRunning(false);
+          setIsRequestRunning && setIsRequestRunning(false);
+
+          if (isSaveButton) {
+            setSettingsModalRequestRunning &&
+              setSettingsModalRequestRunning(false);
+            onCloseAction && onCloseAction();
+          }
         };
 
         const isLoading = withLoadingAfterClick
-          ? isRequestRunning
+          ? isSaveButton
+            ? modalRequestRunning
+            : isRequestRunning
             ? isRequestRunning
             : rest.isLoading
           : rest.isLoading;
         const isDisabled = disableWhileRequestRunning
-          ? isRequestRunning
+          ? isSaveButton
+            ? modalRequestRunning
+            : isRequestRunning
             ? isRequestRunning
             : rest.isDisabled
           : rest.isDisabled;
@@ -295,7 +320,7 @@ const ComponentPure = ({
   return element;
 };
 
-const Component = inject(({ pluginStore }) => {
+export const PluginComponent = inject(({ pluginStore }) => {
   const {
     updatePluginStatus,
     setCurrentSettingsDialogPlugin,
@@ -326,16 +351,29 @@ const Component = inject(({ pluginStore }) => {
   };
 })(observer(ComponentPure));
 
-const WrappedComponent = ({ component, pluginId, setModalRequestRunning }) => {
+const WrappedComponent = ({
+  pluginId,
+
+  component,
+
+  saveButton,
+  setSaveButtonProps,
+
+  setModalRequestRunning,
+}) => {
   const [contextProps, setContextProps] = React.useState({});
 
   const [isRequestRunning, setIsRequestRunning] = React.useState(false);
 
   const updatePropsContext = (name, props) => {
-    const newProps = { ...contextProps };
-    newProps[name] = props;
+    if (saveButton && name === saveButton.contextName) {
+      setSaveButtonProps && setSaveButtonProps((val) => ({ ...val, props }));
+    } else {
+      const newProps = { ...contextProps };
+      newProps[name] = props;
 
-    setContextProps(newProps);
+      setContextProps(newProps);
+    }
   };
 
   return (
@@ -348,7 +386,7 @@ const WrappedComponent = ({ component, pluginId, setModalRequestRunning }) => {
         setModalRequestRunning,
       }}
     >
-      <Component component={component} pluginId={pluginId} />
+      <PluginComponent component={component} pluginId={pluginId} />
     </PropsContext.Provider>
   );
 };
