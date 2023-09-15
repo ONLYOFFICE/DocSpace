@@ -16,7 +16,7 @@ json -I -f %{_builddir}/%{sourcename}/config/appsettings.services.json -e "this.
 -e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" -e "this.logLevel=\"warning\""  -e "this.core={ 'products': { 'folder': '%{buildpath}/products', 'subfolder': 'server'} }"
 
 find %{_builddir}/%{sourcename}/config/ -type f -regex '.*\.\(test\|dev\).*' -delete
-json -I -f %{_builddir}/%{sourcename}/config/appsettings.json -e "this.core.notify.postman=\"services\"" -e "this.Logging.LogLevel.Default=\"Warning\"" -e "this['debug-info'].enabled=\"false\""
+json -I -f %{_builddir}/%{sourcename}/config/appsettings.json -e "this.core.notify.postman=\"services\"" -e "this.Logging.LogLevel.Default=\"Warning\"" -e "this['debug-info'].enabled=\"false\"" -e "this.web.samesite=\"None\""
 json -I -f %{_builddir}/%{sourcename}/config/apisystem.json -e "this.core.notify.postman=\"services\""
 sed 's_\(minlevel=\)".*"_\1"Warn"_g' -i %{_builddir}/%{sourcename}/config/nlog.config
 

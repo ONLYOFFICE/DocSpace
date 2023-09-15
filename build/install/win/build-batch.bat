@@ -52,6 +52,8 @@ del /f /q build\install\win\Files\config\*.dev.json
 %sed% "s_\(\"logLevel\":\).*_\1 \"warning\"_g" -i build\install\win\Files\config\appsettings.services.json
 %sed% "/\"debug-info\": {/,/}/ s/\(\"enabled\": \)\".*\"/\1\"false\"/" -i build\install\win\Files\config\appsettings.json
 
+%sed% "s_\(\"samesite\":\).*,_\1 \"None\",_g" -i build\install\win\Files\config\appsettings.json
+
 ::redirectUrl value replacement
 %sed% "s/teamlab.info/onlyoffice.com/g" -i build\install\win\Files\config/autofac.consumers.json
 
