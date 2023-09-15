@@ -338,7 +338,7 @@ const CreateUserForm = (props) => {
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
             <SocialButton
               iconName={icon}
-              label={getProviderTranslation(label, t)}
+              label={getProviderTranslation(label, t, false, true)}
               className={`socialButton ${className ? className : ""}`}
               $iconOptions={iconOptions}
               data-url={item.url}
@@ -358,7 +358,7 @@ const CreateUserForm = (props) => {
         <SocialButton
           iconName={SsoReactSvgUrl}
           className="socialButton"
-          label={ssoLabel || getProviderTranslation("sso", t)}
+          label={ssoLabel || getProviderTranslation("sso", t, false, true)}
           onClick={() => (window.location.href = ssoUrl)}
         />
       </div>
@@ -658,6 +658,7 @@ const CreateUserForm = (props) => {
                 onSocialLoginClick={onSocialButtonClick}
                 ssoLabel={ssoLabel}
                 ssoUrl={ssoUrl}
+                isSignUp
               />
             </RegisterContainer>
           </FormWrapper>
