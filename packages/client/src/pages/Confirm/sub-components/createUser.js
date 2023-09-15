@@ -53,12 +53,9 @@ const CreateUserForm = (props) => {
   const inputRef = React.useRef(null);
 
   const emailFromLink = linkData?.email ? linkData.email : "";
-  const toRoom = roomData?.roomId;
   const roomName = roomData?.title;
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
-  const [ssoLabel, setSsoLabel] = useState("");
-  const [ssoUrl, setSsoUrl] = useState("");
   const [email, setEmail] = useState(emailFromLink);
   const [emailValid, setEmailValid] = useState(true);
   const [emailErrorText, setEmailErrorText] = useState("");
@@ -122,8 +119,6 @@ const CreateUserForm = (props) => {
 
       window.authCallback = authCallback;
 
-      setSsoLabel(capabilities?.ssoLabel);
-      setSsoUrl(capabilities?.ssoUrl);
       onCheckGreeting();
       focusInput();
     };
@@ -358,8 +353,8 @@ const CreateUserForm = (props) => {
         <SocialButton
           iconName={SsoReactSvgUrl}
           className="socialButton"
-          label={ssoLabel || getProviderTranslation("sso", t)}
-          onClick={() => (window.location.href = ssoUrl)}
+          label={capabilities?.ssoLabel || getProviderTranslation("sso", t)}
+          onClick={() => (window.location.href = capabilities?.ssoUrl)}
         />
       </div>
     );
@@ -379,7 +374,7 @@ const CreateUserForm = (props) => {
   };
 
   const ssoExists = () => {
-    if (ssoUrl) return true;
+    if (capabilities?.ssoUrl) return true;
     else return false;
   };
 
@@ -439,7 +434,7 @@ const CreateUserForm = (props) => {
 
                 <div className="tooltip">
                   <p className="tooltiptext">
-                    {toRoom ? (
+                    {roomName ? (
                       <Trans
                         t={t}
                         i18nKey="WelcomeToRoomName"
@@ -453,7 +448,9 @@ const CreateUserForm = (props) => {
                     )}
                   </p>
                   <p className="tooltiptext">
-                    {oauthDataExists()
+                    {ssoExists() && !oauthDataExists()
+                      ? t("WelcomeRegisterViaSSO")
+                      : oauthDataExists()
                       ? t("WelcomeRegisterViaSocial")
                       : t("WelcomeRegister")}
                   </p>
@@ -669,8 +666,8 @@ const CreateUserForm = (props) => {
                 onClose={moreAuthClose}
                 providers={providers}
                 onSocialLoginClick={onSocialButtonClick}
-                ssoLabel={ssoLabel}
-                ssoUrl={ssoUrl}
+                ssoLabel={capabilities?.ssoLabel}
+                ssoUrl={capabilities?.ssoUrl}
               />
             </RegisterContainer>
           </FormWrapper>
