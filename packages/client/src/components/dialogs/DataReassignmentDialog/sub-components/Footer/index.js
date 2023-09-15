@@ -12,18 +12,17 @@ const Footer = ({
   onReassign,
   percent,
   onClose,
+  onTerminate,
 }) => {
   if (showProgress) {
     return (
       <StyledFooterWrapper>
         <div className="button-wrapper">
           <Button
-            label={
-              percent === 100 ? t("Common:OkButton") : t("Common:CancelButton")
-            }
+            label={percent === 100 ? t("Common:OkButton") : "Abort transfer"}
             size="normal"
             scale
-            onClick={onClose}
+            onClick={percent === 100 ? onClose : onTerminate}
           />
         </div>
       </StyledFooterWrapper>

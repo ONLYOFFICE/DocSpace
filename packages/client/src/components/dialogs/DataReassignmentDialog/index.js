@@ -36,6 +36,7 @@ const DataReassignmentDialog = ({
   setDataReassignmentDialogVisible,
   dataReassignment,
   dataReassignmentProgress,
+  dataReassignmentTerminate,
   currentColorScheme,
   currentUser,
   deleteProfile,
@@ -108,8 +109,9 @@ const DataReassignmentDialog = ({
       .then((res) => {
         setPercent(res.percentage);
 
-        if (res.percentage !== 100) return;
+        if (!res.isCompleted) return;
 
+        toastr.success(t("Common:ChangesSavedSuccessfully"));
         clearInterval(timerId);
         isDeleteProfile && updateAccountsAfterDeleteUser();
       })
@@ -124,9 +126,30 @@ const DataReassignmentDialog = ({
 
     dataReassignment(user.id, selectedUser.id, isDeleteProfile)
       .then(() => {
-        toastr.success(t("Common:ChangesSavedSuccessfully"));
+        checkProgress(user.id);
+        dataReassignmentTerminate(user.id).then(() => {
+          checkProgress(user.id);
+          timerId = setInterval(() => checkProgress(user.id), 100);
+        });
+      })
+      .catch((error) => {
+        toastr.error(error?.response?.data?.error?.message);
+      });
 
-        timerId = setInterval(() => checkProgress(user.id), 1000);
+    // timerId = setInterval(() => checkProgress(user.id), 100);
+
+    // .then(() => {
+    //   timerId = setInterval(() => checkProgress(user.id), 10);
+    // })
+    // .catch((error) => {
+    //   toastr.error(error?.response?.data?.error?.message);
+    // });
+  };
+
+  const onTerminate = () => {
+    dataReassignmentTerminate(user.id)
+      .then(() => {
+        toastr.success(t("Common:ChangesSavedSuccessfully"));
       })
       .catch((error) => {
         toastr.error(error?.response?.data?.error?.message);
@@ -199,6 +222,7 @@ const DataReassignmentDialog = ({
           onReassign={onReassign}
           percent={percent}
           onClose={onClose}
+          onTerminate={onTerminate}
         />
       </ModalDialog.Footer>
     </StyledModalDialog>
@@ -213,7 +237,11 @@ export default inject(({ auth, peopleStore, setup }) => {
     setIsDeleteUserReassignmentYourself,
   } = peopleStore.dialogStore;
   const { currentColorScheme } = auth.settingsStore;
-  const { dataReassignment, dataReassignmentProgress } = setup;
+  const {
+    dataReassignment,
+    dataReassignmentProgress,
+    dataReassignmentTerminate,
+  } = setup;
 
   const { user: currentUser } = peopleStore.authStore.userStore;
 
@@ -226,6 +254,7 @@ export default inject(({ auth, peopleStore, setup }) => {
     dataReassignment,
     currentUser,
     dataReassignmentProgress,
+    dataReassignmentTerminate,
     deleteProfile: dataReassignmentDeleteProfile,
     setFilter,
     isDeleteUserReassignmentYourself,

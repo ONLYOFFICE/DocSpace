@@ -14,6 +14,7 @@ const Body = ({
   percent,
   currentColorScheme,
   onTogglePeopleSelector,
+  onTerminate,
 }) => {
   if (!tReady) return <DataReassignmentLoader />;
 
@@ -28,6 +29,7 @@ const Body = ({
             : selectedUser.label
         }
         percent={percent}
+        onTerminate={onTerminate}
       />
     );
 

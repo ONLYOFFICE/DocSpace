@@ -419,6 +419,15 @@ export function dataReassignmentProgress(id) {
   });
 }
 
+export function dataReassignmentTerminate(id) {
+  const data = { id };
+  return request({
+    method: "put",
+    url: `/people/reassign/terminate`,
+    data,
+  });
+}
+
 export function ownerChange(ownerId, confirmKey = null) {
   const data = { ownerId };
 
