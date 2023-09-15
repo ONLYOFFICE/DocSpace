@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+global using System.Globalization;
 global using System.Reflection;
 global using System.Text;
 global using System.Text.RegularExpressions;
