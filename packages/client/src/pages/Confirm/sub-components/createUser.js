@@ -331,9 +331,8 @@ const CreateUserForm = (props) => {
         if (!providersData[item.provider]) return;
         if (index > 1) return;
 
-        const { icon, label, iconOptions, className } = providersData[
-          item.provider
-        ];
+        const { icon, label, iconOptions, className } =
+          providersData[item.provider];
 
         return (
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
@@ -447,35 +446,40 @@ const CreateUserForm = (props) => {
 
           <FormWrapper>
             <RegisterContainer>
-              {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
-
-              {oauthDataExists() && (
+              {!emailFromLink && (
                 <>
-                  <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-                  {providers && providers.length > 2 && (
-                    <Link
-                      isHovered
-                      type="action"
-                      fontSize="13px"
-                      fontWeight="600"
-                      color={currentColorScheme?.main?.accent}
-                      className="more-label"
-                      onClick={moreAuthOpen}
-                    >
-                      {t("Common:ShowMore")}
-                    </Link>
+                  {ssoExists() && (
+                    <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>
+                  )}
+
+                  {oauthDataExists() && (
+                    <>
+                      <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+                      {providers && providers.length > 2 && (
+                        <Link
+                          isHovered
+                          type="action"
+                          fontSize="13px"
+                          fontWeight="600"
+                          color={currentColorScheme?.main?.accent}
+                          className="more-label"
+                          onClick={moreAuthOpen}
+                        >
+                          {t("Common:ShowMore")}
+                        </Link>
+                      )}
+                    </>
+                  )}
+
+                  {(oauthDataExists() || ssoExists()) && (
+                    <div className="line">
+                      <Text color="#A3A9AE" className="or-label">
+                        {t("Common:Or")}
+                      </Text>
+                    </div>
                   )}
                 </>
               )}
-
-              {(oauthDataExists() || ssoExists()) && (
-                <div className="line">
-                  <Text color="#A3A9AE" className="or-label">
-                    {t("Common:Or")}
-                  </Text>
-                </div>
-              )}
-
               {showForm && (
                 <form className="auth-form-container">
                   <div className="auth-form-fields">
