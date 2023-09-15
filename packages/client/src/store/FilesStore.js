@@ -108,7 +108,7 @@ class FilesStore {
   mainButtonMobileVisible = true;
   filesIsLoading = false;
 
-  isEmptyPage = false;
+  isEmptyPage = true;
   isLoadedFetchFiles = false;
 
   tempActionFilesIds = [];
@@ -1390,7 +1390,7 @@ class FilesStore {
               authorType ||
               roomId ||
               search ||
-              !withSubfolders ||
+              withSubfolders ||
               filterType ||
               searchInContent;
 
@@ -2805,6 +2805,8 @@ class FilesStore {
 
     if (items.length > 0 && this.isEmptyPage) {
       this.setIsEmptyPage(false);
+    } else if (items.length === 0 && !this.isEmptyPage) {
+      this.setIsEmptyPage(true);
     }
 
     const newItem = items.map((item) => {

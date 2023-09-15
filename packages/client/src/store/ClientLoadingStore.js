@@ -66,7 +66,7 @@ class ClientLoadingStore {
         return;
       }
       this.startLoadingTime.header = new Date();
-      if (withTimer) {
+      if (withTimer && !this.firstLoad) {
         return (this.sectionHeaderTimer = setTimeout(() => {
           this.updateIsSectionHeaderLoading(isSectionHeaderLoading);
         }, SHOW_LOADER_TIMER));
@@ -107,7 +107,7 @@ class ClientLoadingStore {
         return;
       }
       this.startLoadingTime.filter = new Date();
-      if (withTimer) {
+      if (withTimer && !this.firstLoad) {
         return (this.sectionFilterTimer = setTimeout(() => {
           this.updateIsSectionFilterLoading(isSectionFilterLoading);
         }, SHOW_LOADER_TIMER));
@@ -153,7 +153,7 @@ class ClientLoadingStore {
         return;
       }
       this.startLoadingTime.body = new Date();
-      if (withTimer) {
+      if (withTimer && !this.firstLoad) {
         return (this.sectionBodyTimer = setTimeout(() => {
           this.updateIsSectionBodyLoading(isSectionBodyLoading);
         }, SHOW_LOADER_TIMER));
