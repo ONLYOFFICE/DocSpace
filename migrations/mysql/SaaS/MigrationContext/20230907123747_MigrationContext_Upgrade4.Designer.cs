@@ -3,6 +3,7 @@ using System;
 using ASC.Migrations.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Migrations.MySql.SaaS.Migrations
 {
     [DbContext(typeof(MigrationContext))]
-    partial class MigrationContextModelSnapshot : ModelSnapshot
+    [Migration("20230907123747_MigrationContext_Upgrade4")]
+    partial class MigrationContext_Upgrade4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -5124,15 +5127,6 @@ namespace ASC.Migrations.MySql.SaaS.Migrations
 
                     b.HasIndex("TenantId", "UserName")
                         .HasDatabaseName("username");
-
-                    b.HasIndex("TenantId", "ActivationStatus", "Email")
-                        .HasDatabaseName("tenant_activation_status_email");
-
-                    b.HasIndex("TenantId", "ActivationStatus", "FirstName")
-                        .HasDatabaseName("tenant_activation_status_firstname");
-
-                    b.HasIndex("TenantId", "ActivationStatus", "LastName")
-                        .HasDatabaseName("tenant_activation_status_lastname");
 
                     b.ToTable("core_user", (string)null);
 
