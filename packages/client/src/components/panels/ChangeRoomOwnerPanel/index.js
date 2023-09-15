@@ -147,35 +147,41 @@ const ChangeRoomOwner = (props) => {
   );
 };
 
-export default inject(({ auth, dialogsStore, filesStore }) => {
-  const {
-    changeRoomOwnerIsVisible,
-    setChangeRoomOwnerIsVisible,
-    changeRoomOwnerData,
-  } = dialogsStore;
-  const { user } = auth.userStore;
-  const {
-    setFilesOwner,
-    selection,
-    bufferSelection,
-    setFolder,
-    updateRoomMemberRole,
-    removeFiles,
-  } = filesStore;
+export default inject(
+  ({ auth, dialogsStore, filesStore, selectedFolderStore }) => {
+    const {
+      changeRoomOwnerIsVisible,
+      setChangeRoomOwnerIsVisible,
+      changeRoomOwnerData,
+    } = dialogsStore;
+    const { user } = auth.userStore;
+    const {
+      setFilesOwner,
+      selection,
+      bufferSelection,
+      setFolder,
+      updateRoomMemberRole,
+      removeFiles,
+    } = filesStore;
 
-  const item = selection.length ? selection : [bufferSelection];
+    const roomId = selection.length
+      ? selection[0].id
+      : bufferSelection
+      ? bufferSelection.id
+      : selectedFolderStore.id;
 
-  return {
-    visible: changeRoomOwnerIsVisible,
-    setIsVisible: setChangeRoomOwnerIsVisible,
-    showBackButton: changeRoomOwnerData.showBackButton,
-    setRoomParams: changeRoomOwnerData.setRoomParams,
-    setFilesOwner,
-    userId: user.id,
-    roomId: item[0].id,
-    setFolder,
-    updateRoomMemberRole,
-    isAdmin: user.isOwner || user.isAdmin,
-    removeFiles,
-  };
-})(observer(withTranslation(["Files"])(ChangeRoomOwner)));
+    return {
+      visible: changeRoomOwnerIsVisible,
+      setIsVisible: setChangeRoomOwnerIsVisible,
+      showBackButton: changeRoomOwnerData.showBackButton,
+      setRoomParams: changeRoomOwnerData.setRoomParams,
+      setFilesOwner,
+      userId: user.id,
+      roomId,
+      setFolder,
+      updateRoomMemberRole,
+      isAdmin: user.isOwner || user.isAdmin,
+      removeFiles,
+    };
+  }
+)(observer(withTranslation(["Files"])(ChangeRoomOwner)));
