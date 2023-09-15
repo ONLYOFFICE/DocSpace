@@ -30,7 +30,6 @@ namespace ASC.IPSecurity;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class IPRestrictionsSettings : ISettings<IPRestrictionsSettings>
 {
     /// <summary>Specifies if the IP restrictions are enabled or not</summary>

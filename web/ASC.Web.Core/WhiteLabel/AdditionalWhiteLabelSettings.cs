@@ -37,7 +37,6 @@ public class AdditionalWhiteLabelSettingsWrapper
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettings>
 {
     /// <summary>Additional white label settings helper</summary>
@@ -169,7 +168,7 @@ public class AdditionalWhiteLabelSettingsHelper
 /// <summary>
 /// </summary>
 [Singletone]
-public class AdditionalWhiteLabelSettingsHelperInit 
+public class AdditionalWhiteLabelSettingsHelperInit
 {
     private readonly IConfiguration _configuration;
 

@@ -1,7 +1,9 @@
 {
+  "AddedToClipboard": "Items added to clipboard",
   "AddMembersDescription": "You can add new team members manually or invite them via link.",
   "AddNewExternalLink": "Add new external link",
   "AddNewLink": "Add new link",
+  "CreateNewLink": "Create new link",
   "All": "All",
   "AllFiles": "All files",
   "AllLinksAreDisabled": "All links are disabled",
@@ -70,6 +72,7 @@
   "InviteUsersInRoom": "Invite users in room",
   "LimitByTimePeriod": "Limit by time period",
   "LinkAddedSuccessfully": "Link added successfully",
+  "LinkCreatedSuccessfully": "Link successfully created",
   "LinkDeletedSuccessfully": "Link deleted successfully",
   "LinkDisabledSuccessfully": "Link disabled successfully",
   "LinkEditedSuccessfully": "Link edited successfully",

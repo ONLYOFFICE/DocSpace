@@ -27,7 +27,6 @@
 
 namespace ASC.Webhooks.Core;
 
-[Serializable]
 public class WebHooksSettings : ISettings<WebHooksSettings>
 {
     public List<int> Ids { get; set; }

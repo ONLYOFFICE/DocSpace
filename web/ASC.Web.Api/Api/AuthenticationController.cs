@@ -288,7 +288,7 @@ public class AuthenticationController : ControllerBase
             };
         }
 
-        if (_tfaAppAuthSettingsHelper.IsVisibleSettings &&await  _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && await _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
             if (!await TfaAppUserSettings.EnableForUserAsync(_settingsManager, user.Id))
             {
@@ -319,8 +319,8 @@ public class AuthenticationController : ControllerBase
 
             if (!session)
             {
-            var tenant = await _tenantManager.GetCurrentTenantIdAsync();
-            var expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
+                var tenant = await _tenantManager.GetCurrentTenantIdAsync();
+                var expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
 
                 outDto.Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires);
             }
@@ -371,7 +371,7 @@ public class AuthenticationController : ControllerBase
         {
             var settings = _settingsManager.Load<SsoSettingsV2>();
 
-            if (settings.EnableSso && !string.IsNullOrEmpty(settings.IdpSettings.SloUrl))
+            if (settings.EnableSso.GetValueOrDefault() && !string.IsNullOrEmpty(settings.IdpSettings.SloUrl))
             {
                 var logoutSsoUserData = _signature.Create(new LogoutSsoUserData
                 {
@@ -380,7 +380,7 @@ public class AuthenticationController : ControllerBase
                 });
 
                 return _setupInfo.SsoSamlLogoutUrl + "?data=" + HttpUtility.UrlEncode(logoutSsoUserData);
-    }
+            }
         }
 
         return null;

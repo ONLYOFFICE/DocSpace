@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Studio.Core.Notify;
 
-[Serializable]
 public class SpamEmailSettings : ISettings<SpamEmailSettings>
 {
     public int MailsSendedCount { get; set; }

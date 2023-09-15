@@ -235,14 +235,6 @@ const LanguageAndTimeZone = (props) => {
       setState((val) => ({ ...val, hasScroll: scrollLngTZSettings }));
     }
 
-    // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile =
-      document.getElementsByClassName("settings-mobile")[0];
-
-    if (settingsMobile) {
-      settingsMobile.style.display = "none";
-    }
-
     if (language !== prevProps.current.language) {
       i18n.changeLanguage(language).then(() => {
         const newLocaleSelectedLanguage =
@@ -506,12 +498,7 @@ const LanguageAndTimeZone = (props) => {
           {t("Common:LearnMore")}
         </Link>
       </div>
-
-      {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-        <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
-      ) : (
-        <> {settingsBlock}</>
-      )}
+      {settingsBlock}
       <SaveCancelButtons
         tabIndex={3}
         className="save-cancel-buttons"

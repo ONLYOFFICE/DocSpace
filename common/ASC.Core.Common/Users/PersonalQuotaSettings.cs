@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Tenants;
 
-[Serializable]
 public class PersonalQuotaSettings : ISettings<PersonalQuotaSettings>
 {
     public long MaxSpace { get; set; }

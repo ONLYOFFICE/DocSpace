@@ -2,7 +2,7 @@ import styled from "styled-components";
 import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
-import { mobile } from "@docspace/components/utils/device";
+import { mobile, smallTablet } from "@docspace/components/utils/device";
 
 export const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
