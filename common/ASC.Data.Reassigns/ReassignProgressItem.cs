@@ -136,6 +136,7 @@ public class ReassignProgressItem : DistributedTaskProgress
         catch (OperationCanceledException)
         {
             Status = DistributedTaskStatus.Canceled;
+            throw;
         }
         catch (Exception ex)
         {
@@ -148,9 +149,8 @@ public class ReassignProgressItem : DistributedTaskProgress
         {
             logger.LogInformation($"data reassignment {Status.ToString().ToLowerInvariant()}");
             IsCompleted = true;
+            PublishChanges();
         }
-
-        PublishChanges();
     }
 
     public object Clone()
