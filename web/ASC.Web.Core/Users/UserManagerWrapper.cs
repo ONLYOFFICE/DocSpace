@@ -193,7 +193,7 @@ public sealed class UserManagerWrapper
         UserInfo newUserInfo;
         if (updateExising)
         {
-            newUserInfo = await _userManager.UpdateUserInfo(userInfo);
+            newUserInfo = await _userManager.UpdateUserInfo(userInfo, true);
         }
         else
         {
