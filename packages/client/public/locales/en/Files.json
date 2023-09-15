@@ -168,6 +168,5 @@
   "RoomOwner": "Room owner",
   "YouLeftTheRoom": "You have left the room",
   "LeftAndAppointNewOwner": "You have left the room and appointed a new owner",
-  "AppointNewOwner": "You have appointed a new owner.",
-  "AddedToClipboard": "Items added to clipboard"
+  "AppointNewOwner": "You have appointed a new owner."
 }
