@@ -160,44 +160,56 @@ public class CspSettingsHelper
         if (!string.IsNullOrEmpty(firebaseDomain))
         {
             var firebaseOptions = _configuration.GetSection("csp:firebase").Get<CspOptions>();
-            firebaseOptions.Def.Add(firebaseDomain);
-            options.Add(firebaseOptions);
+            if (firebaseOptions != null)
+            {
+                firebaseOptions.Def.Add(firebaseDomain);
+                options.Add(firebaseOptions);
+            }
         }
 
         if (!string.IsNullOrEmpty(_configuration["web:zendesk-key"]))
         {
             var zenDeskOptions = _configuration.GetSection("csp:zendesk").Get<CspOptions>();
-            options.Add(zenDeskOptions);
+            if (zenDeskOptions != null)
+            {
+                options.Add(zenDeskOptions);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(_configuration["files:oform:url"]))
+        {
+            var oformOptions = _configuration.GetSection("csp:oform").Get<CspOptions>();
+            if (oformOptions != null)
+            {
+                options.Add(oformOptions);
+            }
         }
 
         var csp = new CspBuilder();
 
-        foreach (var option in options)
+        foreach (var domain in options.SelectMany(r => r.Def).Distinct())
         {
-            foreach (var domain in option.Def)
-            {
-                csp.ByDefaultAllow.From(domain);
-            }
+            csp.ByDefaultAllow.From(domain);
+        }
 
-            foreach (var domain in option.Script)
-            {
-                csp.AllowScripts.From(domain);
-            }
+        foreach (var domain in options.SelectMany(r => r.Script).Distinct())
+        {
+            csp.AllowScripts.From(domain);
+        }
 
-            foreach (var domain in option.Style)
-            {
-                csp.AllowStyles.From(domain);
-            }
+        foreach (var domain in options.SelectMany(r => r.Style).Distinct())
+        {
+            csp.AllowStyles.From(domain);
+        }
 
-            foreach (var domain in option.Img)
-            {
-                csp.AllowImages.From(domain);
-            }
+        foreach (var domain in options.SelectMany(r => r.Img).Distinct())
+        {
+            csp.AllowImages.From(domain);
+        }
 
-            foreach (var domain in option.Frame)
-            {
-                csp.AllowFraming.From(domain);
-            }
+        foreach (var domain in options.SelectMany(r => r.Frame).Distinct())
+        {
+            csp.AllowFraming.From(domain);
         }
 
         var (_, headerValue) = csp.BuildCspOptions().ToString(null);
