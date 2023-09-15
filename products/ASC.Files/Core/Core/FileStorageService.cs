@@ -2913,6 +2913,7 @@ public class FileStorageService //: IFileStorageService
             var newFolder = folder;
             if (folder.CreateBy != userInfo.Id)
             {
+                var createBy = folder.CreateBy;
                 var folderAccess = folder.Access;
 
                 newFolder.CreateBy = userInfo.Id;
@@ -2923,6 +2924,19 @@ public class FileStorageService //: IFileStorageService
 
                 await _socketManager.CreateFolderAsync(newFolder);
                 await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
+                await SetAceObjectAsync(new AceCollection<T>
+                {
+                    Files = Array.Empty<T>(),
+                    Folders = new[] { newFolderID },
+                    Aces = new List<AceWrapper>
+                    {
+                        new AceWrapper()
+                        {
+                              Access = FileShare.RoomAdmin,
+                              Id = createBy
+                        }
+                    }
+                }, false);
 
                 _ = _filesMessageService.SendAsync(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
             }
