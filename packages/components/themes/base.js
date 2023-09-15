@@ -3140,6 +3140,11 @@ const Base = {
     headerColor: "#333",
     descriptionColor: "#555F65",
   },
+
+  roomIcon: {
+    backgroundArchive: "#A3A9AE",
+    opacityBackground: "1",
+  },
 };
 
 export default Base;
