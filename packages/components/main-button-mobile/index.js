@@ -207,7 +207,7 @@ const MainButtonMobile = (props) => {
     setHeight(height);
   }, [isOpen]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     recalculateHeight();
   }, [isOpen, isOpenButton, window.innerHeight, isUploading, isOpenSubMenu]);
 
