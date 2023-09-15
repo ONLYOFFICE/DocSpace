@@ -450,7 +450,7 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         switch (filterType)
         {
             case ShareFilterType.User:
-                q = q.Where(s => s.SubjectType == SubjectType.UserOrGroup);
+                q = q.Where(s => s.SubjectType == SubjectType.User);
                 break;
             case ShareFilterType.InvitationLink:
                 q = q.Where(s => s.SubjectType == SubjectType.InvitationLink);

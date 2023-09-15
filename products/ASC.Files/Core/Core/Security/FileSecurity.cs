@@ -961,7 +961,7 @@ public class FileSecurity : IFileSecurity
             }
             
             if (!isRoom && e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive && 
-                ace is { SubjectType: SubjectType.UserOrGroup or SubjectType.ExternalLink })
+                ace is { SubjectType: SubjectType.User or SubjectType.ExternalLink })
             {
                 var id = ace.SubjectType == SubjectType.ExternalLink ? ace.Subject : userId;
 

@@ -995,7 +995,7 @@ public class FileSharing
             SubjectType = record.SubjectType
         };
 
-        w.CanEditAccess = _authContext.CurrentAccount.ID != w.Id && w.SubjectType == SubjectType.UserOrGroup && canEditAccess;
+        w.CanEditAccess = _authContext.CurrentAccount.ID != w.Id && (w.SubjectType is SubjectType.User or SubjectType.Group) && canEditAccess;
 
         if (record.IsLink)
         {
