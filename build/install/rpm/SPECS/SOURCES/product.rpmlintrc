@@ -66,3 +66,6 @@ addFilter(r'arch-independent-package-contains-binary-or-object')
 # /var/www/{{product}}/services/ASC.Web.HealthChecks.UI/runtimes/browser-wasm/nativeassets/net7.0/e_sqlite3.a
 addFilter(r'spurious-executable-perm')
 addFilter(r'devel-file-in-non-devel-package')
+
+# Necessary to resolve a config conflict
+addFilter(r'dangerous-command-in-%pre')
