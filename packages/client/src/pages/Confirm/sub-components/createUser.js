@@ -218,6 +218,8 @@ const CreateUserForm = (props) => {
 
     const signupAccount = {
       EmployeeType: linkData.emplType || null,
+      Email: linkData.email,
+      Key: linkData.key,
       SerializedProfile: profile,
     };
 
