@@ -195,7 +195,13 @@ function MediaViewer({
         onCopyLink,
       });
 
-    if (pluginContextMenuItems) {
+    if (pluginContextMenuItems && pluginContextMenuItems.length > 0) {
+      model.unshift({
+        key: "separator-plugin",
+        isSeparator: true,
+        disabled: false,
+      });
+
       pluginContextMenuItems.forEach((item) => {
         const onClick = async (): Promise<void> => {
           props.onClose();
@@ -220,7 +226,7 @@ function MediaViewer({
         )
           return;
 
-        model.push({
+        model.unshift({
           id: item.key,
           key: item.key,
           disabled: false,
@@ -228,7 +234,7 @@ function MediaViewer({
           onClick,
         });
 
-        desktopModel.push({
+        desktopModel.unshift({
           key: item.key,
           disabled: false,
           ...item.value,
