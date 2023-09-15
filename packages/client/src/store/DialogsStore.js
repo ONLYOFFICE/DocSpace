@@ -350,6 +350,11 @@ class DialogsStore {
   };
 
   setFormItem = (formItem) => {
+    if (formItem && !formItem.exst) {
+      const splitted = formItem.title.split(".");
+      formItem.title = splitted.slice(0, -1).join(".");
+      formItem.exst = splitted.length !== 1 ? `.${splitted.at(-1)}` : null;
+    }
     this.formItem = formItem;
   };
 

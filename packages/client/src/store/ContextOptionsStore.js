@@ -198,6 +198,12 @@ class ContextOptionsStore {
   };
 
   onClickSubmitToFormGallery = (item) => {
+    if (formItem && !formItem.exst) {
+      const splitTitle = item.title.split(".");
+      item.title = splitTitle.slice(0, -1).join(".");
+      item.exst = splitTitle.length !== 1 ? `.${splitted.at(-1)}` : null;
+    }
+
     this.dialogsStore.setFormItem(item);
     this.dialogsStore.setSubmitToGalleryDialogVisible(true);
   };

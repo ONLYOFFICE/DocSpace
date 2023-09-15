@@ -1,11 +1,12 @@
 import { Link, ModalDialog } from "@docspace/components";
 import { Button } from "@docspace/components";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { observer, inject } from "mobx-react";
 import { Trans, withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 import FilesSelector from "@docspace/client/src/components/FilesSelector";
 import { FilesSelectorFilterTypes } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 //
 import { request } from "@docspace/common/api/client";
@@ -25,68 +26,47 @@ const SubmitToFormGallery = ({
   canSubmitToFormGallery,
   submitToFormGallery,
 }) => {
-  const [isSelectingForm, setIsSelectingForm] = useState(false);
-  const onOpenFormSelector = () => setIsSelectingForm(true);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if (formItem) {
-    const splitted = formItem.title.split(".");
-    formItem.title = splitted.slice(0, -1).join(".");
-    formItem.exst = splitted.length !== 1 ? `.${splitted.at(-1)}` : null;
-  }
-
-  console.log(formItem);
+  const [isSelectingForm, setIsSelectingForm] = useState(false);
+  const onOpenFormSelector = () => setIsSelectingForm(true);
+  const onCloseFormSelector = () => setIsSelectingForm(false);
 
   const onSelectForm = (data) => setFormItem(data);
 
-  //TODO-mushka add final step to form submition
   const onSubmitToGallery = async () => {
     if (!formItem) return;
 
     setIsSubmitting(true);
 
-    let file = null;
-    const src = `${combineUrl(
-      window.DocSpaceConfig?.proxy?.url
-    )}/filehandler.ashx?action=download&fileid=${formItem.id}`;
-
-    await fetch(src)
+    const file = await fetch(
+      `${combineUrl(
+        window.DocSpaceConfig?.proxy?.url
+      )}/filehandler.ashx?action=download&fileid=${formItem.id}`
+    )
       .then((res) => {
         if (!res.ok) throw new Error(res.statusText);
-        return res.blob();
+        return res.arrayBuffer();
       })
-      .then((res) => {
-        const reader = new FileReader();
-        reader.onload = (e) => (file = e.target?.result);
-        reader.readAsArrayBuffer(res);
+      .then(async (arrayBuffer) => {
+        return new File([arrayBuffer], "TITLE", {
+          type: "application/octet-stream",
+        });
       })
-      .catch((event) => console.error(event))
-      .finally(() => setIsSubmitting(false));
+      .catch((err) => onClose(err));
 
-    // fetch("https://oforms.teamlab.info/api/upload", {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     file: file,
-    //     fileName: formItem.title,
-    //     language: "en",
-    //   }),
-    //   headers: {
-    //     "Content-type": "multipart/form-data",
-    //   },
-    // });
-
-    await submitToFormGallery(file, formItem.title, "en");
-
-    onClose();
+    await submitToFormGallery(file, "TITLE", "en").finally(() => onClose());
   };
 
-  const onCloseSelectFormDialog = () => setIsSelectingForm(false);
-
-  const onClose = () => {
+  const onClose = (err = null) => {
+    if (err) {
+      console.error(err);
+      toastr.error(err);
+    }
+    setIsSubmitting(false);
     setVisible(false);
-    setIsSelectingForm(false);
-    formItem && setFormItem(null);
+    onCloseFormSelector();
+    setFormItem(null);
   };
 
   if (!canSubmitToFormGallery()) return null;
@@ -98,7 +78,7 @@ const SubmitToFormGallery = ({
         filterParam={FilesSelectorFilterTypes.OFORM}
         isPanelVisible={true}
         onSelectFile={onSelectForm}
-        onClose={onCloseSelectFormDialog}
+        onClose={onCloseFormSelector}
       />
     );
 
@@ -162,7 +142,6 @@ const SubmitToFormGallery = ({
             size="normal"
             label={t("FormGallery:SelectForm")}
             onClick={onOpenFormSelector}
-            isLoading={isSubmitting}
             scale
           />
         ) : (
@@ -171,6 +150,7 @@ const SubmitToFormGallery = ({
             size="normal"
             label={t("FormGallery:SubmitToGallery")}
             onClick={onSubmitToGallery}
+            isLoading={isSubmitting}
             scale
           />
         )}

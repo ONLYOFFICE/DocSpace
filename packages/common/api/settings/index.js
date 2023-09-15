@@ -725,11 +725,16 @@ export function getOforms(url) {
 }
 
 export function submitToGallery(file, fileName, language) {
-  return axios.post("https://oforms.teamlab.info/api/upload", {
-    file,
-    fileName,
-    language,
-  });
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("fileName", fileName);
+  formData.append("language", language);
+
+  // return axios.post("https://oforms.teamlab.info/api/upload", {
+  return axios.post(
+    "https://cors-anywhere.herokuapp.com/https://oforms.teamlab.info/api/upload",
+    formData
+  );
 }
 
 export function getStorageRegions() {
