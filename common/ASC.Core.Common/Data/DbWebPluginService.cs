@@ -117,7 +117,7 @@ static file class Queries
             (WebPluginDbContext ctx, int tenantId, string name) =>
                 ctx.WebPlugins
                     .AsNoTracking()
-                    .Where(r => r.TenantId == Tenant.DefaultTenant || r.TenantId == tenantId)
+                    .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Name == name)
                     .FirstOrDefault());
 

@@ -38,6 +38,8 @@ public class WebPluginSettings
     private long _maxSize;
     private string _extension;
     private string[] _allow;
+    private string[] _assetExtensions;
+    private string _systemUrl;
 
     public bool Enabled
     {
@@ -60,5 +62,17 @@ public class WebPluginSettings
     {
         get => _allow ?? Array.Empty<string>();
         set => _allow = value;
+    }
+
+    public string[] AssetExtensions
+    {
+        get => _assetExtensions ?? Array.Empty<string>();
+        set => _assetExtensions = value;
+    }
+
+    public string SystemUrl
+    {
+        get => _systemUrl;
+        set => _systemUrl = value;
     }
 }

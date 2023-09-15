@@ -49,8 +49,10 @@ public class WebPluginsController : BaseSettingsController
     }
 
     [HttpPost("webplugins")]
-    public async Task<WebPluginDto> AddWebPluginFromFile()
+    public async Task<WebPluginDto> AddWebPluginFromFile(bool system)
     {
+        var tenantId = system ? Tenant.DefaultTenant :Tenant.Id;
+
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (HttpContext.Request.Form?.Files == null || HttpContext.Request.Form.Files.Count == 0)
@@ -65,11 +67,11 @@ public class WebPluginsController : BaseSettingsController
 
         var file = HttpContext.Request.Form.Files[0] ?? throw new ArgumentException("Input file is null");
 
-        var plugin = await _webPluginManager.AddWebPluginFromFileAsync(Tenant.Id, file);
+        var plugin = await _webPluginManager.AddWebPluginFromFileAsync(tenantId, file);
 
         var outDto = _mapper.Map<DbWebPlugin, WebPluginDto>(plugin);
 
-        var urlTemplate = await _webPluginManager.GetPluginUrlTemplateAsync(Tenant.Id);
+        var urlTemplate = await _webPluginManager.GetPluginUrlTemplateAsync(tenantId);
 
         outDto.Url = string.Format(urlTemplate, outDto.Name);
 
@@ -79,9 +81,19 @@ public class WebPluginsController : BaseSettingsController
     [HttpGet("webplugins")]
     public async Task<IEnumerable<WebPluginDto>> GetWebPluginsAsync(bool? enabled = null)
     {
-        var plugins = await _webPluginManager.GetWebPluginsAsync(Tenant.Id, enabled);
+        var outDto = await _webPluginManager.GetSystemPlugins<WebPluginDto>();
 
-        var outDto = _mapper.Map<IEnumerable<DbWebPlugin>, IEnumerable<WebPluginDto>>(plugins);
+        foreach(var item in outDto)
+        {
+            item.CreateOn = DateTime.MinValue;
+            item.CreateBy = new EmployeeDto();
+        }
+
+        var dbPlugins = await _webPluginManager.GetWebPluginsAsync(Tenant.Id, enabled);
+
+        var dtoPlugins = _mapper.Map<IEnumerable<DbWebPlugin>, IEnumerable<WebPluginDto>>(dbPlugins);
+
+        outDto.AddRange(dtoPlugins);
 
         if (outDto != null && outDto.Any())
         {
@@ -90,6 +102,11 @@ public class WebPluginsController : BaseSettingsController
 
             foreach (var dto in outDto)
             {
+                if (!string.IsNullOrEmpty(dto.Url))
+                {
+                    continue;
+                }
+
                 if (dto.System && systemUrlTemplate == null)
                 {
                     systemUrlTemplate = await _webPluginManager.GetPluginUrlTemplateAsync(Tenant.DefaultTenant);
@@ -114,7 +131,7 @@ public class WebPluginsController : BaseSettingsController
 
         var outDto = _mapper.Map<DbWebPlugin, WebPluginDto>(plugin);
 
-        if (outDto != null)
+        if (outDto != null && string.IsNullOrEmpty(outDto.Url))
         {
             var urlTemplate = await _webPluginManager.GetPluginUrlTemplateAsync(outDto.System ? Tenant.DefaultTenant : Tenant.Id);
 

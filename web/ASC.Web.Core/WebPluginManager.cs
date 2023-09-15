@@ -35,21 +35,33 @@ public class WebPluginManager
     private const string PluginFileName = "plugin.js";
     private const string AssetsFolderName = "assets";
 
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly IHttpClientFactory _clientFactory;
     private readonly DbWebPluginService _webPluginService;
     private readonly WebPluginSettings _webPluginSettings;
     private readonly StorageFactory _storageFactory;
     private readonly AuthContext _authContext;
+    private readonly ICache _cache;
+    private readonly ILogger<WebPluginManager> _log;
 
     public WebPluginManager(
+        CoreBaseSettings coreBaseSettings,
+        IHttpClientFactory clientFactory,
         DbWebPluginService webPluginService,
         WebPluginSettings webPluginSettings,
         StorageFactory storageFactory,
-        AuthContext authContext)
+        AuthContext authContext,
+        ICache cache,
+        ILogger<WebPluginManager> log)
     {
+        _coreBaseSettings = coreBaseSettings;
+        _clientFactory = clientFactory;
         _webPluginService = webPluginService;
         _webPluginSettings = webPluginSettings;
         _storageFactory = storageFactory;
         _authContext = authContext;
+        _cache = cache;
+        _log = log;
     }
 
     private void DemandWebPlugins(string action = null)
@@ -59,7 +71,7 @@ public class WebPluginManager
             throw new SecurityException("Plugins disabled");
         }
 
-        if (!string.IsNullOrWhiteSpace(action) && !_webPluginSettings.Allow.Contains(action))
+        if (!string.IsNullOrWhiteSpace(action) && _webPluginSettings.Allow.Any() && !_webPluginSettings.Allow.Contains(action))
         {
             throw new SecurityException("Forbidden action");
         }
@@ -83,7 +95,14 @@ public class WebPluginManager
 
     public async Task<DbWebPlugin> AddWebPluginFromFileAsync(int tenantId, IFormFile file)
     {
+        var system = tenantId == Tenant.DefaultTenant;
+
         DemandWebPlugins("upload");
+
+        if (system && !_coreBaseSettings.Standalone)
+        {
+            throw new SecurityException("System plugin");
+        }
 
         if (Path.GetExtension(file.FileName)?.ToLowerInvariant() != _webPluginSettings.Extension)
         {
@@ -133,11 +152,6 @@ public class WebPluginManager
                 var existingPlugin = await _webPluginService.GetByNameAsync(tenantId, webPlugin.Name);
                 if (existingPlugin != null)
                 {
-                    if (existingPlugin.System)
-                    {
-                        throw new SecurityException("System plugin with same name already exists");
-                    }
-
                     if (webPlugin.Version == existingPlugin.Version)
                     {
                         throw new ArgumentException("Plugin already exist");
@@ -152,7 +166,7 @@ public class WebPluginManager
                 webPlugin.CreateBy = _authContext.CurrentAccount.ID;
                 webPlugin.CreateOn = DateTime.UtcNow;
                 webPlugin.Enabled = true;
-                webPlugin.System = false;
+                webPlugin.System = system;
 
                 webPlugin = await _webPluginService.SaveAsync(webPlugin);
             }
@@ -166,6 +180,13 @@ public class WebPluginManager
             {
                 if (zipEntry.IsFile && zipEntry.Name.StartsWith(AssetsFolderName))
                 {
+                    var ext = Path.GetExtension(zipEntry.Name);
+
+                    if (_webPluginSettings.AssetExtensions.Any() && !_webPluginSettings.AssetExtensions.Contains(ext))
+                    {
+                        continue;
+                    }
+
                     using (var stream = zipFile.GetInputStream(zipEntry))
                     {
                         uri = await storage.SaveAsync(Path.Combine(webPlugin.Name, zipEntry.Name), stream);
@@ -201,7 +222,7 @@ public class WebPluginManager
 
         var plugin = await _webPluginService.GetByIdAsync(tenantId, id) ?? throw new ItemNotFoundException("Plugin not found");
 
-        if (plugin.System)
+        if (plugin.System && !_coreBaseSettings.Standalone)
         {
             throw new SecurityException("System plugin");
         }
@@ -215,7 +236,7 @@ public class WebPluginManager
 
         var plugin = await _webPluginService.GetByIdAsync(tenantId, id) ?? throw new ItemNotFoundException("Plugin not found");
 
-        if (plugin.System)
+        if (plugin.System && !_coreBaseSettings.Standalone)
         {
             throw new SecurityException("System plugin");
         }
@@ -225,5 +246,53 @@ public class WebPluginManager
         var storage = await GetPluginStorageAsync(tenantId);
 
         await storage.DeleteDirectoryAsync(string.Empty, plugin.Name);
+    }
+
+
+    public async Task<List<T>> GetSystemPlugins<T>() where T : IMapFrom<DbWebPlugin>
+    {
+        var systemPlugins = _cache.Get<List<T>>(StorageSystemModuleName);
+
+        if (systemPlugins == null)
+        {
+            systemPlugins = await GetSystemPluginsFromUrl<T>() ?? new List<T>();
+
+            _cache.Insert(StorageSystemModuleName, systemPlugins, TimeSpan.FromHours(1));
+        }
+
+        return systemPlugins;
+    }
+
+    private async Task<List<T>> GetSystemPluginsFromUrl<T>() where T : IMapFrom<DbWebPlugin>
+    {
+        if (string.IsNullOrEmpty(_webPluginSettings.SystemUrl))
+        {
+            return null;
+        }
+
+        try
+        {
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_webPluginSettings.SystemUrl)
+            };
+
+            var httpClient = _clientFactory.CreateClient();
+
+            using var response = await httpClient.SendAsync(request);
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            using var reader = new StreamReader(responseStream);
+
+            var json = await reader.ReadToEndAsync();
+
+            var systemPlugins = JsonConvert.DeserializeObject<List<T>>(json);
+
+            return systemPlugins;
+        }
+        catch (Exception e)
+        {
+            _log.ErrorWithException(e);
+            return null;
+        }
     }
 }
