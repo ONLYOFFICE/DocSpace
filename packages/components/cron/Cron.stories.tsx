@@ -105,6 +105,7 @@ export const Default: Story = {
             gap: "6px",
             alignItems: "baseline",
             maxWidth: "max-content",
+            marginBottom: "8px",
           }}
         >
           <TextInput
