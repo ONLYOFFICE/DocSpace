@@ -2914,6 +2914,21 @@ public class FileStorageService //: IFileStorageService
             if (folder.CreateBy != userInfo.Id)
             {
                 var createBy = folder.CreateBy;
+
+                await SetAceObjectAsync(new AceCollection<T>
+                {
+                    Files = Array.Empty<T>(),
+                    Folders = new[] { folder.Id },
+                    Aces = new List<AceWrapper>
+                    {
+                        new AceWrapper()
+                        {
+                              Access = FileShare.None,
+                              Id = userInfo.Id
+                        }
+                    }
+                }, false);
+
                 var folderAccess = folder.Access;
 
                 newFolder.CreateBy = userInfo.Id;
