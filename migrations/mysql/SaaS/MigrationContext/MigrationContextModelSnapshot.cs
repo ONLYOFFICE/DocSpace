@@ -6258,6 +6258,12 @@ namespace ASC.Migrations.MySql.SaaS.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    b.Property<string>("Color")
+                        .HasColumnType("char(6)")
+                        .HasColumnName("color")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
                     b.Property<string>("CreateBy")
                         .IsRequired()
                         .HasColumnType("char(38)")

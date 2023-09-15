@@ -10,7 +10,7 @@ const ContextButton = (props) => {
   const ref = useRef(null);
   const menuRef = useRef(null);
 
-  const { className, getData, withMenu, ...rest } = props;
+  const { className, getData, withMenu, isTrashFolder, ...rest } = props;
 
   const toggle = (e, isOpen) => {
     isOpen ? menuRef.current.show(e) : menuRef.current.hide(e);
@@ -42,7 +42,7 @@ const ContextButton = (props) => {
         ref={menuRef}
         onHide={onHide}
         scaled={false}
-        leftOffset={isDesktop() ? 150 : 0}
+        leftOffset={isTrashFolder ? 188 : isDesktop() ? 150 : 0}
       />
     </div>
   );
