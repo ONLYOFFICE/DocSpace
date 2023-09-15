@@ -132,6 +132,12 @@ public class FileUtilityConfiguration
         get => _masterFormExtension ??= _configuration["files:docservice:internal-form"] ?? ".docxf";
     }
 
+    private List<LogoColor> _logoColors;
+    public List<LogoColor> LogoColors
+    {
+        get => _logoColors ??= _configuration.GetSection("logocolors").Get<List<LogoColor>>() ?? new List<LogoColor>();
+    }
+
     public Dictionary<FileType, string> InternalExtension
     {
         get => new Dictionary<FileType, string>
@@ -172,6 +178,13 @@ public class FileUtilityConfiguration
     {
         return !bool.TryParse(_configuration["files:docservice:forcesave"] ?? "", out var canForcesave) || canForcesave;
     }
+}
+
+public class LogoColor
+{
+    public byte R { get; set; }
+    public byte G { get; set; }
+    public byte B { get; set; }
 }
 
 public enum Accessability
