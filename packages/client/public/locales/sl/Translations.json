@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Napredni uporabniki lahko ustvarjajo in urejajo datoteke v sobi, ne morejo pa ustvarjati sob, upravljati z uporabniki ali dostopati do nastavitev.",
   "RoleReviewer": "Preglednik",
   "RoleReviewerDescription": "Operacije z obstoječimi datotekami: ogledovanje, pregledovanje, komentiranje.",
-  "RoleRoomAdminDescription": "Skrbniki sob lahko ustvarijo in upravljajo dodeljene sobe, povabijo nove uporabnike in dodelijo vloge pod njihovim nivojem. Vsi skrbniki imajo dostop do razdelka Osebno.",
   "RoleUserDescription": "Uporabniki lahko dostopajo samo do sob, v katere jih povabijo skrbniki. Ne morejo ustvariti lastnih sob, map ali datotek.",
   "RoleViewer": "Opazovalec",
   "RoleViewerDescription": "Ogled datoteke",

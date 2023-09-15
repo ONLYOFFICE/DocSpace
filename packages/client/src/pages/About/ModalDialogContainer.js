@@ -32,7 +32,10 @@ const ModalDialogContainer = styled(ModalDialog)`
 
   .link-dialog {
     transition: opacity 0.2s;
-    margin-right: 12px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 12px;`
+        : `margin-right: 12px;`}
     opacity: ${(props) => (props.ChangeTextAnim ? 0 : 1)};
   }
 
@@ -52,7 +55,7 @@ const ModalDialogContainer = styled(ModalDialog)`
 
     .modal-dialog-content {
       padding: 8px 16px;
-      border: ${(props) => props.theme.client.about.border}
+      border: ${(props) => props.theme.client.about.border};
 
       .modal-dialog-checkbox:not(:last-child) {
         padding-bottom: 4px;

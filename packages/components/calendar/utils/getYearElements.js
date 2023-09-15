@@ -3,23 +3,26 @@ import moment from "moment";
 
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
-const onDateClick = (year, setObservedDate, setSelectedScene) => {
-  setObservedDate((prevObservedDate) =>
-    prevObservedDate.clone().set({ year: year })
-  );
-  setSelectedScene((prevSelectedScene) => prevSelectedScene - 1);
-};
-
 export const getYearElements = (
   years,
   setObservedDate,
   setSelectedScene,
   selectedDate,
   minDate,
-  maxDate
+  maxDate,
+  isMobile
 ) => {
-  const onClick = (year) =>
-    onDateClick(year, setObservedDate, setSelectedScene);
+  const onDateClick = (year) => {
+    setObservedDate((prevObservedDate) =>
+      moment(
+        `${moment(year, "YYYY").format("YYYY")}-${prevObservedDate.format(
+          "MM-DD"
+        )}`,
+        "YYYY-MM-DD"
+      )
+    );
+    setSelectedScene((prevSelectedScene) => prevSelectedScene - 1);
+  };
 
   const yearElements = years.map((year) => (
     <ColorTheme
@@ -28,11 +31,12 @@ export const getYearElements = (
       isSecondary
       big
       key={year}
-      onClick={() => onClick(year)}
+      onClick={() => onDateClick(year)}
       disabled={
         moment(year.toString()).endOf("year").endOf("month") < minDate ||
         moment(year.toString()) > maxDate
       }
+      isMobile={isMobile}
     >
       {year}
     </ColorTheme>
@@ -45,19 +49,20 @@ export const getYearElements = (
         themeId={ThemeType.DateItem}
         big
         key={years[i]}
-        onClick={() => onClick(years[i])}
+        onClick={() => onDateClick(years[i])}
         disabled={
           moment(years[i].toString()).endOf("year").endOf("month") < minDate ||
           moment(years[i].toString()) > maxDate
         }
+        isMobile={isMobile}
       >
         {years[i]}
       </ColorTheme>
     );
   }
 
-  const currentYearIndex = years.indexOf(moment().year());
-  const selectedYearIndex = years.indexOf(moment(selectedDate).year());
+  const currentYearIndex = years.indexOf(moment().format("YYYY"));
+  const selectedYearIndex = years.indexOf(moment(selectedDate).format("YYYY"));
   if (selectedYearIndex !== -1) {
     yearElements[selectedYearIndex] = (
       <ColorTheme
@@ -66,13 +71,14 @@ export const getYearElements = (
         big
         focused
         key={years[selectedYearIndex]}
-        onClick={() => onClick(years[selectedYearIndex])}
+        onClick={() => onDateClick(years[selectedYearIndex])}
         disabled={
           moment(years[selectedYearIndex].toString())
             .endOf("year")
             .endOf("month") < minDate ||
           moment(years[selectedYearIndex].toString()) > maxDate
         }
+        isMobile={isMobile}
       >
         {years[selectedYearIndex]}
       </ColorTheme>
@@ -86,13 +92,14 @@ export const getYearElements = (
         isCurrent
         big
         key={years[currentYearIndex]}
-        onClick={() => onClick(years[currentYearIndex])}
+        onClick={() => onDateClick(years[currentYearIndex])}
         disabled={
           moment(years[currentYearIndex].toString())
             .endOf("year")
             .endOf("month") < minDate ||
           moment(years[currentYearIndex].toString()) > maxDate
         }
+        isMobile={isMobile}
       >
         {years[currentYearIndex]}
       </ColorTheme>

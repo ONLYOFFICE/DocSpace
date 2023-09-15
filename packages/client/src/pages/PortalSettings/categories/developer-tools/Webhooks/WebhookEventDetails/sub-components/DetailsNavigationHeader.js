@@ -29,17 +29,24 @@ const HeaderContainer = styled.div`
   min-height: 69px;
 
   .arrow-button {
-    margin-right: 18.5px;
+    margin-inline-end: 18.5px;
 
     @media ${tablet} {
-      padding: 8px 0 8px 8px;
-      margin-left: -8px;
+      padding-block: 8px;
+      padding-inline: 8px 0;
+
+      margin-inline-start: -8px;
+    }
+
+    svg {
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
     }
   }
 
   .headline {
     font-size: 18px;
-    margin-right: 16px;
+    margin-inline-end: 16px;
   }
 `;
 

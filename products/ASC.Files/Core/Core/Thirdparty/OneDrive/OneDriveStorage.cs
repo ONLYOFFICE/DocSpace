@@ -89,12 +89,18 @@ internal class OneDriveStorage : IThirdPartyStorage<Item, Item, Item>
 
     public async Task<bool> CheckAccessAsync()
     {
-        var request = await OnedriveClient
-                   .Drive
-                   .Request()
-                   .GetAsync();
-
-        return request != null;
+        try
+        {
+            var request = await OnedriveClient
+                       .Drive
+                       .Request()
+                       .GetAsync();
+            return request != null;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
 
@@ -432,7 +438,6 @@ public enum ResumableUploadSessionStatus
     Aborted
 }
 
-[Serializable]
 internal class ResumableUploadSession
 {
     public long BytesToTransfer { get; set; }

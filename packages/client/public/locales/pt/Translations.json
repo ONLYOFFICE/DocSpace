@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Os utilizadores com poder podem criar e editar ficheiros na sala, mas não podem criar salas, gerir os utilizadores ou aceder às configurações.",
   "RoleReviewer": "Revisor",
   "RoleReviewerDescription": "Operações com ficheiros existentes: visualização, revisão, comentários.",
-  "RoleRoomAdminDescription": "Os administradores de salas podem criar e gerir as salas atribuídas, convidar novos utilizadores e atribuir funções para pessoas abaixo do seu nível hierárquico. Todos os admins têm acesso à secção Pessoal.",
   "RoleUserDescription": "Os utilizadores só podem aceder às salas para as quais foram convidados por administradores. Não podem criar as suas próprias salas, pastas ou ficheiros.",
   "RoleViewer": "Visualizador",
   "RoleViewerDescription": "A ver o ficheiro",

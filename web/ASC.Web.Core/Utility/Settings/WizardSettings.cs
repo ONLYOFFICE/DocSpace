@@ -26,9 +26,12 @@
 
 namespace ASC.Web.Core.Utility.Settings;
 
-[Serializable]
+/// <summary>
+/// </summary>
 public class WizardSettings : ISettings<WizardSettings>
 {
+    /// <summary>Specifies if the Wizard settings are completed or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Completed { get; set; }
 
     [JsonIgnore]

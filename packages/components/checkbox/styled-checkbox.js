@@ -15,6 +15,12 @@ const StyledLabel = styled.label`
 
   .checkbox {
     margin-right: 12px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-right: 0;
+        margin-left: 12px;
+      `}
     overflow: visible;
     outline: none;
   }
@@ -166,7 +172,11 @@ const StyledLabel = styled.label`
 
   .help-button {
     display: inline-block;
-    margin-left: 4px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 4px;`
+        : `margin-left: 4px;`}
   }
 `;
 StyledLabel.defaultProps = { theme: Base };

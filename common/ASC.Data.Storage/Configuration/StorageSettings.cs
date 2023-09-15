@@ -79,10 +79,17 @@ public class BaseStorageSettingsListener
     }
 }
 
-[Serializable]
+/// <summary>
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public abstract class BaseStorageSettings<T> : ISettings<BaseStorageSettings<T>> where T : class, ISettings<T>, new()
 {
+    /// <summary>Storage name</summary>
+    /// <type>System.String, System</type>
     public string Module { get; set; }
+
+    /// <summary>Storage properties</summary>
+    /// <type>System.Collections.Generic.Dictionary{System.String, System.String}, System.Collections.Generic</type>
     public Dictionary<string, string> Props { get; set; }
     public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch => d => d;
     public abstract Guid ID { get; }
@@ -94,7 +101,8 @@ public abstract class BaseStorageSettings<T> : ISettings<BaseStorageSettings<T>>
     }
 }
 
-[Serializable]
+/// <summary>
+/// </summary>
 public class StorageSettings : BaseStorageSettings<StorageSettings>, ISettings<StorageSettings>
 {
     [JsonIgnore]
@@ -106,8 +114,9 @@ public class StorageSettings : BaseStorageSettings<StorageSettings>, ISettings<S
     }
 }
 
+/// <summary>
+/// </summary>
 [Scope]
-[Serializable]
 public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>, ISettings<CdnStorageSettings>
 {
     [JsonIgnore]

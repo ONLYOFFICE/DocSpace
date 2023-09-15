@@ -86,10 +86,12 @@ public interface IFolderDao<T>
     /// <param name="subjectID"></param>
     /// <param name="searchText"></param>
     /// <param name="withSubfolders"></param>
-    /// <param name="tagIds"></param>
+    /// <param name="exludeSubject"></param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
-        bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1);
+        bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1, T roomId = default);
 
     /// <summary>
     /// Gets the folder (s) by ID (s)
@@ -101,7 +103,7 @@ public interface IFolderDao<T>
     /// <param name="searchText"></param>
     /// <param name="searchSubfolders"></param>
     /// <param name="checkShare"></param>
-    /// <param name="tagIds"></param>
+    /// <param name="exludeSubject"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, FilterType filterTypes = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, bool exludeSubject = false);
 
@@ -218,6 +220,8 @@ public interface IFolderDao<T>
             CommonChunkedUploadSessionHolder sessionHolder);
     
 
+    Task<string> GetBackupExtensionAsync(T folderId);
+
     #region Only for TMFolderDao
 
     /// <summary>
@@ -282,8 +286,6 @@ public interface IFolderDao<T>
     Task<T> GetFolderIDRecentAsync(bool createIfNotExists);
 
     /// <summary>
-
-    /// <summary>
     /// Returns id folder "Favorites"
     /// Only in TMFolderDao
     /// </summary>
@@ -304,6 +306,7 @@ public interface IFolderDao<T>
     /// Only in TMFolderDao
     /// </summary>
     /// <param name="createIfNotExists"></param>
+    /// <param name="userId"></param>
     /// <returns></returns>
     Task<T> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null);
 
@@ -370,7 +373,8 @@ public interface IFolderDao<T>
     /// <param name="fileEntry"></param>
     /// <returns></returns>
     Task<(int RoomId, string RoomTitle)> GetParentRoomInfoFromFileEntryAsync<TTo>(FileEntry<TTo> fileEntry);
-    Task<int> GetFoldersCountAsync(T parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool withSubfolders = false, bool excludeSubject = false);
+    Task<int> GetFoldersCountAsync(T parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool withSubfolders = false, bool excludeSubject = false,
+        T roomId = default);
 
     #endregion
 }

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { withTranslation } from "react-i18next";
 
 import { inject, observer } from "mobx-react";
-import { isMobile, isDesktop } from "react-device-detect";
 
 import withLoading from "SRC_DIR/HOCs/withLoading";
+import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import Whitelabel from "./Branding/whitelabel";
 import CompanyInfoSettings from "./Branding/companyInfoSettings";
 import styled from "styled-components";
@@ -12,10 +12,11 @@ import AdditionalResources from "./Branding/additionalResources";
 
 import LoaderBrandingDescription from "./sub-components/loaderBrandingDescription";
 
-import BreakpointWarning from "../../../../components/BreakpointWarning/index";
+import MobileView from "./Branding/MobileView";
 
 import { UnavailableStyles } from "../../utils/commonSettingsStyles";
 import { resetSessionStorage } from "../../utils";
+import { useIsMobileView } from "../../utils/useIsMobileView";
 
 const StyledComponent = styled.div`
   max-width: 700px;
@@ -60,7 +61,11 @@ const Branding = ({
   isSettingPaid,
   standalone,
 }) => {
-  // const [viewDesktop, setViewDesktop] = useState(false);
+  const isMobileView = useIsMobileView();
+
+  useEffect(() => {
+    setDocumentTitle(t("Branding"));
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -70,27 +75,11 @@ const Branding = ({
     };
   }, []);
 
-  // useEffect(() => {
-  //   onCheckView();
-  //   window.addEventListener("resize", onCheckView);
-
-  //   return () => window.removeEventListener("resize", onCheckView);
-  // }, []);
-
-  // const onCheckView = () => {
-  //   if (!isMobile && window.innerWidth > 1024) {
-  //     setViewDesktop(true);
-  //   } else {
-  //     setViewDesktop(false);
-  //   }
-  // };
-
-  if (isMobile)
-    return <BreakpointWarning sectionName={t("Settings:Branding")} />;
+  if (isMobileView) return <MobileView />;
 
   return (
     <StyledComponent isSettingPaid={isSettingPaid}>
-      <Whitelabel isSettingPaid={isSettingPaid} />
+      <Whitelabel />
       {standalone && (
         <>
           <hr />
@@ -101,8 +90,8 @@ const Branding = ({
           ) : (
             <LoaderBrandingDescription />
           )}
-          <CompanyInfoSettings isSettingPaid={isSettingPaid} />
-          <AdditionalResources isSettingPaid={isSettingPaid} />
+          <CompanyInfoSettings />
+          <AdditionalResources />
         </>
       )}
     </StyledComponent>

@@ -61,16 +61,7 @@ public class SocketServiceClient
         }
         try
         {
-            var request = new HttpRequestMessage();
-            request.Headers.Add("Authorization", CreateAuthToken());
-            request.Method = HttpMethod.Post;
-            request.RequestUri = new Uri(GetMethod(method));
-
-            var jsonData = JsonConvert.SerializeObject(data);
-            _logger.DebugMakeRequest(method, jsonData);
-
-            request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
+            var request = GenerateRequest(method, data);
             var httpClient = _clientFactory.CreateClient();
 
             //async
@@ -100,10 +91,32 @@ public class SocketServiceClient
 
         return JsonConvert.DeserializeObject<T>(resultMakeRequest);
     }
+    
+    protected void SendNotAwaitableRequest(string method, object data)
+    {
+        var request = GenerateRequest(method, data);
+        var httpClient = _clientFactory.CreateClient();
+        
+        _ = httpClient.SendAsync(request);
+    }
 
     private bool IsAvailable()
     {
         return _enableSocket && _lastErrorTime + _timeout < DateTime.Now;
+    }
+    
+    private HttpRequestMessage GenerateRequest(string method, object data)
+    {
+        var request = new HttpRequestMessage();
+        request.Headers.Add("Authorization", CreateAuthToken());
+        request.Method = HttpMethod.Post;
+        request.RequestUri = new Uri(GetMethod(method));
+
+        var jsonData = JsonConvert.SerializeObject(data);
+        _logger.DebugMakeRequest(method, jsonData);
+
+        request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        return request;
     }
 
     private string GetMethod(string method)

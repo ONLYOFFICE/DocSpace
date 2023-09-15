@@ -26,14 +26,36 @@
 
 namespace ASC.People.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class GroupDto
 {
+    /// <summary>Description</summary>
+    /// <type>System.String, System</type>
     public string Description { get; set; }
+
+    /// <summary>Name</summary>
+    /// <type>System.String, System</type>
     public string Name { get; set; }
+
+    /// <summary>Parent</summary>
+    /// <type>System.Nullable{System.Guid}, System</type>
     public Guid? Parent { get; set; }
+
+    /// <summary>Category</summary>
+    /// <type>System.Guid, System</type>
     public Guid Category { get; set; }
+
+    /// <summary>ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid Id { get; set; }
+
+    /// <summary>Manager</summary>
+    /// <type>ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core</type>
     public EmployeeDto Manager { get; set; }
+
+    /// <summary>List of members</summary>
+    /// <type>System.Collections.Generic.List{ASC.Web.Api.Models.EmployeeDto,}, System.Collections.Generic</type>
     public List<EmployeeDto> Members { get; set; }
 
     public static GroupDto GetSample()

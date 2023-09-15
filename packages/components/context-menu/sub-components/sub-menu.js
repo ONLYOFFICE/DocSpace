@@ -5,12 +5,14 @@ import ObjectUtils from "../../utils/objectUtils";
 import { classNames } from "../../utils/classNames";
 import { CSSTransition } from "react-transition-group";
 import { ReactSVG } from "react-svg";
+import { useTheme } from "styled-components";
+
 import ArrowIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import Scrollbar from "../../scrollbar";
 import ToggleButton from "../../toggle-button";
 import { SubMenuItem } from "../styled-context-menu";
 import Loaders from "@docspace/common/components/Loaders";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 const SubMenu = (props) => {
   const {
@@ -28,8 +30,10 @@ const SubMenu = (props) => {
 
   const subMenuRef = useRef();
 
+  const theme = useTheme();
+
   const onItemMouseEnter = (e, item) => {
-    if (item.disabled) {
+    if (item.disabled || isMobileOnly) {
       e.preventDefault();
       return;
     }
@@ -40,8 +44,9 @@ const SubMenu = (props) => {
   const onItemClick = (e, item) => {
     if (item.onLoad) {
       e.preventDefault();
+      if (!isMobileOnly) return;
 
-      if (isMobile) onMobileItemClick(e, item.onLoad);
+      if (isMobileOnly) onMobileItemClick(e, item.onLoad);
       else onLeafClick(e);
       return;
     }
@@ -79,16 +84,23 @@ const SubMenu = (props) => {
       ? subMenuRef.current.offsetWidth
       : DomHelpers.getHiddenElementOuterWidth(subMenuRef.current);
     const itemOuterWidth = DomHelpers.getOuterWidth(parentItem.children[0]);
-
+    const isRtl = theme.interfaceDirection === "rtl";
     subMenuRef.current.style.top = "0px";
-
-    if (
-      parseInt(containerOffset.left, 10) + itemOuterWidth + subListWidth >
-      viewport.width - DomHelpers.calculateScrollbarWidth()
-    ) {
-      subMenuRef.current.style.left = -1 * subListWidth + "px";
+    if (isRtl) {
+      if (subListWidth < parseInt(containerOffset.left, 10)) {
+        subMenuRef.current.style.left = -1 * subListWidth + "px";
+      } else {
+        subMenuRef.current.style.left = itemOuterWidth + "px";
+      }
     } else {
-      subMenuRef.current.style.left = itemOuterWidth + "px";
+      if (
+        parseInt(containerOffset.left, 10) + itemOuterWidth + subListWidth >
+        viewport.width - DomHelpers.calculateScrollbarWidth()
+      ) {
+        subMenuRef.current.style.left = -1 * subListWidth + "px";
+      } else {
+        subMenuRef.current.style.left = itemOuterWidth + "px";
+      }
     }
   };
 

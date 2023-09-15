@@ -19,6 +19,7 @@ export const Months = ({
         setSelectedScene={setSelectedScene}
         minDate={minDate}
         maxDate={maxDate}
+        isMobile={isMobile}
       />
       <MonthsBody
         observedDate={observedDate}

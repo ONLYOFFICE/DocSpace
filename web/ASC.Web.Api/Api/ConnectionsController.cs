@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api;
 
+/// <summary>
+/// Security API.
+/// </summary>
+/// <name>security</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -76,12 +80,22 @@ public class ConnectionsController : ControllerBase
         _geolocationHelper = geolocationHelper;
     }
 
+    /// <summary>
+    /// Returns all the active connections to the portal.
+    /// </summary>
+    /// <short>
+    /// Get active connections
+    /// </short>
+    /// <category>Active connections</category>
+    /// <returns type="System.Object, System">Active portal connections</returns>
+    /// <path>api/2.0/security/activeconnections</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("activeconnections")]
     public async Task<object> GetAllActiveConnections()
     {
         var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
         var loginEvents = await _dbLoginEventsManager.GetLoginEventsAsync(user.TenantId, user.Id);
-        var tasks = loginEvents.ConvertAll(async r => await ConvertAsync(r));
+        var tasks = loginEvents.ConvertAll(async r => await _geolocationHelper.AddGeolocationAsync(r));
         var listLoginEvents = (await Task.WhenAll(tasks)).ToList();
         var loginEventId = GetLoginEventIdFromCookie();
         if (loginEventId != 0)
@@ -104,7 +118,7 @@ public class ConnectionsController : ControllerBase
                 var browser = MessageSettings.GetBrowser(clientInfo);
                 var ip = MessageSettings.GetIP(request);
 
-                var baseEvent = new CustomEvent
+                var baseEvent = new BaseEvent
                 {
                     Id = 0,
                     Platform = platformAndDevice,
@@ -113,7 +127,7 @@ public class ConnectionsController : ControllerBase
                     IP = ip
                 };
 
-                listLoginEvents.Add(await ConvertAsync(baseEvent));
+                listLoginEvents.Add(await _geolocationHelper.AddGeolocationAsync(baseEvent));
             }
         }
 
@@ -125,6 +139,16 @@ public class ConnectionsController : ControllerBase
         return result;
     }
 
+    /// <summary>
+    /// Logs out from all the active connections of the current user and changes their password.
+    /// </summary>
+    /// <short>
+    /// Log out and change password
+    /// </short>
+    /// <category>Active connections</category>
+    /// <returns type="System.Object, System">URL to the confirmation message for changing a password</returns>
+    /// <path>api/2.0/security/activeconnections/logoutallchangepassword</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("activeconnections/logoutallchangepassword")]
     public async Task<object> LogOutAllActiveConnectionsChangePassword()
     {
@@ -154,6 +178,17 @@ public class ConnectionsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Logs out from all the active connections of the user with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Log out for the user by ID
+    /// </short>
+    /// <category>Active connections</category>
+    /// <param type="System.Guid, System" method="url" name="userId">User ID</param>
+    /// <path>api/2.0/security/activeconnections/logoutall/{userId}</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("activeconnections/logoutall/{userId}")]
     public async Task LogOutAllActiveConnectionsForUserAsync(Guid userId)
     {
@@ -166,6 +201,16 @@ public class ConnectionsController : ControllerBase
         await LogOutAllActiveConnections(userId);
     }
 
+    /// <summary>
+    /// Logs out from all the active connections except the current connection.
+    /// </summary>
+    /// <short>
+    /// Log out from all connections
+    /// </short>
+    /// <category>Active connections</category>
+    /// <returns type="System.Object, System">Current user name</returns>
+    /// <path>api/2.0/security/activeconnections/logoutallexceptthis</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("activeconnections/logoutallexceptthis")]
     public async Task<object> LogOutAllExceptThisConnection()
     {
@@ -187,6 +232,17 @@ public class ConnectionsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Logs out from the connection with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Log out from the connection
+    /// </short>
+    /// <category>Active connections</category>
+    /// <param type="System.Int32, System" method="url" name="loginEventId">Login event ID</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/security/activeconnections/logout/{loginEventId}</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("activeconnections/logout/{loginEventId}")]
     public async Task<bool> LogOutActiveConnection(int loginEventId)
     {
@@ -223,46 +279,5 @@ public class ConnectionsController : ControllerBase
         var cookie = _cookiesManager.GetCookies(CookiesType.AuthKey);
         var loginEventId = _cookieStorage.GetLoginEventIdFromCookie(cookie);
         return loginEventId;
-    }
-
-    private async Task<CustomEvent> ConvertAsync(BaseEvent baseEvent)
-    {
-        var location = await GetGeolocationAsync(baseEvent.IP);
-        return new CustomEvent
-        {
-            Id = baseEvent.Id,
-            IP = baseEvent.IP,
-            Platform = baseEvent.Platform,
-            Browser = baseEvent.Browser,
-            Date = baseEvent.Date,
-            Country = location[0],
-            City = location[1]
-        };
-    }
-
-    private async Task<string[]> GetGeolocationAsync(string ip)
-    {
-        try
-        {
-            var location = await _geolocationHelper.GetIPGeolocationAsync(IPAddress.Parse(ip));
-            if (string.IsNullOrEmpty(location.Key))
-            {
-                return new string[] { string.Empty, string.Empty };
-            }
-            var regionInfo = new RegionInfo(location.Key).EnglishName;
-            return new string[] { regionInfo, location.City };
-        }
-        catch (Exception ex)
-        {
-            _logger.ErrorWithException(ex);
-            return new string[] { string.Empty, string.Empty };
-        }
-    }
-
-    private class CustomEvent : BaseEvent
-    {
-        public string Country { get; set; }
-
-        public string City { get; set; }
     }
 }

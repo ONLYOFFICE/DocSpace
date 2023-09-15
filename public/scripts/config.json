@@ -11,5 +11,9 @@
   "thumbnails1280x720": false,
   "pdfViewer": true,
   "pdfViewerUrl": "ds-vpath/sdkjs/pdf/src/engine/viewer.js",
-  "imageThumbnails": false
+  "imageThumbnails": false,
+  "editor": {
+    "openOnNewPage": true,
+    "requestClose": false
+  }
 }

@@ -42,6 +42,7 @@ const EditLinkPanel = (props) => {
     isDenyDownload,
     link,
     date,
+    language,
   } = props;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -112,7 +113,7 @@ const EditLinkPanel = (props) => {
         } else {
           copy(link?.sharedTo?.shareLink);
 
-          toastr.success(t("Files:LinkAddedSuccessfully"));
+          toastr.success(t("Files:LinkCreatedSuccessfully"));
         }
       })
       .catch((err) => toastr.error(err?.message))
@@ -178,13 +179,14 @@ const EditLinkPanel = (props) => {
       >
         <div className="edit-link_header">
           <Heading className="edit-link_heading">
-            {isEdit ? t("Files:EditLink") : t("Files:AddNewLink")}
+            {isEdit ? t("Files:EditLink") : t("Files:CreateNewLink")}
           </Heading>
         </div>
         <StyledScrollbar stype="mediumBlack">
           <div className="edit-link_body">
             <LinkBlock
               t={t}
+              isEdit={isEdit}
               isLoading={isLoading}
               shareLink={shareLink}
               linkNameValue={linkNameValue}
@@ -219,6 +221,7 @@ const EditLinkPanel = (props) => {
               expirationDate={expirationDate}
               setExpirationDate={setExpirationDate}
               setIsExpired={setIsExpired}
+              language={language}
             />
           </div>
         </StyledScrollbar>
@@ -228,7 +231,7 @@ const EditLinkPanel = (props) => {
             scale
             primary
             size="normal"
-            label={t("Common:SaveButton")}
+            label={isEdit ? t("Common:SaveButton") : t("Common:Create")}
             isDisabled={isLoading || !linkNameIsValid || isExpired}
             onClick={onSave}
           />
@@ -296,6 +299,7 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
     link: link ?? template,
+    language: auth.language,
   };
 })(
   withTranslation(["SharingPanel", "Common", "Files"])(observer(EditLinkPanel))

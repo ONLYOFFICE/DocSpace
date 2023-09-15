@@ -26,10 +26,16 @@
 
 namespace ASC.Core;
 
-[Serializable]
+/// <summary>
+/// </summary>
 public class TenantVersion
 {
+    /// <summary>ID</summary>
+    /// <type>System.Int32, System</type>
     public int Id { get; private set; }
+
+    /// <summary>Name</summary>
+    /// <type>System.String, System</type>
     public string Name { get; private set; }
 
     public TenantVersion() { }

@@ -36,6 +36,12 @@ const DateSelector = styled.div`
 
   .mr-8 {
     margin-right: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-right: 0px;
+        margin-left: 8px;
+      `}
   }
 `;
 
@@ -112,6 +118,13 @@ const DatePicker = (props) => {
   );
 
   const handleClick = (e) => {
+    if (
+      e.target.classList.contains("nav-thumb-vertical") ||
+      e.target.classList.contains("nav-thumb-horizontal")
+    ) {
+      return;
+    }
+
     !selectorRef?.current?.contains(e.target) &&
       !calendarRef?.current?.contains(e.target) &&
       !selectedItemRef?.current?.contains(e.target) &&
@@ -119,9 +132,9 @@ const DatePicker = (props) => {
   };
 
   useEffect(() => {
-    document.addEventListener("click", handleClick, { capture: true });
+    document.addEventListener("mousedown", handleClick, { capture: true });
     return () =>
-      document.removeEventListener("click", handleClick, { capture: true });
+      document.removeEventListener("mousedown", handleClick, { capture: true });
   }, []);
 
   useEffect(() => {

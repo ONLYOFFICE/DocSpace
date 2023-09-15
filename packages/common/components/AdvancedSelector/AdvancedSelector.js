@@ -14,7 +14,9 @@ import CrossIcon from "PUBLIC_DIR/images/cross.react.svg";
 const StyledBlock = styled.div`
   position: fixed;
   top: 0;
-  right: 0;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `left: 0;` : `right: 0;`}
 
   width: 480px;
   max-width: 100%;
@@ -72,7 +74,9 @@ const StyledControlContainer = styled.div`
   z-index: 450;
 
   top: 18px;
-  left: -27px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `right: -27px;` : `left: -27px;`}
 
   ${isMobile &&
   css`
@@ -81,8 +85,17 @@ const StyledControlContainer = styled.div`
 
   @media (max-width: 428px) {
     top: -27px;
-    right: 10px;
-    left: unset;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? css`
+            left: 10px;
+            right: unset;
+          `
+        : css`
+            right: 10px;
+            left: unset;
+          `}
   }
 `;
 

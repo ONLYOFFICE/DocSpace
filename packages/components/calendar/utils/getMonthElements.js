@@ -2,26 +2,27 @@ import React from "react";
 import moment from "moment";
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
-const onDateClick = (dateString, setObservedDate, setSelectedScene) => {
-  setObservedDate((prevObservedDate) =>
-    prevObservedDate.clone().set({
-      year: dateString.substring(0, 4),
-      month: dateString.substring(5) - 1,
-    })
-  );
-  setSelectedScene((prevSelectedScene) => prevSelectedScene - 1);
-};
-
 export const getMonthElements = (
   months,
   setObservedDate,
   setSelectedScene,
   selectedDate,
   minDate,
-  maxDate
+  maxDate,
+  isMobile
 ) => {
-  const onClick = (dateString) =>
-    onDateClick(dateString, setObservedDate, setSelectedScene);
+  const onDateClick = (dateString) => {
+    setObservedDate((prevObservedDate) =>
+      moment(
+        `${moment(dateString, "YYYY-M").format("YYYY")}-${moment(
+          dateString,
+          "YYYY-M"
+        ).format("MM")}-${prevObservedDate.format("DD")}`,
+        "YYYY-MM-DD"
+      )
+    );
+    setSelectedScene((prevSelectedScene) => prevSelectedScene - 1);
+  };
 
   const dateFormat = "YYYY-M";
 
@@ -31,11 +32,12 @@ export const getMonthElements = (
       themeId={ThemeType.DateItem}
       big
       key={month.key}
-      onClick={() => onClick(month.key)}
+      onClick={() => onDateClick(month.key)}
       disabled={
         moment(month.key, dateFormat).endOf("month") < minDate ||
         moment(month.key, dateFormat).startOf("month") > maxDate
       }
+      isMobile={isMobile}
     >
       {month.value}
     </ColorTheme>
@@ -45,22 +47,23 @@ export const getMonthElements = (
       <ColorTheme
         className="month"
         themeId={ThemeType.DateItem}
-        isSecodary
+        isSecondary
         big
         key={months[i].key}
-        onClick={() => onClick(months[i].key)}
+        onClick={() => onDateClick(months[i].key)}
         disabled={
           moment(months[i].key, dateFormat).endOf("month") < minDate ||
           moment(months[i].key, dateFormat).startOf("month") > maxDate
         }
+        isMobile={isMobile}
       >
         {months[i].value}
       </ColorTheme>
     );
   }
 
-  const currentDate = `${moment().year()}-${moment().format("M")}`;
-  const formattedDate = `${moment(selectedDate).year()}-${moment(
+  const currentDate = `${moment().format("YYYY")}-${moment().format("M")}`;
+  const formattedDate = `${moment(selectedDate).format("YYYY")}-${moment(
     selectedDate
   ).format("M")}`;
 
@@ -73,11 +76,12 @@ export const getMonthElements = (
           isCurrent
           big
           key={month.key}
-          onClick={() => onClick(month.key)}
+          onClick={() => onDateClick(month.key)}
           disabled={
             moment(month.key, dateFormat).endOf("month") < minDate ||
             moment(month.key, dateFormat).startOf("month") > maxDate
           }
+          isMobile={isMobile}
         >
           {month.value}
         </ColorTheme>
@@ -90,11 +94,12 @@ export const getMonthElements = (
           big
           key={month.key}
           focused
-          onClick={() => onClick(month.key)}
+          onClick={() => onDateClick(month.key)}
           disabled={
             moment(month.key, dateFormat).endOf("month") < minDate ||
             moment(month.key, dateFormat).startOf("month") > maxDate
           }
+          isMobile={isMobile}
         >
           {month.value}
         </ColorTheme>

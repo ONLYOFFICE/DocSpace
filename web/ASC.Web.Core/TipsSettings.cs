@@ -26,9 +26,12 @@
 
 namespace ASC.Web.Studio.Core;
 
-[Serializable]
+/// <summary>
+/// </summary>
 public class TipsSettings : ISettings<TipsSettings>
 {
+    /// <summary>Specifies if the tips will be shown or not</summary>
+    /// <type>System.Boolean, System</type>
     [DataMember(Name = "Show")]
     public bool Show { get; set; }
 

@@ -65,16 +65,19 @@ public static class DocumentService
     /// <summary>
     /// The method is to convert the file to the required format
     /// </summary>
+    /// <param name="fileUtility"></param>
     /// <param name="documentConverterUrl">Url to the service of conversion</param>
     /// <param name="documentUri">Uri for the document to convert</param>
     /// <param name="fromExtension">Document extension</param>
     /// <param name="toExtension">Extension to which to convert</param>
     /// <param name="documentRevisionId">Key for caching on service</param>
     /// <param name="password">Password</param>
+    /// <param name="region"></param>
     /// <param name="thumbnail">Thumbnail settings</param>
+    /// <param name="spreadsheetLayout"></param>
     /// <param name="isAsync">Perform conversions asynchronously</param>
     /// <param name="signatureSecret">Secret key to generate the token</param>
-    /// <param name="convertedDocumentUri">Uri to the converted document</param>
+    /// <param name="clientFactory"></param>
     /// <returns>The percentage of completion of conversion</returns>
     /// <example>
     /// string convertedDocumentUri;
@@ -238,6 +241,7 @@ public static class DocumentService
     /// <summary>
     /// Request to Document Server with command
     /// </summary>
+    /// <param name="fileUtility"></param>
     /// <param name="documentTrackerUrl">Url to the command service</param>
     /// <param name="method">Name of method</param>
     /// <param name="documentRevisionId">Key for caching on service, whose used in editor</param>
@@ -245,7 +249,7 @@ public static class DocumentService
     /// <param name="users">users id for drop</param>
     /// <param name="meta">file meta data for update</param>
     /// <param name="signatureSecret">Secret key to generate the token</param>
-    /// <param name="version">server version</param>
+    /// <param name="clientFactory"></param>
     /// <returns>Response</returns>
 
     public static async Task<CommandResponse> CommandRequestAsync(FileUtility fileUtility,
@@ -499,7 +503,6 @@ public static class DocumentService
         License
     }
 
-    [Serializable]
     [DebuggerDisplay("{Key}")]
     public class CommandResponse
     {
@@ -536,7 +539,6 @@ public static class DocumentService
             TokenExpire = 7,
         }
 
-        [Serializable]
         [DebuggerDisplay("{BuildVersion}")]
         public class ServerInfo
         {
@@ -581,14 +583,12 @@ public static class DocumentService
             }
         }
 
-        [Serializable]
         [DataContract(Name = "Quota", Namespace = "")]
         public class QuotaInfo
         {
             [JsonPropertyName("users")]
             public List<User> Users { get; set; }
 
-            [Serializable]
             [DebuggerDisplay("{UserId} ({Expire})")]
             public class User
             {
@@ -601,7 +601,6 @@ public static class DocumentService
         }
     }
 
-    [Serializable]
     [DebuggerDisplay("{Command} ({Key})")]
     private class CommandBody
     {
@@ -642,7 +641,6 @@ public static class DocumentService
         public string UserData { get; set; }
     }
 
-    [Serializable]
     [DebuggerDisplay("{Title}")]
     public class MetaData
     {
@@ -651,7 +649,6 @@ public static class DocumentService
         public string Title { get; set; }
     }
 
-    [Serializable]
     [DebuggerDisplay("{Height}x{Width}")]
     public class ThumbnailData
     {
@@ -672,7 +669,6 @@ public static class DocumentService
         public int Width { get; set; }
     }
 
-    [Serializable]
     [DataContract(Name = "spreadsheetLayout", Namespace = "")]
     [DebuggerDisplay("SpreadsheetLayout {IgnorePrintArea} {Orientation} {FitToHeight} {FitToWidth} {Headings} {GridLines}")]
     public class SpreadsheetLayout
@@ -710,7 +706,6 @@ public static class DocumentService
         public LayoutPageSize PageSize { get; set; }
 
 
-        [Serializable]
         [DebuggerDisplay("Margins {Top} {Right} {Bottom} {Left}")]
         public class LayoutMargins
         {
@@ -731,7 +726,6 @@ public static class DocumentService
             public string Bottom { get; set; }
         }
 
-        [Serializable]
         [DebuggerDisplay("PageSize {Width} {Height}")]
         public class LayoutPageSize
         {
@@ -745,7 +739,6 @@ public static class DocumentService
         }
     }
 
-    [Serializable]
     [DebuggerDisplay("{Title} from {FileType} to {OutputType} ({Key})")]
     private class ConvertionBody
     {
@@ -794,7 +787,6 @@ public static class DocumentService
         public string Token { get; set; }
     }
 
-    [Serializable]
     [DebuggerDisplay("{Key}")]
     private class BuilderBody
     {
@@ -815,7 +807,6 @@ public static class DocumentService
         public string Token { get; set; }
     }
 
-    [Serializable]
     public class FileLink
     {
         [JsonProperty(PropertyName = "filetype")]
@@ -831,7 +822,6 @@ public static class DocumentService
         public string Url { get; set; }
     }
 
-    [Serializable]
     public class DocumentServiceException : Exception
     {
         public ErrorCode Code { get; set; }
@@ -909,8 +899,7 @@ public static class DocumentService
     /// Processing document received from the editing service
     /// </summary>
     /// <param name="jsonDocumentResponse">The resulting json from editing service</param>
-    /// <param name="responseUri">Uri to the converted document</param>
-    /// <returns>The percentage of completion of conversion</returns>
+    /// <returns>The percentage of completion of conversion and Uri to the converted document</returns>
     private static (int ResultPercent, string responseuri, string convertedFileType) GetResponseUri(string jsonDocumentResponse)
     {
         if (string.IsNullOrEmpty(jsonDocumentResponse))

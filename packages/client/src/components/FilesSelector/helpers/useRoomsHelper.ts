@@ -23,12 +23,16 @@ const getRoomLogo = (roomType: number) => {
     case RoomsType.EditingRoom:
       path = "editing.svg";
       break;
+
+    case RoomsType.PublicRoom:
+      path = "public.svg";
+      break;
   }
 
   return iconSize32.get(path);
 };
 
-const convertRoomsToItems = (rooms: any) => {
+export const convertRoomsToItems = (rooms: any) => {
   const items = rooms.map((room: any) => {
     const {
       id,
@@ -55,6 +59,7 @@ const convertRoomsToItems = (rooms: any) => {
       parentId,
       rootFolderType,
       isFolder: true,
+      roomType,
     };
   });
 
@@ -71,9 +76,16 @@ const useRoomsHelper = ({
   isFirstLoad,
   setIsBreadCrumbsLoading,
   searchValue,
+  isRoomsOnly,
+  onSetBaseFolderPath,
 }: useRoomsHelperProps) => {
   const getRoomList = React.useCallback(
-    async (startIndex: number, isInit?: boolean, search?: string | null) => {
+    async (
+      startIndex: number,
+      isInit?: boolean,
+      search?: string | null,
+      isErrorPath?: boolean
+    ) => {
       setIsNextPageLoading(true);
 
       const filterValue = search
@@ -98,10 +110,12 @@ const useRoomsHelper = ({
       const { title, id } = current;
 
       if (isInit) {
-        const breadCrumbs: BreadCrumb[] = [
-          { ...defaultBreadCrumb },
-          { label: title, id, isRoom: true },
-        ];
+        const breadCrumbs: BreadCrumb[] = [{ label: title, id, isRoom: true }];
+
+        !isRoomsOnly && breadCrumbs.unshift({ ...defaultBreadCrumb });
+
+        onSetBaseFolderPath &&
+          onSetBaseFolderPath(isErrorPath ? [] : breadCrumbs);
 
         setBreadCrumbs(breadCrumbs);
 

@@ -1,18 +1,14 @@
-﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
-import React from "react";
-import { withTranslation } from "react-i18next";
+﻿import React from "react";
+import { withTranslation, Trans } from "react-i18next";
 import FieldContainer from "@docspace/components/field-container";
 import ComboBox from "@docspace/components/combobox";
 import toastr from "@docspace/components/toast/toastr";
-import HelpButton from "@docspace/components/help-button";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject, observer } from "mobx-react";
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
-import { LanguageTimeSettingsTooltip } from "../sub-components/common-tooltips";
-import { combineUrl, setCookie } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
+import { setCookie } from "@docspace/common/utils";
 import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
@@ -20,6 +16,8 @@ import checkScrollSettingsBlock from "../utils";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import LoaderCustomization from "../sub-components/loaderCustomization";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+import Text from "@docspace/components/text";
+import Link from "@docspace/components/link";
 
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
@@ -60,7 +58,7 @@ const LanguageAndTimeZone = (props) => {
     t,
     setIsLoaded,
     timezone,
-
+    languageAndTimeZoneSettingsUrl,
     initSettings,
   } = props;
 
@@ -235,14 +233,6 @@ const LanguageAndTimeZone = (props) => {
 
     if (scrollLngTZSettings !== hasScroll) {
       setState((val) => ({ ...val, hasScroll: scrollLngTZSettings }));
-    }
-
-    // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile =
-      document.getElementsByClassName("settings-mobile")[0];
-
-    if (settingsMobile) {
-      settingsMobile.style.display = "none";
     }
 
     if (language !== prevProps.current.language) {
@@ -428,16 +418,6 @@ const LanguageAndTimeZone = (props) => {
   const timezones = mapTimezonesToArray(rawTimezones);
   const cultureNamesNew = mapCulturesToArray(cultures, i18n);
 
-  const tooltipLanguageTimeSettings = (
-    <LanguageTimeSettingsTooltip
-      theme={theme}
-      t={t}
-      helpLink={helpLink}
-      organizationName={organizationName}
-      currentColorScheme={currentColorScheme}
-    />
-  );
-
   const settingsBlock = !(state.language && state.timezone) ? null : (
     <div className="settings-block">
       <FieldContainer
@@ -452,12 +432,14 @@ const LanguageAndTimeZone = (props) => {
           selectedOption={state.language}
           onSelect={onLanguageSelect}
           isDisabled={isLoading}
+          directionY="both"
           noBorder={false}
           scaled={true}
           scaledOptions={true}
           dropDownMaxHeight={300}
           className="dropdown-item-width combo-box-settings"
           showDisabledItems={true}
+          directionY="both"
         />
       </FieldContainer>
       <FieldContainer
@@ -469,6 +451,7 @@ const LanguageAndTimeZone = (props) => {
           tabIndex={2}
           id="comboBoxTimezone"
           options={timezones}
+          directionY="both"
           selectedOption={state.timezone}
           onSelect={onTimezoneSelect}
           isDisabled={isLoading}
@@ -478,6 +461,7 @@ const LanguageAndTimeZone = (props) => {
           dropDownMaxHeight={300}
           className="dropdown-item-width combo-box-settings"
           showDisabledItems={true}
+          directionY="both"
         />
       </FieldContainer>
     </div>
@@ -495,20 +479,26 @@ const LanguageAndTimeZone = (props) => {
           <div className="category-item-title">
             {t("StudioTimeLanguageSettings")}
           </div>
-          <HelpButton
-            className="language-time-zone-help-button"
-            offsetRight={0}
-            iconName={CombinedShapeSvgUrl}
-            size={12}
-            tooltipContent={tooltipLanguageTimeSettings}
-          />
         </div>
       )}
-      {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-        <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
-      ) : (
-        <> {settingsBlock}</>
-      )}
+      <div className="category-item-description">
+        <Text fontSize="13px" fontWeight={400}>
+          {t("TimeLanguageSettingsDescription")}
+        </Text>
+        <Text>
+          <Trans t={t} i18nKey="TimeLanguageSettingsSave" />
+        </Text>
+        <Link
+          className="link-learn-more"
+          color={currentColorScheme.main.accent}
+          target="_blank"
+          isHovered
+          href={languageAndTimeZoneSettingsUrl}
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </div>
+      {settingsBlock}
       <SaveCancelButtons
         tabIndex={3}
         className="save-cancel-buttons"
@@ -539,6 +529,7 @@ export default inject(({ auth, setup, common }) => {
     cultures,
     helpLink,
     currentColorScheme,
+    languageAndTimeZoneSettingsUrl,
   } = auth.settingsStore;
 
   const { user } = auth.userStore;
@@ -565,6 +556,7 @@ export default inject(({ auth, setup, common }) => {
     initSettings,
     setIsLoaded,
     currentColorScheme,
+    languageAndTimeZoneSettingsUrl,
   };
 })(
   withLoading(

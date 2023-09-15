@@ -37,8 +37,8 @@ public enum ShareFilterType
 
 public enum SubjectType
 {
-    UserOrGroup = 0,
+    User = 0,
     ExternalLink = 1,
-    Restriction = 2,
+    Group = 2,
     InvitationLink = 3,
 }

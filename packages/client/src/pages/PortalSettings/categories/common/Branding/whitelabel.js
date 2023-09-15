@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Text from "@docspace/components/text";
 import HelpButton from "@docspace/components/help-button";
@@ -10,6 +11,9 @@ import Button from "@docspace/components/button";
 import Badge from "@docspace/components/badge";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import toastr from "@docspace/components/toast/toastr";
+
+import { size } from "@docspace/components/utils/device";
+
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import WhiteLabelWrapper from "./StyledWhitelabel";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
@@ -20,6 +24,7 @@ import {
   getLogoOptions,
   uploadLogo,
 } from "../../../utils/whiteLabelHelper";
+
 import isEqual from "lodash/isEqual";
 
 const WhiteLabel = (props) => {
@@ -28,13 +33,18 @@ const WhiteLabel = (props) => {
     isSettingPaid,
     logoText,
     logoUrls,
+    setLogoText,
     restoreWhiteLabelSettings,
     getWhiteLabelLogoUrls,
     setWhiteLabelSettings,
     defaultWhiteLabelLogoUrls,
     getWhiteLabelLogoText,
     getWhiteLabelLogoUrlsAction,
+    initSettings,
   } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
   const [defaultLogoTextWhiteLabel, setDefaultLogoTextWhiteLabel] =
@@ -43,10 +53,29 @@ const WhiteLabel = (props) => {
   const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const companyNameFromSessionStorage = getFromSessionStorage("companyName");
+  const init = async () => {
+    await initSettings();
+  };
 
   useEffect(() => {
+    init();
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  const checkWidth = () => {
+    window.innerWidth > size.smallTablet &&
+      location.pathname.includes("white-label") &&
+      navigate("/portal-settings/customization/branding");
+  };
+
+  useEffect(() => {
+    const companyNameFromSessionStorage = getFromSessionStorage("companyName");
+
     if (!companyNameFromSessionStorage) {
+      if (!logoText) return;
+
       setLogoTextWhiteLabel(logoText);
       saveToSessionStorage("companyName", logoText);
     } else {
@@ -85,26 +114,24 @@ const WhiteLabel = (props) => {
   const onUseTextAsLogo = () => {
     let newLogos = logoUrlsWhiteLabel;
     for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
-      const width = logoUrlsWhiteLabel[i].size.width / 2;
-      const height = logoUrlsWhiteLabel[i].size.height / 2;
       const options = getLogoOptions(i, logoTextWhiteLabel);
       const isDocsEditorName = logoUrlsWhiteLabel[i].name === "DocsEditor";
 
       const logoLight = generateLogo(
-        width,
-        height,
+        options.width,
+        options.height,
         options.text,
         options.fontSize,
         isDocsEditorName ? "#fff" : "#000",
-        options.isEditorLogo
+        options.alignCenter
       );
       const logoDark = generateLogo(
-        width,
-        height,
+        options.width,
+        options.height,
         options.text,
         options.fontSize,
         "#fff",
-        options.isEditorLogo
+        options.alignCenter
       );
       newLogos[i].path.light = logoLight;
       newLogos[i].path.dark = logoDark;
@@ -181,7 +208,9 @@ const WhiteLabel = (props) => {
       setIsSaving(true);
       await setWhiteLabelSettings(data);
       await getWhiteLabelLogoUrls();
-      await getWhiteLabelLogoUrlsAction(); //TODO: delete duplicate request
+      await getWhiteLabelLogoUrlsAction();
+      setLogoText(data.logoText);
+      //TODO: delete duplicate request
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
@@ -217,13 +246,17 @@ const WhiteLabel = (props) => {
       </Text>
 
       <div className="wl-helper">
-        <Text className="settings_unavailable">{t("WhiteLabelHelper")}</Text>
-        <HelpButton
-          tooltipContent={<Text fontSize="12px">{t("WhiteLabelTooltip")}</Text>}
-          place="right"
-          offsetRight={0}
-          className="settings_unavailable"
-        />
+        <Text className="wl-helper-label settings_unavailable" as="div">
+          {t("WhiteLabelHelper")}
+          <HelpButton
+            tooltipContent={
+              <Text fontSize="12px">{t("WhiteLabelTooltip")}</Text>
+            }
+            place="right"
+            offsetRight={0}
+            className="settings_unavailable"
+          />
+        </Text>
       </div>
       <div className="settings-block">
         <FieldContainer
@@ -471,19 +504,23 @@ export default inject(({ setup, auth, common }) => {
   const { setWhiteLabelSettings } = setup;
 
   const {
+    setLogoText,
     whiteLabelLogoText,
     getWhiteLabelLogoText,
     whiteLabelLogoUrls,
     restoreWhiteLabelSettings,
     getWhiteLabelLogoUrls: getWhiteLabelLogoUrlsAction,
+    initSettings,
   } = common;
 
   const {
     getWhiteLabelLogoUrls,
     whiteLabelLogoUrls: defaultWhiteLabelLogoUrls,
   } = auth.settingsStore;
+  const { isBrandingAndCustomizationAvailable } = auth.currentQuotaStore;
 
   return {
+    setLogoText,
     theme: auth.settingsStore.theme,
     logoText: whiteLabelLogoText,
     logoUrls: whiteLabelLogoUrls,
@@ -493,5 +530,7 @@ export default inject(({ setup, auth, common }) => {
     restoreWhiteLabelSettings,
     defaultWhiteLabelLogoUrls,
     getWhiteLabelLogoUrlsAction,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
+    initSettings,
   };
 })(withTranslation(["Settings", "Profile", "Common"])(observer(WhiteLabel)));

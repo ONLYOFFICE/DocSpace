@@ -99,6 +99,8 @@ public class NotificationControllerHelper
 
 }
 
+/// <summary>
+/// </summary>
 public enum NotificationType
 {
     Badges = 0,

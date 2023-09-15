@@ -24,6 +24,9 @@ const StyledSlider = styled.input.attrs((props) => ({
     `}
 
   background-size: ${(props) => `${props.size} 100%`};
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" && "background-position-x: right;"}
+
   background-repeat: no-repeat;
 
   &:focus {

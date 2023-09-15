@@ -72,6 +72,8 @@ TextInput.propTypes = {
 
 TextInput.defaultProps = {
   type: "text",
+  // Empty placeholder by default needed for RTL mode to make :placeholder-shown work to put cursor on the right side of input
+  placeholder: " ",
   value: "",
   maxLength: 255,
   size: "base",

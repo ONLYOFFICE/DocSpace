@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import React from "react";
 
 import commonInputStyle from "../text-input/common-input-styles";
@@ -13,6 +13,12 @@ const StyledIconBlock = styled.div`
   height: ${(props) => props.theme.inputBlock.height};
   padding-right: ${(props) => props.theme.inputBlock.paddingRight};
   padding-left: ${(props) => props.theme.inputBlock.paddingLeft};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      padding-left: ${(props) => props.theme.inputBlock.paddingRight};
+      padding-right: ${(props) => props.theme.inputBlock.paddingLeft};
+    `}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 StyledIconBlock.defaultProps = { theme: Base };

@@ -109,6 +109,15 @@ public static class DbUserExtension
             entity.HasIndex(e => new { e.TenantId, e.UserName })
                 .HasDatabaseName("username");
 
+            entity.HasIndex(e => new { e.TenantId, e.ActivationStatus, e.FirstName })
+                .HasDatabaseName("tenant_activation_status_firstname");
+
+            entity.HasIndex(e => new { e.TenantId, e.ActivationStatus, e.LastName })
+                .HasDatabaseName("tenant_activation_status_lastname");
+
+            entity.HasIndex(e => new { e.TenantId, e.ActivationStatus, e.Email })
+                .HasDatabaseName("tenant_activation_status_email");
+
             entity.Property(e => e.Id)
                 .HasColumnName("id")
                 .HasColumnType("varchar(38)")
@@ -257,6 +266,15 @@ public static class DbUserExtension
 
             entity.HasIndex(e => new { e.UserName, e.TenantId })
                 .HasDatabaseName("username");
+            
+            entity.HasIndex(e => new { e.TenantId, e.ActivationStatus, e.FirstName })
+                .HasDatabaseName("tenant_activation_status_firstname");
+
+            entity.HasIndex(e => new { e.TenantId, e.ActivationStatus, e.LastName })
+                .HasDatabaseName("tenant_activation_status_lastname");
+
+            entity.HasIndex(e => new { e.TenantId, e.ActivationStatus, e.Email })
+                .HasDatabaseName("tenant_activation_status_email");
 
             entity.Property(e => e.Id)
                 .HasColumnName("id")

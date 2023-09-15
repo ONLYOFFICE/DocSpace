@@ -49,6 +49,7 @@ public class FileSharingAceHelper
 
     private const int MaxInvitationLinks = 1;
     private const int MaxExternalLinks = 10;
+    private readonly IUrlShortener _urlShortener;
 
     public FileSharingAceHelper(
         FileSecurity fileSecurity,
@@ -66,7 +67,8 @@ public class FileSharingAceHelper
         InvitationLinkService invitationLinkService,
         StudioNotifyService studioNotifyService,
         UserManagerWrapper userManagerWrapper,
-        CountPaidUserChecker countPaidUserChecker)
+        CountPaidUserChecker countPaidUserChecker,
+        IUrlShortener urlShortener)
     {
         _fileSecurity = fileSecurity;
         _coreBaseSettings = coreBaseSettings;
@@ -84,6 +86,7 @@ public class FileSharingAceHelper
         _studioNotifyService = studioNotifyService;
         _userManagerWrapper = userManagerWrapper;
         _countPaidUserChecker = countPaidUserChecker;
+        _urlShortener = urlShortener;
     }
 
     public async Task<AceProcessingResult> SetAceObjectAsync<T>(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings)
@@ -259,7 +262,9 @@ public class FileSharingAceHelper
             if (emailInvite)
             {
                 var link = await _invitationLinkService.GetInvitationLinkAsync(w.Email, share, _authContext.CurrentAccount.ID);
-                await _studioNotifyService.SendEmailRoomInviteAsync(w.Email, entry.Title, link);
+                var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
+
+                await _studioNotifyService.SendEmailRoomInviteAsync(w.Email, entry.Title, shortenLink);
             }
 
             if (w.Id == FileConstant.ShareLinkId)
@@ -461,6 +466,7 @@ public class FileSharing
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly InvitationLinkService _invitationLinkService;
     private readonly ExternalShare _externalShare;
+    private readonly IUrlShortener _urlShortener;
 
     public FileSharing(
         Global global,
@@ -474,7 +480,8 @@ public class FileSharing
         FileSharingHelper fileSharingHelper,
         FilesSettingsHelper filesSettingsHelper,
         InvitationLinkService invitationLinkService,
-        ExternalShare externalShare)
+        ExternalShare externalShare,
+        IUrlShortener urlShortener)
     {
         _global = global;
         _fileSecurity = fileSecurity;
@@ -488,6 +495,7 @@ public class FileSharing
         _logger = logger;
         _invitationLinkService = invitationLinkService;
         _externalShare = externalShare;
+        _urlShortener = urlShortener;
     }
 
     public async Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
@@ -633,13 +641,20 @@ public class FileSharing
                 FileShareOptions = r.Options,
             };
 
-            w.CanEditAccess = _authContext.CurrentAccount.ID != w.Id && w.SubjectType == SubjectType.UserOrGroup && canEditAccess;
+            w.CanEditAccess = _authContext.CurrentAccount.ID != w.Id && w.SubjectType is SubjectType.User or SubjectType.Group && canEditAccess;
 
             if (isRoom && r.IsLink)
             {
-                w.Link = r.SubjectType == SubjectType.InvitationLink ?
-                    _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) :
-                    await _externalShare.GetLinkAsync(r.Subject);
+                if (!canEditAccess)
+                {
+                    continue;
+                }
+
+                var link = r.SubjectType == SubjectType.InvitationLink 
+                    ? _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) 
+                    : await _externalShare.GetLinkAsync(r.Subject);
+
+                w.Link = await _urlShortener.GetShortenLinkAsync(link);
                 w.SubjectGroup = true;
                 w.CanEditAccess = false;
                 w.FileShareOptions.Password = await _externalShare.GetPasswordAsync(w.FileShareOptions.Password);
@@ -657,7 +672,7 @@ public class FileSharing
             result.Add(w);
         }
 
-        if (isRoom && !withoutTemplates)
+        if (isRoom && canEditAccess&& !withoutTemplates)
         {
             var invitationId = Guid.NewGuid();
 
@@ -705,7 +720,7 @@ public class FileSharing
             result.Add(w);
         }
 
-        if (!result.Any(w => w.Owner) && (subjectsTypes == null || subjectsTypes.Contains(SubjectType.UserOrGroup)))
+        if (!result.Any(w => w.Owner) && (subjectsTypes == null || subjectsTypes.Contains(SubjectType.User) || subjectsTypes.Contains(SubjectType.Group)))
         {
             var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootCreateBy : entry.CreateBy;
             var w = new AceWrapper

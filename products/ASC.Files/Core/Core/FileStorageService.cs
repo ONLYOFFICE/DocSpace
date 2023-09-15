@@ -2672,6 +2672,12 @@ public class FileStorageService //: IFileStorageService
                 Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
             };
         }
+        var fileStable = file;
+        if (file.Forcesave != ForcesaveType.None)
+        {
+            fileStable = await fileDao.GetFileStableAsync(file.Id, file.Version);
+        }
+        var docKey = await _documentServiceHelper.GetDocKeyAsync(fileStable);
 
         var fileReference = new FileReference<T>
         {
@@ -2682,7 +2688,9 @@ public class FileStorageService //: IFileStorageService
                 InstanceId = (await _tenantManager.GetCurrentTenantIdAsync()).ToString()
             },
             Url = await _documentServiceConnector.ReplaceCommunityAdressAsync(await _pathProvider.GetFileStreamUrlAsync(file, lastVersion: true)),
-            FileType = file.ConvertedExtension.Trim('.')
+            FileType = file.ConvertedExtension.Trim('.'),
+            Key = docKey,
+            Link = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.Id)),
         };
         fileReference.Token = _documentServiceHelper.GetSignature(fileReference);
         return fileReference;
@@ -3175,7 +3183,9 @@ public class FileStorageService //: IFileStorageService
                 var user = await _userManager.GetUsersAsync(ace.Id);
                 
                 var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, ace.Access, _authContext.CurrentAccount.ID);
-                await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, link);
+                var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
+
+            await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, shortenLink);
             }
 
             if (counter <= packSize)

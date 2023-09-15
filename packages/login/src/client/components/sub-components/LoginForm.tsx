@@ -16,6 +16,8 @@ import toastr from "@docspace/components/toast/toastr";
 import { thirdPartyLogin } from "@docspace/common/api/user";
 import { setWithCredentialsStatus } from "@docspace/common/api/client";
 import { isMobileOnly } from "react-device-detect";
+import ReCAPTCHA from "react-google-recaptcha";
+import { StyledCaptcha } from "../StyledLogin";
 
 interface ILoginFormProps {
   isLoading: boolean;
@@ -25,6 +27,8 @@ interface ILoginFormProps {
   match: MatchType;
   onRecoverDialogVisible: () => void;
   enableAdmMess: boolean;
+  recaptchaPublicKey: CaptchaPublicKeyType;
+  isBaseTheme: boolean;
 }
 
 const settings = {
@@ -43,7 +47,11 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   onRecoverDialogVisible,
   enableAdmMess,
   cookieSettingsEnabled,
+  recaptchaPublicKey,
+  isBaseTheme,
 }) => {
+  const captchaRef = useRef(null);
+
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [identifier, setIdentifier] = useState("");
@@ -53,9 +61,12 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   const [isDisabled, setIsDisabled] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] = useState(
-    IS_ROOMS_MODE
-  );
+  const [isCaptcha, setIsCaptcha] = useState(false);
+  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] =
+    useState(IS_ROOMS_MODE);
+
+  const [isCaptchaSuccessful, setIsCaptchaSuccess] = useState(false);
+  const [isCaptchaError, setIsCaptchaError] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -73,9 +84,15 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
     thirdPartyLogin(profile)
       .then((response) => {
-        if (!response || !response.token) throw new Error("Empty API response");
+        if (!(response || response.token || response.confirmUrl))
+          throw new Error("Empty API response");
 
         setWithCredentialsStatus(true);
+
+        if (response.confirmUrl) {
+          return window.location.replace(response.confirmUrl);
+        }
+
         const redirectPath = sessionStorage.getItem("referenceUrl");
 
         if (redirectPath) {
@@ -136,6 +153,17 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
   const onSubmit = () => {
     //errorText && setErrorText("");
+    let captchaToken = "";
+
+    if (recaptchaPublicKey && isCaptcha) {
+      if (!isCaptchaSuccessful) {
+        setIsCaptchaError(true);
+        return;
+      }
+
+      captchaToken = captchaRef.current.getValue();
+    }
+
     let hasError = false;
 
     const user = identifier.trim();
@@ -167,7 +195,8 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
     isDesktop && checkPwd();
     const session = !isChecked;
-    login(user, hash, session)
+
+    login(user, hash, session, captchaToken)
       .then((res: string | object) => {
         const isConfirm = typeof res === "string" && res.includes("confirm");
         const redirectPath = sessionStorage.getItem("referenceUrl");
@@ -190,6 +219,14 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             "";
         } else {
           errorMessage = error;
+        }
+
+        if (recaptchaPublicKey && error?.response?.status === 403) {
+          setIsCaptcha(true);
+        }
+
+        if (isCaptcha) {
+          captchaRef.current.reset();
         }
 
         setIsEmailErrorShow(true);
@@ -243,6 +280,10 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     setIsDialogVisible(false);
     setIsDisabled(false);
     setIsLoading(false);
+  };
+
+  const onSuccessfullyComplete = () => {
+    setIsCaptchaSuccess(true);
   };
 
   return (
@@ -311,7 +352,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                     className="login-checkbox"
                     isChecked={isChecked}
                     onChange={onChangeCheckbox}
-                    label={t("Remember")}
+                    label={t("Common:Remember")}
                     helpButton={
                       !checkIsSSR() && (
                         <HelpButton
@@ -349,6 +390,21 @@ const LoginForm: React.FC<ILoginFormProps> = ({
               userEmail={identifier}
               onDialogClose={onDialogClose}
             />
+          )}
+          {recaptchaPublicKey && isCaptcha && (
+            <StyledCaptcha isCaptchaError={isCaptchaError}>
+              <div className="captcha-wrapper">
+                <ReCAPTCHA
+                  sitekey={recaptchaPublicKey}
+                  ref={captchaRef}
+                  theme={isBaseTheme ? "light" : "dark"}
+                  onChange={onSuccessfullyComplete}
+                />
+              </div>
+              {isCaptchaError && (
+                <Text>{t("Errors:LoginWithBruteForceCaptcha")}</Text>
+              )}
+            </StyledCaptcha>
           )}
         </>
       )}

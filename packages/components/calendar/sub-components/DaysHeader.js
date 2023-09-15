@@ -8,6 +8,7 @@ export const DaysHeader = ({
   setSelectedScene,
   minDate,
   maxDate,
+  isMobile,
 }) => {
   const onTitleClick = () =>
     setSelectedScene((prevSelectedScene) => prevSelectedScene + 1);
@@ -29,17 +30,18 @@ export const DaysHeader = ({
 
   return (
     <HeaderContainer>
-      <Title onClick={onTitleClick} className="days-header">
+      <Title onClick={onTitleClick} className="days-header" isMobile={isMobile}>
         {observedDate.format("MMMM").charAt(0).toUpperCase() +
           observedDate.format("MMMM").substring(1)}{" "}
-        {observedDate.year()}
-        <HeaderActionIcon />
+        {observedDate.format("YYYY")}
+        <HeaderActionIcon isMobile={isMobile} />
       </Title>
       <HeaderButtons
         onLeftClick={onLeftClick}
         onRightClick={onRightClick}
         isLeftDisabled={isLeftDisabled}
         isRightDisabled={isRightDisabled}
+        isMobile={isMobile}
       />
     </HeaderContainer>
   );

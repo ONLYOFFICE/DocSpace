@@ -21,7 +21,6 @@
   "RegisterTextBodyBeforeDomainsList": "在以下位置拥有邮箱账户的用户可注册：",
   "RegisterTitle": "注册请求",
   "RegistrationEmailWatermark": "邮箱",
-  "Remember": "记住我",
   "RememberHelper": "默认会话寿命为20分钟。勾选此选项以将其设为1年。如需自行设置其值，请前往设置。",
   "ResendCode": "重新发送代码",
   "SignInWithCode": "使用Secret Code登录",

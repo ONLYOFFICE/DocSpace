@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using JsonConverter = System.Text.Json.Serialization.JsonConverter;
+using Flurl.Util;
 
 namespace ASC.Api.Core;
 
@@ -38,7 +38,6 @@ public abstract class BaseStartup
     private readonly IHostEnvironment _hostEnvironment;
     private readonly string _corsOrigin;
 
-    protected virtual JsonConverter[] Converters { get; }
     protected virtual bool AddControllersAsServices { get; }
     protected virtual bool ConfirmAddScheme { get; }
     protected virtual bool AddAndUseSession { get; }
@@ -100,6 +99,108 @@ public abstract class BaseStartup
             }
         });
 
+        var redisOptions = _configuration.GetSection("Redis").Get<RedisConfiguration>().ConfigurationOptions;
+        var connectionMultiplexer = ConnectionMultiplexer.Connect(redisOptions);
+
+        services.AddRateLimiter(options =>
+        {
+            options.GlobalLimiter = PartitionedRateLimiter.CreateChained(
+            PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+            {
+                var userId = httpContext?.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+
+                if (userId == null)
+                {
+                    userId = httpContext?.Connection.RemoteIpAddress.ToInvariantString();
+                }
+
+                var permitLimit = 1500;
+
+                string partitionKey;
+
+                partitionKey = $"sw_{userId}";
+
+                return RedisRateLimitPartition.GetSlidingWindowRateLimiter(partitionKey, key => new RedisSlidingWindowRateLimiterOptions
+                {
+                    PermitLimit = permitLimit,
+                    Window = TimeSpan.FromMinutes(1),
+                    ConnectionMultiplexerFactory = () => connectionMultiplexer
+                });
+            }),
+                PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                {
+                    var userId = httpContext?.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                    string partitionKey;
+                    int permitLimit;
+
+                    if (userId == null)
+                    {
+                        userId = httpContext?.Connection.RemoteIpAddress.ToInvariantString();
+                    }
+
+                    if (String.Compare(httpContext.Request.Method, "GET", true) == 0)
+                    {
+                        permitLimit = 50;
+                        partitionKey = $"cr_read_{userId}";
+
+                    }
+                    else
+                    {
+                        permitLimit = 15;
+                        partitionKey = $"cr_write_{userId}";
+                    }
+
+                    return RedisRateLimitPartition.GetConcurrencyRateLimiter(partitionKey, key => new RedisConcurrencyRateLimiterOptions
+                    {
+                        PermitLimit = permitLimit,
+                        QueueLimit = 0,
+                        ConnectionMultiplexerFactory = () => connectionMultiplexer
+                    });
+                }), 
+                PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                   {
+                       var userId = httpContext?.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+
+                       if (userId == null)
+                       {
+                           userId = httpContext?.Connection.RemoteIpAddress.ToInvariantString();
+                       }
+
+                       var partitionKey = $"fw_post_put_{userId}";
+                       var permitLimit = 10000;
+
+                       if (!(String.Compare(httpContext.Request.Method, "POST", true) == 0 ||
+                            String.Compare(httpContext.Request.Method, "PUT", true) == 0))
+                       {
+                           return RateLimitPartition.GetNoLimiter("no_limiter");
+                       }
+
+                       return RedisRateLimitPartition.GetFixedWindowRateLimiter(partitionKey, key => new RedisFixedWindowRateLimiterOptions
+                       {
+                           PermitLimit = permitLimit,
+                           Window = TimeSpan.FromDays(1),
+                           ConnectionMultiplexerFactory = () => connectionMultiplexer
+                       });
+                   }
+            ));
+
+            options.AddPolicy("sensitive_api", httpContext =>
+            {
+                var userId = httpContext?.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                var permitLimit = 5;
+                var partitionKey = $"sensitive_api_{userId}";
+
+                return RedisRateLimitPartition.GetSlidingWindowRateLimiter(partitionKey, key => new RedisSlidingWindowRateLimiterOptions
+                {
+                    PermitLimit = permitLimit,
+                    Window = TimeSpan.FromMinutes(1),
+                    ConnectionMultiplexerFactory = () => connectionMultiplexer
+                });
+            });
+
+            options.OnRejected = (context, ct) => RateLimitMetadata.OnRejected(context.HttpContext, context.Lease, ct);
+        });
+
         services.AddScoped<EFLoggerFactory>();
 
         services.AddBaseDbContextPool<AccountLinkContext>()
@@ -128,15 +229,6 @@ public abstract class BaseStartup
             {
                 options.JsonSerializerOptions.WriteIndented = false;
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
-
-                if (Converters != null)
-                {
-                    foreach (var c in Converters)
-                    {
-                        options.JsonSerializerOptions.Converters.Add(c);
-                    }
-                }
             };
 
         services.AddControllers().AddJsonOptions(jsonOptions);
@@ -279,6 +371,9 @@ public abstract class BaseStartup
 
         services.AddAutoMapper(GetAutoMapperProfileAssemblies());
 
+        services.AddBillingHttpClient();
+
+
         if (!_hostEnvironment.IsDevelopment())
         {
             services.AddStartupTask<WarmupServicesStartupTask>()
@@ -310,6 +405,8 @@ public abstract class BaseStartup
         app.UseSynchronizationContextMiddleware();
 
         app.UseAuthentication();
+
+        app.UseRateLimiter();
 
         app.UseAuthorization();
 
@@ -346,6 +443,8 @@ public abstract class BaseStartup
                 await context.Response.WriteAsync($"{Environment.MachineName} running {CustomHealthCheck.Running}");
             });
         });
+
+
     }
 
     public void ConfigureContainer(ContainerBuilder builder)

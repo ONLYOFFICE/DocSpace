@@ -15,20 +15,27 @@ const tabletProps = css`
   .section-body_header {
     position: sticky;
     top: 0;
-    background: ${(props) => props.theme.section.header.background};
-    z-index: 202;
+    background: ${props => props.theme.section.header.background};
+    z-index: 201;
 
     ${isMobileOnly &&
     css`
       padding: 0 16px;
-      margin: 0 0 0 -16px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin: 0 -16px 0 0;
+            `
+          : css`
+              margin: 0 0 0 -16px;
+            `}
     `}
 
-    ${(props) =>
+    ${props =>
       (props.settingsStudio || props.viewAs == "settings") &&
       isMobileOnly &&
       css`
-        background: ${(props) => props.theme.section.header.backgroundColor};
+        background: ${props => props.theme.section.header.backgroundColor};
       `}
   }
   .section-body_filter {
@@ -38,7 +45,14 @@ const tabletProps = css`
 `;
 
 const StyledSectionContainer = styled.section`
-  padding: 0 0 0 20px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding: 0 20px 0 0;
+        `
+      : css`
+          padding: 0 0 0 20px;
+        `}
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -50,14 +64,28 @@ const StyledSectionContainer = styled.section`
   @media ${tablet} {
     width: 100%;
     max-width: 100vw !important;
-    padding: 0 0 0 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 0 16px 0 0;
+          `
+        : css`
+            padding: 0 0 0 16px;
+          `}
   }
 
   ${isMobile &&
   css`
     width: 100% !important;
     max-width: 100vw !important;
-    padding: 0 0 0 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 0 16px 0 0;
+          `
+        : css`
+            padding: 0 0 0 16px;
+          `}
     ${tabletProps};
     min-width: 100px;
   `}
@@ -75,32 +103,66 @@ const StyledSectionContainer = styled.section`
 
   .layout-progress-bar_wrapper {
     position: fixed;
-    right: ${(props) =>
-      props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
-
-    .layout-progress-bar_close-icon {
-      position: fixed;
-      right: ${(props) =>
-        props.isInfoPanelVisible && !isMobile ? "480px" : "80px"};
-      bottom: 36px;
-    }
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: ${props =>
+              props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+          `
+        : css`
+            right: ${props =>
+              props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+          `}
   }
 
   .layout-progress-bar {
     position: fixed;
-    right: ${(props) =>
-      props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: ${props =>
+              props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+          `
+        : css`
+            right: ${props =>
+              props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+          `}
+
     bottom: 24px;
   }
 
+  .layout-progress-bar_close-icon {
+    position: fixed;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: ${props =>
+              props.isInfoPanelVisible && !isMobile ? "480px" : "80px"};
+          `
+        : css`
+            right: ${props =>
+              props.isInfoPanelVisible && !isMobile ? "480px" : "80px"};
+          `}
+
+    bottom: 36px;
+  }
   .layout-progress-second-bar {
     position: fixed;
-    right: ${(props) =>
-      props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: ${props =>
+              props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+          `
+        : css`
+            right: ${props =>
+              props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+          `}
+
     bottom: 96px;
   }
 
-  ${(props) =>
+  ${props =>
     !props.isSectionHeaderAvailable &&
     css`
       width: 100vw !important;

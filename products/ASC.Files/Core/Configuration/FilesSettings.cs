@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Files.Classes;
 
-[Serializable]
 public class FilesSettings : ISettings<FilesSettings>
 {
     [JsonPropertyName("EnableThirdpartySettings")]
@@ -482,7 +481,7 @@ public class FilesSettingsHelper
         {
             return;
         }
-        
+
         _settingsManager.Save(settings);
     }
 
@@ -497,7 +496,7 @@ public class FilesSettingsHelper
         {
             return;
         }
-        
+
         _settingsManager.SaveForCurrentUser(settings);
     }
 }

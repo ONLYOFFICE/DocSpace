@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Studio.Core;
 
-[Serializable]
 public class CustomNavigationSettings : ISettings<CustomNavigationSettings>
 {
     public List<CustomNavigationItem> Items { get; set; }
@@ -43,21 +42,43 @@ public class CustomNavigationSettings : ISettings<CustomNavigationSettings>
     }
 }
 
-[Serializable]
+/// <summary>
+/// </summary>
 public class CustomNavigationItem
 {
+    /// <summary>ID</summary>
+    /// <type>System.Guid, System</type>
+    /// <exammple>"00000000-0000-0000-0000-000000000000"</exammple>
     public Guid Id { get; set; }
 
+    /// <summary>Label</summary>
+    /// <type>System.String, System</type>
+    /// <exammple>"Label"</exammple>
     public string Label { get; set; }
 
+    /// <summary>URL</summary>
+    /// <type>System.String, System</type>
+    /// <exammple>"Url"</exammple>
     public string Url { get; set; }
 
+    /// <summary>Big image</summary>
+    /// <type>System.String, System</type>
+    /// <exammple>"data:image\\/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkAgMAAAANjH3HAAAADFBMVEUAAADJycnJycnJycmiuNtHAAAAA3RSTlMAf4C\\/aSLHAAAAyElEQVR4Xu3NsQ3CMBSE4YubFB4ilHQegdGSjWACvEpGoEyBYiL05AdnXUGHolx10lf82MmOpfLeo5UoJUhBlpKkRCnhUy7b9XCWkqQMUkYlXVHSf8kTvkHKqKQrSnopg5SRxTMklLmS1MwaSWpmCSQ1MyOzWGZCYrEMEFksA4QqlAFuJJYBcCKxjM3FMySeIfEMC2dMOONCGZZgmdr1ly3TSrJMK9EyJBaaGrHQikYstAiJZRYSyiQEdyg5S8Evckih\\/YPscsdej0H6dc0TYw4AAAAASUVORK5CYII="</exammple>
     public string BigImg { get; set; }
 
+    /// <summary>Small image</summary>
+    /// <type>System.String, System</type>
+    /// <exammple>"data:image\\/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8\\/9hAAAAUUlEQVR4AWMY\\/KC5o\\/cAEP9HxxgKcSpCGELYADyu2E6mAQjNxBlAWPNxkHdwGkBIM3KYYDUAr2ZCAE+oH8eujrAXDsA0k2EAAtDXAGLx4MpsADUgvkRKUlqfAAAAAElFTkSuQmCC"</exammple>
     public string SmallImg { get; set; }
 
+    /// <summary>Show in menu or not</summary>
+    /// <type>System.Boolean, System</type>
+    /// <exammple>true</exammple>
     public bool ShowInMenu { get; set; }
 
+    /// <summary>Show on home page or not</summary>
+    /// <type>System.Boolean, System</type>
+    /// <exammple>true</exammple>
     public bool ShowOnHomePage { get; set; }
 
     private static string GetDefaultBigImg()

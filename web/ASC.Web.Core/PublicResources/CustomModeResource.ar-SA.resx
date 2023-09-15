@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>قم بما يقوم به مستخدمينا | اربط Dropbox أو Box أو حسابات أخرى في قسم 'شائع' | قم بتعيين أذونات الوصول للمستندات والمجلدات في قسم 'شائع'</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>أنشئ وحرر مستنداتك الخاصة وقم بمشاركتها من خلال أذونات الوصول المعطاة | قم بإعطاء أذونات للقراءة أو التعديل للمستخدمين على المستند و المجلد | قم بربط Dropbox، Boxأو حسابات أخرى في قسم 'مستنداتي'</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>أهلا بك في ONLYOFFICE الشخصي</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE الشخصي. الرجاء تفعيل بريدك الالكتروني</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>إيقاف حساب ONLYOFFICE الشخصي</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. تم اكتمال إزالة بيانات المستخدم</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>تم تسجيل بوابة جديدة</value>
+  </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.العنوان الرئيسي. مرحباً بك في ONLYOFFICE الشخصي
+
+لقد قمت للتو بإنشاء مكتبك الشخصي على السحابة
+
+h3.العنوان الفرعي. ONLYOFFICE يعتبر مساحة عمل افتراضية يمكنك من خلالها تعديل وتخزين الملفات والعمل عليها من أي مكان، كما يمكنك منح أذونات وصول لأصدقاءك وزملائك.
+
+h3.العنوان الفرعي. للاستخدام السريع، هذا ما يمكنك القيام به في ONLYOFFICE:
+
+- انشاء ومعاينة وتعديل المستندات النصية وجداول البيانات والعروض التقديمية.
+
+- العمل على جميع الصيغ المعروفة. أكثر توافقاً مع ملفات مايكروسوفت أوفيس.
+
+- إنشاء والتعديل بشكل جماعي على "نماذج جاهزة للتعبئة: "https://www.onlyoffice.com/form-creator.aspx".
+
+- شارك وتعاون مع الآخرين في المستندات عن بعد.
+
+- استخدم ميزات داخلية عديدة من خلال الخواص الإضافية.
+
+- إمكانية وصول أسهل لسحابتك من خلال "إضافات كروم":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+- يمكنك أيضاً تعديل الملفات بدون اتصال من خلال "سطح مكتب المحررين" المجاني: https://www.onlyoffice.com/download-desktop.aspx أو تحصل على حزمة iOS :https://apps.apple.com/app/onlyoffice-documents/id944896972 أو أندرويد "https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+ولكم جزيل الشكر
+فريق ONLYOFFICE</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>مرحبا، $UserName!
+
+مرحبا بكم في ONLYOFFICE DocSpace! تمت إضافة ملف تعريف المستخدم الخاص بك بنجاح إلى "${__VirtualRootPath}":"${__VirtualRootPath}" الان بإمكانك:
+
+* العمل مع مستخدمين آخرين في الغرفة التي تمت دعوتك إليها: * غرف التعاون للتأليف المشترك في الوقت الفعلي أو غرف مخصصة مع إعدادات مرنة لأي غرض *.
+
+* * العمل مع ملفات بتنسيقات مختلفة *: المستندات النصية وجداول البيانات والعروض التقديمية والنماذج الرقمية وملفات PDF والكتب الإلكترونية والوسائط المتعددة.
+
+* * التعاون في المستندات * مع وضعين للتحرير المشترك: في الوقت الفعلي أو قفل الفقرة. تتبع التغييرات أو التواصل في الوقت الفعلي باستخدام الدردشة المدمجة أو إجراء مكالمات صوتية ومرئية.
+
+* * قم بتوصيل أي تخزين سحابي * واعمل دون التبديل بين التطبيقات.
+
+$GreenButton
+
+إذا كنت بحاجة إلى مساعدة، فتصفح "مركز المساعدة" https://helpcenter.onlyoffice.com/ أو اسأل "فريق الدعم":" https://www.onlyoffice.com/support-contact-form.aspx ".
+
+حقا لك،
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>هل تريد تغيير بريدك الالكتروني سحابة حسابك؟
+
+اضغط على الزر أدناه وقم بتسجيل الدخول لسحابتك.
+
+$GreenButton
+
+ الرابط صالح لمدة 7 أيام.
+
+* إذا كنت غير مسجل للدخول لسحابتك من هذا المتصفح، سيتوجب عليك أن تستخد بريدك السابق للتأكيد.
+
+إذا كنت لا ترغب بتغيير بريدك الالكتروني تجاهل الرسالة.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>هل تريد تغير كلمة المرور الخاصة بحساب السحابة الخاص بك؟ قم بالضغط على الزر بالأسفل للتأكيد.
+
+$GreenButton
+
+صلاحية الرابط 7 أيام.
+
+إذا لا تريد تغيير كلمة المرور، تجاهل الرسالة.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>مرحبا
+
+لقد قمت للتو بتسجيل حساب على حلول ONLYOFFICE للاستخدام الشخصي. اضغط "هنا":"$InviteLink" لتأكيد تسجيلك وتعيين كلمة المرور.
+
+إذا لم تقدر على فتح الرابط، قم بنسخ الرابط التالي "$InviteLink":"$InviteLink" ولصقه في متصفحك.
+
+لكم جزيل الشكر
+فريق ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>لقد قمت بطلب إيقاف حسابك في personal.onlyoffice.com. اتبع الرابط التالي لاكمال الطلب (الرابط صالح لمدة 7 أيام)
+
+تأكيد إيقاف الحساب
+
+*ملاحظة* بعد حذف الحساب سيتم مسح جميع بياناتك بشكل دائم وذلك وفقاً "سياسية الخصوصية":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"اقرأ المزيد عن معلومات الحساب":https://helpcenter.onlyoffice.com/administration/configuration.aspx
+
+تجاهل هذا البريد إذا كنت لا تريد المتابعة.
+
+إذا كان لديك استفسارات أخرى، يرجى التواصل معنا من خلال "support@onlyoffice.com":mailto:support@onlyoffice.com
+
+لكم جزيل الشكر
+فريق ONLYOFFICE</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>عزيزي $UserName،
+
+عملية مسح البيانات من المستخدم "$FromUserName":"$FromUserLink" قد تمت بنجاح
+
+يسمح بعملية الحذف للبيانات الشخصية بشكل مجاني لـ:
+
+# المستندات- $DocsSpace
+# البريد- $MailSpace
+# الحوار- $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.العنوان الفرعي. تم تسجيل بوابة جديدة
+
+# عنوان البوابة: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# الاسم الأول: $UserName
+# الاسم الأخير: $UserLastName
+# البريد الالكتروني: $UserEmail
+#رقم الهاتف: $Phone
+#تاريخ الانشاء: $Date</value>
+  </data>
+</root>

@@ -22,11 +22,10 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 
 import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
-import selectFolderDialogStore from "./SelectFolderDialogStore";
+import filesSelectorInput from "./FilesSelectorInput";
 import ContextOptionsStore from "./ContextOptionsStore";
 import HotkeyStore from "./HotkeyStore";
 
-import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
 import OformsStore from "./OformsStore";
@@ -58,7 +57,7 @@ const treeFoldersStore = new TreeFoldersStore(selectedFolderStore, authStore);
 
 const publicRoomStore = new PublicRoomStore();
 
-const clientLoadingStore = new ClientLoadingStore(publicRoomStore);
+const clientLoadingStore = new ClientLoadingStore();
 
 const settingsStore = new SettingsStore(
   thirdPartyStore,
@@ -148,7 +147,8 @@ const hotkeyStore = new HotkeyStore(
   settingsStore,
   filesActionsStore,
   treeFoldersStore,
-  uploadDataStore
+  uploadDataStore,
+  selectedFolderStore
 );
 
 const profileActionsStore = new ProfileActionsStore(
@@ -206,10 +206,10 @@ const store = {
   treeFoldersStore,
   selectedFolderStore,
   filesActionsStore,
-  selectFolderDialogStore,
+  filesSelectorInput,
   contextOptionsStore,
   hotkeyStore,
-  selectFileDialogStore,
+
   oformsStore,
   tableStore,
 

@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import DomHelpers from "../utils/domHelpers";
 import { classNames } from "../utils/classNames";
 import { CSSTransition } from "react-transition-group";
+import { withTheme } from "styled-components";
+
 import Portal from "../portal";
 import StyledContextMenu from "./styled-context-menu";
 import SubMenu from "./sub-components/sub-menu";
@@ -13,7 +15,6 @@ import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "../utils/device";
-
 import Backdrop from "../backdrop";
 import Text from "../text";
 import Avatar from "../avatar";
@@ -124,8 +125,7 @@ class ContextMenu extends Component {
   position = (event) => {
     if (event) {
       const rects = this.props.containerRef?.current.getBoundingClientRect();
-
-      let left = rects ? rects.left - this.props.leftOffset : event.pageX + 1;
+      let left = rects ? rects.left - this.props.leftOffset - this.props.rightOffset : event.pageX + 1;
       let top = rects ? rects.top : event.pageY + 1;
       let width = this.menuRef.current.offsetParent
         ? this.menuRef.current.offsetWidth
@@ -134,7 +134,13 @@ class ContextMenu extends Component {
         ? this.menuRef.current.offsetHeight
         : DomHelpers.getHiddenElementOuterHeight(this.menuRef.current);
       let viewport = DomHelpers.getViewport();
-
+      if (
+        this.props.theme.interfaceDirection === "rtl" &&
+        !rects &&
+        left > width
+      ) {
+        left = event.pageX - width + 1;
+      }
       if ((isMobile || isTabletUtils()) && height > 483) {
         this.setState({ changeView: true });
         return;
@@ -173,7 +179,6 @@ class ContextMenu extends Component {
         }
         this.menuRef.current.style.minWidth = "210px";
       }
-
       this.menuRef.current.style.left = left + "px";
       this.menuRef.current.style.top = top + "px";
     }
@@ -411,7 +416,6 @@ class ContextMenu extends Component {
 
   render() {
     const element = this.renderContextMenu();
-
     return (
       <>
         {this.props.withBackdrop && (
@@ -477,7 +481,8 @@ ContextMenu.defaultProps = {
   scaled: false,
   containerRef: null,
   leftOffset: 0,
+  rightOffset: 0,
   fillIcon: true,
 };
 
-export default ContextMenu;
+export default withTheme(ContextMenu);

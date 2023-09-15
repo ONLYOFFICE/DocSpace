@@ -6,7 +6,9 @@ const StyledWrapper = styled.div`
     position: fixed;
     z-index: 390;
     top: 0;
-    left: -6px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `right: -6px;` : `left: -6px;`}
     width: 0%;
     height: 3px;
     -moz-border-radius: 1px;

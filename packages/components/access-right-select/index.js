@@ -79,7 +79,6 @@ const AccessRightSelect = ({
   const formattedOptions = !!advancedOptions
     ? advancedOptions
     : formatToAccessRightItem(accessOptions);
-
   return (
     <StyledWrapper
       className={className}
@@ -92,6 +91,7 @@ const AccessRightSelect = ({
         key: currentItem?.key,
         label: currentItem?.label,
       }}
+      forceCloseClickOutside={true}
       {...props}
     />
   );

@@ -26,11 +26,24 @@
 
 namespace ASC.Common.Radicale;
 
+/// <summary>
+/// </summary>
 public class DavResponse
 {
+    /// <summary>Specifies if the operation is completed or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Completed { get; set; }
+
+    /// <summary>Status code</summary>
+    /// <type>System.Int32, System</type>
     public int StatusCode { get; set; }
+
+    /// <summary>Link to the CardDav address book</summary>
+    /// <type>System.String, System</type>
     public string Data { get; set; }
+
+    /// <summary>Error</summary>
+    /// <type>System.String, System</type>
     public string Error { get; set; }
 
     public override string ToString()

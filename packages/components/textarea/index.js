@@ -134,7 +134,6 @@ const Textarea = ({
             {numerationValue.join("\n")}
           </Numeration>
         )}
-
         <StyledTextarea
           id={id}
           paddingLeftProp={paddingLeftProp}
@@ -153,6 +152,7 @@ const Textarea = ({
           color={color}
           autoFocus={autoFocus}
           ref={areaRef}
+          dir="auto"
         />
       </ColorTheme>
     </Wrapper>
@@ -213,7 +213,7 @@ Textarea.defaultProps = {
   isReadOnly: false,
   hasError: false,
   heightScale: false,
-  placeholder: "",
+  placeholder: " ",
   tabIndex: -1,
   value: "",
   fontSize: 13,

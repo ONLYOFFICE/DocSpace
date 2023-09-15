@@ -619,4 +619,376 @@
   <data name="ConsumersVk" xml:space="preserve">
     <value>VK</value>
   </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Pole s kódom overenia nemôže byť prázdne</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Podľa aplikácie autentifikátora</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>Prístupový kľúč S3</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID klienta aplikácie</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Aktivujte aplikáciu na prihlásenie do portálu pomocou účtu Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste umožnili používateľom prihlásiť sa na portál ONLYOFFICE pomocou Apple ID. {0}Prejdite na Apple Developers Portal a vytvorte novú aplikáciu na integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>10-znakový identifikačný kľúč vygenerovaný pre prihlásenie pomocou osobného kľúča Apple</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Osobný kľúč stiahnutý z Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10-miestny Team ID vývojárskeho účtu</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste skrátili odkazy na pozvánky a dokumenty. {0}Vložte svoje prihlasovacie meno do služby Bitly a kľúč API nižšie:</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box kľúč</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste prepojili svoje konto Box s modulom Dokumenty. Budete môcť spravovať, upravovať a zdieľať súbory zo služby Box s používateľmi služby ONLYOFFICE. {0}Prihláste sa do svojho účtu na stránke vývojárov služby Box a vytvorte novú aplikáciu pre integráciu s ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Pomocou tejto aplikácie môžete aktivovať dvojfaktorové overovanie so službou Clickatell. {0}Prihláste sa do svojho účtu SMS Platform a vytvorte novú integráciu pre ONLYOFFICE. Skopírujte apiKey a vložte ho nižšie:</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste mohli podpisovať dokumenty pomocou DocuSign. {0}Prejdite do svojej konzoly DocuSign Admin a pridajte integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste pripojili účet Dropbox k modulu Dokumenty. Budete môcť spravovať, upravovať a zdieľať súbory z Dropbox s používateľmi ONLYOFFICE. {0}Prihláste sa do svojho účtu na webovej stránke Dropbox Developers a vytvorte novú aplikáciu pre integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Kľúč aplikácie</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste mohli vytvárať bibliografické zoznamy v dokumentoch pomocou EasyBib.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste mohli vytvárať bibliografií v editoroch ONLYOFFICE. {0}Prejdite na registračnú stránku EasyBib a vyplňte formulár na integráciu ONLYOFFICE. Po získaní kľúča aplikácie ho vložte nižšie:</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Token aplikácie</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby sa vaši používatelia mohli prihlásiť do ONLYOFFICE pomocou Facebooku a prepojiť účty ich zákazníkov na Facebooku s modulom CRM. {0}Prejdite na Facebook Developers Portal a vytvorte novú aplikáciu na integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste dostávali oznámenia o správach odoslaných cez Firebase Cloud Messaging.</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby vaši používatelia mohli dostávať oznámenia o správach aj v režime offline. {0}Prejdite do konzoly Firebase a pridajte nový projekt pre integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google Cloud Storage</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Zadajte názov Google Cloud Bucket na ukladanie záloh.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Pripojte službu Google Cloud Storage na zálohovanie a ukladanie údajov z portálu.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Pripojte službu Google Cloud Storage na zálohovanie a ukladanie údajov z portálu. {0}Prejdite do konzoly Google Cloud Platform a vytvorte nový servisný účet ONLYOFFICE. Nižšie vložte údaje, ktoré ste dostali:</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Pripojte projekt, aby ste sa mohli prihlásiť na portál pomocou účtu Google a spravovať súbory a priečinky na disku Google.</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste prepojili svoj účet Google Drive s modulom Dokumenty. Budete môcť spravovať, upravovať a zdieľať súbory z Disku Google s používateľmi ONLYOFFICE. {0}Prejdite do konzoly Google API a vytvorte nový projekt pre integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby sa vaši používatelia mohli prihlásiť do ONLYOFFICE pomocou svojich účtov LinkedIn. {0}Prejdite na webovú stránku LinkedIn Developers a vytvorte novú aplikáciu na integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Tajný kľúč</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Aktivujte aplikáciu, aby ste sa mohli prihlásiť do portálu pomocou účtu Mail.ru.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Po pridaní aplikácie Mail.ru môžete na stránke svojho profilu povoliť prihlasovanie do portálu pomocou účtu Mail.ru.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID klienta aplikácie</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Aktivujte aplikáciu, aby ste sa mohli prihlásiť do portálu pomocou účtu Microsoft.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby sa vaši používatelia mohli prihlásiť do ONLYOFFICE pomocou služby Microsoft. {0}Prejdite na Microsoft Azure a vytvorte novú aplikáciu na integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace Cloud Storage</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Pripojte službu Rackspace Cloud Storage na zálohovanie a ukladanie údajov z portálu.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Pripojte službu Rackspace Cloud Storage na zálohovanie a ukladanie údajov z portálu. {0}V bezpečnostných nastaveniach ovládacieho panela služby Rackspace Cloud kliknite na odkaz Show vedľa položky Rackspace API Key. Nižšie vložte údaje, ktoré ste dostali:</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Súkromný kontajner</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Súkromný kontajner</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Zadajte adresu URL súkromného kontajnera Rackspace na ukladanie záloh.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Verejný kontajner</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Verejný kontajner</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Zadajte adresu URL verejného kontajnera Rackspace na ukladanie záloh.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Región</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Zadajte región, v ktorom sa nachádzajú vaše kontajnery Rackspace.</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Zadajte jedinečný názov Amazon bucket na ukladanie záloh.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Pripojte Amazon AWS S3 na zálohovanie a ukladanie údajov z portálu.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Pripojte Amazon AWS S3 na zálohovanie a ukladanie údajov z portálu. {0}Prejdite do konzoly AWS Management a vytvorte prístupové kľúče pre ONLYOFFICE. Nižšie vložte údaje, ktoré ste dostali:</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Región</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Zadajte región AWS, v ktorom sa nachádza váš Amazon bucket.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>Tajný prístupový kľúč S3</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel Cloud Storage</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Heslo na prístup k úložisku</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Auth User</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Pripojte službu Selectel Cloud Storage na zálohovanie a ukladanie údajov z portálu.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Pripojte službu Selectel Cloud Storage na zálohovanie a ukladanie údajov z portálu. {0}Získajte prístupové údaje používateľa s právami na čítanie/zápis pre kontajnery, do ktorých plánujete ukladať zálohy, a vložte ich nižšie:</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Zadajte názov súkromného kontajnera Selectel na ukladanie záloh.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Zadajte názov verejného kontajnera Selectel na ukladanie záloh.</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>ID aplikácie</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Tajomstvo klienta</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste prepojili svoj účet OneDrive s modulom Dokumenty. Budete môcť spravovať, upravovať a zdieľať súbory zo služby OneDrive s používateľmi ONLYOFFICE. {0}Prihláste sa do svojho účtu Microsoft Azure a vytvorte novú aplikáciu pre integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Pomocou tejto aplikácie môžete zapnúť dvojfaktorové overovanie prostredníctvom služby Centrum SMS. {0}Vložte svoje prihlasovacie meno k účtu smsc a heslo (alebo heslo hash MD5) malými písmenami:</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Meno bota</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Token bota</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Pripojte účet Telegram, aby ste mohli dostávať oznámenia z portálu cez Telegram.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Ak chcete dostávať oznámenia portálu v Telegrame, povoľte funkciu Telegram bot. Nového bota môžete vytvoriť pomocou funkcie BotFather v Telegram Desktop. Ak chcú používatelia portálu využívať tento bot, musia na svojej profilovej stránke povoliť upozornenia Telegram. {0}Vložte používateľské meno bota a token, ktorý ste dostali, do poličiek nižšie.</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Auth Token</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby vaši používatelia mohli volať svojim kontaktom z modulu CRM cez službu Twilio. {0}Prejdite do konzoly Twilio a vložte nasledujúce údaje:</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>ID klienta</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Tajomstvo klienta</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby sa vaši používatelia mohli prihlásiť do ONLYOFFICE pomocou svojho Twitteru a prepojiť účty svojich zákazníkov na Twitteri s modulom CRM. {0}Prejdite na Twitter Developers Portal a vytvorte novú aplikáciu pre integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>Kľúč API</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>Tajný kľúč API</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Používateľské meno Rackspace</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>ID aplikácie</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Bezpečnostný kľúč</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Aktivujte aplikáciu, aby ste sa mohli prihlásiť do portálu pomocou účtu VK.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Po pridaní aplikácie VK môžete na stránke svojho profilu povoliť prihlasovanie na portál pomocou účtu VK.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Aktivujte aplikáciu, aby ste mohli publikovať dokumenty priamo vo WordPress.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Aktivujte aplikáciu, aby ste mohli jednoducho publikovať dokumenty na svojej webovej stránke WordPress. {0}Na stránke Wordpress Developers vytvorte novú aplikáciu pre integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress kľúč</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>Tajný kód WordPress</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>ID klienta</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Tajný kód klienta</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Aktivujte túto aplikáciu, aby ste mohli pridávať nových používateľov portálu zo zoznamu kontaktov Yahoo. {0}Prejdite na stránku Create Application v Yahoo Developer Network a vytvorte novú aplikáciu pre integráciu ONLYOFFICE. Vložte údaje, ktoré ste dostali nižšie:</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Aktivujte aplikáciu, aby ste sa mohli prihlásiť na portál pomocou účtu Yandex.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Po pridaní aplikácie Yandex môžete na stránke svojho profilu povoliť prihlasovanie do portálu pomocou účtu Yandex.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Nesprávne Instance ID.</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Políčko Text správy je prázdne</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Nesprávne meno alebo priezvisko</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>žiadne medzery</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>iba latinské písmená</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Limit požiadaviek je prekročený</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Doména užívateľa nemôže byť prázdna.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Názov domény musí byť dlhý od {0} do {1} znakov.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Pokúsili ste sa sami sebe odobrať práva administrátora. Vaše administrátorské práva neboli ovplyvnené.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Váš účet nie je prepojený s adresárom LDAP a vaše heslo LDAP už nie je aktívne. Zmeňte alebo nastavte heslo k svojmu účtu na stránke s nastaveniami profilu.</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Nastavenie používateľa {0} ako {1} administrátora</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Odstránenie neaktuálnych prístupových práv, ktoré boli predtým načítané prostredníctvom LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Uloženie fotografie</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Aktualizácia prístupových práv užívateľov</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Aktualizácia fotografií užívateľov</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Úspešne nahrané. {0}Podpora a aktualizácie nie sú dostupné pre túto licenciu od {2}.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Úspešne nahrané. {0}Podpora pre túto licenciu nie je dostupná od {2}.{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Ak existuje užívateľ s e-mailom {0}, na túto e-mailovú adresu bol odoslaný pokyn na zmenu hesla.</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Prekročenie kapacity priestoru na disku</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Priestor v cloude pre vaše pracovné dokumenty</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Neplatná Recaptcha</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Integrácie tretích strán</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Nesprávny kód</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>Nastavenia aplikácie TFA nie sú k dispozícii</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Odoslali ste príliš veľa textových správ. Skúste to prosím neskôr.</value>
+  </data>
 </root>

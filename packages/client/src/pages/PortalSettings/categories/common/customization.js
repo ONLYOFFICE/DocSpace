@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./Customization/language-and-time-zone";
@@ -22,7 +22,6 @@ const StyledComponent = styled.div`
   }
 
   .category-description {
-    margin-top: 5px;
     line-height: 20px;
     color: ${(props) => props.theme.client.settings.common.descriptionColor};
     margin-bottom: 20px;
@@ -45,7 +44,14 @@ const StyledComponent = styled.div`
     font-weight: bold;
     font-size: 16px;
     line-height: 22px;
-    margin-right: 4px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 4px;
+          `
+        : css`
+            margin-right: 4px;
+          `}
   }
 
   .settings-block {
@@ -70,6 +76,7 @@ const Customization = (props) => {
     setIsLoadedCustomization,
     isLoadedPage,
     viewMobile,
+    isSettingPaid,
   } = props;
 
   const isLoadedSetting = isLoaded && tReady;
@@ -85,7 +92,10 @@ const Customization = (props) => {
   }, [isLoadedSetting]);
 
   return viewMobile ? (
-    <CustomizationNavbar isLoadedPage={isLoadedPage} />
+    <CustomizationNavbar
+      isLoadedPage={isLoadedPage}
+      isSettingPaid={isSettingPaid}
+    />
   ) : (
     <StyledComponent>
       {!isLoadedPage ? (
@@ -106,12 +116,15 @@ const Customization = (props) => {
   );
 };
 
-export default inject(({ common }) => {
+export default inject(({ auth, common }) => {
+  const { currentQuotaStore } = auth;
+  const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
   const { isLoaded, setIsLoadedCustomization } = common;
 
   return {
     isLoaded,
     setIsLoadedCustomization,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(
   withLoading(withTranslation(["Settings", "Common"])(observer(Customization)))

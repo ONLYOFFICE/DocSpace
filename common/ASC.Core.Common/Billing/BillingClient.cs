@@ -34,6 +34,8 @@ public class BillingClient
     private readonly IHttpClientFactory _httpClientFactory;
     private const int StripePaymentSystemId = 9;
 
+    internal const string HttpClientOption = "billing";
+    public const string GetCurrentPaymentsUri = "GetActiveResources";
 
     public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
     {
@@ -51,14 +53,14 @@ public class BillingClient
 
     public string GetAccountLink(string portalId, string backUrl)
     {
-        var result = Request("GetAccountLink", portalId, Tuple.Create("BackRef", backUrl));
+        var result = Request("GetAccountLink", portalId, new[] { Tuple.Create("BackRef", backUrl) });
         var link = JsonConvert.DeserializeObject<string>(result);
         return link;
     }
 
-    public PaymentLast[] GetCurrentPayments(string portalId)
+    public PaymentLast[] GetCurrentPayments(string portalId, bool refresh)
     {
-        var result = Request("GetActiveResources", portalId);
+        var result = Request(GetCurrentPaymentsUri, portalId, addPolicy: refresh);
         var payments = JsonSerializer.Deserialize<PaymentLast[]>(result);
 
         if (!_configuration.Test)
@@ -226,37 +228,43 @@ public class BillingClient
         }
     }
 
-    private string Request(string method, string portalId, params Tuple<string, string>[] parameters)
+    private string Request(string method, string portalId, Tuple<string, string>[] parameters = null, bool addPolicy = false)
     {
         var url = _configuration.Url + method;
 
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(url),
-            Method = HttpMethod.Post
+            Method = HttpMethod.Post,
         };
+
         if (!string.IsNullOrEmpty(_configuration.Key))
         {
             request.Headers.Add("Authorization", CreateAuthToken(_configuration.Key, _configuration.Secret));
         }
 
-        var httpClient = _httpClientFactory.CreateClient();
+        var httpClient = _httpClientFactory.CreateClient(addPolicy ? HttpClientOption : "");
         httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
 
         var data = new Dictionary<string, List<string>>();
+
         if (!string.IsNullOrEmpty(portalId))
         {
             data.Add("PortalId", new List<string>() { portalId });
         }
-        foreach (var parameter in parameters)
+
+        if (parameters != null)
         {
-            if (!data.ContainsKey(parameter.Item1))
+            foreach (var parameter in parameters)
             {
-                data.Add(parameter.Item1, new List<string>() { parameter.Item2 });
-            }
-            else
-            {
-                data[parameter.Item1].Add(parameter.Item2);
+                if (!data.ContainsKey(parameter.Item1))
+                {
+                    data.Add(parameter.Item1, new List<string>() { parameter.Item2 });
+                }
+                else
+                {
+                    data[parameter.Item1].Add(parameter.Item2);
+                }
             }
         }
 
@@ -264,7 +272,7 @@ public class BillingClient
         request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
         string result;
-        using (var response = httpClient.Send(request))
+        using (var response = httpClient.SendAsync(request).Result) //hack for polly
         using (var stream = response.Content.ReadAsStream())
         {
             if (stream == null)
@@ -286,8 +294,7 @@ public class BillingClient
             return result;
         }
 
-        var @params = parameters.Select(p => p.Item1 + ": " + p.Item2);
-        var info = new { Method = method, PortalId = portalId, Params = string.Join(", ", @params) };
+        var info = new { Method = method, PortalId = portalId, Params = parameters != null ? string.Join(", ", parameters.Select(p => p.Item1 + ": " + p.Item2)) : "" };
         if (result.Contains("{\"Message\":\"error: cannot find "))
         {
             throw new BillingNotFoundException(result, info);
@@ -313,29 +320,35 @@ public class BillingClient
     }
 }
 
-
-[ServiceContract]
-public interface IService
+internal class CustomResponse
 {
-    [OperationContract]
-    Message Request(Message message);
+    public string Message { get; set; }
 }
 
-[Serializable]
-public class Message
+public static class BillingHttplClientExtension
 {
-    public string Content { get; set; }
-    public MessageType Type { get; set; }
+    public static void AddBillingHttpClient(this IServiceCollection services)
+    {
+        services.AddHttpClient(BillingClient.HttpClientOption)
+            .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+            .AddPolicyHandler((s, request) =>
+            {
+                if (!request.RequestUri.AbsolutePath.EndsWith(BillingClient.GetCurrentPaymentsUri))
+                {
+                    return null;
+                }
+
+                return Policy.HandleResult<HttpResponseMessage>
+                    (msg =>
+                    {
+                        var result = msg.Content.ReadAsStringAsync().Result;
+                        return result.Contains("{\"Message\":\"error: cannot find ");
+                    })
+                    .WaitAndRetryAsync(2, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+            });
+    }
 }
 
-public enum MessageType
-{
-    Undefined = 0,
-    Data = 1,
-    Error = 2,
-}
-
-[Serializable]
 public class BillingException : Exception
 {
     public BillingException(string message, object debugInfo = null) : base(message + (debugInfo != null ? " Debug info: " + debugInfo : string.Empty))
@@ -351,7 +364,6 @@ public class BillingException : Exception
     }
 }
 
-[Serializable]
 public class BillingNotFoundException : BillingException
 {
     public BillingNotFoundException(string message, object debugInfo = null) : base(message, debugInfo)
@@ -363,7 +375,6 @@ public class BillingNotFoundException : BillingException
     }
 }
 
-[Serializable]
 public class BillingNotConfiguredException : BillingException
 {
     public BillingNotConfiguredException(string message, object debugInfo = null) : base(message, debugInfo)

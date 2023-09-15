@@ -27,7 +27,6 @@
 namespace ASC.Files.Core;
 
 [DebuggerDisplay("{Id} into {FolderId}")]
-[Serializable]
 public class ChunkedUploadSession<T> : CommonChunkedUploadSession
 {
     public T FolderId { get; set; }
@@ -67,7 +66,6 @@ public class ChunkedUploadSession<T> : CommonChunkedUploadSession
         chunkedUploadSession.TransformItems();
 
         return chunkedUploadSession;
-
     }
 }
 

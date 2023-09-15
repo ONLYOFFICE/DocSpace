@@ -23,7 +23,15 @@ const StyledFloatingButtonWrapper = styled.div`
   @media ${desktop} {
     position: absolute;
     z-index: 300;
-    right: 0;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 0;
+          `
+        : css`
+            right: 0;
+          `}
+
     bottom: ${(props) => (props.showTwoProgress ? "96px" : "0")};
 
     ${!isMobile &&
@@ -37,7 +45,9 @@ const StyledFloatingButtonWrapper = styled.div`
     display: none;
     position: absolute;
     cursor: pointer;
-    right: 77px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `left: 77px;` : `right: 77px;`}
     bottom: 33px;
   }
   &:hover {
@@ -162,7 +172,9 @@ const StyledAlertIcon = styled.div`
   position: absolute;
   width: 12px;
   height: 12px;
-  left: 20px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `right: 20px;` : `left: 20px;`}
   top: 0px;
 
   svg {

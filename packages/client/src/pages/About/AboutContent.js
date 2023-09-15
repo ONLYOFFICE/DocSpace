@@ -12,6 +12,7 @@ import { getLogoFromPath } from "@docspace/common/utils";
 
 const StyledAboutBody = styled.div`
   width: 100%;
+  user-select: text;
 
   .avatar {
     margin-top: ${!isMobile ? "0px" : "32px"};
@@ -143,7 +144,12 @@ const AboutContent = (props) => {
             &nbsp;ONLYOFFICE DocSpace&nbsp;
           </ColorTheme>
 
-          <Text className="row-el select-el" fontSize="13px" fontWeight="600">
+          <Text
+            className="row-el select-el"
+            fontSize="13px"
+            fontWeight="600"
+            title={`${BUILD_AT}`}
+          >
             v.
             <span className="version-document-management">
               {buildVersionInfo.docspace}

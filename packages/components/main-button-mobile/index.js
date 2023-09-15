@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import PropTypes from "prop-types";
 import {
   StyledFloatingButton,
@@ -202,7 +202,12 @@ const MainButtonMobile = (props) => {
       : setHeight(height + "px");
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const { height } = divRef.current.getBoundingClientRect();
+    setHeight(height);
+  }, [isOpen]);
+
+  useLayoutEffect(() => {
     recalculateHeight();
   }, [isOpen, isOpenButton, window.innerHeight, isUploading, isOpenSubMenu]);
 

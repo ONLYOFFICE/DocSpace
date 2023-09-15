@@ -1,7 +1,7 @@
 // Override default variables before the import
 $font-family-base: "Open Sans", sans-serif;
 
-@import "./opensansoffline.scss";
+@import url(../../public/css/fonts.css);
 
 html,
 body {
@@ -15,7 +15,7 @@ body {
   position: relative;
   .pageLoader {
     position: fixed;
-    left: calc(50% - 20px);
+    inset-inline-start: calc(50% - 20px);
     top: 35%;
   }
 }
@@ -30,7 +30,7 @@ body {
 }
 
 .styled-close-button {
-  margin-left: 7px;
+  margin-inline-start: 7px;
   margin-top: -1px;
 }
 

@@ -150,7 +150,17 @@ $GreenButton
 Екип за поддръжка на ONLYOFFICE™ "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_change_password" xml:space="preserve">
-    <value>h1.Запитване за промяна на парола за портал "${__VirtualRootPath}":"${__VirtualRootPath}" Има заявка за промяна на паролата, използвана за въвеждане на портал "${__VirtualRootPath}":"${__VirtualRootPath}". Моля, следвайте линка по-долу, за да промените паролата си: $GreenButton * Забележка *: Тази връзка е валидна само за 7 дни. Моля, завършете процеса на промяна на паролата в рамките на този период. Ако не искате да променяте паролата си или сте получили този имейл по погрешка, моля, игнорирайте го или се свържете с администратора на портала "${__VirtualRootPath}":"${__VirtualRootPath}", за да разберете подробностите.</value>
+    <value>h1.Запитване за промяна на парола за портал "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Има заявка за промяна на паролата, използвана за въвеждане на портал "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Моля, следвайте линка по-долу, за да промените паролата си:
+
+$GreenButton
+
+ * Забележка *: Тази връзка е валидна само за 7 дни. Моля, завършете процеса на промяна на паролата в рамките на този период.
+
+Ако не искате да променяте паролата си или сте получили този имейл по погрешка, моля, игнорирайте го или се свържете с администратора на портала "${__VirtualRootPath}":"${__VirtualRootPath}", за да разберете подробностите.</value>
   </data>
   <data name="pattern_change_phone" xml:space="preserve">
     <value>h1.Заявка за смяна на мобилен телефон
@@ -1090,7 +1100,7 @@ $GreenButton
   <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
     <value>Здравей, $UserName!
 
-Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към * "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
 
 * Работете с други потребители в стаята, в която сте поканени*: стаи за сътрудничество за съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
 
@@ -1111,7 +1121,7 @@ $GreenButton
   <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
     <value>Здравей, $UserName!
 
-Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към * "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
 
 * Работете с други потребители в стаята, в която сте поканени*: стаи за сътрудничество за съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
 
@@ -1132,7 +1142,7 @@ $GreenButton
   <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
     <value>Здравей, $UserName!
 
-Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към * "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
 
 * Работете с други потребители в стаята, в която сте поканени*: стаи за сътрудничество за съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
 
@@ -1153,7 +1163,7 @@ $GreenButton
   <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
     <value>Здравей, $UserName!
 
-Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към * "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
 
 * Работете с други потребители в стаята, в която сте поканени*: стаи за сътрудничество за съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
 
@@ -1267,7 +1277,7 @@ $GreenButton
   <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
     <value>Не сте влизали във вашия ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}" повече от половин година. 
 
-Тъй като сте решили да не го използвате повече, вашият ONLYOFFICE DocSpace и всички данни ще бъдат изтрити в съответствие с нашата „Декларация за поверителност“:"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid= 5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+Тъй като сте решили да не го използвате повече, вашият ONLYOFFICE DocSpace и всички данни ще бъдат изтрити в съответствие с нашата "Декларация за поверителност":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid= 5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
 
 Ще се радваме да чуем вашите отзиви. Защо решихте да спрете да използвате ONLYOFFICE DocSpace?
 

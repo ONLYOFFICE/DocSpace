@@ -8,6 +8,7 @@ export const MonthsHeader = ({
   setSelectedScene,
   minDate,
   maxDate,
+  isMobile,
 }) => {
   const onTitleClick = () =>
     setSelectedScene((prevSelectedScene) => prevSelectedScene + 1);
@@ -32,15 +33,20 @@ export const MonthsHeader = ({
 
   return (
     <HeaderContainer>
-      <Title className="months-header" onClick={onTitleClick}>
-        {observedDate.year()}
-        <HeaderActionIcon />
+      <Title
+        className="months-header"
+        onClick={onTitleClick}
+        isMobile={isMobile}
+      >
+        {observedDate.format("YYYY")}
+        <HeaderActionIcon isMobile={isMobile} />
       </Title>
       <HeaderButtons
         onLeftClick={onLeftClick}
         onRightClick={onRightClick}
         isLeftDisabled={isLeftDisabled}
         isRightDisabled={isRightDisabled}
+        isMobile={isMobile}
       />
     </HeaderContainer>
   );

@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { isMobile, isIOS, deviceType } from "react-device-detect";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { isMobile, isIOS, deviceType, isMobileOnly } from "react-device-detect";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import { FolderType, EDITOR_ID } from "@docspace/common/constants";
 import throttle from "lodash/throttle";
@@ -21,11 +22,13 @@ import {
 import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
-import { assign } from "@docspace/common/utils";
+import { assign, frameCallEvent } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
-import styled from "styled-components";
+import DeepLink from "./DeepLink";
+import { getDeepLink } from "../helpers/deepLinkHelper";
+
 import { getEditorTheme } from "../helpers/utils";
 
 toast.configure();
@@ -93,7 +96,12 @@ function Editor({
   fileId,
   url,
   filesSettings,
+  logoUrls,
+  currentColorScheme,
+  portalSettings,
 }) {
+  const [isShowDeepLink, setIsShowDeepLink] = useState(false);
+
   const fileInfo = config?.file;
 
   isArchiveFolderRoot =
@@ -104,6 +112,48 @@ function Editor({
   if (fileInfo) {
     userAccessRights = fileInfo.security;
   }
+
+  useEffect(() => {
+    const androidID = portalSettings?.deepLink?.androidPackageName;
+    const iOSId = portalSettings?.deepLink?.iosPackageId;
+    const deepLinkUrl = portalSettings?.deepLink?.url;
+
+    const defaultOpenDocument = localStorage.getItem("defaultOpenDocument");
+
+    if (
+      isMobileOnly &&
+      !defaultOpenDocument &&
+      androidID &&
+      iOSId &&
+      deepLinkUrl
+    ) {
+      setIsShowDeepLink(true);
+    }
+
+    if (isMobileOnly && defaultOpenDocument === "app") {
+      const nav = navigator.userAgent;
+      const storeUrl =
+        nav.includes("iPhone;") || nav.includes("iPad;")
+          ? `https://apps.apple.com/app/id${iOSId}`
+          : `https://play.google.com/store/apps/details?id=${androidID}`;
+
+      window.location = getDeepLink(
+        window.location.origin,
+        user.email,
+        fileInfo,
+        deepLinkUrl
+      );
+
+      setTimeout(() => {
+        if (document.hasFocus()) {
+          window.location.replace(storeUrl);
+        } else {
+          history.goBack();
+        }
+      }, 3000);
+    }
+  }, []);
+
   useEffect(() => {
     if (error && mfReady) {
       if (error?.unAuthorized) {
@@ -296,7 +346,10 @@ function Editor({
           config.homepage,
           `/doceditor?fileId=${encodeURIComponent(newFile.id)}`
         );
-        window.open(newUrl, "_blank");
+        window.open(
+          newUrl,
+          window.DocSpaceConfig?.editor?.openOnNewPage ? "_blank" : "_self"
+        );
       })
       .catch((e) => {
         toastr.error(e);
@@ -596,6 +649,42 @@ function Editor({
     }
   };
 
+  const onSDKRequestClose = () => {
+    const search = window.location.search;
+    const editorGoBack = new URLSearchParams(search).get("editorGoBack");
+
+    if (editorGoBack === "event") {
+      frameCallEvent({ event: "onEditorCloseCallback" });
+    } else {
+      const backUrl = getBackUrl();
+      window.location.replace(backUrl);
+    }
+  };
+
+  const getBackUrl = () => {
+    if (!fileInfo) return;
+    const search = window.location.search;
+    const shareIndex = search.indexOf("share=");
+    const key = search.substring(shareIndex + 6);
+
+    let backUrl = "";
+
+    if (fileInfo.rootFolderType === FolderType.Rooms) {
+      if (key) {
+        backUrl = `/rooms/share?key=${key}`;
+      } else {
+        backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+      }
+    } else {
+      backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
+    }
+
+    const url = window.location.href;
+    const origin = url.substring(0, url.indexOf("/doceditor"));
+
+    return `${combineUrl(origin, backUrl)}`;
+  };
+
   const init = () => {
     try {
       if (isMobile) {
@@ -603,37 +692,28 @@ function Editor({
       }
 
       let goBack;
-      const url = window.location.href;
-      const search = window.location.search;
-      const shareIndex = search.indexOf("share=");
-      const key = search.substring(shareIndex + 6);
 
       if (fileInfo) {
-        let backUrl = "";
-
-        if (fileInfo.rootFolderType === FolderType.Rooms) {
-          if (key) {
-            backUrl = `/rooms/share?key=${key}`;
-          } else {
-            backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
-          }
-        } else {
-          backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
-        }
-
-        const origin = url.substring(0, url.indexOf("/doceditor"));
-
+        const search = window.location.search;
         const editorGoBack = new URLSearchParams(search).get("editorGoBack");
 
-        goBack =
-          editorGoBack === "false"
-            ? {}
-            : {
-                blank: true,
-                requestClose: false,
-                text: t("FileLocation"),
-                url: `${combineUrl(origin, backUrl)}`,
-              };
+        if (editorGoBack === "false") {
+          goBack = {};
+        } else if (editorGoBack === "event") {
+          goBack = {
+            requestClose: true,
+            text: t("FileLocation"),
+          };
+        } else {
+          goBack = {
+            requestClose: window.DocSpaceConfig?.editor?.requestClose ?? false,
+            text: t("FileLocation"),
+          };
+          if (!window.DocSpaceConfig?.editor?.requestClose) {
+            goBack.blank = window.DocSpaceConfig?.editor?.openOnNewPage ?? true;
+            goBack.url = getBackUrl();
+          }
+        }
       }
 
       config.editorConfig.customization = {
@@ -649,6 +729,8 @@ function Editor({
       //   //TODO: add conditions for SaaS
       //   config.document.info.favorite = null;
       // }
+
+      const url = window.location.href;
 
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");
@@ -671,10 +753,14 @@ function Editor({
         onRequestReferenceData,
         onRequestUsers,
         onRequestSendNotify,
-        onRequestCreateNew;
+        onRequestCreateNew,
+        onRequestClose;
 
       if (successAuth && !user.isVisitor) {
-        if (isDesktopEditor) {
+        if (
+          isDesktopEditor ||
+          window.DocSpaceConfig?.editor?.openOnNewPage === false
+        ) {
           onRequestCreateNew = onSDKRequestCreateNew;
         } else {
           //FireFox security issue fix (onRequestCreateNew will be blocked)
@@ -731,6 +817,10 @@ function Editor({
         onRequestSendNotify = onSDKRequestSendNotify;
       }
 
+      if (window.DocSpaceConfig?.editor?.requestClose) {
+        onRequestClose = onSDKRequestClose;
+      }
+
       const events = {
         events: {
           onRequestReferenceData,
@@ -756,6 +846,7 @@ function Editor({
           onRequestUsers,
           onRequestSendNotify,
           onRequestCreateNew,
+          onRequestClose,
         },
       };
 
@@ -784,6 +875,18 @@ function Editor({
         {selectFileDialog}
         {selectFolderDialog}
       </>
+    );
+
+  if (isShowDeepLink)
+    return (
+      <DeepLink
+        fileInfo={fileInfo}
+        logoUrls={logoUrls}
+        userEmail={user.email}
+        setIsShowDeepLink={setIsShowDeepLink}
+        currentColorScheme={currentColorScheme}
+        deepLinkUrl={portalSettings.deepLink.url}
+      />
     );
 
   return (

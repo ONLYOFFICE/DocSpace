@@ -3,18 +3,19 @@ import { initReactI18next } from "react-i18next";
 import Backend from "@docspace/common/utils/i18next-http-backend";
 import config from "../../package.json";
 import { LANGUAGE } from "@docspace/common/constants";
-import { getCookie } from "@docspace/common/utils";
+import { getLtrLanguageForEditor, getCookie } from "@docspace/common/utils";
 import { loadLanguagePath } from "./helpers/utils";
 
 const newInstance = i18n.createInstance();
 
-const lng = getCookie(LANGUAGE) || "en";
+const userLng = getCookie(LANGUAGE) || "en";
+const portalLng = window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings.culture;
 
 newInstance
   .use(Backend)
   .use(initReactI18next)
   .init({
-    lng: lng,
+    lng: getLtrLanguageForEditor(userLng, portalLng, true),
     fallbackLng: "en",
     load: "currentOnly",
     //debug: true,
@@ -33,7 +34,7 @@ newInstance
       crossDomain: false,
     },
 
-    ns: ["Editor", "Common"],
+    ns: ["Editor", "Common", "DeepLink"],
     defaultNS: "Editor",
 
     react: {

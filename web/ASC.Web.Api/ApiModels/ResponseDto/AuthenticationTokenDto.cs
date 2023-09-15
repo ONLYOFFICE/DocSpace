@@ -26,14 +26,36 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class AuthenticationTokenDto
 {
+    /// <summary>Authentication token</summary>
+    /// <type>System.String, System</type>
     public string Token { get; set; }
+
+    /// <summary>Token expiration time</summary>
+    /// <type>System.DateTime, System</type>
     public DateTime Expires { get; set; }
+
+    /// <summary>Specifies if the authentication code is sent by SMS or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Sms { get; set; }
+
+    /// <summary>Phone number</summary>
+    /// <type>System.String, System</type>
     public string PhoneNoise { get; set; }
+
+    /// <summary>Specifies if the two-factor application is used or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Tfa { get; set; }
+
+    /// <summary>Two-factor authentication key</summary>
+    /// <type>System.String, System</type>
     public string TfaKey { get; set; }
+
+    /// <summary>Confirmation email URL</summary>
+    /// <type>System.String, System</type>
     public string ConfirmUrl { get; set; }
 
     public static AuthenticationTokenDto GetSample()

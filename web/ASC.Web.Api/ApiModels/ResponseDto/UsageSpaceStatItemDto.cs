@@ -26,12 +26,28 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class UsageSpaceStatItemDto
 {
+    /// <summary>Name</summary>
+    /// <type>System.String, System</type>
     public string Name { get; set; }
+
+    /// <summary>Icon</summary>
+    /// <type>System.String, System</type>
     public string Icon { get; set; }
+
+    /// <summary>Specifies if the module space is disabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Disabled { get; set; }
+
+    /// <summary>Size</summary>
+    /// <type>System.String, System</type>
     public string Size { get; set; }
+
+    /// <summary>URL</summary>
+    /// <type>System.String, System</type>
     public string Url { get; set; }
 
     public static UsageSpaceStatItemDto GetSample()
@@ -47,11 +63,24 @@ public class UsageSpaceStatItemDto
     }
 }
 
+/// <summary>
+/// </summary>
 public class ChartPointDto
 {
+    /// <summary>Display date</summary>
+    /// <type>System.String, System</type>
     public string DisplayDate { get; set; }
+
+    /// <summary>Date</summary>
+    /// <type>System.DateTime, System</type>
     public DateTime Date { get; set; }
+
+    /// <summary>Hosts</summary>
+    /// <type>System.Int32, System</type>
     public int Hosts { get; set; }
+
+    /// <summary>Hits</summary>
+    /// <type>System.Int32, System</type>
     public int Hits { get; set; }
 
     public static ChartPointDto GetSample()

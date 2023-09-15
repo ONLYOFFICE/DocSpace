@@ -1,11 +1,15 @@
 import { request } from "../client";
 import axios from "axios";
 
-export function getSettings(withPassword = false) {
-  return request({
+export function getSettings(withPassword = false, headers = null) {
+  const options = {
     method: "get",
     url: `/settings?withPassword=${withPassword}`,
-  });
+  };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function getPortalCultures() {
@@ -26,7 +30,12 @@ export function getPortalPasswordSettings(confirmKey = null) {
   return request(options);
 }
 
-export function setPortalPasswordSettings(minLength, upperCase, digits, specSymbols) {
+export function setPortalPasswordSettings(
+  minLength,
+  upperCase,
+  digits,
+  specSymbols
+) {
   return request({
     method: "put",
     url: "/settings/security/password",
@@ -119,6 +128,21 @@ export function setLifetimeAuditSettings(data) {
   });
 }
 
+export function getBruteForceProtection() {
+  return request({
+    method: "get",
+    url: "/settings/security/loginSettings",
+  });
+}
+
+export function setBruteForceProtection(AttemptCount, BlockTime, CheckPeriod) {
+  return request({
+    method: "put",
+    url: "/settings/security/loginSettings",
+    data: { AttemptCount, BlockTime, CheckPeriod },
+  });
+}
+
 export function getLoginHistoryReport() {
   return request({
     method: "post",
@@ -174,11 +198,15 @@ export function restoreGreetingSettings() {
   });
 }
 
-export function getAppearanceTheme() {
-  return request({
+export function getAppearanceTheme(headers = null) {
+  const options = {
     method: "get",
     url: "/settings/colortheme",
-  });
+  };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function sendAppearanceTheme(data) {
@@ -203,11 +231,15 @@ export function getLogoText() {
   });
 }
 
-export function getLogoUrls() {
-  return request({
+export function getLogoUrls(headers = null) {
+  const options = {
     method: "get",
     url: `/settings/whitelabel/logos`,
-  });
+  };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function setWhiteLabelSettings(data) {
@@ -228,7 +260,13 @@ export function restoreWhiteLabelSettings(isDefault) {
   });
 }
 
-export function setCompanyInfoSettings(address, companyName, email, phone, site) {
+export function setCompanyInfoSettings(
+  address,
+  companyName,
+  email,
+  phone,
+  site
+) {
   const data = {
     settings: { address, companyName, email, phone, site },
   };
@@ -264,7 +302,7 @@ export function getCustomSchemaList() {
 export function setAdditionalResources(
   feedbackAndSupportEnabled,
   videoGuidesEnabled,
-  helpCenterEnabled,
+  helpCenterEnabled
 ) {
   const data = {
     settings: {
@@ -311,7 +349,7 @@ export function setCustomSchema(
   regDateCaption,
   groupHeadCaption,
   guestCaption,
-  guestsCaption,
+  guestsCaption
 ) {
   const data = {
     userCaption,
@@ -390,7 +428,14 @@ export function getMachineName(confirmKey = null) {
   return request(options);
 }
 
-export function setPortalOwner(email, hash, lng, timeZone, confirmKey = null, analytics) {
+export function setPortalOwner(
+  email,
+  hash,
+  lng,
+  timeZone,
+  confirmKey = null,
+  analytics
+) {
   const options = {
     method: "put",
     url: "/settings/wizard/complete",
@@ -549,11 +594,13 @@ export function getBackupStorage() {
   return request(options);
 }
 
-export function getBuildVersion() {
+export function getBuildVersion(headers = null) {
   const options = {
     method: "get",
     url: "/settings/version/build",
   };
+  if (headers) options.headers = headers;
+
   return request(options);
 }
 
@@ -766,7 +813,15 @@ export function removeWebhook(id) {
 }
 
 export function getWebhooksJournal(props) {
-  const { configId, eventId, count, startIndex, deliveryFrom, deliveryTo, groupStatus } = props;
+  const {
+    configId,
+    eventId,
+    count,
+    startIndex,
+    deliveryFrom,
+    deliveryTo,
+    groupStatus,
+  } = props;
 
   const params = {};
 
@@ -845,5 +900,20 @@ export function getSendingTestMailStatus() {
   return request({
     method: "get",
     url: `/smtpsettings/smtp/test/status`,
+  });
+}
+
+export function setCSPSettings(data) {
+  return request({
+    method: "post",
+    url: `/security/csp`,
+    data,
+  });
+}
+
+export function getCSPSettings() {
+  return request({
+    method: "get",
+    url: `/security/csp`,
   });
 }

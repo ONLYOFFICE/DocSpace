@@ -32,7 +32,14 @@ const HeaderContainer = styled.div`
     display: flex;
     align-items: baseline;
     .settings-section_badge {
-      margin-left: 8px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 8px;
+            `
+          : css`
+              margin-left: 8px;
+            `}
       cursor: auto;
     }
 
@@ -46,16 +53,43 @@ const HeaderContainer = styled.div`
     flex-grow: 1;
 
     .action-button {
-      margin-left: auto;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: auto;
+            `
+          : css`
+              margin-left: auto;
+            `}
     }
   }
 
   .arrow-button {
-    margin-right: 12px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 12px;
+          `
+        : css`
+            margin-right: 12px;
+          `}
+
+    svg {
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
+    }
 
     @media ${tablet} {
-      padding: 8px 0 8px 8px;
-      margin-left: -8px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding: 8px 8px 8px 0;
+              margin-right: -8px;
+            `
+          : css`
+              padding: 8px 0 8px 8px;
+              margin-left: -8px;
+            `}
     }
   }
 
@@ -78,10 +112,6 @@ const HeaderContainer = styled.div`
     h1 {
       font-size: 18px;
       line-height: 59px !important;
-    }
-
-    .settings-section_header {
-      padding-top: 6px;
     }
   }
 `;
@@ -368,6 +398,8 @@ export default inject(({ auth, setup, common }) => {
   };
 })(
   withLoading(
-    withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+    withTranslation(["Settings", "SingleSignOn", "Common"])(
+      observer(SectionHeaderContent)
+    )
   )
 );
