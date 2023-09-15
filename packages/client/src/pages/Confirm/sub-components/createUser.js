@@ -46,14 +46,15 @@ const CreateUserForm = (props) => {
     providers,
     isDesktop,
     linkData,
+    roomData,
     capabilities,
     currentColorScheme,
   } = props;
   const inputRef = React.useRef(null);
 
   const emailFromLink = linkData?.email ? linkData.email : "";
-  const toRoom = linkData?.toRoom;
-  const roomName = "First room"; //TODO: get from server
+  const toRoom = roomData?.roomId;
+  const roomName = roomData?.title;
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [ssoLabel, setSsoLabel] = useState("");
