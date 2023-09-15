@@ -2835,6 +2835,9 @@ class FilesStore {
     const { getIcon } = this.filesSettingsStore;
     //return [...this.folders, ...this.files];
 
+    const { fileItemsList } = this.pluginStore;
+    const { enablePlugins } = this.authStore.settingsStore;
+
     const newFolders = [...this.folders];
 
     newFolders.sort((a, b) => {
@@ -2969,6 +2972,15 @@ class FilesStore {
           )
         : undefined;
 
+      let fileTypeName = null;
+
+      if (enablePlugins && fileItemsList) {
+        fileItemsList.forEach(({ key, value }) => {
+          if (value.extension === fileExst && value.fileTypeName)
+            fileTypeName = value.fileTypeName;
+        });
+      }
+
       return {
         access,
         daysRemaining: autoDelete && getDaysRemaining(autoDelete),
@@ -3032,6 +3044,7 @@ class FilesStore {
         providerType,
         security,
         viewAccessability,
+        fileTypeName,
       };
     });
 

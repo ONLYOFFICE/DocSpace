@@ -66,7 +66,9 @@ const clientLoadingStore = new ClientLoadingStore();
 const settingsStore = new SettingsStore(
   thirdPartyStore,
   treeFoldersStore,
-  publicRoomStore
+  publicRoomStore,
+  pluginStore,
+  authStore
 );
 
 const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);

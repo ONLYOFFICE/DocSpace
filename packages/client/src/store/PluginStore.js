@@ -826,6 +826,8 @@ class PluginStore {
 
       if (!correctUserType || !correctDevice) return;
 
+      const fileIcon = `${plugin.iconUrl}/assets/${value.fileIcon}`;
+
       const onClick = async (item) => {
         if (!value.onClick) return;
 
@@ -852,7 +854,12 @@ class PluginStore {
         );
       };
 
-      this.fileItems.set(key, { ...value, onClick, pluginId: plugin.id });
+      this.fileItems.set(key, {
+        ...value,
+        onClick,
+        fileIcon,
+        pluginId: plugin.id,
+      });
     });
   };
 
