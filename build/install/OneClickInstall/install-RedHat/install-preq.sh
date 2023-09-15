@@ -61,7 +61,7 @@ curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.
 #add nodejs repo
 [ "$REV" = "8" ] && NODEJS_OPTION="--setopt=nodesource-nodejs.module_hotfixes=1"
 [ "$REV" = "7" ] && NODE_VERSION="16" || NODE_VERSION="18"
-yum install -y https://rpm.nodesource.com/pub_${NODE_VERSION}.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm
+yum install -y https://rpm.nodesource.com/pub_${NODE_VERSION}.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm || true
 
 #add dotnet repo
 [ $REV = "7" ] && rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-prod.rpm || true
