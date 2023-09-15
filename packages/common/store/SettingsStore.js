@@ -150,7 +150,7 @@ class SettingsStore {
   zendeskKey = null;
   bookTrainingEmail = null;
   legalTerms = null;
-  baseDomain = "onlyoffice.io";
+  baseDomain = null;
   portals = [];
   domain = null;
   documentationEmail = null;
@@ -346,7 +346,7 @@ class SettingsStore {
   };
 
   setPortalDomain = (domain) => {
-    this.domain = domain;
+    this.baseDomain = domain;
   };
   setPortals = (portals) => {
     this.portals = portals;
@@ -586,11 +586,8 @@ class SettingsStore {
     this.setPortals(res.tenants);
   };
 
-  getSpaces = async () => {
-    const domain = await this.getDomainName();
-    if (domain) {
-      await this.getAllPortals();
-    }
+  getPortals = async () => {
+    await this.getAllPortals();
   };
 
   restoreCompanyInfoSettings = async () => {

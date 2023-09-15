@@ -15,14 +15,12 @@ const ConfigurationSection = ({ t }) => {
 
   const { spacesStore, authStore } = useStore();
 
-  const { validateDomain, setPortalSettings } = spacesStore;
+  const { checkDomain, setPortalSettings } = spacesStore;
 
   const onConfigurationPortal = async () => {
     if (window?.DocSpaceConfig?.management?.checkDomain) {
       setIsLoading(true);
-      const res = await validateDomain(domain).finally(() =>
-        setIsLoading(false)
-      );
+      const res = await checkDomain(domain).finally(() => setIsLoading(false));
       const isValidDomain = res?.value;
 
       if (!isValidDomain)

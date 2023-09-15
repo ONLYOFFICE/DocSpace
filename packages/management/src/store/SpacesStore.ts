@@ -6,8 +6,7 @@ import {
   setDomainName,
   setPortalName,
   createNewPortal,
-  validateDomain,
-  getPortalStatus,
+  checkDomain,
 } from "@docspace/common/api/management";
 import { TNewPortalData } from "SRC_DIR/types/spaces";
 
@@ -36,32 +35,35 @@ class SpacesStore {
     const { settings } = res;
 
     this.authStore.settingsStore.setPortalDomain(settings);
-
-    // if (settings) {
-    //   const status = await getPortalStatus(settings);
-    // }
   };
 
   get isConnected() {
-    return !!this.authStore.settingsStore.domain;
+    return (
+      this.authStore.settingsStore.baseDomain &&
+      this.authStore.settingsStore.baseDomain !== "localhost"
+    );
   }
 
   get faviconLogo() {
     const logos = this.authStore.settingsStore.whiteLabelLogoUrls;
     if (!logos) return;
+
     return getLogoFromPath(logos[2]?.path?.light);
   }
 
   setPortalSettings = async (domain: string, portalName: string) => {
     const dmn = await setDomainName(domain);
     const { settings } = dmn;
+
     this.authStore.settingsStore.setPortalDomain(settings);
+
     if (!portalName) return;
-    const name = await setPortalName(portalName);
+
+    await setPortalName(portalName);
   };
 
-  validateDomain = async (domain) => {
-    const res = await validateDomain(domain);
+  checkDomain = async (domain) => {
+    const res = await checkDomain(domain);
     return res;
   };
 

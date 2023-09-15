@@ -142,7 +142,7 @@ class AuthStore {
         this.isAuthenticated &&
         user.isAdmin
       ) {
-        requests.push(this.settingsStore.getSpaces());
+        requests.push(this.settingsStore.getPortals());
       }
     });
   };

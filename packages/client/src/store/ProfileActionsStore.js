@@ -203,7 +203,7 @@ class ProfileActionsStore {
   };
 
   getActions = (t) => {
-    const { enablePlugins, standalone, portals, domain } =
+    const { enablePlugins, standalone, portals, baseDomain } =
       this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
     const isCommunity = this.authStore.isCommunity;
@@ -247,21 +247,22 @@ class ProfileActionsStore {
             id: "spaces",
             icon: SpacesReactSvgUrl,
             label: t("Common:Spaces"),
-            onClick: domain && !isMobileOnly ? () => {} : this.onSpacesClick,
-            items: domain
-              ? [
-                  ...managementItems,
-                  {
-                    key: "spaces-separator",
-                    isSeparator: true,
-                  },
-                  {
-                    key: "spaces-management",
-                    label: t("Common:SpaceManagement"),
-                    onClick: this.onSpacesClick,
-                  },
-                ]
-              : null,
+            onClick: this.onSpacesClick,
+            items:
+              baseDomain && baseDomain !== "localhost"
+                ? [
+                    ...managementItems,
+                    {
+                      key: "spaces-separator",
+                      isSeparator: true,
+                    },
+                    {
+                      key: "spaces-management",
+                      label: t("Common:SpaceManagement"),
+                      onClick: this.onSpacesClick,
+                    },
+                  ]
+                : null,
           }
         : null;
 

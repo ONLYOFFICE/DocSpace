@@ -12,7 +12,7 @@ const MultipleSpaces = ({ t }) => {
   const { setChangeDomainDialogVisible, setCreatePortalDialogVisible } =
     spacesStore;
 
-  const { portals, domain } = authStore.settingsStore;
+  const { portals, baseDomain } = authStore.settingsStore;
 
   return (
     <StyledMultipleSpaces>
@@ -40,7 +40,7 @@ const MultipleSpaces = ({ t }) => {
             </Text>
             <TextInput
               isDisabled={true}
-              placeholder={domain}
+              placeholder={baseDomain}
               className="spaces-input"
             />
           </div>

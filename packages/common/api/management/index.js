@@ -105,7 +105,7 @@ export const getAllPortals = async () => {
   return res;
 };
 
-export const validateDomain = async (domain) => {
+export const checkDomain = async (domain) => {
   const data = {
     HostName: domain,
   };

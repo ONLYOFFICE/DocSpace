@@ -41,7 +41,7 @@ const CreatePortalDialog = () => {
   const [restrictAccess, setRestrictAccess] = React.useState<boolean>(false);
 
   const { spacesStore, authStore } = useStore();
-  const { domain, tenantAlias, baseDomain } = authStore.settingsStore;
+  const { tenantAlias, baseDomain } = authStore.settingsStore;
 
   const {
     createPortalDialogVisible: visible,
@@ -123,7 +123,7 @@ const CreatePortalDialog = () => {
               fontSize="12px"
               fontWeight="400"
               color="#A3A9AE"
-            >{`${name}.${domain}`}</Text>
+            >{`${name}.${baseDomain}`}</Text>
           </div>
         </div>
         <div>
