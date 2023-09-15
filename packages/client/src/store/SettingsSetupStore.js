@@ -451,8 +451,8 @@ class SettingsSetupStore {
     return api.settings.dataReassignmentProgress(id);
   };
 
-  dataReassignmentTerminate = (id) => {
-    return api.settings.dataReassignmentTerminate(id);
+  dataReassignmentTerminate = (userId) => {
+    return api.settings.dataReassignmentTerminate(userId);
   };
 
   getCommonThirdPartyList = async () => {

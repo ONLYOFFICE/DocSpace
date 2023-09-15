@@ -419,8 +419,8 @@ export function dataReassignmentProgress(id) {
   });
 }
 
-export function dataReassignmentTerminate(id) {
-  const data = { id };
+export function dataReassignmentTerminate(userId) {
+  const data = { userId };
   return request({
     method: "put",
     url: `/people/reassign/terminate`,
