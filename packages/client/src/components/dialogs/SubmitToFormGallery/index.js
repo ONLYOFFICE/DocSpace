@@ -1,6 +1,6 @@
 import { Link, ModalDialog } from "@docspace/components";
 import { Button } from "@docspace/components";
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { observer, inject } from "mobx-react";
 import { Trans, withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
@@ -8,10 +8,7 @@ import FilesSelector from "@docspace/client/src/components/FilesSelector";
 import { FilesSelectorFilterTypes } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 
-//
-import { request } from "@docspace/common/api/client";
-import { getFileInfo } from "@docspace/common/api/files";
-import { combineUrl, toUrlParams } from "@docspace/common/utils";
+import { combineUrl } from "@docspace/common/utils";
 
 import * as Styled from "./index.styled";
 
@@ -39,11 +36,10 @@ const SubmitToFormGallery = ({
 
     setIsSubmitting(true);
 
-    const file = await fetch(
-      `${combineUrl(
-        window.DocSpaceConfig?.proxy?.url
-      )}/filehandler.ashx?action=download&fileid=${formItem.id}`
-    )
+    const origin = combineUrl(window.DocSpaceConfig?.proxy?.url);
+    const fileSrc = `${origin}/filehandler.ashx?action=download&fileid=${formItem.id}`;
+
+    const file = await fetch(fileSrc)
       .then((res) => {
         if (!res.ok) throw new Error(res.statusText);
         return res.arrayBuffer();
@@ -55,7 +51,13 @@ const SubmitToFormGallery = ({
       })
       .catch((err) => onClose(err));
 
-    await submitToFormGallery(file, "TITLE", "en").finally(() => onClose());
+    await submitToFormGallery(file, "TITLE", "en")
+      .then((res) => {
+        if (!res.data) throw new Error(res.statusText);
+        window.location.replace(res.data);
+      })
+      .catch((err) => onClose(err))
+      .finally(() => onClose());
   };
 
   const onClose = (err = null) => {
@@ -75,7 +77,8 @@ const SubmitToFormGallery = ({
     return (
       <FilesSelector
         key="select-file-dialog"
-        filterParam={FilesSelectorFilterTypes.OFORM}
+        filterParam={FilesSelectorFilterTypes.DOCXF}
+        descriptionText={t("Common:SelectDOCXFFormat")}
         isPanelVisible={true}
         onSelectFile={onSelectForm}
         onClose={onCloseFormSelector}
