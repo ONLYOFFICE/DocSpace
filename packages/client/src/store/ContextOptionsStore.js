@@ -963,8 +963,6 @@ class ContextOptionsStore {
       t
     );
 
-    console.log(item);
-
     const withOpen = item.id !== this.selectedFolderStore.id;
 
     const optionsModel = [

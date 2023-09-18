@@ -73,7 +73,6 @@ const SubmitToGalleryTile = ({
   currentColorScheme,
 }) => {
   const onSubmitToGallery = () => setSubmitToGalleryDialogVisible(true);
-  console.log(currentColorScheme);
 
   return (
     <StyledSubmitToGalleryTile currentColorScheme={currentColorScheme}>
