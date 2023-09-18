@@ -121,10 +121,20 @@ public class ReassignController : ApiControllerBase
     /// <httpMethod>PUT</httpMethod>
     /// <returns></returns>
     [HttpPut("reassign/terminate")]
-    public async Task TerminateReassignAsync(TerminateRequestDto inDto)
+    public async Task<TaskProgressResponseDto> TerminateReassignAsync(TerminateRequestDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        _queueWorkerReassign.Terminate(Tenant.Id, inDto.UserId);
+        var progressItem = _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, inDto.UserId);
+
+        if (progressItem != null)
+        {
+            _queueWorkerReassign.Terminate(Tenant.Id, inDto.UserId);
+
+            progressItem.Status = DistributedTaskStatus.Canceled;
+            progressItem.IsCompleted = true;
+        }
+
+        return TaskProgressResponseDto.Get(progressItem);
     }
 }
