@@ -701,7 +701,11 @@ class SsoFormStore {
   };
 
   checkSpCertificateExist = () => {
-    if (this.spAction === SSO_SIGNING_ENCRYPT && this.spCertificates.length > 0)
+    if (
+      this.spAction === SSO_SIGNING_ENCRYPT &&
+      this.spCertificates.length > 0 &&
+      !this.isEdit
+    )
       return true;
 
     return this.spCertificates.find(
