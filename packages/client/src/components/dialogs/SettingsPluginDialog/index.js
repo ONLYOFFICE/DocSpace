@@ -1,26 +1,38 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import ModalDialog from "@docspace/components/modal-dialog";
 
-import {
-  PluginSettingsType,
-  PluginComponents,
-} from "SRC_DIR/helpers/plugins/constants";
+import { PluginComponents } from "SRC_DIR/helpers/plugins/constants";
 import WrappedComponent from "SRC_DIR/helpers/plugins/WrappedComponent";
+
+import Header from "./sub-components/Header";
+import Info from "./sub-components/Info";
+import Footer from "./sub-components/Footer";
 
 const SettingsPluginDialog = ({
   plugin,
 
   onLoad,
-  customSettings,
+
+  settings,
+  saveButton,
 
   settingsPluginDialogVisible,
 
   onClose,
+
+  ...rest
 }) => {
+  console.log(rest);
+
+  const { t } = useTranslation("WebPlugins", "Common");
+
   const [customSettingsProps, setCustomSettingsProps] =
-    React.useState(customSettings);
+    React.useState(settings);
+
+  const [saveButtonProps, setSaveButtonProps] = React.useState(saveButton);
 
   const [modalRequestRunning, setModalRequestRunning] = React.useState(false);
 
@@ -28,7 +40,12 @@ const SettingsPluginDialog = ({
     if (!onLoad) return;
     const res = await onLoad();
 
-    setCustomSettingsProps(res.customSettings);
+    setCustomSettingsProps(res.settings);
+    if (res.saveButton)
+      setSaveButtonProps({
+        ...res.saveButton,
+        props: { ...res.saveButton, scale: true },
+      });
   }, [onLoad]);
 
   React.useEffect(() => {
@@ -43,11 +60,14 @@ const SettingsPluginDialog = ({
   return (
     <ModalDialog
       visible={settingsPluginDialogVisible}
-      displayType="modal"
+      displayType="aside"
       onClose={onCloseAction}
-      autoMaxHeight
+      withBodyScroll
+      withFooterBorder
     >
-      <ModalDialog.Header>{plugin?.name}</ModalDialog.Header>
+      <ModalDialog.Header>
+        <Header t={t} name={plugin?.name} />
+      </ModalDialog.Header>
       <ModalDialog.Body>
         <WrappedComponent
           pluginId={plugin.id}
@@ -55,9 +75,22 @@ const SettingsPluginDialog = ({
             component: PluginComponents.box,
             props: customSettingsProps,
           }}
+          saveButton={saveButton}
+          setSaveButtonProps={setSaveButtonProps}
           setModalRequestRunning={setModalRequestRunning}
         />
+        <Info t={t} plugin={plugin} />
       </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Footer
+          t={t}
+          id={plugin?.id}
+          saveButtonProps={saveButtonProps}
+          setModalRequestRunning={setModalRequestRunning}
+          onCloseAction={onCloseAction}
+          modalRequestRunning={modalRequestRunning}
+        />
+      </ModalDialog.Footer>
     </ModalDialog>
   );
 };
@@ -69,42 +102,22 @@ export default inject(({ pluginStore }) => {
     setSettingsPluginDialogVisible,
     currentSettingsDialogPlugin,
     setCurrentSettingsDialogPlugin,
-    setIsAdminSettingsDialog,
-    isAdminSettingsDialog,
-    updateStatus,
-    setPluginDialogVisible,
-    setPluginDialogProps,
   } = pluginStore;
-
-  const isUserDialog = !isAdminSettingsDialog;
 
   const plugin = pluginList.find((p) => p.id === currentSettingsDialogPlugin);
 
-  const pluginSettings = isUserDialog
-    ? plugin?.getUserPluginSettings()
-    : plugin?.getAdminPluginSettings();
+  const pluginSettings = plugin?.getAdminPluginSettings();
 
   const onClose = () => {
     setSettingsPluginDialogVisible(false);
     setCurrentSettingsDialogPlugin(null);
-    setIsAdminSettingsDialog(false);
   };
-
-  if (pluginSettings.type === PluginSettingsType.settingsPage) {
-    onClose();
-  }
 
   return {
     plugin,
     ...pluginSettings,
     settingsPluginDialogVisible,
-    currentSettingsDialogPlugin,
+
     onClose,
-    isUserDialog,
-    setSettingsPluginDialogVisible,
-    setCurrentSettingsDialogPlugin,
-    updateStatus,
-    setPluginDialogVisible,
-    setPluginDialogProps,
   };
 })(observer(SettingsPluginDialog));

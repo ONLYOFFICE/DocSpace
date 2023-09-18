@@ -1,15 +1,30 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@docspace/components/scrollbar";
+import Link from "@docspace/components/link";
 import { desktop, mobile, tablet } from "@docspace/components/utils/device";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { Base } from "@docspace/components/themes";
 
 const PanelStyles = css`
   .panel_combo-box {
-    margin-left: 10px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 10px;
+          `
+        : css`
+            margin-left: 10px;
+          `}
 
     .optionalBlock {
-      margin-right: 4px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 4px;
+            `
+          : css`
+              margin-right: 4px;
+            `}
       display: flex;
     }
 
@@ -39,11 +54,25 @@ const StyledAsidePanel = styled.div`
     width: 100%;
     font-weight: 700;
     margin: 14px 0;
-    padding-right: 10px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 10px;
+          `
+        : css`
+            padding-right: 10px;
+          `}
   }
   .upload_panel-header {
     font-weight: 700;
-    padding: 19px auto 19px 17px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 19px 17px 19px auto;
+          `
+        : css`
+            padding: 19px auto 19px 17px;
+          `}
   }
   .upload-panel_header-content {
     z-index: 320;
@@ -98,7 +127,14 @@ const StyledVersionHistoryPanel = styled.div`
   .version-history-panel-header {
     margin-bottom: 12px;
     height: 53px;
-    margin-left: 0px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 0px;
+          `
+        : css`
+            margin-left: 0px;
+          `}
     .version-history-panel-heading {
       font-weight: 700;
       margin-bottom: 13px;
@@ -108,17 +144,38 @@ const StyledVersionHistoryPanel = styled.div`
 
   .version-history-panel-body {
     padding-bottom: ${(props) => (props.isLoading ? "0px" : null)};
-    margin-left: 16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 16px;
+          `
+        : css`
+            margin-left: 16px;
+          `}
 
     height: calc(100% - 53px);
     box-sizing: border-box;
 
     .version-comment-wrapper {
-      margin-left: 85px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 85px;
+            `
+          : css`
+              margin-left: 85px;
+            `}
     }
 
     .version_edit-comment {
-      padding-left: 7px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding-right: 7px;
+            `
+          : css`
+              padding-left: 7px;
+            `}
     }
   }
 `;
@@ -138,11 +195,25 @@ const StyledContent = styled.div`
     props.theme.filesPanels.content.backgroundColor};
 
   .upload-panel_header-content {
-    margin-right: 0 !important;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 0 !important;
+          `
+        : css`
+            margin-right: 0 !important;
+          `}
   }
 
   .header_aside-panel-plus-icon {
-    margin-left: auto;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
   }
 
   .sharing-access-combo-box-icon {
@@ -164,16 +235,37 @@ const StyledContent = styled.div`
 
   .panel-loader-wrapper {
     margin-top: 8px;
-    padding-left: 32px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 32px;
+          `
+        : css`
+            padding-left: 32px;
+          `}
   }
   .panel-loader {
     display: inline;
-    margin-right: 10px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 10px;
+          `
+        : css`
+            margin-right: 10px;
+          `}
   }
 
   .layout-progress-bar {
     position: fixed;
-    right: 15px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 15px;
+          `
+        : css`
+            right: 15px;
+          `}
     bottom: 21px;
 
     @media ${tablet} {
@@ -189,13 +281,27 @@ const StyledHeaderContent = styled.div`
   align-items: center;
   padding: 0 16px;
 
-  margin-right: -16px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: -16px;
+        `
+      : css`
+          margin-right: -16px;
+        `}
 
   border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
   .upload_panel-icons-container {
     display: flex;
-    margin-left: auto;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
     .upload_panel-vertical-dots-icon {
     }
   }
@@ -219,13 +325,27 @@ StyledHeaderContent.defaultProps = { theme: Base };
 
 const StyledBody = styled.div`
   &.files-operations-body {
-    padding: 0 0 0 16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 0 16px 0 0;
+          `
+        : css`
+            padding: 0 0 0 16px;
+          `}
     box-sizing: border-box;
     width: 100%;
     height: calc(100vh - 125px);
 
     .styled-element {
-      margin-left: -2px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: -2px;
+            `
+          : css`
+              margin-left: -2px;
+            `}
     }
   }
 
@@ -306,7 +426,14 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing-row {
-    padding-left: 16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 16px;
+          `
+        : css`
+            padding-left: 16px;
+          `}
     //width: calc(100% - 16px);
     box-sizing: border-box;
     border-bottom: none;
@@ -340,7 +467,14 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing_panel-link-combo-box {
-    margin-left: auto;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
     .combo-button {
       height: 24px;
       width: 94px;
@@ -355,11 +489,25 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing_panel-owner-icon {
-    padding-right: 19px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 19px;
+          `
+        : css`
+            padding-right: 19px;
+          `}
   }
 
   .sharing_panel-remove-icon {
-    margin-left: auto;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
     line-height: 24px;
     display: flex;
     align-items: center;
@@ -372,7 +520,14 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .panel_combo-box {
-    margin-left: 0px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 0px;
+          `
+        : css`
+            margin-left: 0px;
+          `}
 
     .combo-button {
       height: 30px;
@@ -418,6 +573,10 @@ const StyledSharingBody = styled(Scrollbar)`
       font-size: 13px;
     }
   }
+
+  .row-loader {
+    margin-left: 4px;
+  }
 `;
 
 const StyledFooter = styled.div`
@@ -441,16 +600,37 @@ const StyledFooter = styled.div`
     }
 
     .checkbox {
-      margin-right: 6px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 6px;
+            `
+          : css`
+              margin-right: 6px;
+            `}
     }
   }
 
   .sharing_panel-button {
-    margin-left: auto;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
   }
 
   .new_file_panel-first-button {
-    margin-right: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 8px;
+          `
+        : css`
+            margin-right: 8px;
+          `}
   }
   .new_files_panel-button {
     width: 100%;
@@ -475,7 +655,14 @@ const StyledFooter = styled.div`
 StyledFooter.defaultProps = { theme: Base };
 
 const StyledLinkRow = styled.div`
-  margin-right: -16px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: -16px;
+        `
+      : css`
+          margin-right: -16px;
+        `}
   padding: 0 16px;
   box-sizing: border-box;
   background-color: ${(props) =>
@@ -556,7 +743,14 @@ const StyledModalRowContainer = styled.div`
   }
 
   .panel_combo-box {
-    margin-left: 0px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 0px;
+          `
+        : css`
+            margin-left: 0px;
+          `}
 
     .combo-button {
       height: 30px;
@@ -566,7 +760,15 @@ const StyledModalRowContainer = styled.div`
     }
 
     .optionalBlock {
-      margin-right: 4px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 4px;
+            `
+          : css`
+              margin-right: 4px;
+            `}
+
       display: flex;
     }
 
@@ -604,14 +806,28 @@ const StyledModalRowContainer = styled.div`
     position: absolute;
     z-index: 1;
     margin: 8px;
-    right: 0px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 0px;
+          `
+        : css`
+            right: 0px;
+          `}
   }
 
   .embedding-panel_links-container {
     display: flex;
 
     .embedding-panel_link {
-      margin-right: 8px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 8px;
+            `
+          : css`
+              margin-right: 8px;
+            `}
 
       border: 1px solid #eceef1;
       border-radius: 16px;
@@ -624,7 +840,14 @@ const StyledModalRowContainer = styled.div`
     display: flex;
 
     .embedding-panel_input {
-      margin-right: 8px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 8px;
+            `
+          : css`
+              margin-right: 8px;
+            `}
       width: 94px;
     }
   }
@@ -641,16 +864,37 @@ const StyledModalRowContainer = styled.div`
     position: absolute;
     z-index: 1;
     margin: 8px;
-    right: 0;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 0;
+          `
+        : css`
+            right: 0;
+          `}
   }
 
   .panel-loader-wrapper {
     margin-top: 8px;
-    padding-left: 32px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 32px;
+          `
+        : css`
+            padding-left: 32px;
+          `}
   }
   .panel-loader {
     display: inline;
-    margin-right: 10px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 10px;
+          `
+        : css`
+            margin-right: 10px;
+          `}
   }
 
   @media (max-width: 1024px) {
@@ -659,6 +903,10 @@ const StyledModalRowContainer = styled.div`
       overflow: initial;
     }
   }
+`;
+
+const StyledLink = styled(Link)`
+  color: ${(props) => props.theme.filesPanels.color};
 `;
 
 StyledModalRowContainer.defaultProps = { theme: Base };
@@ -674,4 +922,5 @@ export {
   StyledFooter,
   StyledLinkRow,
   StyledModalRowContainer,
+  StyledLink,
 };

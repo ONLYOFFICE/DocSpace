@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
-import { useNavigate } from "react-router-dom";
+
 import Error520 from "client/Error520";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
@@ -11,7 +11,6 @@ import PersonalSettings from "./CommonSettings";
 import GeneralSettings from "./AdminSettings";
 import { tablet } from "@docspace/components/utils/device";
 import { isMobile } from "react-device-detect";
-import PluginsSettings from "./PluginsSettings";
 
 const StyledContainer = styled.div`
   margin-top: -22px;
@@ -26,45 +25,22 @@ const StyledContainer = styled.div`
   `}
 `;
 
-const SectionBodyContent = ({
-  isErrorSettings,
-  user,
-  enablePlugins,
-  enabledPluginList,
-}) => {
+const SectionBodyContent = ({ isErrorSettings, user }) => {
   const { t } = useTranslation(["FilesSettings", "Common"]);
 
-  const navigate = useNavigate();
+  // const commonSettings = {
+  //   id: "personal",
+  //   name: t("Common:SettingsPersonal"),
+  //   content: <PersonalSettings t={t} />,
+  // };
 
-  const setting = window.location.pathname.endsWith("/settings/personal")
-    ? "personal"
-    : window.location.pathname.endsWith("/settings/plugins")
-    ? "plugins"
-    : "";
+  // const adminSettings = {
+  //   id: "general",
+  //   name: t("Common:SettingsGeneral"),
+  //   content: <GeneralSettings t={t} />,
+  // };
 
-  const commonSettings = {
-    id: "personal",
-    name: t("Common:SettingsPersonal"),
-    content: <PersonalSettings t={t} />,
-  };
-
-  const adminSettings = {
-    id: "general",
-    name: t("Common:SettingsGeneral"),
-    content: <GeneralSettings t={t} />,
-  };
-
-  const pluginsSettings = {
-    id: "plugins",
-    name: "Plugins",
-    content: <PluginsSettings />,
-  };
-
-  const data = [commonSettings];
-
-  if (enablePlugins && enabledPluginList.length > 0) {
-    data.push(pluginsSettings);
-  }
+  // const data = [commonSettings];
 
   // const showAdminSettings = user.isAdmin || user.isOwner;
 
@@ -72,22 +48,22 @@ const SectionBodyContent = ({
   //   data.unshift(adminSettings);
   // }
 
-  const onSelect = useCallback(
-    (e) => {
-      const { id } = e;
+  // const onSelect = useCallback(
+  //   (e) => {
+  //     const { id } = e;
 
-      if (id === setting) return;
+  //     if (id === setting) return;
 
-      navigate(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          `/settings/${id}`
-        )
-      );
-    },
-    [setting, navigate]
-  );
+  //     navigate(
+  //       combineUrl(
+  //         window.DocSpaceConfig?.proxy?.url,
+  //         config.homepage,
+  //         `/settings/${id}`
+  //       )
+  //     );
+  //   },
+  //   [setting, navigate]
+  // );
 
   //const showAdminSettings = user.isAdmin || user.isOwner;
 
@@ -95,35 +71,20 @@ const SectionBodyContent = ({
     <Error520 />
   ) : (
     <StyledContainer>
-      {!enablePlugins ? (
-        <PersonalSettings
-          t={t}
-          showTitle={true}
-          showAdminSettings={false} //showAdminSettings
-        />
-      ) : (
-        <Submenu
-          data={data}
-          startSelect={
-            setting === "personal" ? commonSettings : pluginsSettings
-          }
-          onSelect={onSelect}
-        />
-      )}
+      <PersonalSettings
+        t={t}
+        showTitle={true}
+        showAdminSettings={false} //showAdminSettings
+      />
     </StyledContainer>
   );
 };
 
-export default inject(({ auth, settingsStore, pluginStore }) => {
+export default inject(({ auth, settingsStore }) => {
   const { settingsIsLoaded } = settingsStore;
-  const { enabledPluginList } = pluginStore;
-
-  const { enablePlugins } = auth.settingsStore;
 
   return {
     settingsIsLoaded,
     user: auth.userStore.user,
-    enablePlugins,
-    enabledPluginList,
   };
 })(observer(SectionBodyContent));

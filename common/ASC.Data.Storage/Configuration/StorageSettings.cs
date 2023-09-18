@@ -82,7 +82,6 @@ public class BaseStorageSettingsListener
 /// <summary>
 /// </summary>
 /// <typeparam name="T"></typeparam>
-[Serializable]
 public abstract class BaseStorageSettings<T> : ISettings<BaseStorageSettings<T>> where T : class, ISettings<T>, new()
 {
     /// <summary>Storage name</summary>
@@ -104,7 +103,6 @@ public abstract class BaseStorageSettings<T> : ISettings<BaseStorageSettings<T>>
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class StorageSettings : BaseStorageSettings<StorageSettings>, ISettings<StorageSettings>
 {
     [JsonIgnore]
@@ -119,7 +117,6 @@ public class StorageSettings : BaseStorageSettings<StorageSettings>, ISettings<S
 /// <summary>
 /// </summary>
 [Scope]
-[Serializable]
 public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>, ISettings<CdnStorageSettings>
 {
     [JsonIgnore]

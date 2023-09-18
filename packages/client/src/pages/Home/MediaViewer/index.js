@@ -59,6 +59,7 @@ const FilesMediaViewer = (props) => {
     onClickDownloadAs,
     setActiveFiles,
     pluginContextMenuItems,
+    someDialogIsOpen,
   } = props;
 
   const navigate = useNavigate();
@@ -196,6 +197,7 @@ const FilesMediaViewer = (props) => {
       <MediaViewer
         t={t}
         userAccess={userAccess}
+        someDialogIsOpen={someDialogIsOpen}
         currentFileId={currentMediaFileId}
         visible={visible}
         playlist={playlist}
@@ -336,6 +338,7 @@ export default inject(
       extsMediaPreviewed,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
+      someDialogIsOpen: dialogsStore.someDialogIsOpen,
       fetchFiles,
       previewFile,
       setIsLoading,

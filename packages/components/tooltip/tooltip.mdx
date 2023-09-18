@@ -35,20 +35,19 @@ import QuestionReactSvgUrl from 'PUBLIC_DIR/images/question.react.svg?url";
 ```jsx
   <div
     style={BodyStyle}
-    data-for="tooltipContent"
-    data-tip="You tooltip content"
-    data-event="click focus"
-    data-offset="{'top': 100, 'right': 100}"
-    data-place="top"
+    data-tooltip-id="tooltipContent"
+    data-tooltip-content="You tooltip content"
+    data-tooltip-place="top"
   >
     <IconButton isClickable={true} size={20} iconName={QuestionReactSvgUrl} />
   </div>
   <Tooltip
-    id="tooltipContent"
-    getContent={dataTip => <Text fontSize='13px'>{dataTip}</Text>}
-    effect="float"
+    float
     place="top"
+    offset={100}
     maxWidth={320}
+    id="tooltipContent"
+    getContent={({content}) => <Text fontSize='13px'>{content}</Text>}
   />
 ```
 
@@ -90,27 +89,27 @@ const arrayUsers = [
 
 ```jsx
   <h5 style={{ marginLeft: -5 }}>Hover group</h5>
-  <Link data-for="group" data-tip={0}>Bob</Link><br />
-  <Link data-for="group" data-tip={1}>John</Link><br />
-  <Link data-for="group" data-tip={2}>Kevin</Link><br />
-  <Link data-for="group" data-tip={3}>Alex</Link><br />
-  <Link data-for="group" data-tip={4}>Tomas</Link>
+  <Link data-tooltip-id="group" data-tooltip-content={0}>Bob</Link><br />
+  <Link data-tooltip-id="group" data-tooltip-content={1}>John</Link><br />
+  <Link data-tooltip-id="group" data-tooltip-content={2}>Kevin</Link><br />
+  <Link data-tooltip-id="group" data-tooltip-content={3}>Alex</Link><br />
+  <Link data-tooltip-id="group" data-tooltip-content={4}>Tomas</Link>
 ```
 
 ```jsx
 <Tooltip
   id="group"
   offsetRight={90}
-  getContent={(dataTip) =>
-    dataTip ? (
+  getContent={({ content }) =>
+    content ? (
       <div>
         <Text isBold={true} fontSize="16px">
-          {arrayUsers[dataTip].name}
+          {arrayUsers[content].name}
         </Text>
         <Text color="#A3A9AE" fontSize="13px">
-          {arrayUsers[dataTip].email}
+          {arrayUsers[content].email}
         </Text>
-        <Text fontSize="13px">{arrayUsers[dataTip].position}</Text>
+        <Text fontSize="13px">{arrayUsers[content].position}</Text>
       </div>
     ) : null
   }

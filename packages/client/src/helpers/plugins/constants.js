@@ -20,13 +20,6 @@ export const PluginScopes = Object.freeze({
 export const PluginStatus = Object.freeze({
   active: "active",
   hide: "hide",
-  pending: "pending",
-});
-
-export const PluginSettingsType = Object.freeze({
-  modal: "modal",
-  settingsPage: "settings-page",
-  both: "both",
 });
 
 export const PluginActions = Object.freeze({
@@ -37,8 +30,8 @@ export const PluginActions = Object.freeze({
 
   showToast: "show-toast",
 
-  showSettingsModal: "show-settings-modal",
-  closeSettingsModal: "close-settings-modal",
+  // showSettingsModal: "show-settings-modal",
+  // closeSettingsModal: "close-settings-modal",
 
   showCreateDialogModal: "show-create-dialog-modal",
 

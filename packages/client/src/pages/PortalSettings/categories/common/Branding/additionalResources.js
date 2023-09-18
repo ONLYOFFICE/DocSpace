@@ -1,17 +1,28 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
 import withLoading from "SRC_DIR/HOCs/withLoading";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Checkbox from "@docspace/components/checkbox";
 import toastr from "@docspace/components/toast/toastr";
 import LoaderAdditionalResources from "../sub-components/loaderAdditionalResources";
 import isEqual from "lodash/isEqual";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import { smallTablet, size } from "@docspace/components/utils/device";
 
 const StyledComponent = styled.div`
   margin-top: 40px;
+
+  @media ${smallTablet} {
+    margin-top: 0px;
+
+    .header {
+      display: none;
+    }
+  }
 
   .branding-checkbox {
     display: flex;
@@ -34,7 +45,15 @@ const StyledComponent = styled.div`
 
   .checkbox {
     width: max-content;
-    margin-right: 9px;
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 9px;
+          `
+        : css`
+            margin-right: 9px;
+          `}
   }
 `;
 
@@ -51,6 +70,8 @@ const AdditionalResources = (props) => {
     setIsLoadedAdditionalResources,
     isLoadedAdditionalResources,
   } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [additionalSettings, setAdditionalSettings] = useState({});
   const [hasChange, setHasChange] = useState(false);
@@ -80,6 +101,18 @@ const AdditionalResources = (props) => {
     } else {
       setAdditionalSettings(defaultData);
     }
+  };
+
+  useEffect(() => {
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  const checkWidth = () => {
+    window.innerWidth > size.smallTablet &&
+      location.pathname.includes("additional-resources") &&
+      navigate("/portal-settings/customization/branding");
   };
 
   useEffect(() => {
@@ -253,7 +286,7 @@ const AdditionalResources = (props) => {
 };
 
 export default inject(({ auth, common }) => {
-  const { settingsStore } = auth;
+  const { currentQuotaStore, settingsStore } = auth;
 
   const { setIsLoadedAdditionalResources, isLoadedAdditionalResources } =
     common;
@@ -266,6 +299,8 @@ export default inject(({ auth, common }) => {
     additionalResourcesIsDefault,
   } = settingsStore;
 
+  const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
+
   return {
     getAdditionalResources,
     setAdditionalResources,
@@ -274,6 +309,7 @@ export default inject(({ auth, common }) => {
     additionalResourcesIsDefault,
     setIsLoadedAdditionalResources,
     isLoadedAdditionalResources,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(
   withLoading(

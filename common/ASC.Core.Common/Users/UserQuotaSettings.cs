@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Users;
 
-[Serializable]
 public class UserQuotaSettings : ISettings<UserQuotaSettings>
 {
     public long UserQuota { get; set; }

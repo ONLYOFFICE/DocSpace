@@ -307,7 +307,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
-            else if (checkPermissions && !await FilesSecurity.CanDownloadAsync(folder))
+            else if (checkPermissions && folder.RootFolderType != FolderType.TRASH && !await FilesSecurity.CanDownloadAsync(folder))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
             }
@@ -619,10 +619,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 newFile = await FileDao.CopyFileAsync(file.Id, toFolderId); //Stream copy will occur inside dao
                                 _ = filesMessageService.SendAsync(newFile, toFolder, _headers, MessageAction.FileCopied, newFile.Title, parentFolder.Title, toFolder.Title);
 
-                                if (Equals(newFile.ParentId.ToString(), _daoFolderId))
-                                {
-                                    needToMark.Add(newFile);
-                                }
+                                needToMark.Add(newFile);
 
                                 await socketManager.CreateFileAsync(newFile);
 

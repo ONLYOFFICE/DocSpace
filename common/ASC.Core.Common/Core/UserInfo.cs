@@ -28,7 +28,6 @@ namespace ASC.Core.Users;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public sealed class UserInfo : IDirectRecipient, ICloneable, IMapFrom<User>
 {
     public UserInfo()

@@ -718,4 +718,7 @@
   <data name="UserUpdatedMobileNumber" xml:space="preserve">
     <value>Uporabniki [{0}]. Mobilna številka posodobljena: {1}</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Mesto</value>
+  </data>
 </root>

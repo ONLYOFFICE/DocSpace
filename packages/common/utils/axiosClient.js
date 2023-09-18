@@ -167,11 +167,11 @@ class AxiosClient {
             const isRooms =
               pathname.indexOf("/rooms/shared") !== -1 || isArchived;
 
-            if (!isRooms) return;
-
-            setTimeout(() => {
-              window.DocSpace.navigate(isArchived ? "/archived" : "/");
-            }, 1000);
+            if (isRooms) {
+              setTimeout(() => {
+                window.DocSpace.navigate(isArchived ? "/archived" : "/");
+              }, 1000);
+            }
 
             break;
           default:

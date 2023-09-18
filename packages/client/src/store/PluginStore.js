@@ -42,7 +42,6 @@ class PluginStore {
 
   settingsPluginDialogVisible = false;
   currentSettingsDialogPlugin = null;
-  isAdminSettingsDialog = false;
 
   pluginDialogVisible = false;
   pluginDialogProps = null;
@@ -69,10 +68,6 @@ class PluginStore {
 
   setSettingsPluginDialogVisible = (value) => {
     this.settingsPluginDialogVisible = value;
-  };
-
-  setIsAdminSettingsDialog = (value) => {
-    this.isAdminSettingsDialog = value;
   };
 
   setPluginDialogVisible = (value) => {
@@ -230,13 +225,13 @@ class PluginStore {
   };
 
   changePluginStatus = async (id, status) => {
-    if (status === "true") {
+    if (status) {
       this.activatePlugin(id);
     } else {
       this.deactivatePlugin(id);
     }
 
-    const plugin = await api.plugins.activatePlugin(id, status === "true");
+    const plugin = await api.plugins.activatePlugin(id, status);
 
     return plugin;
   };
@@ -831,6 +826,8 @@ class PluginStore {
 
       if (!correctUserType || !correctDevice) return;
 
+      const fileIcon = `${plugin.iconUrl}/assets/${value.fileIcon}`;
+
       const onClick = async (item) => {
         if (!value.onClick) return;
 
@@ -857,7 +854,12 @@ class PluginStore {
         );
       };
 
-      this.fileItems.set(key, { ...value, onClick, pluginId: plugin.id });
+      this.fileItems.set(key, {
+        ...value,
+        onClick,
+        fileIcon,
+        pluginId: plugin.id,
+      });
     });
   };
 

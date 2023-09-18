@@ -28,7 +28,6 @@ namespace ASC.Core.Tenants;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class TenantAuditSettings : ISettings<TenantAuditSettings>
 {
     public const int MaxLifeTime = 180;

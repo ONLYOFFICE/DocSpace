@@ -32,17 +32,27 @@ const marginStyles = css`
   }
 
   @media (max-width: 375px) {
-    margin-left: -16px;
-    margin-right: -8px;
-    padding-left: 16px;
-    padding-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: -16px;
+            margin-left: -8px;
+            padding-right: 16px;
+            padding-left: 8px;
+          `
+        : css`
+            margin-left: -16px;
+            margin-right: -8px;
+            padding-left: 16px;
+            padding-right: 8px;
+          `}
   }
 `;
 
 const StyledRowContainer = styled(RowContainer)`
   .row-selected + .row-wrapper:not(.row-selected) {
     .user-row {
-      border-top: ${(props) =>
+      border-top: ${props =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
 
@@ -52,7 +62,7 @@ const StyledRowContainer = styled(RowContainer)`
 
   .row-wrapper:not(.row-selected) + .row-selected {
     .user-row {
-      border-top: ${(props) =>
+      border-top: ${props =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
 
@@ -68,7 +78,7 @@ const StyledRowContainer = styled(RowContainer)`
 
   .row-selected:last-child {
     .user-row {
-      border-bottom: ${(props) =>
+      border-bottom: ${props =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       padding-bottom: 1px;
 
@@ -80,7 +90,7 @@ const StyledRowContainer = styled(RowContainer)`
   }
   .row-selected:first-child {
     .user-row {
-      border-top: ${(props) =>
+      border-top: ${props =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
 
@@ -131,8 +141,7 @@ const PeopleRowContainer = ({
       hasMoreFiles={hasMoreAccounts}
       itemCount={filterTotal}
       filesLength={peopleList.length}
-      itemHeight={58}
-    >
+      itemHeight={58}>
       {peopleList.map((item, index) => (
         <SimpleUserRow
           theme={theme}

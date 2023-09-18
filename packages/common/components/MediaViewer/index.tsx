@@ -139,6 +139,7 @@ function MediaViewer({
     props.files.length,
     playlistPos,
     props.deleteDialogVisible,
+    props.someDialogIsOpen,
   ]);
 
   const getContextModel = () => {
@@ -194,7 +195,13 @@ function MediaViewer({
         onCopyLink,
       });
 
-    if (pluginContextMenuItems) {
+    if (pluginContextMenuItems && pluginContextMenuItems.length > 0) {
+      model.unshift({
+        key: "separator-plugin",
+        isSeparator: true,
+        disabled: false,
+      });
+
       pluginContextMenuItems.forEach((item) => {
         const onClick = async (): Promise<void> => {
           props.onClose();
@@ -219,7 +226,7 @@ function MediaViewer({
         )
           return;
 
-        model.push({
+        model.unshift({
           id: item.key,
           key: item.key,
           disabled: false,
@@ -227,7 +234,7 @@ function MediaViewer({
           onClick,
         });
 
-        desktopModel.push({
+        desktopModel.unshift({
           key: item.key,
           disabled: false,
           ...item.value,
@@ -300,7 +307,7 @@ function MediaViewer({
 
   const onKeydown = (event: KeyboardEvent) => {
     const { code, ctrlKey } = event;
-    if (props.deleteDialogVisible) return;
+    if (props.deleteDialogVisible || props.someDialogIsOpen) return;
 
     if (code in KeyboardEventKeys) {
       const includesKeyboardCode = [
@@ -440,6 +447,7 @@ function MediaViewer({
           errorTitle={props.t("Common:MediaError")}
           headerIcon={headerIcon}
           audioIcon={audioIcon}
+          someDialogIsOpen={props.someDialogIsOpen}
         />
       )}
     </>

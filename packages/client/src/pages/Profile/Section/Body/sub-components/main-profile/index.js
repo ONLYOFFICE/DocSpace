@@ -33,6 +33,7 @@ import { HelpButton, Tooltip } from "@docspace/components";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import { SSO_LABEL } from "SRC_DIR/helpers/constants";
+import { useTheme } from "styled-components";
 
 const MainProfile = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
@@ -58,7 +59,8 @@ const MainProfile = (props) => {
   } = props;
 
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
-
+  const { interfaceDirection } = useTheme();
+  const dirTooltip = interfaceDirection === "rtl" ? "left" : "right";
   useEffect(() => {
     checkWidth();
     window.addEventListener("resize", checkWidth);
@@ -92,7 +94,7 @@ const MainProfile = (props) => {
     : DefaultUserAvatarMax;
 
   const tooltipLanguage = (
-    <Text as="div" fontSize="12px">
+    <Text as="div" fontSize="12px" color="#333333">
       <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
         "In case you cannot find your language in the list of the available
         ones, feel free to write to us at
@@ -196,7 +198,7 @@ const MainProfile = (props) => {
               <HelpButton
                 size={12}
                 offsetRight={0}
-                place="right"
+                place={dirTooltip}
                 tooltipContent={tooltipLanguage}
               />
             </StyledLabel>
@@ -232,8 +234,8 @@ const MainProfile = (props) => {
             <div className="email-container">
               <div className="email-edit-container">
                 <Text
-                  data-for="emailTooltip"
-                  data-tip={t("EmailNotVerified")}
+                  data-tooltip-id="emailTooltip"
+                  data-tooltip-content={t("EmailNotVerified")}
                   as="div"
                   className="email-text-container"
                   fontWeight={600}
@@ -242,11 +244,11 @@ const MainProfile = (props) => {
                 </Text>
                 {withActivationBar && (
                   <Tooltip
+                    float
                     id="emailTooltip"
-                    getContent={(dataTip) => (
-                      <Text fontSize="12px">{dataTip}</Text>
+                    getContent={({ content }) => (
+                      <Text fontSize="12px">{content}</Text>
                     )}
-                    effect="float"
                     place="bottom"
                   />
                 )}
@@ -338,8 +340,8 @@ const MainProfile = (props) => {
               <div className="email-container">
                 <div className="email-edit-container">
                   <Text
-                    data-for="emailTooltip"
-                    data-tip={t("EmailNotVerified")}
+                    data-tooltip-id="emailTooltip"
+                    data-tooltip-content={t("EmailNotVerified")}
                     as="div"
                     className="email-text-container"
                     fontWeight={600}
@@ -349,11 +351,11 @@ const MainProfile = (props) => {
                 </div>
                 {withActivationBar && (
                   <Tooltip
+                    float
                     id="emailTooltip"
-                    getContent={(dataTip) => (
-                      <Text fontSize="12px">{dataTip}</Text>
+                    getContent={({ content }) => (
+                      <Text fontSize="12px">{content}</Text>
                     )}
-                    effect="float"
                     place="bottom"
                   />
                 )}
@@ -447,13 +449,8 @@ const MainProfile = (props) => {
 
 export default inject(({ auth, peopleStore }) => {
   const { withActivationBar, sendActivationLink } = auth.userStore;
-  const {
-    theme,
-    helpLink,
-    culture,
-    currentColorScheme,
-    documentationEmail,
-  } = auth.settingsStore;
+  const { theme, helpLink, culture, currentColorScheme, documentationEmail } =
+    auth.settingsStore;
 
   const {
     targetUser: profile,

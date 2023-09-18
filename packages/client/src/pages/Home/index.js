@@ -125,12 +125,10 @@ const PureHome = (props) => {
   } = props;
 
   const location = useLocation();
-  const navigate = useNavigate();
 
   const isSettingsPage =
     location.pathname.includes("settings") &&
     !location.pathname.includes("settings/plugins");
-  const isPluginsSettingsPage = location.pathname.includes("settings/plugins");
   const isAccountsPage = location.pathname.includes("/accounts");
 
   const { onDrop } = useFiles({
@@ -146,7 +144,6 @@ const PureHome = (props) => {
 
     isAccountsPage,
     isSettingsPage,
-    isPluginsSettingsPage,
 
     location,
 
@@ -193,9 +190,7 @@ const PureHome = (props) => {
   useSettings({
     t,
     isSettingsPage,
-    isPluginsSettingsPage,
-    enablePlugins,
-    navigate,
+
     setIsLoading,
   });
 
@@ -234,7 +229,7 @@ const PureHome = (props) => {
 
   let sectionProps = {};
 
-  if (isSettingsPage || isPluginsSettingsPage) {
+  if (isSettingsPage) {
     sectionProps.isInfoPanelAvailable = false;
     sectionProps.viewAs = "settings";
   } else {
@@ -289,10 +284,7 @@ const PureHome = (props) => {
       )}
       <MediaViewer />
       <Section {...sectionProps}>
-        {(!isErrorRoomNotAvailable ||
-          isAccountsPage ||
-          isSettingsPage ||
-          isPluginsSettingsPage) && (
+        {(!isErrorRoomNotAvailable || isAccountsPage || isSettingsPage) && (
           <Section.SectionHeader>
             {isFrame ? (
               showTitle && <SectionHeaderContent />
@@ -304,8 +296,7 @@ const PureHome = (props) => {
 
         {(((!isEmptyPage || showFilterLoader) && !isErrorRoomNotAvailable) ||
           isAccountsPage) &&
-          !isSettingsPage &&
-          !isPluginsSettingsPage && (
+          !isSettingsPage && (
             <Section.SectionFilter>
               {isFrame ? (
                 showFilter && <SectionFilterContent />
@@ -326,7 +317,7 @@ const PureHome = (props) => {
           <InfoPanelBodyContent />
         </Section.InfoPanelBody>
 
-        {withPaging && !isSettingsPage && !isPluginsSettingsPage && (
+        {withPaging && !isSettingsPage && (
           <Section.SectionPaging>
             <SectionPagingContent tReady={tReady} />
           </Section.SectionPaging>

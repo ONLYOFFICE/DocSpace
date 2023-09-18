@@ -40,7 +40,9 @@ chmod 644 /usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg
 
 # add nodejs repo
 [[ "$DISTRIB_CODENAME" =~ ^(bionic|stretch)$ ]] && NODE_VERSION="16" || NODE_VERSION="18"
-curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - 
+echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nodesource.gpg --import
+chmod 644 /usr/share/keyrings/nodesource.gpg
 
 #add dotnet repo
 if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
@@ -103,10 +105,7 @@ echo "deb [signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/pac
 chmod 644 /usr/share/keyrings/openresty.gpg
 #Temporary fix for missing openresty repository for debian bookworm
 [ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DISTRIB_CODENAME/bullseye/g" /etc/apt/sources.list.d/openresty.list
-
-if systemctl is-active nginx | grep -q "active"; then
-	systemctl disable nginx && systemctl stop nginx
-fi
+systemctl list-units --type=service | grep -q nginx && systemctl stop nginx && systemctl disable nginx
 
 # setup msttcorefonts
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections

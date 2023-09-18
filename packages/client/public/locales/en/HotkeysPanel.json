@@ -5,6 +5,7 @@
   "HotkeysChangeView": "Switch between grid and list view",
   "HotkeysClearAll": "Clear all selections",
   "HotkeysClose": "Close/Undo action",
+  "HotkeysCopySelected": "Copy selected items to the clipboard",
   "HotkeysCreateDocument": "Create document",
   "HotkeysCreateFolder": "Create folder",
   "HotkeysCreateForm": "Create blank form template",
@@ -12,6 +13,7 @@
   "HotkeysCreatePresentation": "Create presentation",
   "HotkeysCreateSpreadsheet": "Create spreadsheet",
   "HotkeysCreatingObjects": "Creating items",
+  "HotkeysCutSelected": "Cut selected items to the clipboard",
   "HotkeysEnterKey": "Enter",
   "HotkeysExtendSelectionDown": "Extend selection down",
   "HotkeysExtendSelectionLeft": "Extend selection left",
@@ -25,6 +27,7 @@
   "HotkeysMoveUp": "Move up without changing selection",
   "HotkeysNavigation": "Navigation",
   "HotkeysOpen": "Open selected item/Confirm action",
+  "HotkeysPasteSelected": "Paste selected items from the clipboard",
   "HotkeysPlayPause": "Play/Pause",
   "HotkeysRedoLastUndoneAction": "Redo the last undone action",
   "HotkeysRemove": "Remove selected items",
@@ -39,5 +42,7 @@
   "HotkeysSpaceKey": "Space",
   "HotkeysUndoLastAction": "Undo the last action",
   "HotkeysUploadFile": "Upload file",
-  "HotkeysUploadingObjects": "Uploading items"
+  "HotkeysUploadingObjects": "Uploading items",
+  "HotkeysZoomIn": "Zoom in",
+  "HotkeysZoomOut": "Zoom out"
 }

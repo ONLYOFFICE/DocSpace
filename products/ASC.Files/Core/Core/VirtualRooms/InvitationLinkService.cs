@@ -109,21 +109,10 @@ public class InvitationLinkService
             return new InvitationLinkData { Result = EmailValidationKeyProvider.ValidationResult.Invalid };
         }
         
-        if (userId != default)
-        {
-            var account = await _authManager.GetAccountByIDAsync(tenant.Id, userId);
-
-            if (!await _permissionContext.CheckPermissionsAsync(account, new UserSecurityProvider(employeeType), Constants.Action_AddRemoveUser))
-            {
-                return linkData;
-            }
-        }
-
         var validationResult = await _invitationLinkHelper.ValidateAsync(key, email, employeeType);
         linkData.Result = validationResult.Result;
         linkData.LinkType = validationResult.LinkType;
         linkData.EmployeeType = employeeType;
-
 
         if (validationResult.LinkId == default)
         {

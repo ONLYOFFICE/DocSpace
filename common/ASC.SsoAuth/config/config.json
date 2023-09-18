@@ -3,7 +3,7 @@
     "name": "Onlyoffice Single Sign-On handler",
     "port": 9834,
     "appsettings": "../../../config",
-	"machinekey": "1123askdasjklasbnd",
+    "machinekey": "1123askdasjklasbnd",
     "environment": "Development",
     "logName": "web.sso.%DATE%.log",
     "contact": {
@@ -22,8 +22,8 @@
       "baseUrl": "http://localhost",
       "port": 80,
       "ssoUrl": "/ssologin.ashx",
-      "authUrl": "/Auth.aspx"
-    }  
+      "authUrl": "/login"
+    }
   },
   "routes": {
     "login": "/login",
@@ -62,6 +62,6 @@
     "data": "../../Data",
     "image-path": "images",
     "rebranding": "rebranding",
-    "https":"certs"
+    "https": "certs"
   }
 }

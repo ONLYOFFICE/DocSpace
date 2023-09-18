@@ -37,7 +37,6 @@ public class AdditionalWhiteLabelSettingsWrapper
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettings>
 {
     /// <summary>Additional white label settings helper</summary>
@@ -169,7 +168,7 @@ public class AdditionalWhiteLabelSettingsHelper
 /// <summary>
 /// </summary>
 [Singletone]
-public class AdditionalWhiteLabelSettingsHelperInit 
+public class AdditionalWhiteLabelSettingsHelperInit
 {
     private readonly IConfiguration _configuration;
 
@@ -240,7 +239,7 @@ public class AdditionalWhiteLabelSettingsHelperInit
         get
         {
             var site = _configuration["web:teamlab-site"];
-            return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buyenterprise" : "";
+            return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buydocspaceenterprise" : "";
         }
     }
 }

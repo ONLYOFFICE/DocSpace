@@ -28,7 +28,7 @@ const ListHeader = styled.header`
     isMobileOnly &&
     css`
       margin-top: 35px;
-      padding-right: 8px;
+      padding-inline-end: 8px;
     `}
 `;
 
@@ -80,7 +80,7 @@ const FilterButton = styled.div`
     border-radius: 50%;
     position: absolute;
     bottom: -2px;
-    right: -2px;
+    inset-inline-end: -2px;
   }
 `;
 

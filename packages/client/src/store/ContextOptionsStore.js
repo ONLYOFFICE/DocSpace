@@ -32,6 +32,7 @@ import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.s
 import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
+import PluginActionsSvgUrl from "PUBLIC_DIR/images/plugin.actions.react.svg?url";
 import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
@@ -339,7 +340,9 @@ class ContextOptionsStore {
       : null;
 
     let tab =
-      !isDesktopClient && fileExst
+      !isDesktopClient &&
+      window.DocSpaceConfig?.editor?.openOnNewPage &&
+      fileExst
         ? window.open(
             combineUrl(
               window.DocSpaceConfig?.proxy?.url,
@@ -623,7 +626,7 @@ class ContextOptionsStore {
     return promise;
   };
 
-  onClickInviteUsers = (e, item) => {
+  onClickInviteUsers = (e, roomType) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
 
     const { action } = data;
@@ -639,7 +642,7 @@ class ContextOptionsStore {
         roomId: action ? action : e,
         hideSelector: false,
         defaultAccess:
-          item.roomType === RoomsType.PublicRoom
+          roomType === RoomsType.PublicRoom
             ? ShareAccessRights.RoomManager
             : ShareAccessRights.ReadOnly,
       });
@@ -954,6 +957,50 @@ class ContextOptionsStore {
 
     const withOpen = item.id !== this.selectedFolderStore.id;
 
+    const pluginItems = [];
+
+    if (enablePlugins && this.pluginStore.contextMenuItemsList) {
+      this.pluginStore.contextMenuItemsList.forEach((option) => {
+        if (contextOptions.includes(option.key)) {
+          const value = option.value;
+
+          const onClick = async () => {
+            if (value.withActiveItem) {
+              const { setActiveFiles } = this.filesStore;
+
+              setActiveFiles([item.id]);
+
+              await value.onClick(item.id);
+
+              setActiveFiles([]);
+            } else {
+              value.onClick(item.id);
+            }
+          };
+
+          if (value.fileExt) {
+            if (value.fileExt.includes(item.fileExst)) {
+              pluginItems.push({
+                key: option.key,
+                label: value.label,
+                icon: value.icon,
+                onClick,
+              });
+            }
+          } else {
+            pluginItems.push({
+              key: option.key,
+              label: value.label,
+              icon: value.icon,
+              onClick,
+            });
+          }
+        }
+      });
+    }
+
+    console.log(pluginItems);
+
     const optionsModel = [
       {
         id: "option_select",
@@ -1041,7 +1088,7 @@ class ContextOptionsStore {
         key: "invite-users-to-room",
         label: t("Common:InviteUsers"),
         icon: PersonReactSvgUrl,
-        onClick: (e) => this.onClickInviteUsers(e, item),
+        onClick: (e) => this.onClickInviteUsers(e, item.roomType),
         disabled: false,
         action: item.id,
       },
@@ -1247,52 +1294,15 @@ class ContextOptionsStore {
 
     const options = this.filterModel(optionsModel, contextOptions);
 
-    if (enablePlugins && this.pluginStore.contextMenuItemsList) {
-      this.pluginStore.contextMenuItemsList.forEach((option) => {
-        if (contextOptions.includes(option.key)) {
-          const value = option.value;
-
-          const onClick = async () => {
-            if (value.withActiveItem) {
-              const { setActiveFiles } = this.filesStore;
-
-              setActiveFiles([item.id]);
-
-              await value.onClick(item.id);
-
-              setActiveFiles([]);
-            } else {
-              value.onClick(item.id);
-            }
-          };
-
-          if (value.fileExt) {
-            if (value.fileExt.includes(item.fileExst)) {
-              options.splice(value.position, 0, {
-                key: option.key,
-                label: value.label,
-                icon: value.icon,
-                onClick,
-              });
-            }
-          } else {
-            options.splice(value.position, 0, {
-              key: option.key,
-              label: value.label,
-              icon: value.icon,
-              onClick,
-            });
-          }
-        }
+    if (pluginItems.length > 0) {
+      options.splice(1, 0, {
+        id: "option_plugin-actions",
+        key: "plugin_actions",
+        label: t("Common:Actions"),
+        icon: PluginActionsSvgUrl,
+        disabled: false,
+        items: pluginItems,
       });
-    }
-
-    if (options[0]?.isSeparator) {
-      options.shift();
-    }
-
-    if (options[options.length - 1]?.isSeparator) {
-      options.pop();
     }
 
     return options;

@@ -9,7 +9,6 @@ import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject, observer } from "mobx-react";
-import { CustomTitlesTooltip } from "../sub-components/common-tooltips";
 import config from "PACKAGE_FILE";
 import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
@@ -18,6 +17,8 @@ import checkScrollSettingsBlock from "../utils";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import LoaderCustomization from "../sub-components/loaderCustomization";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+import Text from "@docspace/components/text";
+import Link from "@docspace/components/link";
 
 let greetingTitleFromSessionStorage = "";
 let greetingTitleDefaultFromSessionStorage = "";
@@ -40,6 +41,8 @@ const WelcomePageSettings = (props) => {
 
     getSettings,
     getGreetingSettingsIsDefault,
+    currentColorScheme,
+    welcomePageSettingsUrl,
   } = props;
 
   const navigate = useNavigate();
@@ -130,14 +133,6 @@ const WelcomePageSettings = (props) => {
 
     if (scrollLngTZSettings !== state.hasScroll) {
       setState((val) => ({ ...val, hasScroll: scrollLngTZSettings }));
-    }
-
-    // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile =
-      document.getElementsByClassName("settings-mobile")[0];
-
-    if (settingsMobile) {
-      settingsMobile.style.display = "none";
     }
 
     if (greetingSettings !== prevProps.greetingSettings) {
@@ -290,8 +285,6 @@ const WelcomePageSettings = (props) => {
     navigate(e.target.pathname);
   };
 
-  const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
-
   const settingsBlock = (
     <div className="settings-block">
       <FieldContainer
@@ -325,20 +318,23 @@ const WelcomePageSettings = (props) => {
       {state.isCustomizationView && !isMobileView && (
         <div className="category-item-heading">
           <div className="category-item-title">{t("CustomTitlesWelcome")}</div>
-          <HelpButton
-            className="welcome-page-help-button"
-            offsetRight={0}
-            iconName={CombinedShapeSvgUrl}
-            size={12}
-            tooltipContent={tooltipCustomTitlesTooltip}
-          />
         </div>
       )}
-      {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-        <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
-      ) : (
-        <> {settingsBlock}</>
-      )}
+      <div className="category-item-description">
+        <Text fontSize="13px" fontWeight={400}>
+          {t("CustomTitlesDescription")}
+        </Text>
+        <Link
+          className="link-learn-more"
+          color={currentColorScheme.main.accent}
+          target="_blank"
+          isHovered
+          href={welcomePageSettingsUrl}
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </div>
+      {settingsBlock}
       <SaveCancelButtons
         tabIndex={6}
         id="buttonsWelcomePage"
@@ -360,8 +356,14 @@ const WelcomePageSettings = (props) => {
 };
 
 export default inject(({ auth, setup, common }) => {
-  const { greetingSettings, organizationName, theme, getSettings } =
-    auth.settingsStore;
+  const {
+    greetingSettings,
+    organizationName,
+    theme,
+    getSettings,
+    currentColorScheme,
+    welcomePageSettingsUrl,
+  } = auth.settingsStore;
   const { setGreetingTitle, restoreGreetingTitle } = setup;
   const {
     isLoaded,
@@ -384,6 +386,8 @@ export default inject(({ auth, setup, common }) => {
     getSettings,
     initSettings,
     setIsLoaded,
+    currentColorScheme,
+    welcomePageSettingsUrl,
   };
 })(
   withLoading(

@@ -1728,4 +1728,70 @@ Beste Grüße
 ONLYOFFICE-Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Abschnitt Zahlungen besuchen</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Bestätigen Sie die Einladung zum Raum</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>DocSpace-Einladung bestätigen</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>BESTÄTIGEN</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>In DocSpace zusammenarbeiten</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ANNEHMEN</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} Passwort-Hilfe</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Hallo, $UserName!
+
+Sie haben soeben ONLYOFFICE DocSpace erstellt, eine Dokumenten-Hub, in dem Sie die Zusammenarbeit mit Ihrem Team, Kunden, Partnern und anderen fördern können. Seine Adresse lautet "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Bitte bestätigen Sie Ihre E-Mail (der Link ist für 7 Tage gültig):
+
+$GreenButton
+
+Genießen Sie eine neue Art der Zusammenarbeit mit Dokumenten!
+
+Mit freundlichen Grüßen
+ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Hallo, $UserName!
+
+Sie haben soeben ONLYOFFICE DocSpace erstellt, eine Dokumenten-Hub, in dem Sie die Zusammenarbeit mit Ihrem Team, Kunden, Partnern und anderen fördern können. Seine Adresse lautet "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Bitte bestätigen Sie Ihre E-Mail (der Link ist für 7 Tage gültig):
+
+$GreenButton
+
+Genießen Sie eine neue Art der Zusammenarbeit mit Dokumenten!
+
+Mit freundlichen Grüßen
+ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Hallo, $UserName!
+
+Sie haben soeben ONLYOFFICE DocSpace erstellt, eine Dokumenten-Hub, in dem Sie die Zusammenarbeit mit Ihrem Team, Kunden, Partnern und anderen fördern können. Seine Adresse lautet "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Bitte bestätigen Sie Ihre E-Mail (der Link ist für 7 Tage gültig):
+
+$GreenButton
+
+Genießen Sie eine neue Art der Zusammenarbeit mit Dokumenten!
+
+Mit freundlichen Grüßen
+ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
 </root>

@@ -4,11 +4,11 @@ import { FileType } from "@docspace/common/constants";
 import { getDefaultRoomName } from "../../../../../../helpers/filesUtils";
 
 const TypeCell = ({ t, item, sideColor }) => {
-  const { fileExst, fileType, roomType } = item;
+  const { fileExst, fileTypeName, fileType, roomType } = item;
   const getItemType = () => {
     switch (fileType) {
       case FileType.Unknown:
-        return t("Common:Unknown");
+        return fileTypeName ? fileTypeName : t("Common:Unknown");
       case FileType.Archive:
         return t("Common:Archive");
       case FileType.Video:

@@ -155,7 +155,9 @@ class SettingsStore {
   cspDomains = [];
   publicRoomKey = "";
 
-  interfaceDirection = localStorage.getItem("interfaceDirection") || "ltr";
+  numberAttempt = null;
+  blockingTime = null;
+  checkPeriod = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -261,8 +263,16 @@ class SettingsStore {
     return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`;
   }
 
+  get welcomePageSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacetitle`;
+  }
+
   get dnsSettingsUrl() {
     return `${this.helpLink}/administration/docspace-settings.aspx#alternativeurl`;
+  }
+
+  get renamingSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacerenaming`;
   }
 
   get passwordStrengthSettingsUrl() {
@@ -277,8 +287,20 @@ class SettingsStore {
     return `${this.helpLink}/administration/docspace-settings.aspx#TrustedDomain`;
   }
 
+  get ipSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#ipsecurity`;
+  }
+
+  get bruteForceProtectionUrl() {
+    return `${this.helpLink}/administration/configuration.aspx#loginsettings`;
+  }
+
   get administratorMessageSettingsUrl() {
     return `${this.helpLink}/administration/docspace-settings.aspx#administratormessage`;
+  }
+
+  get lifetimeSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#sessionlifetime`;
   }
 
   get dataBackupUrl() {
@@ -423,6 +445,10 @@ class SettingsStore {
     }
   };
 
+  get isPortalDeactivate() {
+    return this.tenantStatus === TenantStatus.PortalDeactivate;
+  }
+
   init = async () => {
     this.setIsLoading(true);
     const requests = [];
@@ -430,11 +456,14 @@ class SettingsStore {
     requests.push(
       this.getPortalSettings(),
       this.getAppearanceTheme(),
-      this.getWhiteLabelLogoUrls(),
-      this.getBuildVersionInfo()
+      this.getWhiteLabelLogoUrls()
     );
 
     await Promise.all(requests);
+
+    if (!this.isPortalDeactivate) {
+      await this.getBuildVersionInfo();
+    }
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
@@ -808,6 +837,26 @@ class SettingsStore {
     return res;
   };
 
+  setBruteForceProtectionSettings = (settings) => {
+    this.numberAttempt = settings.attemptCount;
+    this.blockingTime = settings.blockTime;
+    this.checkPeriod = settings.checkPeriod;
+  };
+
+  getBruteForceProtection = async () => {
+    const res = await api.settings.getBruteForceProtection();
+
+    this.setBruteForceProtectionSettings(res);
+  };
+
+  setBruteForceProtection = async (AttemptCount, BlockTime, CheckPeriod) => {
+    return api.settings.setBruteForceProtection(
+      AttemptCount,
+      BlockTime,
+      CheckPeriod
+    );
+  };
+
   setIsBurgerLoading = (isBurgerLoading) => {
     this.isBurgerLoading = isBurgerLoading;
   };
@@ -892,11 +941,6 @@ class SettingsStore {
     } catch (e) {
       toastr.error(e);
     }
-  };
-
-  setInterfaceDirection = (direction) => {
-    this.interfaceDirection = direction;
-    localStorage.setItem("interfaceDirection", direction);
   };
 }
 

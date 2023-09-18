@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Core.WhiteLabel;
 
-[Serializable]
 public class TenantInfoSettings : ISettings<TenantInfoSettings>
 {
     [JsonPropertyName("LogoSize")]
