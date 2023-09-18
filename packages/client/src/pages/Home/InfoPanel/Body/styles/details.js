@@ -34,6 +34,12 @@ const StyledNoThumbnail = styled.div`
     outline: 1px solid
       ${(props) => props.theme.infoPanel.details.customLogoBorderColor};
   }
+
+  .room-title {
+    font-size: 41px;
+    font-weight: 700;
+    line-height: 56px;
+  }
 `;
 
 StyledThumbnail.defaultProps = { theme: Base };

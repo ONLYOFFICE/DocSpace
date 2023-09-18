@@ -18,6 +18,30 @@ const StyledSectionHeader = styled.div`
     height: 61px;
     min-height: 61px;
 
+    ${({ isTrashFolder, isEmptyPage }) =>
+      isTrashFolder &&
+      !isEmptyPage &&
+      css`
+        height: 109px;
+        min-height: 109px;
+
+        .header-container {
+          flex-direction: column;
+          height: 109px !important;
+          min-height: 109px !important;
+
+          .navigation-container {
+            height: calc(100% - 32px);
+          }
+          .trash-warning {
+            min-height: 32px;
+            height: 32px;
+
+            margin-bottom: 15px;
+          }
+        }
+      `}
+
     .header-container {
       margin-bottom: 1px;
       -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -28,29 +52,91 @@ const StyledSectionHeader = styled.div`
   css`
     height: 61px;
     min-height: 61px;
+
+    ${({ isTrashFolder, isEmptyPage }) =>
+      isTrashFolder &&
+      !isEmptyPage &&
+      css`
+        height: 109px;
+        min-height: 109px;
+
+        .header-container {
+          flex-direction: column;
+          height: 109px !important;
+          min-height: 109px !important;
+
+          .navigation-container {
+            height: calc(100% - 32px);
+          }
+          .trash-warning {
+            min-height: 32px;
+            height: 32px;
+
+            margin-bottom: 15px;
+          }
+        }
+      `}
   `}
 
   @media ${mobile} {
     height: 53px;
     min-height: 53px;
+
+    ${({ isTrashFolder, isEmptyPage }) =>
+      isTrashFolder &&
+      !isEmptyPage &&
+      css`
+        height: 101px;
+        min-height: 101px;
+
+        .header-container {
+          flex-direction: column;
+          height: 101px !important;
+          min-height: 101px !important;
+
+          .navigation-container {
+            height: calc(100% - 32px);
+          }
+          .trash-warning {
+            min-height: 32px;
+            height: 32px;
+
+            margin-bottom: 15px;
+          }
+        }
+      `}
   }
 
   ${isMobileOnly &&
   css`
     height: 53px;
     min-height: 53px;
-  `}
 
-  ${({ isTrashFolder, isEmptyPage }) =>
-    isTrashFolder &&
-    !isEmptyPage &&
-    css`
-      @media ${tablet} {
-        height: 109px;
-        min-height: 109px;
-      }
-    `}
-    ${props =>
+    ${({ isTrashFolder, isEmptyPage }) =>
+      isTrashFolder &&
+      !isEmptyPage &&
+      css`
+        height: 101px;
+        min-height: 101px;
+
+        .header-container {
+          flex-direction: column;
+          height: 101px !important;
+          min-height: 101px !important;
+
+          .navigation-container {
+            height: calc(100% - 32px);
+          }
+          .trash-warning {
+            min-height: 32px;
+            height: 32px;
+
+            margin-bottom: 15px;
+          }
+        }
+      `}
+  `}
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           padding-left: 20px;
@@ -74,7 +160,7 @@ const StyledSectionHeader = styled.div`
   }
 
   @media ${tablet} {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-left: 16px;
@@ -88,7 +174,7 @@ const StyledSectionHeader = styled.div`
 
   ${isMobile &&
   css`
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-left: 0 !important;
@@ -101,7 +187,7 @@ const StyledSectionHeader = styled.div`
   `}
 
   @media ${mobile} {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 0px;
@@ -115,7 +201,7 @@ const StyledSectionHeader = styled.div`
   css`
     width: 100vw !important;
     max-width: 100vw !important;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-left: 16px !important;
@@ -124,23 +210,22 @@ const StyledSectionHeader = styled.div`
             padding-right: 16px !important;
           `}
 
-    margin-bottom: ${props => (props.settingsStudio ? "8px !important" : "0")};
+    margin-bottom: ${(props) =>
+      props.settingsStudio ? "8px !important" : "0"};
   `}
 `;
 
 StyledSectionHeader.defaultProps = { theme: Base };
 
-const SectionHeader = props => {
+const SectionHeader = (props) => {
   const {
     viewAs,
     settingsStudio = false,
     className,
     isEmptyPage,
+    isTrashFolder,
     ...rest
   } = props;
-
-  const pathname = window.location.pathname.toLowerCase();
-  const isTrashFolder = pathname.indexOf("trash") !== -1;
 
   return (
     <StyledSectionHeader

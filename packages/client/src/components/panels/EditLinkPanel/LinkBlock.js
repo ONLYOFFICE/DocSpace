@@ -7,6 +7,7 @@ import FieldContainer from "@docspace/components/field-container";
 const LinkBlock = (props) => {
   const {
     t,
+    isEdit,
     isLoading,
     shareLink,
     linkNameValue,
@@ -40,16 +41,18 @@ const LinkBlock = (props) => {
         isDisabled={isLoading}
       />
 
-      <TextInput
-        scale
-        size="base"
-        withBorder
-        isDisabled
-        isReadOnly
-        className="edit-link_link-input"
-        value={linkValue}
-        placeholder={t("ExternalLink")}
-      />
+      {isEdit && (
+        <TextInput
+          scale
+          size="base"
+          withBorder
+          isDisabled
+          isReadOnly
+          className="edit-link_link-input"
+          value={linkValue}
+          placeholder={t("ExternalLink")}
+        />
+      )}
     </div>
   );
 };

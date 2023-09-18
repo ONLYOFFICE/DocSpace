@@ -15,17 +15,14 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   gap: 4px;
   margin-bottom: 16px;
-  max-width: 350px;
+  max-width: 520px;
 
   .input {
-    width: 350px;
+    width: 100%;
   }
 
   @media ${smallTablet} {
     max-width: 100%;
-    .input {
-      width: 100%;
-    }
   }
 
   .label > div {

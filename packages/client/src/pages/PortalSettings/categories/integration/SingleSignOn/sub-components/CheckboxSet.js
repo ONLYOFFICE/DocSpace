@@ -44,10 +44,14 @@ const CheckboxSet = (props) => {
     spSignLogoutRequests,
     spSignLogoutResponses,
     spEncryptAssertions,
-    enableSso,
     setCheckbox,
-    isLoadingXml,
+    isDisabledSpSigning,
+    isDisabledSpEncrypt,
+    isDisabledIdpSigning,
   } = props;
+
+  const isDisabled =
+    prefix === "sp" ? isDisabledSpSigning : isDisabledIdpSigning;
 
   return (
     <StyledWrapper>
@@ -58,7 +62,7 @@ const CheckboxSet = (props) => {
             : "sp-sign-auth-requests"
         }
         className="checkbox-input"
-        isDisabled={!enableSso || isLoadingXml}
+        isDisabled={isDisabled}
         onChange={setCheckbox}
         label={prefix === "idp" ? t("idpAuthRequest") : t("spAuthRequest")}
         name={checkboxesNames[prefix][0]}
@@ -74,7 +78,7 @@ const CheckboxSet = (props) => {
             : "sp-sign-logout-requests"
         }
         className="checkbox-input"
-        isDisabled={!enableSso || isLoadingXml}
+        isDisabled={isDisabled}
         onChange={setCheckbox}
         label={
           prefix === "idp" ? t("idpSignExitRequest") : t("spSignExitRequest")
@@ -92,7 +96,7 @@ const CheckboxSet = (props) => {
             : "sp-sign-logout-responses"
         }
         className="checkbox-input"
-        isDisabled={!enableSso || isLoadingXml}
+        isDisabled={isDisabled}
         onChange={setCheckbox}
         label={
           prefix === "idp"
@@ -112,7 +116,7 @@ const CheckboxSet = (props) => {
         <Checkbox
           id="sp-encrypt-assertions"
           className="checkbox-input"
-          isDisabled={!enableSso || isLoadingXml}
+          isDisabled={isDisabledSpEncrypt}
           onChange={setCheckbox}
           label={t("spDecryptStatements")}
           name={checkboxesNames[prefix][3]}
@@ -133,9 +137,10 @@ export default inject(({ ssoStore }) => {
     spSignLogoutRequests,
     spSignLogoutResponses,
     spEncryptAssertions,
-    enableSso,
     setCheckbox,
-    isLoadingXml,
+    isDisabledSpSigning,
+    isDisabledSpEncrypt,
+    isDisabledIdpSigning,
   } = ssoStore;
 
   return {
@@ -146,8 +151,9 @@ export default inject(({ ssoStore }) => {
     spSignLogoutRequests,
     spSignLogoutResponses,
     spEncryptAssertions,
-    enableSso,
     setCheckbox,
-    isLoadingXml,
+    isDisabledSpSigning,
+    isDisabledSpEncrypt,
+    isDisabledIdpSigning,
   };
 })(observer(CheckboxSet));
