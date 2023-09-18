@@ -27,7 +27,6 @@ const SubmitToFormGallery = ({
 
   const [isSelectingForm, setIsSelectingForm] = useState(false);
   const onOpenFormSelector = () => setIsSelectingForm(true);
-  const onCloseFormSelector = () => setIsSelectingForm(false);
 
   const onSelectForm = (data) => setFormItem(data);
 
@@ -45,13 +44,13 @@ const SubmitToFormGallery = ({
         return res.arrayBuffer();
       })
       .then(async (arrayBuffer) => {
-        return new File([arrayBuffer], "TITLE", {
+        return new File([arrayBuffer], formItem.title, {
           type: "application/octet-stream",
         });
       })
       .catch((err) => onError(err));
 
-    await submitToFormGallery(file, "TITLE", "en")
+    await submitToFormGallery(file, formItem.title, "en")
       .then((res) => {
         if (!res.data) throw new Error(res.statusText);
         window.location.replace(res.data);
@@ -63,7 +62,7 @@ const SubmitToFormGallery = ({
   const onClose = () => {
     setIsSubmitting(false);
     setFormItem(null);
-    onCloseFormSelector();
+    setIsSelectingForm(false);
     setVisible(false);
   };
 
@@ -83,7 +82,7 @@ const SubmitToFormGallery = ({
         descriptionText={t("Common:SelectDOCXFFormat")}
         isPanelVisible={true}
         onSelectFile={onSelectForm}
-        onClose={onCloseFormSelector}
+        onClose={onClose}
       />
     );
 
@@ -120,21 +119,21 @@ const SubmitToFormGallery = ({
 
         {formItem && (
           <Styled.FormItem>
-            <ReactSVG className="icon" src={getIcon(24, formItem?.exst)} />
+            <ReactSVG className="icon" src={getIcon(24, formItem.exst)} />
             <div className="item-title">
               {formItem?.title ? (
                 [
                   <span className="name" key="name">
-                    {"" + formItem?.title}
+                    {"" + formItem.title}
                   </span>,
-                  formItem?.exst && (
+                  formItem.exst && (
                     <span className="exst" key="exst">
                       {"" + formItem.exst}
                     </span>
                   ),
                 ]
               ) : (
-                <span className="name">{"" + formItem?.exst}</span>
+                <span className="name">{"" + formItem.exst}</span>
               )}
             </div>
           </Styled.FormItem>
