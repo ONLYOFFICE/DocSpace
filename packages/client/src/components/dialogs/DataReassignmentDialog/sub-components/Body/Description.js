@@ -2,7 +2,7 @@ import { StyledAvailableList } from "../../../ChangePortalOwnerDialog/StyledDial
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 
-const Description = ({ t }) => {
+const Description = ({ t, dataReassignmentUrl }) => {
   return (
     <>
       <StyledAvailableList className="list-container">
@@ -14,10 +14,11 @@ const Description = ({ t }) => {
         </Text>
 
         <Link
-          type={"action"}
+          target="_blank"
           isHovered
           fontWeight={600}
           style={{ textDecoration: "underline" }}
+          href={dataReassignmentUrl}
         >
           {t("DataReassignmentDialog:MoreAboutDataTransfer")}
         </Link>
