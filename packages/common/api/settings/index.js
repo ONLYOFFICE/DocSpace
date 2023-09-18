@@ -724,10 +724,10 @@ export function getOforms(url) {
   return axios.get(url);
 }
 
-export function submitToGallery(file, fileName, language) {
+export function submitToGallery(file, formName, language) {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("fileName", fileName);
+  formData.append("formName", formName);
   formData.append("language", language);
 
   return axios.post("https://oforms.teamlab.info/api/upload", formData);

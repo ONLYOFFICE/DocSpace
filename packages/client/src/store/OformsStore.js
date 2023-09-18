@@ -11,7 +11,9 @@ class OformsStore {
   gallerySelected = null;
   oformsIsLoading = false;
 
-  submitToGalleryTileIsVisible = true;
+  submitToGalleryTileIsVisible = !localStorage.getItem(
+    "submitToGalleryTileIsHidden"
+  );
 
   constructor(authStore) {
     makeAutoObservable(this);
@@ -35,8 +37,8 @@ class OformsStore {
     });
   };
 
-  submitToFormGallery = async (file, fileName, language) => {
-    const res = await api.settings.submitToGallery(file, fileName, language);
+  submitToFormGallery = async (file, formName, language) => {
+    const res = await api.settings.submitToGallery(file, formName, language);
     return res;
   };
 
@@ -95,6 +97,7 @@ class OformsStore {
   }
 
   hideSubmitToGalleryTile = () => {
+    localStorage.setItem("submitToGalleryTileIsHidden", true);
     this.submitToGalleryTileIsVisible = false;
   };
 }
