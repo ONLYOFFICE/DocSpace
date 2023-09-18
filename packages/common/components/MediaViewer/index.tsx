@@ -137,7 +137,6 @@ function MediaViewer({
     props.files.length,
     playlistPos,
     props.deleteDialogVisible,
-    props.someDialogIsOpen,
   ]);
 
   const getContextModel = () => {
@@ -257,7 +256,7 @@ function MediaViewer({
 
   const onKeydown = (event: KeyboardEvent) => {
     const { code, ctrlKey } = event;
-    if (props.deleteDialogVisible || props.someDialogIsOpen) return;
+    if (props.deleteDialogVisible) return;
 
     if (code in KeyboardEventKeys) {
       const includesKeyboardCode = [
@@ -397,7 +396,6 @@ function MediaViewer({
           errorTitle={props.t("Common:MediaError")}
           headerIcon={headerIcon}
           audioIcon={audioIcon}
-          someDialogIsOpen={props.someDialogIsOpen}
         />
       )}
     </>

@@ -12,7 +12,6 @@ interface ImageViewerProps {
   isFistImage: boolean;
   isLastImage: boolean;
   panelVisible: boolean;
-  someDialogIsOpen: boolean;
   mobileDetails: JSX.Element;
   toolbar: ReturnType<typeof getCustomToolbar>;
 
