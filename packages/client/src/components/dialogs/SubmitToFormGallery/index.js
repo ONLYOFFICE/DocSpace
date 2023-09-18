@@ -49,26 +49,30 @@ const SubmitToFormGallery = ({
           type: "application/octet-stream",
         });
       })
-      .catch((err) => onClose(err));
+      .catch((err) => onError(err));
 
     await submitToFormGallery(file, "TITLE", "en")
       .then((res) => {
         if (!res.data) throw new Error(res.statusText);
         window.location.replace(res.data);
       })
-      .catch((err) => onClose(err))
+      .catch((err) => onError(err))
       .finally(() => onClose());
   };
 
   const onClose = (err = null) => {
+    setIsSubmitting(false);
+    setFormItem(null);
+    onCloseFormSelector();
+    setVisible(false);
+  };
+
+  const onError = (err = null) => {
     if (err) {
       console.error(err);
       toastr.error(err);
     }
-    setIsSubmitting(false);
-    setVisible(false);
-    onCloseFormSelector();
-    setFormItem(null);
+    onClose();
   };
 
   if (!canSubmitToFormGallery()) return null;
@@ -118,21 +122,21 @@ const SubmitToFormGallery = ({
 
         {formItem && (
           <Styled.FormItem>
-            <ReactSVG className="icon" src={getIcon(24, formItem.exst)} />
+            <ReactSVG className="icon" src={getIcon(24, formItem?.exst)} />
             <div className="item-title">
-              {formItem.title ? (
+              {formItem?.title ? (
                 [
                   <span className="name" key="name">
-                    {formItem.title}
+                    {"" + formItem?.title}
                   </span>,
-                  formItem.exst && (
+                  formItem?.exst && (
                     <span className="exst" key="exst">
-                      {formItem.exst}
+                      {"" + formItem.exst}
                     </span>
                   ),
                 ]
               ) : (
-                <span className="name">{formItem.exst}</span>
+                <span className="name">{"" + formItem?.exst}</span>
               )}
             </div>
           </Styled.FormItem>
