@@ -27,8 +27,8 @@ const CertificatesTable = (props) => {
     console.log(prefix, index);
     const onEdit = () => {
       prefix === "sp"
-        ? setSpCertificate(certificate, index)
-        : setIdpCertificate(certificate);
+        ? setSpCertificate(certificate, index, true)
+        : setIdpCertificate(certificate, index, true);
     };
 
     const onDelete = () => {
