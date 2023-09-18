@@ -27,6 +27,7 @@ const SubmitToFormGallery = ({
 
   const [isSelectingForm, setIsSelectingForm] = useState(false);
   const onOpenFormSelector = () => setIsSelectingForm(true);
+  const onCloseFormSelector = () => setIsSelectingForm(false);
 
   const onSelectForm = (data) => setFormItem(data);
 
@@ -82,7 +83,7 @@ const SubmitToFormGallery = ({
         descriptionText={t("Common:SelectDOCXFFormat")}
         isPanelVisible={true}
         onSelectFile={onSelectForm}
-        onClose={onClose}
+        onClose={onCloseFormSelector}
       />
     );
 
@@ -96,7 +97,6 @@ const SubmitToFormGallery = ({
       <ModalDialog.Body>
         <div>{t("FormGallery:SubmitToGalleryDialogMainInfo")}</div>
         <div>
-          {/* TODO-mushka add correct link to guide */}
           <Trans
             t={t}
             i18nKey="SubmitToGalleryDialogGuideInfo"
@@ -124,11 +124,11 @@ const SubmitToFormGallery = ({
               {formItem?.title ? (
                 [
                   <span className="name" key="name">
-                    {"" + formItem.title}
+                    {formItem.title}
                   </span>,
                   formItem.exst && (
                     <span className="exst" key="exst">
-                      {"" + formItem.exst}
+                      {formItem.exst}
                     </span>
                   ),
                 ]
@@ -152,7 +152,7 @@ const SubmitToFormGallery = ({
           <Button
             primary
             size="normal"
-            label={t("FormGallery:SubmitToGallery")}
+            label={t("Common:SubmitToGallery")}
             onClick={onSubmitToGallery}
             isLoading={isSubmitting}
             scale
