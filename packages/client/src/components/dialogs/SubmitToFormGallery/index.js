@@ -60,18 +60,16 @@ const SubmitToFormGallery = ({
       .finally(() => onClose());
   };
 
-  const onClose = (err = null) => {
+  const onClose = () => {
     setIsSubmitting(false);
     setFormItem(null);
     onCloseFormSelector();
     setVisible(false);
   };
 
-  const onError = (err = null) => {
-    if (err) {
-      console.error(err);
-      toastr.error(err);
-    }
+  const onError = (err) => {
+    console.error(err);
+    toastr.error(err);
     onClose();
   };
 
