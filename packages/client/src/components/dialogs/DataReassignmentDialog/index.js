@@ -29,6 +29,7 @@ const StyledModalDialog = styled(ModalDialog)`
 `;
 
 const statusTerminateCompleted = 3;
+let timerId;
 
 const DataReassignmentDialog = ({
   visible,
@@ -79,6 +80,7 @@ const DataReassignmentDialog = ({
     return () => {
       setIsDeletingUserWithReassignment(false);
       setDataReassignmentDeleteProfile(false);
+      clearTimeout(timerId);
     };
   }, [isDeletingUserWithReassignment]);
 
@@ -114,8 +116,6 @@ const DataReassignmentDialog = ({
   };
 
   const checkProgress = () => {
-    if (isAbortTransfer) return;
-
     dataReassignmentProgress(user.id)
       .then((res) => {
         //If the task has already been interrupted and killed
@@ -129,10 +129,11 @@ const DataReassignmentDialog = ({
         setPercent(res.percentage);
 
         if (!res.isCompleted) {
-          checkProgress();
+          timerId = setTimeout(checkProgress, 500);
           return;
         }
 
+        clearTimeout(timerId);
         if (res.status === statusTerminateCompleted) return;
 
         toastr.success(t("Common:ChangesSavedSuccessfully"));
@@ -155,6 +156,8 @@ const DataReassignmentDialog = ({
   };
 
   const onTerminate = () => {
+    clearTimeout(timerId);
+
     dataReassignmentTerminate(user.id)
       .then((res) => {
         setPercent(res.percentage);

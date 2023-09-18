@@ -22,7 +22,7 @@ const Footer = ({
         <div className="button-wrapper">
           <Button
             label={
-              isAbortTransfer
+              isAbortTransfer && percent !== 100
                 ? "Start transfer again"
                 : percent === 100
                 ? t("Common:OkButton")
@@ -31,7 +31,7 @@ const Footer = ({
             size="normal"
             scale
             onClick={
-              isAbortTransfer
+              isAbortTransfer && percent !== 100
                 ? onStartAgain
                 : percent === 100
                 ? onClose
