@@ -6,6 +6,7 @@ import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import hexToRgba from "hex-to-rgba";
 
 export const StyledSubmitToGalleryTile = styled.div`
   position: relative;
@@ -16,9 +17,11 @@ export const StyledSubmitToGalleryTile = styled.div`
   padding: 16px;
   box-sizing: border-box;
 
-  border: 1px solid #388bde;
+  border: 1px solid
+    ${({ currentColorScheme }) => currentColorScheme.main.accent};
   border-radius: 6px;
-  background-color: rgba(82, 153, 224, 0.03);
+  background-color: ${({ currentColorScheme }) =>
+    hexToRgba(currentColorScheme.main.accent, 0.03)};
 
   display: flex;
   flex-direction: column;
@@ -33,7 +36,7 @@ export const StyledSubmitToGalleryTile = styled.div`
     gap: 8px;
 
     .title {
-      color: #388bde;
+      color: ${({ currentColorScheme }) => currentColorScheme.main.accent};
       font-weight: 600;
       font-size: 14px;
       line-height: 16px;
@@ -42,10 +45,12 @@ export const StyledSubmitToGalleryTile = styled.div`
       font-weight: 400;
       font-size: 12px;
       line-height: 16px;
-      color: #555f65;
+      color: ${({ theme }) => theme.submitToGalleryTile.bodyText};
     }
   }
 `;
+
+StyledSubmitToGalleryTile.defaultProps = { theme: Base };
 
 const StyledCloseIcon = styled(CrossIcon)`
   ${commonIconsStyles}
@@ -55,7 +60,7 @@ const StyledCloseIcon = styled(CrossIcon)`
   cursor: pointer;
 
   path {
-    fill: #657077;
+    fill: ${({ theme }) => theme.submitToGalleryTile.closeIconFill};
   }
 `;
 
@@ -65,11 +70,13 @@ const SubmitToGalleryTile = ({
   t,
   hideSubmitToGalleryTile,
   setSubmitToGalleryDialogVisible,
+  currentColorScheme,
 }) => {
   const onSubmitToGallery = () => setSubmitToGalleryDialogVisible(true);
+  console.log(currentColorScheme);
 
   return (
-    <StyledSubmitToGalleryTile>
+    <StyledSubmitToGalleryTile currentColorScheme={currentColorScheme}>
       <StyledCloseIcon
         onClick={hideSubmitToGalleryTile}
         className="close-icon"
@@ -93,7 +100,8 @@ const SubmitToGalleryTile = ({
   );
 };
 
-export default inject(({ oformsStore, dialogsStore }) => ({
+export default inject(({ auth, oformsStore, dialogsStore }) => ({
   hideSubmitToGalleryTile: oformsStore.hideSubmitToGalleryTile,
   setSubmitToGalleryDialogVisible: dialogsStore.setSubmitToGalleryDialogVisible,
+  currentColorScheme: auth.settingsStore.currentColorScheme,
 }))(withTranslation("Common", "FormGallery")(observer(SubmitToGalleryTile)));
