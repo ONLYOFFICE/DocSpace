@@ -120,12 +120,12 @@
   </data>
   <data name="HtmlMaster" xml:space="preserve">
     <value>&lt;body style="margin: 0; padding: 0; text-align: center; width: 100%; font-family: Arial, sans-serif; font-size: 14px; color: #333;"&gt;
-&lt;div style="background-color: #fff; width: 600px; margin: 0 auto; %CSSALIGN%;"&gt;
-    &lt;table cellspacing="0" cellpadding="0" style="font-family: Arial; font-size: 14px; color: #333; background: #fff; text-align: center; width: 600px; margin: 0; padding: 0; border: 0 none; border-collapse: collapse; empty-cells: show; border-spacing: 0; %CSSDIRECTION%;"&gt;
+&lt;div style="background-color: #fff; width: 600px; margin: 0 auto; text-align: left;"&gt;
+    &lt;table cellspacing="0" cellpadding="0" style="font-family: Arial; font-size: 14px; color: #333; background: #fff; text-align: center; width: 600px; margin: 0; padding: 0; border: 0 none; border-collapse: collapse; empty-cells: show; border-spacing: 0;"&gt;
       &lt;tbody&gt;
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
           &lt;td colspan="3" style="margin: 0; padding: 0; background-color: #fff; height: 65px; padding: 20px 0 0 30px;"&gt;
-            &lt;div style="height: 65px; width: 570px; margin: 0; padding: 0; %CSSALIGN%;"&gt;
+            &lt;div style="text-align: left; height: 65px; width: 570px; margin: 0; padding: 0;"&gt;
                 &lt;a href="%SITEURL%" style="text-decoration: none; display: inline-block; width: 386px; height: 44px; margin: 0; padding: 0;" target="_blank"&gt;
                     &lt;img src="%LOGO%" style="border: 0px none; width: 386px; height: 44px; margin: 0; padding: 0;" alt="%LOGOTEXT%"/&gt;
                 &lt;/a&gt;
@@ -134,7 +134,7 @@
         &lt;/tr&gt;
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
           &lt;td colspan="3" style="margin: 0; padding: 15px 30px 15px; background-color: #f6f6f6; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px;"&gt;
-            &lt;div style="font-family: Arial; font-size: 14px; color: #333; margin: 0; padding: 0; width: 540px; height: auto; overflow: hidden; word-wrap: break-word; vertical-align: top; border: 0 none; %CSSALIGN%;"&gt;
+            &lt;div style="font-family: Arial; font-size: 14px; color: #333; margin: 0; padding: 0; width: 540px; height: auto; overflow: hidden; word-wrap: break-word; vertical-align: top; text-align: left; border: 0 none;"&gt;
               %CONTENT%
             &lt;/div&gt;
           &lt;/td&gt;

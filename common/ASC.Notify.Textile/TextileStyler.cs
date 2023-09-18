@@ -94,7 +94,7 @@ public class TextileStyler : IPatternStyler
                                .Replace("%TEXTFOOTER%", unsubscribeText)
                                .Replace("%IMAGEPATH%", imagePath)
                                .Replace("%CSSDIRECTION%", rtl ? "direction:rtl" : "direction:ltr")
-                               .Replace("%CSSALIGN%", rtl ? "text-align:right" : "text-align:left");
+                               .Replace("%CSSALIGN%;", rtl ? "text-align:right" : "text-align:left");
     }
 
     private static string GetTemplate(NoticeMessage message)
