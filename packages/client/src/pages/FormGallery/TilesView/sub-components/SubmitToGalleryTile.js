@@ -1,6 +1,5 @@
 import { Button } from "@docspace/components";
-import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import CrossIcon from "PUBLIC_DIR/images/cross.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
@@ -56,8 +55,16 @@ const StyledCloseIcon = styled(CrossIcon)`
   ${commonIconsStyles}
   position: absolute;
   top: 10px;
-  right: 10px;
   cursor: pointer;
+
+  ${(props) =>
+    props.theme.interfaceDirection === "ltr"
+      ? css`
+          right: 10px;
+        `
+      : css`
+          left: 10px;
+        `}
 
   path {
     fill: ${({ theme }) => theme.submitToGalleryTile.closeIconFill};

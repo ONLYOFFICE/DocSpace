@@ -59,8 +59,16 @@ const StyledContainer = styled.div`
 
 const StyledSubmitToGalleryButton = styled(Button)`
   margin-left: auto;
-  margin-right: 12px;
+  ${(props) =>
+    props.theme.interfaceDirection === "ltr"
+      ? css`
+          margin-right: 12px;
+        `
+      : css`
+          margin-left: 12px;
+        `}
 `;
+StyledSubmitToGalleryButton.defaultProps = { theme: Base };
 
 const StyledInfoPanelToggleWrapper = styled.div`
   ${(props) =>
