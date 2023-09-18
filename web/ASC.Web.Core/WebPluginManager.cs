@@ -26,6 +26,41 @@
 
 namespace ASC.Web.Core;
 
+[Singletone]
+public class WebPluginCache
+{
+    private readonly ICache _сache;
+    private readonly ICacheNotify<WebPluginCacheItem> _notify;
+    private readonly TimeSpan _cacheExpiration = TimeSpan.FromDays(1);
+
+    public WebPluginCache(ICacheNotify<WebPluginCacheItem> notify, ICache cache)
+    {
+        _сache = cache;
+        _notify = notify;
+
+        _notify.Subscribe((i) => _сache.Remove(i.Key), CacheNotifyAction.Remove);
+    }
+
+    public T Get<T>(string key) where T : class
+    {
+        return _сache.Get<T>(key);
+    }
+
+    public void Insert(string key, object value)
+    {
+        _notify.Publish(new WebPluginCacheItem { Key = key }, CacheNotifyAction.Remove);
+
+        _сache.Insert(key, value, _cacheExpiration);
+    }
+
+    public void Remove(string key)
+    {
+        _notify.Publish(new WebPluginCacheItem { Key = key }, CacheNotifyAction.Remove);
+
+        _сache.Remove(key);
+    }
+}
+
 [Scope]
 public class WebPluginManager
 {
@@ -39,9 +74,9 @@ public class WebPluginManager
     private readonly IHttpClientFactory _clientFactory;
     private readonly DbWebPluginService _webPluginService;
     private readonly WebPluginSettings _webPluginSettings;
+    private readonly WebPluginCache _webPluginCache;
     private readonly StorageFactory _storageFactory;
     private readonly AuthContext _authContext;
-    private readonly ICache _cache;
     private readonly ILogger<WebPluginManager> _log;
 
     public WebPluginManager(
@@ -49,18 +84,18 @@ public class WebPluginManager
         IHttpClientFactory clientFactory,
         DbWebPluginService webPluginService,
         WebPluginSettings webPluginSettings,
+        WebPluginCache webPluginCache,
         StorageFactory storageFactory,
         AuthContext authContext,
-        ICache cache,
         ILogger<WebPluginManager> log)
     {
         _coreBaseSettings = coreBaseSettings;
         _clientFactory = clientFactory;
         _webPluginService = webPluginService;
         _webPluginSettings = webPluginSettings;
+        _webPluginCache = webPluginCache;
         _storageFactory = storageFactory;
         _authContext = authContext;
-        _cache = cache;
         _log = log;
     }
 
@@ -77,11 +112,21 @@ public class WebPluginManager
         }
     }
 
-    public async Task<IDataStore> GetPluginStorageAsync(int tenantId)
+    private async Task<IDataStore> GetPluginStorageAsync(int tenantId)
     {
         var storage = await _storageFactory.GetStorageAsync(tenantId, tenantId == Tenant.DefaultTenant ? StorageSystemModuleName : StorageModuleName);
 
         return storage;
+    }
+
+    private static string GetCacheKey(int tenantId)
+    {
+        return $"{StorageModuleName}:{tenantId}";
+    }
+
+    private static string GetSystemCacheKey()
+    {
+        return StorageSystemModuleName;
     }
 
     public async Task<string> GetPluginUrlTemplateAsync(int tenantId)
@@ -195,6 +240,10 @@ public class WebPluginManager
             }
         }
 
+        var key = GetCacheKey(tenantId);
+
+        _webPluginCache.Remove(key);
+
         return webPlugin;
     }
 
@@ -202,7 +251,16 @@ public class WebPluginManager
     {
         DemandWebPlugins();
 
-        var plugins = await _webPluginService.GetAsync(tenantId, enabled);
+        var key = GetCacheKey(tenantId);
+
+        var plugins = _webPluginCache.Get<IEnumerable<DbWebPlugin>>(key);
+
+        if (plugins == null)
+        {
+            plugins = await _webPluginService.GetAsync(tenantId, enabled) ?? new List<DbWebPlugin>();
+
+            _webPluginCache.Insert(key, plugins);
+        }
 
         return plugins;
     }
@@ -228,6 +286,10 @@ public class WebPluginManager
         }
 
         await _webPluginService.UpdateAsync(tenantId, plugin.Id, enabled);
+
+        var key = GetCacheKey(tenantId);
+
+        _webPluginCache.Remove(key);
     }
 
     public async Task DeleteWebPluginAsync(int tenantId, int id)
@@ -246,24 +308,30 @@ public class WebPluginManager
         var storage = await GetPluginStorageAsync(tenantId);
 
         await storage.DeleteDirectoryAsync(string.Empty, plugin.Name);
+
+        var key = GetCacheKey(tenantId);
+
+        _webPluginCache.Remove(key);
     }
 
 
-    public async Task<List<T>> GetSystemPlugins<T>() where T : IMapFrom<DbWebPlugin>
+    public async Task<List<T>> GetSystemWebPluginsAsync<T>() where T : IMapFrom<DbWebPlugin>
     {
-        var systemPlugins = _cache.Get<List<T>>(StorageSystemModuleName);
+        var key = GetSystemCacheKey();
+
+        var systemPlugins = _webPluginCache.Get<List<T>>(key);
 
         if (systemPlugins == null)
         {
-            systemPlugins = await GetSystemPluginsFromUrl<T>() ?? new List<T>();
+            systemPlugins = await GetSystemWebPluginsFromUrlAsync<T>() ?? new List<T>();
 
-            _cache.Insert(StorageSystemModuleName, systemPlugins, TimeSpan.FromHours(1));
+            _webPluginCache.Insert(key, systemPlugins);
         }
 
         return systemPlugins;
     }
 
-    private async Task<List<T>> GetSystemPluginsFromUrl<T>() where T : IMapFrom<DbWebPlugin>
+    private async Task<List<T>> GetSystemWebPluginsFromUrlAsync<T>() where T : IMapFrom<DbWebPlugin>
     {
         if (string.IsNullOrEmpty(_webPluginSettings.SystemUrl))
         {
