@@ -13,6 +13,7 @@
   "DataDisplay": "Data display settings",
   "Descending": "Descending",
   "Destroy": "Destroy",
+  "EmbedCodeSuccessfullyCopied": "Embed code successfully copied to clipboard",
   "EnterCount": "Enter count",
   "EnterHeight": "Enter height",
   "EnterId": "Enter id",
@@ -35,6 +36,5 @@
   "SDKDescription": "Using JavaScript SDK, you can embed a room or a folder from ONLYOFFICE DocSpace into your web interface as an iframe. Here, you can find settings for creating a sample iframe and configuring CSP. To use the complete SDK, please refer to the ",
   "SearchTerm": "Search term",
   "SortOrder": "Sort order",
-  "EmbedCodeSuccessfullyCopied": "Embed code successfully copied to clipboard",
   "Title": "Navigate and Title"
 }
