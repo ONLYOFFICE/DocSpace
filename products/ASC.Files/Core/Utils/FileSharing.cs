@@ -199,8 +199,7 @@ public class FileSharingAceHelper
 
             var subjects = await _fileSecurity.GetUserSubjectsAsync(w.Id);
 
-            if (entry.RootFolderType == FolderType.COMMON && subjects.Contains(Constants.GroupAdmin.ID)
-                || ownerId == w.Id)
+            if (entry.RootFolderType == FolderType.COMMON && subjects.Contains(Constants.GroupAdmin.ID))
             {
                 continue;
             }
@@ -565,8 +564,8 @@ public class FileSharing
                     continue;
                 }
 
-                var link = r.SubjectType == SubjectType.InvitationLink 
-                    ? _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) 
+                var link = r.SubjectType == SubjectType.InvitationLink
+                    ? _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID)
                     : await _externalShare.GetLinkAsync(r.Subject);
 
                 w.Link = await _urlShortener.GetShortenLinkAsync(link);
@@ -587,7 +586,7 @@ public class FileSharing
             result.Add(w);
         }
 
-        if (isRoom && canEditAccess&& !withoutTemplates)
+        if (isRoom && canEditAccess && !withoutTemplates)
         {
             var invitationId = Guid.NewGuid();
 
