@@ -68,10 +68,13 @@ StyledCloseIcon.defaultProps = { theme: Base };
 
 const SubmitToGalleryTile = ({
   t,
+  submitToGalleryTileIsVisible,
   hideSubmitToGalleryTile,
   setSubmitToGalleryDialogVisible,
   currentColorScheme,
 }) => {
+  if (!submitToGalleryTileIsVisible) return null;
+
   const onSubmitToGallery = () => setSubmitToGalleryDialogVisible(true);
 
   return (
@@ -100,6 +103,7 @@ const SubmitToGalleryTile = ({
 };
 
 export default inject(({ auth, oformsStore, dialogsStore }) => ({
+  submitToGalleryTileIsVisible: oformsStore.submitToGalleryTileIsVisible,
   hideSubmitToGalleryTile: oformsStore.hideSubmitToGalleryTile,
   setSubmitToGalleryDialogVisible: dialogsStore.setSubmitToGalleryDialogVisible,
   currentColorScheme: auth.settingsStore.currentColorScheme,
