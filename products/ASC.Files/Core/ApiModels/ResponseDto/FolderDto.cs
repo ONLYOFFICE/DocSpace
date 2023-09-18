@@ -78,6 +78,8 @@ public class FolderDto<T> : FileEntryDto<T>
     /// <type>System.Boolean, System</type>
     public bool Private { get; set; }
 
+    public bool? InRoom { get; set; }
+
     protected internal override FileEntryType EntryType { get => FileEntryType.Folder; }
 
     public FolderDto() { }
