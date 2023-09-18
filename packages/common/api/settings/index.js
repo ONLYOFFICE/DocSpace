@@ -730,11 +730,7 @@ export function submitToGallery(file, fileName, language) {
   formData.append("fileName", fileName);
   formData.append("language", language);
 
-  // return axios.post("https://oforms.teamlab.info/api/upload", {
-  return axios.post(
-    "https://cors-anywhere.herokuapp.com/https://oforms.teamlab.info/api/upload",
-    formData
-  );
+  return axios.post("https://oforms.teamlab.info/api/upload", formData);
 }
 
 export function getStorageRegions() {
