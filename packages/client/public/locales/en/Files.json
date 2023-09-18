@@ -164,7 +164,7 @@
   "LeaveRoomDescription": "You are the owner of this room. Before you leave the room, you must transfer the owner's role to another user.",
   "ChangeTheRoomOwner": "Change the Room Owner",
   "AssignOwner": "Assign Owner",
-  "WantLeaveRoom": "Do you really want to leave this room?",
+  "WantLeaveRoom": "Do you really want to leave this room?  You will be able to join it again via new invitation by a room admin.",
   "RoomOwner": "Room owner",
   "YouLeftTheRoom": "You have left the room",
   "LeftAndAppointNewOwner": "You have left the room and appointed a new owner",
