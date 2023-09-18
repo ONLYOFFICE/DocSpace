@@ -198,10 +198,10 @@ class ContextOptionsStore {
   };
 
   onClickSubmitToFormGallery = (item) => {
-    if (formItem && !formItem.exst) {
+    if (item && !item.exst) {
       const splitTitle = item.title.split(".");
       item.title = splitTitle.slice(0, -1).join(".");
-      item.exst = splitTitle.length !== 1 ? `.${splitted.at(-1)}` : null;
+      item.exst = splitTitle.length !== 1 ? `.${splitTitle.at(-1)}` : null;
     }
 
     this.dialogsStore.setFormItem(item);
