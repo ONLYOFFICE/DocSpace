@@ -145,7 +145,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Copy,
                     FilesSecurityActions.Move,
                     FilesSecurityActions.Duplicate,
-                    FilesSecurityActions.SubmitToFormGallery
+                    FilesSecurityActions.SubmitToFormGallery,
                     FilesSecurityActions.Download,
                     FilesSecurityActions.Convert
                 }
@@ -1829,7 +1829,7 @@ public class FileSecurity : IFileSecurity
         Mute,
         EditAccess,
         Duplicate,
-        SubmitToFormGallery
+        SubmitToFormGallery,
         Download,
         Convert
     }
