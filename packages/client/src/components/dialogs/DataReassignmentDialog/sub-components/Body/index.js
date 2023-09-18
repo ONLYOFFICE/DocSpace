@@ -13,6 +13,7 @@ const Body = ({
   selectedUser,
   percent,
   currentColorScheme,
+  isAbortTransfer,
   onTogglePeopleSelector,
   onTerminate,
 }) => {
@@ -29,6 +30,7 @@ const Body = ({
             : selectedUser.label
         }
         percent={percent}
+        isAbortTransfer={isAbortTransfer}
         onTerminate={onTerminate}
       />
     );

@@ -74,7 +74,7 @@ const DeleteProfileEverDialogComponent = (props) => {
     setDataReassignmentDialogVisible,
     setDeleteProfileDialogVisible,
     setDataReassignmentDeleteProfile,
-    setIsDeleteUserReassignmentYourself,
+    setIsDeletingUserWithReassignment,
     userPerformedDeletion,
     setDialogData,
   } = props;
@@ -134,7 +134,7 @@ const DeleteProfileEverDialogComponent = (props) => {
 
     setDialogData(user);
 
-    setIsDeleteUserReassignmentYourself(true);
+    setIsDeletingUserWithReassignment(true);
     setDataReassignmentDialogVisible(true);
     setDataReassignmentDeleteProfile(true);
     setDeleteProfileDialogVisible(false);
@@ -217,7 +217,7 @@ export default inject(({ peopleStore }) => {
     setDataReassignmentDialogVisible,
     setDeleteProfileDialogVisible,
     setDataReassignmentDeleteProfile,
-    setIsDeleteUserReassignmentYourself,
+    setIsDeletingUserWithReassignment,
     setDialogData,
   } = dialogStore;
 
@@ -228,7 +228,7 @@ export default inject(({ peopleStore }) => {
     setDataReassignmentDialogVisible,
     setDeleteProfileDialogVisible,
     setDataReassignmentDeleteProfile,
-    setIsDeleteUserReassignmentYourself,
+    setIsDeletingUserWithReassignment,
     setDialogData,
     setSelected,
     removeUser: peopleStore.usersStore.removeUser,

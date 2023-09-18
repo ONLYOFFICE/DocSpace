@@ -28,7 +28,7 @@ const StyledModalDialog = styled(ModalDialog)`
   }
 `;
 
-let timerId = null;
+const statusTerminateCompleted = 3;
 
 const DataReassignmentDialog = ({
   visible,
@@ -40,20 +40,22 @@ const DataReassignmentDialog = ({
   currentColorScheme,
   currentUser,
   deleteProfile,
-  isDeleteUserReassignmentYourself,
+  isDeletingUserWithReassignment,
   t,
   tReady,
   setFilter,
-  setIsDeleteUserReassignmentYourself,
+  setIsDeletingUserWithReassignment,
+  setDataReassignmentDeleteProfile,
 }) => {
   const [selectorVisible, setSelectorVisible] = useState(false);
-  const defaultSelectedUser = isDeleteUserReassignmentYourself
+  const defaultSelectedUser = isDeletingUserWithReassignment
     ? currentUser
     : null;
   const [selectedUser, setSelectedUser] = useState(defaultSelectedUser);
   const [isDeleteProfile, setIsDeleteProfile] = useState(deleteProfile);
   const [showProgress, setShowProgress] = useState(false);
   const [isReassignCurrentUser, setIsReassignCurrentUser] = useState(false);
+  const [isAbortTransfer, setIsAbortTransfer] = useState(false);
 
   const [percent, setPercent] = useState(0);
 
@@ -71,13 +73,13 @@ const DataReassignmentDialog = ({
 
   useEffect(() => {
     //If click Delete user
-    if (isDeleteUserReassignmentYourself) onReassign();
+    if (isDeletingUserWithReassignment) onReassign();
 
     return () => {
-      setIsDeleteUserReassignmentYourself(false);
-      clearInterval(timerId);
+      setIsDeletingUserWithReassignment(false);
+      setDataReassignmentDeleteProfile(false);
     };
-  }, [isDeleteUserReassignmentYourself]);
+  }, [isDeletingUserWithReassignment]);
 
   const onToggleDeleteProfile = () => {
     setIsDeleteProfile((remove) => !remove);
@@ -95,6 +97,12 @@ const DataReassignmentDialog = ({
     setSelectorVisible(false);
   };
 
+  const onStartAgain = () => {
+    setShowProgress(false);
+    setPercent(0);
+    setIsAbortTransfer(false);
+  };
+
   const onAccept = (item) => {
     setSelectorVisible(false);
     setSelectedUser({ ...item[0] });
@@ -104,15 +112,29 @@ const DataReassignmentDialog = ({
     setIsReassignCurrentUser(currentUser.id === selectedUser.id);
   };
 
-  const checkProgress = (id) => {
-    dataReassignmentProgress(id)
+  const checkProgress = () => {
+    if (isAbortTransfer) return;
+
+    dataReassignmentProgress(user.id)
       .then((res) => {
+        //If the task has already been interrupted and killed
+        if (!res) return;
+
+        if (res.error) {
+          console.log(res.error);
+          return;
+        }
+
         setPercent(res.percentage);
 
-        if (!res.isCompleted) return;
+        if (!res.isCompleted) {
+          checkProgress();
+          return;
+        }
+
+        if (res.status === statusTerminateCompleted) return;
 
         toastr.success(t("Common:ChangesSavedSuccessfully"));
-        clearInterval(timerId);
         isDeleteProfile && updateAccountsAfterDeleteUser();
       })
       .catch((error) => {
@@ -125,31 +147,19 @@ const DataReassignmentDialog = ({
     setShowProgress(true);
 
     dataReassignment(user.id, selectedUser.id, isDeleteProfile)
-      .then(() => {
-        checkProgress(user.id);
-        dataReassignmentTerminate(user.id).then(() => {
-          checkProgress(user.id);
-          timerId = setInterval(() => checkProgress(user.id), 100);
-        });
-      })
+      .then(() => checkProgress())
       .catch((error) => {
         toastr.error(error?.response?.data?.error?.message);
       });
-
-    // timerId = setInterval(() => checkProgress(user.id), 100);
-
-    // .then(() => {
-    //   timerId = setInterval(() => checkProgress(user.id), 10);
-    // })
-    // .catch((error) => {
-    //   toastr.error(error?.response?.data?.error?.message);
-    // });
   };
 
   const onTerminate = () => {
     dataReassignmentTerminate(user.id)
-      .then(() => {
+      .then((res) => {
+        setPercent(res.percentage);
+        setIsAbortTransfer(true);
         toastr.success(t("Common:ChangesSavedSuccessfully"));
+        isDeleteProfile && updateAccountsAfterDeleteUser();
       })
       .catch((error) => {
         toastr.error(error?.response?.data?.error?.message);
@@ -192,8 +202,8 @@ const DataReassignmentDialog = ({
       visible={visible}
       onClose={onClose}
       containerVisible={selectorVisible}
-      withFooterBorder
-      withBodyScroll
+      withFooterBorder={true}
+      withBodyScroll={true}
     >
       <ModalDialog.Header>
         {t("DataReassignmentDialog:DataReassignment")}
@@ -207,6 +217,7 @@ const DataReassignmentDialog = ({
           user={user}
           selectedUser={selectedUser}
           percent={percent}
+          isAbortTransfer={isAbortTransfer}
           currentColorScheme={currentColorScheme}
           onTogglePeopleSelector={onTogglePeopleSelector}
         />
@@ -221,8 +232,10 @@ const DataReassignmentDialog = ({
           selectedUser={selectedUser}
           onReassign={onReassign}
           percent={percent}
+          isAbortTransfer={isAbortTransfer}
           onClose={onClose}
           onTerminate={onTerminate}
+          onStartAgain={onStartAgain}
         />
       </ModalDialog.Footer>
     </StyledModalDialog>
@@ -233,8 +246,9 @@ export default inject(({ auth, peopleStore, setup }) => {
   const {
     setDataReassignmentDialogVisible,
     dataReassignmentDeleteProfile,
-    isDeleteUserReassignmentYourself,
-    setIsDeleteUserReassignmentYourself,
+    setDataReassignmentDeleteProfile,
+    isDeletingUserWithReassignment,
+    setIsDeletingUserWithReassignment,
   } = peopleStore.dialogStore;
   const { currentColorScheme } = auth.settingsStore;
   const {
@@ -256,9 +270,10 @@ export default inject(({ auth, peopleStore, setup }) => {
     dataReassignmentProgress,
     dataReassignmentTerminate,
     deleteProfile: dataReassignmentDeleteProfile,
+    setDataReassignmentDeleteProfile,
     setFilter,
-    isDeleteUserReassignmentYourself,
-    setIsDeleteUserReassignmentYourself,
+    isDeletingUserWithReassignment,
+    setIsDeletingUserWithReassignment,
   };
 })(
   observer(

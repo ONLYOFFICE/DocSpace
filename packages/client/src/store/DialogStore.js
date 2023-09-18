@@ -14,7 +14,7 @@ class DialogStore {
   resetAuthDialogVisible = false;
   dataReassignmentDialogVisible = false;
   dataReassignmentDeleteProfile = false;
-  isDeleteUserReassignmentYourself = false;
+  isDeletingUserWithReassignment = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -36,8 +36,8 @@ class DialogStore {
     this.dataReassignmentDeleteProfile = dataReassignmentDeleteProfile;
   };
 
-  setIsDeleteUserReassignmentYourself = (isDeleteUserReassignmentYourself) => {
-    this.isDeleteUserReassignmentYourself = isDeleteUserReassignmentYourself;
+  setIsDeletingUserWithReassignment = (isDeletingUserWithReassignment) => {
+    this.isDeletingUserWithReassignment = isDeletingUserWithReassignment;
   };
 
   setDialogData = (data) => {
