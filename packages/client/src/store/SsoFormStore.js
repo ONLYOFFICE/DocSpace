@@ -19,6 +19,9 @@ import {
   SSO_TITLE,
   SSO_PHONE,
   SSO_NAME_ID_FORMAT,
+  SSO_SIGNING,
+  SSO_ENCRYPT,
+  SSO_SIGNING_ENCRYPT,
 } from "../helpers/constants";
 import isEqual from "lodash/isEqual";
 
@@ -41,11 +44,11 @@ class SsoFormStore {
   sloUrlPost = "";
   sloUrlRedirect = "";
   sloBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
-  nameIdFormat = SSO_NAME_ID_FORMAT;
+  nameIdFormat = SSO_NAME_ID_FORMAT[0];
 
   idpCertificate = "";
   idpPrivateKey = null;
-  idpAction = "signing";
+  idpAction = SSO_SIGNING;
   idpCertificates = [];
 
   // idpCertificateAdvanced
@@ -59,7 +62,7 @@ class SsoFormStore {
 
   spCertificate = "";
   spPrivateKey = "";
-  spAction = "signing";
+  spAction = SSO_SIGNING;
   spCertificates = [];
 
   // spCertificateAdvanced
@@ -126,6 +129,7 @@ class SsoFormStore {
 
   defaultSettings = null;
   editIndex = 0;
+  isEdit = false;
 
   isInit = false;
 
@@ -191,6 +195,8 @@ class SsoFormStore {
   closeIdpModal = () => {
     this.idpCertificate = "";
     this.idpPrivateKey = "";
+    this.editIndex = 0;
+    this.isEdit = false;
     this.idpIsModalVisible = false;
   };
 
@@ -199,6 +205,7 @@ class SsoFormStore {
     this.spPrivateKey = "";
     this.spIsModalVisible = false;
     this.editIndex = 0;
+    this.isEdit = false;
   };
 
   setComboBoxOption = (option) => {
@@ -638,30 +645,74 @@ class SsoFormStore {
     return array.filter((item, index, array) => array.indexOf(item) == index);
   };
 
-  setSpCertificate = (certificate, index) => {
+  setSpCertificate = (certificate, index, isEdit) => {
     this.spCertificate = certificate.crt;
     this.spPrivateKey = certificate.key;
     this.spAction = certificate.action;
     this.editIndex = index;
+    this.isEdit = isEdit;
     this.spIsModalVisible = true;
   };
 
-  setIdpCertificate = (certificate) => {
+  setIdpCertificate = (certificate, index, isEdit) => {
     this.idpCertificate = certificate.crt;
     this.idpPrivateKey = certificate.key;
     this.idpAction = certificate.action;
+    this.editIndex = index;
+    this.isEdit = isEdit;
     this.idpIsModalVisible = true;
   };
 
+  resetSpCheckboxes = (action) => {
+    if (action === SSO_SIGNING_ENCRYPT) {
+      this.spSignAuthRequests = false;
+      this.spSignLogoutRequests = false;
+      this.spSignLogoutResponses = false;
+      this.spEncryptAssertions = false;
+    }
+    if (action === SSO_SIGNING) {
+      this.spSignAuthRequests = false;
+      this.spSignLogoutRequests = false;
+      this.spSignLogoutResponses = false;
+    }
+    if (action === SSO_ENCRYPT) {
+      this.spEncryptAssertions = false;
+    }
+  };
+
+  resetIdpCheckboxes = () => {
+    this.idpVerifyAuthResponsesSign = false;
+    this.idpVerifyLogoutRequestsSign = false;
+    this.idpVerifyLogoutResponsesSign = false;
+  };
+
   delSpCertificate = (action) => {
+    this.resetSpCheckboxes(action);
     this.spCertificates = this.spCertificates.filter(
       (certificate) => certificate.action !== action
     );
   };
 
   delIdpCertificate = (cert) => {
+    this.resetIdpCheckboxes();
     this.idpCertificates = this.idpCertificates.filter(
       (certificate) => certificate.crt !== cert
+    );
+  };
+
+  checkSpCertificateExist = () => {
+    if (
+      this.spAction === SSO_SIGNING_ENCRYPT &&
+      this.spCertificates.length > 0 &&
+      !this.isEdit
+    )
+      return true;
+
+    return this.spCertificates.find(
+      (item) =>
+        (item.action === this.spAction ||
+          item.action === SSO_SIGNING_ENCRYPT) &&
+        !this.isEdit
     );
   };
 
@@ -674,12 +725,7 @@ class SsoFormStore {
       },
     ];
 
-    if (
-      this.spCertificates.find(
-        (item, index) =>
-          item.action === this.spAction && this.editIndex !== index
-      )
-    ) {
+    if (this.checkSpCertificateExist()) {
       toastr.error(t("CertificateExist"));
       return;
     }
@@ -693,10 +739,16 @@ class SsoFormStore {
         return;
       }
       const newCertificates = res.data;
-      newCertificates.map((cert) => {
-        this.spCertificates = [...this.spCertificates, cert];
-        this.checkedSpBoxes(cert);
-      });
+      if (this.isEdit) {
+        this.spCertificates[this.editIndex] = newCertificates[0];
+        this.checkedSpBoxes(newCertificates[0]);
+      } else {
+        newCertificates.map((cert) => {
+          this.spCertificates = [...this.spCertificates, cert];
+          this.checkedSpBoxes(cert);
+        });
+      }
+
       this.isCertificateLoading = false;
       this.closeSpModal();
     } catch (err) {
@@ -707,14 +759,14 @@ class SsoFormStore {
   };
 
   checkedSpBoxes = (cert) => {
-    if (cert.action === "signing") {
+    if (cert.action === SSO_SIGNING) {
       this.spSignAuthRequests = true;
       this.spSignLogoutRequests = true;
     }
-    if (cert.action === "encrypt") {
+    if (cert.action === SSO_ENCRYPT) {
       this.spEncryptAssertions = true;
     }
-    if (cert.action === "signing and encrypt") {
+    if (cert.action === SSO_SIGNING_ENCRYPT) {
       this.spSignAuthRequests = true;
       this.spSignLogoutRequests = true;
       this.spEncryptAssertions = true;
@@ -730,7 +782,11 @@ class SsoFormStore {
       },
     ];
 
-    if (this.idpCertificates.find((item) => item.crt === this.idpCertificate)) {
+    if (
+      this.idpCertificates.find(
+        (item) => item.crt === this.idpCertificate && !this.isEdit
+      )
+    ) {
       toastr.error(t("CertificateExist"));
       return;
     }
@@ -744,10 +800,15 @@ class SsoFormStore {
         return;
       }
       const newCertificates = res.data;
-      newCertificates.map((cert) => {
-        this.idpCertificates = [...this.idpCertificates, cert];
-        this.checkedIdpBoxes(cert);
-      });
+      if (this.isEdit) {
+        this.idpCertificates[this.editIndex] = newCertificates[0];
+        this.checkedIdpBoxes(newCertificates[0]);
+      } else {
+        newCertificates.map((cert) => {
+          this.idpCertificates = [...this.idpCertificates, cert];
+          this.checkedIdpBoxes(cert);
+        });
+      }
       this.isCertificateLoading = false;
       this.closeIdpModal();
     } catch (err) {
@@ -823,6 +884,27 @@ class SsoFormStore {
   get hasChanges() {
     const currentSettings = this.getSettings();
     return !isEqual(currentSettings, this.defaultSettings);
+  }
+
+  get isDisabledIdpSigning() {
+    if (!this.enableSso || this.isLoadingXml) return true;
+    return this.idpCertificates.length === 0;
+  }
+
+  get isDisabledSpSigning() {
+    if (!this.enableSso || this.isLoadingXml) return true;
+    return !this.spCertificates.some(
+      (cert) =>
+        cert.action === SSO_SIGNING || cert.action === SSO_SIGNING_ENCRYPT
+    );
+  }
+
+  get isDisabledSpEncrypt() {
+    if (!this.enableSso || this.isLoadingXml) return true;
+    return !this.spCertificates.some(
+      (cert) =>
+        cert.action === SSO_ENCRYPT || cert.action === SSO_SIGNING_ENCRYPT
+    );
   }
 }
 
