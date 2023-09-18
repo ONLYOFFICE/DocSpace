@@ -25,11 +25,19 @@ const SubmitToFormGallery = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  let formItemIsSet = !!formItem;
+
   const [isSelectingForm, setIsSelectingForm] = useState(false);
   const onOpenFormSelector = () => setIsSelectingForm(true);
-  const onCloseFormSelector = () => setIsSelectingForm(false);
+  const onCloseFormSelector = () => {
+    if (!formItemIsSet) onClose();
+    else setIsSelectingForm(false);
+  };
 
-  const onSelectForm = (data) => setFormItem(data);
+  const onSelectForm = (data) => {
+    formItemIsSet = true;
+    setFormItem(data);
+  };
 
   const onSubmitToGallery = async () => {
     if (!formItem) return;
