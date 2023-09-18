@@ -86,14 +86,27 @@ export const QuotaBarTypes = Object.freeze({
 export const BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
 export const BINDING_REDIRECT =
   "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
-export const SSO_NAME_ID_FORMAT =
-  "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
+export const SSO_NAME_ID_FORMAT = [
+  "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+  "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+  "urn:oasis:names:tc:SAML:2.0:nameid-format:entity",
+  "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+  "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+  "urn:oasis:names:tc:SAML:2.0:nameid-format:encrypted",
+  "urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified",
+  "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
+  "urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName",
+  "urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos",
+];
 export const SSO_GIVEN_NAME = "givenName";
 export const SSO_SN = "sn";
 export const SSO_EMAIL = "email";
 export const SSO_LOCATION = "location";
 export const SSO_TITLE = "title";
 export const SSO_PHONE = "phone";
+export const SSO_SIGNING = "signing";
+export const SSO_ENCRYPT = "encrypt";
+export const SSO_SIGNING_ENCRYPT = "signing and encrypt";
 
 export const DEFAULT_SELECT_TIMEZONE = {
   key: "UTC",
