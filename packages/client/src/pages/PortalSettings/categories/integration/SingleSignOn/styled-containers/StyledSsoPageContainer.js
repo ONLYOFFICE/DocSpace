@@ -90,20 +90,6 @@ const StyledSsoPage = styled.div`
     max-width: 100%;
   }
 
-  .upload-button {
-    height: 32px;
-    width: 45px;
-    ${(props) =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            margin-right: 9px;
-          `
-        : css`
-            margin-left: 9px;
-          `}
-    overflow: inherit;
-  }
-
   .save-button {
     ${(props) =>
       props.theme.interfaceDirection === "rtl"
