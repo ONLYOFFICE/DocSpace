@@ -96,7 +96,6 @@ public class DocumentServiceTracker
         public string Message { get; set; } //attach
     }
 
-    [Serializable]
     public class TrackResponse
     {
         public int Error
@@ -455,7 +454,7 @@ public class DocumentServiceTrackerHelper
         {
             if (user != null)
             {
-                 _ = _filesMessageService.SendAsync(file, MessageInitiator.DocsService, MessageAction.UserFileUpdated, user.DisplayUserName(false, _displayUserSettingsHelper), file.Title);
+                _ = _filesMessageService.SendAsync(file, MessageInitiator.DocsService, MessageAction.UserFileUpdated, user.DisplayUserName(false, _displayUserSettingsHelper), file.Title);
             }
 
             if (!forcesave)

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Text from "@docspace/components/text";
 import HelpButton from "@docspace/components/help-button";
@@ -10,6 +11,9 @@ import Button from "@docspace/components/button";
 import Badge from "@docspace/components/badge";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import toastr from "@docspace/components/toast/toastr";
+
+import { size } from "@docspace/components/utils/device";
+
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import WhiteLabelWrapper from "./StyledWhitelabel";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
@@ -20,6 +24,7 @@ import {
   getLogoOptions,
   uploadLogo,
 } from "../../../utils/whiteLabelHelper";
+
 import isEqual from "lodash/isEqual";
 
 const WhiteLabel = (props) => {
@@ -35,7 +40,11 @@ const WhiteLabel = (props) => {
     defaultWhiteLabelLogoUrls,
     getWhiteLabelLogoText,
     getWhiteLabelLogoUrlsAction,
+    initSettings,
   } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
   const [defaultLogoTextWhiteLabel, setDefaultLogoTextWhiteLabel] =
@@ -43,6 +52,23 @@ const WhiteLabel = (props) => {
 
   const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  const init = async () => {
+    await initSettings();
+  };
+
+  useEffect(() => {
+    init();
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  const checkWidth = () => {
+    window.innerWidth > size.smallTablet &&
+      location.pathname.includes("white-label") &&
+      navigate("/portal-settings/customization/branding");
+  };
 
   useEffect(() => {
     const companyNameFromSessionStorage = getFromSessionStorage("companyName");
@@ -220,13 +246,17 @@ const WhiteLabel = (props) => {
       </Text>
 
       <div className="wl-helper">
-        <Text className="settings_unavailable">{t("WhiteLabelHelper")}</Text>
-        <HelpButton
-          tooltipContent={<Text fontSize="12px">{t("WhiteLabelTooltip")}</Text>}
-          place="right"
-          offsetRight={0}
-          className="settings_unavailable"
-        />
+        <Text className="wl-helper-label settings_unavailable" as="div">
+          {t("WhiteLabelHelper")}
+          <HelpButton
+            tooltipContent={
+              <Text fontSize="12px">{t("WhiteLabelTooltip")}</Text>
+            }
+            place="right"
+            offsetRight={0}
+            className="settings_unavailable"
+          />
+        </Text>
       </div>
       <div className="settings-block">
         <FieldContainer
@@ -480,12 +510,14 @@ export default inject(({ setup, auth, common }) => {
     whiteLabelLogoUrls,
     restoreWhiteLabelSettings,
     getWhiteLabelLogoUrls: getWhiteLabelLogoUrlsAction,
+    initSettings,
   } = common;
 
   const {
     getWhiteLabelLogoUrls,
     whiteLabelLogoUrls: defaultWhiteLabelLogoUrls,
   } = auth.settingsStore;
+  const { isBrandingAndCustomizationAvailable } = auth.currentQuotaStore;
 
   return {
     setLogoText,
@@ -498,5 +530,7 @@ export default inject(({ setup, auth, common }) => {
     restoreWhiteLabelSettings,
     defaultWhiteLabelLogoUrls,
     getWhiteLabelLogoUrlsAction,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
+    initSettings,
   };
 })(withTranslation(["Settings", "Profile", "Common"])(observer(WhiteLabel)));

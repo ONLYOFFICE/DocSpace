@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Studio.Core;
 
-[Serializable]
 public class PromotionsSettings : ISettings<PromotionsSettings>
 {
     public bool Show { get; set; }

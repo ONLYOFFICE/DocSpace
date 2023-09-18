@@ -26,7 +26,6 @@
 
 namespace ASC.Notify.Cron;
 
-[Serializable]
 public class TreeSet : ArrayList, ISortedSet
 {
     public IComparer Comparator { get; } = Comparer.Default;

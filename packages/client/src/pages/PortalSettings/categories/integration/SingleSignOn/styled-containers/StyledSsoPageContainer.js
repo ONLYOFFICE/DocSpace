@@ -4,7 +4,6 @@ import { UnavailableStyles } from "../../../../utils/commonSettingsStyles";
 const StyledSsoPage = styled.div`
   box-sizing: border-box;
   outline: none;
-  padding-top: 5px;
 
   .intro-text {
     width: 100%;
@@ -89,20 +88,6 @@ const StyledSsoPage = styled.div`
 
   .combo-button-label {
     max-width: 100%;
-  }
-
-  .upload-button {
-    height: 32px;
-    width: 45px;
-    ${(props) =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            margin-right: 9px;
-          `
-        : css`
-            margin-left: 9px;
-          `}
-    overflow: inherit;
   }
 
   .save-button {

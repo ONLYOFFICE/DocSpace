@@ -58,7 +58,7 @@ const DeliveryDatePicker = ({
   isApplied,
   setIsApplied,
 }) => {
-  const { t } = useTranslation(["Webhooks", "Common"]);
+  const { t, i18n } = useTranslation(["Webhooks", "Common"]);
 
   const calendarRef = useRef();
   const selectorRef = useRef();
@@ -114,6 +114,7 @@ const DeliveryDatePicker = ({
       onChange={closeCalendar}
       isMobile={isMobileOnly}
       forwardedRef={calendarRef}
+      locale={i18n.language}
     />
   );
 
@@ -178,6 +179,7 @@ const DeliveryDatePicker = ({
             onChange={onDateSet}
             selectedDateText={t("SelectDate")}
             showCalendarIcon={false}
+            locale={i18n.language}
           />
         )}
         {filters.deliveryDate !== null &&
@@ -198,6 +200,7 @@ const DeliveryDatePicker = ({
                   onChange={setDeliveryFrom}
                   hasError={!isTimeValid}
                   tabIndex={1}
+                  locale={i18n.language}
                 />
               </span>
 
@@ -210,6 +213,7 @@ const DeliveryDatePicker = ({
                 setDate={setDeliveryTo}
                 hasError={!isTimeValid}
                 tabIndex={2}
+                locale={i18n.language}
               />
             </TimePickerCell>
           ) : (

@@ -28,10 +28,6 @@ const StyledSubmenu = styled(Submenu)`
         top: 58px;
       `}
   }
-
-  #javascript-sdk {
-    gap: 0px;
-  }
 `;
 
 const DeveloperToolsWrapper = (props) => {

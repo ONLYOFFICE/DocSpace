@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Tenants;
 
-[Serializable]
 public class TenantQuotaRow : IMapFrom<DbQuotaRow>
 {
     public int TenantId { get; set; }

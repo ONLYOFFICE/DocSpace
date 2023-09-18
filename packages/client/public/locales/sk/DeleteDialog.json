@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Chystáte sa vymazať tento súbor. Ste si istý, že chcete pokračovať?",
-  "DeleteFolder": "Chystáte sa vymazať tento priečinok. Ste si istý, že chcete pokračovať?",
-  "DeleteItems": "Chystáte sa vymazať tieto položky. Ste si istý, že chcete pokračovať?",
+  "DeleteFile": "Chystáte sa vymazať tento súbor. ",
+  "DeleteFolder": "Chystáte sa vymazať tento priečinok. ",
+  "DeleteItems": "Chystáte sa vymazať tieto položky. ",
   "DeleteRoom": "Chystáte sa vymazať túto miestnosť. Nemôžete ju obnoviť.",
   "DeleteRooms": "Chystáte sa vymazať tieto miestnosti. Nemôžete ich obnoviť.",
   "MoveToTrashButton": "Presunúť do koša",

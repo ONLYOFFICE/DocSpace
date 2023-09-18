@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Billing;
 
-[Serializable]
 public class PaymentLast
 {
     public DateTime EndDate { get; set; }

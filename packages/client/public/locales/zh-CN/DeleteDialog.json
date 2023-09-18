@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "您即将删除此文件。确定要继续吗？",
-  "DeleteFolder": "您即将删除此文件夹。确定要继续吗？",
-  "DeleteItems": "您即将删除这些项目。确定要继续吗？",
+  "DeleteFile": "您即将删除此文件。",
+  "DeleteFolder": "您即将删除此文件夹。",
+  "DeleteItems": "您即将删除这些项目。",
   "DeleteRoom": "您即将删除此房间。您将无法使其恢复。",
   "DeleteRooms": "您即将删除这些房间。您将无法使其恢复。",
   "MoveToTrashButton": "移至垃圾箱",

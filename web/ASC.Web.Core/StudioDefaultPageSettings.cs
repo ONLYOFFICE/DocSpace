@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Studio.Core;
 
-[Serializable]
 public class StudioDefaultPageSettings : ISettings<StudioDefaultPageSettings>
 {
     public Guid DefaultProductID { get; set; }
