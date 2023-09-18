@@ -3143,6 +3143,11 @@ const Dark = {
     headerColor: "#FFF",
     descriptionColor: "#ADADAD",
   },
+
+  roomIcon: {
+    backgroundArchive: "#FFFFFF",
+    opacityBackground: "0.1",
+  },
 };
 
 export default Dark;
