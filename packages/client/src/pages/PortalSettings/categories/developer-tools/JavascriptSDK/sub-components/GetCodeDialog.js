@@ -34,7 +34,7 @@ const GetCodeDialog = (props) => {
           primary
           scale
           size="normal"
-          label={t("Common:CopyToClipboard")}
+          label={t("Common:Copy")}
           onClick={onCopyClick}
         />
         <Button
