@@ -89,7 +89,6 @@
   "DownloadReportDescription": "レポートは「私の文書」に保存されます",
   "DownloadStatisticsText": "選択した保存期間中に利用可能なデータのレポートをダウンロードして、詳細な統計情報を確認することができます。",
   "EditColorScheme": "カラースキームを編集する",
-  "EditCurrentTheme": "現在のテーマを編集する",
   "Employees": "ユーザー",
   "EmptyBackupList": "バックアップはまだ作成されていません。バックアップを作成すると、このリストに表示されるようになります。",
   "EnableAutomaticBackup": "自動バックアップを有効にする",
