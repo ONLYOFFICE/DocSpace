@@ -8,6 +8,7 @@ import { ReactSVG } from "react-svg";
 import { useTheme } from "styled-components";
 
 import ArrowIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
+import OutsdideIcon from "PUBLIC_DIR/images/arrow.outside.react.svg";
 import Scrollbar from "../../scrollbar";
 import ToggleButton from "../../toggle-button";
 import { SubMenuItem } from "../styled-context-menu";
@@ -207,6 +208,9 @@ const SubMenu = (props) => {
         {icon}
         {label}
         {subMenuIcon}
+        {item.isOutsideLink && (
+          <OutsdideIcon className={subMenuIconClassName} />
+        )}
       </a>
     );
 

@@ -3138,6 +3138,11 @@ const Dark = {
     },
   },
 
+  submitToGalleryTile: {
+    bodyText: "#ADADAD",
+    closeIconFill: "#a9a9a9",
+  },
+
   infoBlock: {
     background: "#282828",
     headerColor: "#FFF",
