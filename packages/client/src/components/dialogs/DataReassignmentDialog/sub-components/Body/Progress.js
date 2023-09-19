@@ -50,7 +50,7 @@ const StyledProgress = styled.div`
   .progress-status {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
 
   .in-progress {
@@ -69,8 +69,13 @@ const StyledProgress = styled.div`
     line-height: 16px;
   }
 
+  .status-icon {
+    padding: 2px;
+  }
+
   .status-pending {
     padding-left: 24px;
+    height: 20px;
   }
 
   .check-icon {
@@ -114,7 +119,7 @@ const Progress = ({
 
   const allDataTransferredNode = (
     <div className="transfer-information">
-      <StyledCheckIcon size="medium" />
+      <StyledCheckIcon size="medium" className="status-icon" />
       <Text className="status">
         {t("DataReassignmentDialog:AllDataTransferred")}
       </Text>
@@ -123,7 +128,7 @@ const Progress = ({
 
   const interruptedNode = (
     <div className="transfer-information">
-      <InterruptIcon />
+      <InterruptIcon className="status-icon" />
       <Text className="status">
         Interrupted, some data could be transferred
       </Text>
@@ -133,22 +138,24 @@ const Progress = ({
   const you = `${`(` + t("Common:You") + `)`}`;
 
   const reassigningDataStart = (
-    <Trans
-      i18nKey={
-        isReassignCurrentUser
-          ? "ReassigningDataToItself"
-          : "ReassigningDataToAnother"
-      }
-      ns="DataReassignmentDialog"
-      t={t}
-      fromUser={fromUser}
-      toUser={toUser}
-      you={you}
-    >
-      <div className="user"> {{ fromUser }}</div>
-      <div className="user"> {{ toUser }}</div>
-      {isReassignCurrentUser ? <div className="user"> {{ you }}</div> : ""}
-    </Trans>
+    <Text lineHeight="20px">
+      <Trans
+        i18nKey={
+          isReassignCurrentUser
+            ? "ReassigningDataToItself"
+            : "ReassigningDataToAnother"
+        }
+        ns="DataReassignmentDialog"
+        t={t}
+        fromUser={fromUser}
+        toUser={toUser}
+        you={you}
+      >
+        <div className="user"> {{ fromUser }}</div>
+        <div className="user"> {{ toUser }}</div>
+        {isReassignCurrentUser ? <div className="user"> {{ you }}</div> : ""}
+      </Trans>
+    </Text>
   );
 
   return (
@@ -187,7 +194,7 @@ const Progress = ({
         percent={isAbortTransfer ? percentAllReassignment : percent}
       />
 
-      <Text className="description" noSelect>
+      <Text lineHeight="20px" className="description" noSelect>
         {t("DataReassignmentDialog:ProcessComplete")}
       </Text>
     </StyledProgress>
