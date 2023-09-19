@@ -108,7 +108,7 @@ class FilesStore {
   mainButtonMobileVisible = true;
   filesIsLoading = false;
 
-  isEmptyPage = false;
+  isEmptyPage = true;
   isLoadedFetchFiles = false;
 
   tempActionFilesIds = [];
@@ -1390,7 +1390,7 @@ class FilesStore {
               authorType ||
               roomId ||
               search ||
-              !withSubfolders ||
+              withSubfolders ||
               filterType ||
               searchInContent;
 
@@ -1826,6 +1826,8 @@ class FilesStore {
       const canViewVersionFileHistory = item.security?.ReadHistory;
       const canFillForm = item.security?.FillForms;
 
+      const canSubmitToFormGallery = item.security?.SubmitToFormGallery;
+
       const canEditFile = item.security.Edit && item.viewAccessability.WebEdit;
       const canOpenPlayer =
         item.viewAccessability.ImageView || item.viewAccessability.MediaView;
@@ -1844,6 +1846,8 @@ class FilesStore {
         "pdf-view",
         "make-form",
         "separator0",
+        "submit-to-gallery",
+        "separator-SubmitToGallery",
         "link-for-room-members",
         // "sharing-settings",
         // "external-link",
@@ -1937,6 +1941,13 @@ class FilesStore {
 
       if (!(isMasterForm && canDuplicate))
         fileOptions = this.removeOptions(fileOptions, ["make-form"]);
+
+      if (!canSubmitToFormGallery) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "submit-to-gallery",
+          "separator-SubmitToGallery",
+        ]);
+      }
 
       if (item.rootFolderType === FolderType.Archive) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -2805,6 +2816,8 @@ class FilesStore {
 
     if (items.length > 0 && this.isEmptyPage) {
       this.setIsEmptyPage(false);
+    } else if (items.length === 0 && !this.isEmptyPage) {
+      this.setIsEmptyPage(true);
     }
 
     const newItem = items.map((item) => {

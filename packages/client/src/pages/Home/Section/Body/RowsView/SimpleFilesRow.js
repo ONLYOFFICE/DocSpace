@@ -15,7 +15,7 @@ import { tablet } from "@docspace/components/utils/device";
 import CursorPalmReactSvgUrl from "PUBLIC_DIR/images/cursor.palm.react.svg?url";
 import { classNames } from "@docspace/components/utils/classNames";
 const checkedStyle = css`
-  background: ${props => props.theme.filesSection.rowView.checkedBackground};
+  background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
   ${marginStyles}
 `;
 
@@ -28,10 +28,10 @@ const StyledWrapper = styled.div`
 `;
 
 const StyledSimpleFilesRow = styled(Row)`
-  ${props => (props.checked || props.isActive) && checkedStyle};
+  ${(props) => (props.checked || props.isActive) && checkedStyle};
   height: 56px;
 
-  ${props =>
+  ${(props) =>
     !isMobile &&
     !props.isDragging &&
     css`
@@ -39,25 +39,25 @@ const StyledSimpleFilesRow = styled(Row)`
         cursor: pointer;
         ${checkedStyle}
 
-        ${props =>
+        ${(props) =>
           !props.showHotkeyBorder &&
           css`
             margin-top: -2px;
             padding-top: 1px;
             padding-bottom: 1px;
-            border-top: ${props =>
+            border-top: ${(props) =>
               `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-            border-bottom: ${props =>
+            border-bottom: ${(props) =>
               `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
           `}
       }
     `};
   position: unset;
-  cursor: ${props =>
+  cursor: ${(props) =>
     !props.isThirdPartyFolder &&
     (props.checked || props.isActive) &&
     `url(${CursorPalmReactSvgUrl}), auto`};
-  ${props =>
+  ${(props) =>
     props.inProgress &&
     css`
       pointer-events: none;
@@ -66,7 +66,7 @@ const StyledSimpleFilesRow = styled(Row)`
 
   margin-top: 0px;
 
-  ${props =>
+  ${(props) =>
     props.showHotkeyBorder &&
     css`
       border-top: 1px solid #2da7db !important;
@@ -77,7 +77,7 @@ const StyledSimpleFilesRow = styled(Row)`
       padding-right: 24px;
     `}
 
-  ${props =>
+  ${(props) =>
     props.isHighlight &&
     css`
       ${marginStyles}
@@ -85,16 +85,16 @@ const StyledSimpleFilesRow = styled(Row)`
       margin-top: -2px;
       padding-top: 1px;
       padding-bottom: 1px;
-      border-top: ${props =>
+      border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      border-bottom: ${props =>
+      border-bottom: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
 
       animation: Highlight 2s 1;
 
       @keyframes Highlight {
         0% {
-          background: ${props => props.theme.filesSection.animationColor};
+          background: ${(props) => props.theme.filesSection.animationColor};
         }
 
         100% {
@@ -105,7 +105,7 @@ const StyledSimpleFilesRow = styled(Row)`
 
 
   ::after {
-    ${props =>
+    ${(props) =>
       props.showHotkeyBorder &&
       css`
         background: #2da7db;
@@ -123,7 +123,7 @@ const StyledSimpleFilesRow = styled(Row)`
       `}
   }
 
-  ${props =>
+  ${(props) =>
     (!props.contextOptions || props.isEdit) &&
     `
     & > div:last-child {
@@ -136,7 +136,7 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .styled-element {
     height: 32px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 7px;
@@ -147,7 +147,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .row_content {
-    ${props =>
+    ${(props) =>
       props.sectionWidth > 500 && `max-width: fit-content;`}//min-width: auto
   }
 
@@ -158,7 +158,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .badge {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 8px;
@@ -169,7 +169,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .badge:last-child {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 0px;
@@ -180,7 +180,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .lock-file {
-    cursor: ${props => (props.withAccess ? "pointer" : "default")};
+    cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
     svg {
       height: 12px;
     }
@@ -203,11 +203,11 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .badges {
-    margin-top: ${props =>
+    margin-top: ${(props) =>
       props.isSmallContainer ? "1px" : props.isRooms ? "4px" : "2px"};
     margin-bottom: 0px;
 
-    ${props =>
+    ${(props) =>
       props.isSmallContainer &&
       css`
         .tablet-pinned {
@@ -221,13 +221,15 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .badge {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
-            margin-left: ${props => (props.isSmallContainer ? "8px" : "24px")};
+            margin-left: ${(props) =>
+              props.isSmallContainer ? "8px" : "24px"};
           `
         : css`
-            margin-right: ${props => (props.isSmallContainer ? "8px" : "24px")};
+            margin-right: ${(props) =>
+              props.isSmallContainer ? "8px" : "24px"};
           `}
   }
 
@@ -238,21 +240,21 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .expandButton {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
-            margin-right: ${props => (!props.folderCategory ? "6px" : "0")};
+            margin-right: ${(props) => (!props.folderCategory ? "6px" : "0")};
           `
         : css`
-            margin-left: ${props => (!props.folderCategory ? "6px" : "0")};
+            margin-left: ${(props) => (!props.folderCategory ? "6px" : "0")};
           `}
     padding-top: 0px;
   }
   .expandButton > div:first-child {
-    ${props =>
+    ${(props) =>
       props.folderCategory &&
       css`
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 padding-right: 0 !important;
@@ -266,7 +268,7 @@ const StyledSimpleFilesRow = styled(Row)`
 
 StyledSimpleFilesRow.defaultProps = { theme: Base };
 
-const SimpleFilesRow = props => {
+const SimpleFilesRow = (props) => {
   const {
     item,
     sectionWidth,
@@ -309,11 +311,14 @@ const SimpleFilesRow = props => {
       icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
-      defaultRoomIcon={item.defaultRoomIcon}
+      title={item.title}
+      logo={item.logo}
+      color={item.logo?.color}
+      isArchive={item.isArchive}
     />
   );
 
-  const onDragOver = dragOver => {
+  const onDragOver = (dragOver) => {
     if (dragOver !== isDragOver) {
       setIsDragOver(dragOver);
     }
@@ -347,7 +352,8 @@ const SimpleFilesRow = props => {
           : checkedProps || isActive
           ? "row-selected"
           : ""
-      }`}>
+      }`}
+    >
       <DragAndDrop
         data-title={item.title}
         value={value}
@@ -357,7 +363,8 @@ const SimpleFilesRow = props => {
         dragging={dragging && isDragging}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
-        style={dragStyles}>
+        style={dragStyles}
+      >
         <StyledSimpleFilesRow
           key={item.id}
           data={item}
@@ -390,7 +397,8 @@ const SimpleFilesRow = props => {
           isSmallContainer={isSmallContainer}
           isRooms={isRooms}
           folderCategory={folderCategory}
-          isHighlight={isHighlight}>
+          isHighlight={isHighlight}
+        >
           <FilesRowContent
             item={item}
             sectionWidth={sectionWidth}

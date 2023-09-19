@@ -45,6 +45,7 @@ public class DbFolder : IDbFile, IDbSearch, ISearchItem
     public int FilesCount { get; set; }
     public bool Private { get; set; }
     public bool HasLogo { get; set; }
+    public string Color { get; set; }
 
     public DbTenant Tenant { get; set; }
 
@@ -145,6 +146,12 @@ public static class DbFolderExtension
                 .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.HasLogo).HasColumnName("has_logo");
+
+            entity.Property(e => e.Color)
+                .HasColumnName("color")
+                .HasColumnType("char(6)")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
         });
     }
     public static void PgSqlAddDbFolder(this ModelBuilder modelBuilder)
@@ -158,7 +165,7 @@ public static class DbFolderExtension
 
             entity.HasIndex(e => new { e.TenantId, e.ParentId })
                 .HasDatabaseName("parent_id");
-            
+
             entity.HasIndex(e => new { e.TenantId, e.ParentId, e.Title })
                 .HasDatabaseName("tenant_id_parent_id_title");
 

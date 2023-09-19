@@ -3135,10 +3135,20 @@ const Base = {
     },
   },
 
+  submitToGalleryTile: {
+    bodyText: "#555F65",
+    closeIconFill: "#657077",
+  },
+
   infoBlock: {
     background: "#F8F9F9",
     headerColor: "#333",
     descriptionColor: "#555F65",
+  },
+
+  roomIcon: {
+    backgroundArchive: "#A3A9AE",
+    opacityBackground: "1",
   },
 };
 
