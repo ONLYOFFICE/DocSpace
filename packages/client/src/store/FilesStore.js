@@ -474,7 +474,7 @@ class FilesStore {
 
       api.files
         .getFolderInfo(folder.id)
-        .then(() => this.setFolder(folderInfo))
+        .then((folderInfo) => this.setFolder(folderInfo))
         .catch(() => {
           // console.log("Folder deleted")
         });
