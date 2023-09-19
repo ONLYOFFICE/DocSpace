@@ -122,7 +122,7 @@ const DataReassignmentDialog = ({
         if (!res) return;
 
         if (res.error) {
-          console.log(res.error);
+          toastr.error(res.error);
           return;
         }
 
