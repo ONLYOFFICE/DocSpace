@@ -1246,7 +1246,7 @@ class ContextOptionsStore {
         label: t("LeaveTheRoom"),
         icon: LeaveRoomSvgUrl,
         onClick: this.onLeaveRoom,
-        disabled: this.treeFoldersStore.isArchiveFolder,
+        disabled: this.treeFoldersStore.isArchiveFolder || !item.inRoom,
       },
       {
         id: "option_unarchive-room",
