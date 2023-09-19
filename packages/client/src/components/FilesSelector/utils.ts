@@ -40,6 +40,7 @@ export const getAcceptButtonLabel = (
   if (isCopy) return t("Translations:CopyHere");
   if (isRestoreAll) return t("Common:RestoreHere");
   if (filterParam === FilesSelectorFilterTypes.DOCX) return t("Common:Create");
+  // if (filterParam === FilesSelectorFilterTypes.DOCXF) return t("Common:SubmitToGallery");
   if (!!filterParam) return t("Common:SaveButton");
 
   return t("Common:SaveHereButton");

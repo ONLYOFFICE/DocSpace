@@ -312,6 +312,10 @@ export const useFilesHelper = ({
           case FilesSelectorFilterTypes.GZ:
             filter.filterType = FilterType.ArchiveOnly;
             break;
+
+          case FilesSelectorFilterTypes.DOCXF:
+            filter.filterType = FilterType.OFormTemplateOnly;
+            break;
         }
       }
 

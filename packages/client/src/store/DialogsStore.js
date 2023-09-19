@@ -46,6 +46,7 @@ class DialogsStore {
 
   removeItem = null;
   connectItem = null;
+  formItem = null;
   destFolderId = null;
   newFilesIds = null;
   newFiles = null;
@@ -66,6 +67,7 @@ class DialogsStore {
   changeUserTypeDialogVisible = false;
   editLinkPanelIsVisible = false;
   embeddingPanelIsVisible = false;
+  submitToGalleryDialogVisible = false;
   linkParams = null;
 
   constructor(
@@ -343,6 +345,19 @@ class DialogsStore {
     this.changeUserTypeDialogVisible = changeUserTypeDialogVisible;
   };
 
+  setSubmitToGalleryDialogVisible = (submitToGalleryDialogVisible) => {
+    this.submitToGalleryDialogVisible = submitToGalleryDialogVisible;
+  };
+
+  setFormItem = (formItem) => {
+    if (formItem && !formItem.exst) {
+      const splitted = formItem.title.split(".");
+      formItem.title = splitted.slice(0, -1).join(".");
+      formItem.exst = splitted.length !== 1 ? `.${splitted.at(-1)}` : null;
+    }
+    this.formItem = formItem;
+  };
+
   setEditLinkPanelIsVisible = (editLinkPanelIsVisible) => {
     this.editLinkPanelIsVisible = editLinkPanelIsVisible;
   };
@@ -395,6 +410,7 @@ class DialogsStore {
       this.createRoomDialogVisible ||
       this.createRoomConfirmDialogVisible ||
       this.changeUserTypeDialogVisible ||
+      this.submitToGalleryDialogVisible ||
       this.editLinkPanelIsVisible ||
       this.unsavedChangesDialogVisible ||
       this.deleteLinkDialogVisible ||

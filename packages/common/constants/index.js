@@ -78,6 +78,7 @@ export const FilesSelectorFilterTypes = Object.freeze({
   DOCX: "DOCX",
   IMG: "IMG",
   GZ: "GZ",
+  DOCXF: "DOCXF",
 });
 /**
  * Enum for filter subject.
