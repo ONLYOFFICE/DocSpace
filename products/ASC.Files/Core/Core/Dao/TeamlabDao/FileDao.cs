@@ -643,7 +643,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             using var tr = await filesDbContext.Database.BeginTransactionAsync();
 
             await Queries.DeleteDbFilesByVersionAsync(filesDbContext, TenantID, file.Id, file.Version);
-            await Queries.UpdateDbFilesByVersionAsync(filesDbContext, TenantID, file.Id, file.Version);
+            await Queries.UpdateDbFilesByVersionAsync(filesDbContext, TenantID, file.Id, file.Version - 1);
 
             await tr.CommitAsync();
         });
