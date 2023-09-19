@@ -151,12 +151,12 @@ public static class ShortUrl
         return result;
     }
 
-    public static long Decode(string str)
+    public static ulong Decode(string str)
     {
-        long num = 0;
+        ulong num = 0;
         for (var i = 0; i < str.Length; i++)
         {
-            num = num * _base + Alphabet.IndexOf(str.ElementAt(i));
+            num = num * (ulong)(_base + Alphabet.IndexOf(str.ElementAt(i)));
         }
         return num;
     }

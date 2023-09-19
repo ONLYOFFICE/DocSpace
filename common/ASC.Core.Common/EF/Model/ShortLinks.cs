@@ -28,7 +28,7 @@
 namespace ASC.Core.Common.EF.Model;
 public class ShortLink
 {
-    public long Id { get; set; }
+    public ulong Id { get; set; }
     public int TenantId { get; set; }
     public string Short { get; set; }
     public string Link { get; set; }
@@ -66,13 +66,11 @@ public static class ShortLinksExtension
                 .HasDatabaseName("tenant_id");
 
             entity.Property(e => e.Id)
-                .HasColumnName("id")
-                .ValueGeneratedOnAdd()
-                .HasColumnType("bigint(19)");
+                .HasColumnName("id");
 
             entity.Property(e => e.Short)
                 .HasColumnName("short")
-                .HasColumnType("varchar(15)")
+                .HasColumnType("char(15)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci")
                 .IsRequired(false);
@@ -80,7 +78,8 @@ public static class ShortLinksExtension
             entity.Property(e => e.TenantId)
                 .IsRequired()
                 .HasColumnName("tenant_id")
-                .HasColumnType("int(10)");
+                .HasColumnType("int(10)")
+                .HasDefaultValue("-1");
 
             entity.Property(e => e.Link)
                 .HasColumnName("link")
@@ -108,13 +107,11 @@ public static class ShortLinksExtension
                 .HasDatabaseName("tenant_id");
 
             entity.Property(e => e.Id)
-                .HasColumnName("id")
-                .ValueGeneratedOnAdd()
-                .HasColumnType("bigint(19)");
+                .HasColumnName("id");
 
             entity.Property(e => e.Short)
                 .HasColumnName("short")
-                .HasColumnType("varchar(15)")
+                .HasColumnType("char(15)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci")
                 .IsRequired(false);
@@ -128,7 +125,8 @@ public static class ShortLinksExtension
             entity.Property(e => e.TenantId)
                 .IsRequired()
                 .HasColumnName("tenant_id")
-                .HasColumnType("int(10)");
+                .HasColumnType("int(10)")
+                .HasDefaultValue("-1");
         });
     }
 }
