@@ -1,6 +1,6 @@
 import { Link, ModalDialog } from "@docspace/components";
 import { Button } from "@docspace/components";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { observer, inject } from "mobx-react";
 import { Trans, withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
@@ -24,6 +24,8 @@ const SubmitToFormGallery = ({
   submitToFormGallery,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const abortControllerRef = useRef(new AbortController());
 
   let formItemIsSet = !!formItem;
 
@@ -59,7 +61,12 @@ const SubmitToFormGallery = ({
       })
       .catch((err) => onError(err));
 
-    await submitToFormGallery(file, formItem.title, "en")
+    await submitToFormGallery(
+      file,
+      formItem.title,
+      "en",
+      abortControllerRef.current?.signal
+    )
       .then((res) => {
         if (!res.data) throw new Error(res.statusText);
         window.location.replace(res.data);
@@ -69,6 +76,7 @@ const SubmitToFormGallery = ({
   };
 
   const onClose = () => {
+    abortControllerRef.current?.abort();
     setIsSubmitting(false);
     setFormItem(null);
     setIsSelectingForm(false);
@@ -76,8 +84,10 @@ const SubmitToFormGallery = ({
   };
 
   const onError = (err) => {
-    console.error(err);
-    toastr.error(err);
+    if (!err.message === "canceled") {
+      console.error(err);
+      toastr.error(err);
+    }
     onClose();
   };
 

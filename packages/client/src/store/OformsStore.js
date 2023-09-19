@@ -36,12 +36,13 @@ class OformsStore {
     });
   };
 
-  submitToFormGallery = async (file, formName, language) => {
+  submitToFormGallery = async (file, formName, language, signal = null) => {
     const res = await submitToGallery(
       this.authStore.settingsStore.formGallery.uploadUrl,
       file,
       formName,
-      language
+      language,
+      signal
     );
 
     return res;
