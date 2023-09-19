@@ -227,10 +227,10 @@ public class SettingsController : BaseSettingsController
 
             settings.FormGallery = new FormGalleryDto
             {
-                Url = _configuration["formgallery:url"] ?? "",
-                Ext = _configuration["formgallery:ext"] ?? "",
-                UploadUrl = _configuration["formgallery:upload:url"] ?? "",
-                UploadExt = _configuration["formgallery:upload:ext"] ?? ""
+                Url = _configuration["files:oform:url"] ?? "",
+                Ext = _configuration["files:oform:ext"] ?? "",
+                UploadUrl = _configuration["files:oform:upload:url"] ?? "",
+                UploadExt = _configuration["files:oform:upload:ext"] ?? ""
             };
         }
         else
