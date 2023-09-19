@@ -90,6 +90,10 @@ const StyledProgress = styled.div`
   .in-progress-loader {
     height: 20px;
   }
+
+  .data-start {
+    line-height: 20px;
+  }
 `;
 
 const percentRoomReassignment = 70;
@@ -136,30 +140,27 @@ const Progress = ({
   const you = `${`(` + t("Common:You") + `)`}`;
 
   const reassigningDataStart = (
-    <Text lineHeight="20px">
-      <Trans
-        i18nKey={
-          isReassignCurrentUser
-            ? "ReassigningDataToItself"
-            : "ReassigningDataToAnother"
-        }
-        ns="DataReassignmentDialog"
-        t={t}
-        fromUser={fromUser}
-        toUser={toUser}
-        you={you}
-      >
-        <div className="user"> {{ fromUser }}</div>
-        <div className="user"> {{ toUser }}</div>
-        {isReassignCurrentUser ? <div className="user"> {{ you }}</div> : ""}
-      </Trans>
-    </Text>
+    <Trans
+      i18nKey={
+        isReassignCurrentUser
+          ? "ReassigningDataToItself"
+          : "ReassigningDataToAnother"
+      }
+      ns="DataReassignmentDialog"
+      t={t}
+      fromUser={fromUser}
+      toUser={toUser}
+      you={you}
+    >
+      <div className="user"> {{ fromUser }}</div>
+      <div className="user"> {{ toUser }}</div>
+      {isReassignCurrentUser ? <div className="user"> {{ you }}</div> : ""}
+    </Trans>
   );
 
   return (
     <StyledProgress>
-      <div>{reassigningDataStart}</div>
-
+      <div className="data-start"> {reassigningDataStart}</div>
       <div className="progress-container">
         <div className="progress-section">
           <Text className="progress-section-text" noSelect>

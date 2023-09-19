@@ -177,8 +177,8 @@ const DataReassignmentDialog = ({
         visible={visible}
         onClose={onClosePeopleSelector}
         containerVisible={selectorVisible}
-        withFooterBorder
-        withBodyScroll
+        withFooterBorder={true}
+        withBodyScroll={true}
       >
         <Backdrop
           onClick={onClosePeopleSelector}
