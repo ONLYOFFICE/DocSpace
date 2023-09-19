@@ -315,7 +315,7 @@ public class WebPluginManager
     }
 
 
-    public async Task<List<T>> GetSystemWebPluginsAsync<T>() where T : IMapFrom<DbWebPlugin>
+    public async Task<List<T>> GetSystemWebPluginsAsync<T>()
     {
         var key = GetSystemCacheKey();
 
@@ -331,7 +331,7 @@ public class WebPluginManager
         return systemPlugins;
     }
 
-    private async Task<List<T>> GetSystemWebPluginsFromUrlAsync<T>() where T : IMapFrom<DbWebPlugin>
+    private async Task<List<T>> GetSystemWebPluginsFromUrlAsync<T>()
     {
         if (string.IsNullOrEmpty(_webPluginSettings.SystemUrl))
         {

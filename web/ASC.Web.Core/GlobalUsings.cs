@@ -50,7 +50,6 @@ global using ASC.AuditTrail.Repositories;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Log;
-global using ASC.Common.Mapping;
 global using ASC.Common.Notify.Engine;
 global using ASC.Common.Security;
 global using ASC.Common.Security.Authentication;

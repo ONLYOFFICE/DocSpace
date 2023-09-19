@@ -81,15 +81,17 @@ public class WebPluginsController : BaseSettingsController
     [HttpGet("webplugins")]
     public async Task<IEnumerable<WebPluginDto>> GetWebPluginsAsync(bool? enabled = null)
     {
-        var systemDtoPlugins = await _webPluginManager.GetSystemWebPluginsAsync<WebPluginDto>();
+        var outDto = await _webPluginManager.GetSystemWebPluginsAsync<WebPluginDto>();
+
+        if (enabled.HasValue)
+        {
+            outDto = outDto.Where(i => i.Enabled == enabled).ToList();
+        }
 
         var dbPlugins = await _webPluginManager.GetWebPluginsAsync(Tenant.Id, enabled);
 
         var dbDtoPlugins = _mapper.Map<IEnumerable<DbWebPlugin>, IEnumerable<WebPluginDto>>(dbPlugins);
 
-        var outDto = new List<WebPluginDto>();
-
-        outDto.AddRange(systemDtoPlugins.Where(i => !enabled.HasValue || i.Enabled == enabled));
         outDto.AddRange(dbDtoPlugins);
 
         if (outDto.Any())
