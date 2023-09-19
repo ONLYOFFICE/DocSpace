@@ -12,6 +12,7 @@ import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg
 import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
 import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
+import PluginMoreReactSvgUrl from "PUBLIC_DIR/images/plugin.more.react.svg?url";
 import React from "react";
 
 import { isMobileOnly } from "react-device-detect";
@@ -253,6 +254,17 @@ const ArticleMainButtonContent = (props) => {
   React.useEffect(() => {
     if (isRoomsFolder || isSettingsPage) return;
 
+    const pluginItems = [];
+
+    if (mainButtonItemsList && enablePlugins && !isAccountsPage) {
+      mainButtonItemsList.forEach((option) => {
+        pluginItems.push({
+          key: option.key,
+          ...option.value,
+        });
+      });
+    }
+
     const formActions = [
       {
         id: "actions_template",
@@ -410,6 +422,18 @@ const ArticleMainButtonContent = (props) => {
 
     const menuModel = [...actions];
 
+    if (pluginItems.length > 0) {
+      menuModel.push({
+        id: "actions_more-plugins",
+        className: "main-button_drop-down",
+        icon: PluginMoreReactSvgUrl,
+        label: t("Common:More"),
+        disabled: false,
+        key: "more-plugins",
+        items: pluginItems,
+      });
+    }
+
     menuModel.push({
       isSeparator: true,
       key: "separator",
@@ -417,15 +441,6 @@ const ArticleMainButtonContent = (props) => {
 
     menuModel.push(...uploadActions);
     setUploadActions(uploadActions);
-
-    if (mainButtonItemsList && enablePlugins && !isAccountsPage) {
-      mainButtonItemsList.forEach((option) => {
-        menuModel.splice(option.value.position, 0, {
-          key: option.key,
-          ...option.value,
-        });
-      });
-    }
 
     setModel(menuModel);
     setActions(actions);

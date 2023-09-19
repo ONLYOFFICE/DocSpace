@@ -257,23 +257,6 @@ export default inject(
       setIsSectionFilterLoading(param);
     };
 
-    const { contextMenuItemsList, getContextMenuKeysByType } = pluginStore;
-
-    const pluginContextMenuKeys = [
-      ...(getContextMenuKeysByType() || []),
-      ...(getContextMenuKeysByType(PluginFileType.Image) || []),
-      ...(getContextMenuKeysByType(PluginFileType.Video) || []),
-    ];
-
-    const pluginContextMenuItems =
-      contextMenuItemsList?.filter((i) => {
-        if (pluginContextMenuKeys.includes(i.key)) {
-          return true;
-        }
-
-        return false;
-      }) || [];
-
     const {
       files,
       userAccess,
@@ -322,6 +305,27 @@ export default inject(
       onPreviewClick,
       onCopyLink,
     } = contextOptionsStore;
+
+    const { contextMenuItemsList, getContextMenuKeysByType } = pluginStore;
+
+    const item = playlist.find((p) => p.fileId === currentMediaFileId);
+
+    const fileExst = item?.fileExst;
+
+    const pluginContextMenuKeys = [
+      ...(getContextMenuKeysByType() || []),
+      ...(getContextMenuKeysByType(PluginFileType.Image, fileExst) || []),
+      ...(getContextMenuKeysByType(PluginFileType.Video, fileExst) || []),
+    ];
+
+    const pluginContextMenuItems =
+      contextMenuItemsList?.filter((i) => {
+        if (pluginContextMenuKeys.includes(i.key)) {
+          return true;
+        }
+
+        return false;
+      }) || [];
 
     return {
       files,
