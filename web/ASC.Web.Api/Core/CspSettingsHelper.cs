@@ -150,11 +150,14 @@ public class CspSettingsHelper
 
         options.Add(defaultOptions);
 
-        options.Add(new CspOptions()
+        if (Uri.IsWellFormedUriString(_filesLinkUtility.DocServiceUrl, UriKind.Absolute))
         {
-            Def = new List<string> { _filesLinkUtility.DocServiceUrl },
-            Script = new List<string> { _filesLinkUtility.DocServiceUrl },
-        });
+            options.Add(new CspOptions()
+            {
+                Def = new List<string> { _filesLinkUtility.DocServiceUrl },
+                Script = new List<string> { _filesLinkUtility.DocServiceUrl },
+            });
+        }
 
         var firebaseDomain = _configuration["firebase:authDomain"];
         if (!string.IsNullOrEmpty(firebaseDomain))
