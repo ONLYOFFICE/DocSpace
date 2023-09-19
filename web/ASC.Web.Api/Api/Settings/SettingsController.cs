@@ -224,6 +224,14 @@ public class SettingsController : BaseSettingsController
             }
 
             settings.Plugins.Allow = _configuration.GetSection("plugins:allow").Get<List<string>>() ?? new List<string>();
+
+            settings.FormGallery = new FormGalleryDto
+            {
+                Url = _configuration["formgallery:url"] ?? "",
+                Ext = _configuration["formgallery:ext"] ?? "",
+                UploadUrl = _configuration["formgallery:upload:url"] ?? "",
+                UploadExt = _configuration["formgallery:upload:ext"] ?? ""
+            };
         }
         else
         {
