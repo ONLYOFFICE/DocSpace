@@ -1112,8 +1112,12 @@ export default inject(
       categoryType,
     } = filesStore;
 
-    const { setIsSectionFilterLoading, showHeaderLoader, isLoading } =
-      clientLoadingStore;
+    const {
+      setIsSectionFilterLoading,
+      showHeaderLoader,
+
+      isLoading,
+    } = clientLoadingStore;
 
     const setIsLoading = (param) => {
       setIsSectionFilterLoading(param);

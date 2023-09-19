@@ -26,7 +26,7 @@ export const getHeaderLabel = (
     return t("Translations:CreateMasterFormFromFile");
   if (!!filterParam) return t("Common:SelectFile");
 
-  return t("Common:Save");
+  return t("Common:SaveButton");
 };
 
 export const getAcceptButtonLabel = (

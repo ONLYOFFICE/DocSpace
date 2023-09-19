@@ -254,6 +254,7 @@ const PureHome = (props) => {
         primaryProgressDataVisible || secondaryProgressDataStoreVisible;
 
       sectionProps.isEmptyPage = isEmptyPage;
+      sectionProps.isTrashFolder = isRecycleBinFolder;
     }
   }
 

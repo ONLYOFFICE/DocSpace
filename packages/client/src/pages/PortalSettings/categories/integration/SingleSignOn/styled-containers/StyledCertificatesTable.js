@@ -24,7 +24,8 @@ const StyledCertificatesTable = styled.div`
   }
 
   .row {
-    width: 350px;
+    max-width: 520px;
+    width: 100%;
     display: flex;
     gap: 12px;
     align-items: center;

@@ -164,6 +164,7 @@ const ControlButtons = ({
   onPlusClick,
   isFrame,
   isPublicRoom,
+  isTrashFolder,
 }) => {
   const toggleInfoPanelAction = () => {
     toggleInfoPanel && toggleInfoPanel();
@@ -205,6 +206,7 @@ const ControlButtons = ({
             withMenu={withMenu}
             //onPlusClick={onPlusClick}
             title={titles?.actions}
+            isTrashFolder={isTrashFolder}
           />
 
           {!isDesktop && (

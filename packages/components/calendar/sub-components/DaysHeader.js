@@ -33,7 +33,7 @@ export const DaysHeader = ({
       <Title onClick={onTitleClick} className="days-header" isMobile={isMobile}>
         {observedDate.format("MMMM").charAt(0).toUpperCase() +
           observedDate.format("MMMM").substring(1)}{" "}
-        {observedDate.year()}
+        {observedDate.format("YYYY")}
         <HeaderActionIcon isMobile={isMobile} />
       </Title>
       <HeaderButtons
