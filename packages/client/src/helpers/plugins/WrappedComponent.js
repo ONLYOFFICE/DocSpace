@@ -217,6 +217,7 @@ const ComponentPure = ({
                 setSettingsModalRequestRunning(true);
             }
           }
+
           const message = await elementProps.onClick();
 
           messageActions(
@@ -302,7 +303,9 @@ const ComponentPure = ({
       }
 
       case PluginComponents.iFrame: {
-        return <iframe {...elementProps}></iframe>;
+        return (
+          <iframe {...elementProps} style={{ minHeight: "100%" }}></iframe>
+        );
       }
 
       case PluginComponents.img: {

@@ -25,9 +25,7 @@ const SettingsPluginDialog = ({
 
   ...rest
 }) => {
-  console.log(rest);
-
-  const { t } = useTranslation("WebPlugins", "Common");
+  const { t } = useTranslation(["WebPlugins", "Common", "Files", "People"]);
 
   const [customSettingsProps, setCustomSettingsProps] =
     React.useState(settings);

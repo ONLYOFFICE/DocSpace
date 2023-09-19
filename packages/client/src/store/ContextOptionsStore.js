@@ -999,8 +999,6 @@ class ContextOptionsStore {
       });
     }
 
-    console.log(pluginItems);
-
     const optionsModel = [
       {
         id: "option_select",

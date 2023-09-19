@@ -2,5 +2,7 @@
   "Description": "You can embed software modules to extend the functionality of DocSpace. Click download plugin and select a file in zip archive format.",
   "Plugins": "Plugins",
   "UploadPlugin": "Upload plugin",
-  "Metadata": "Metadata"
+  "Metadata": "Metadata",
+  "NeedSettings": "Need enter settings",
+  "NotNeedSettings": "Not need enter settings"
 }

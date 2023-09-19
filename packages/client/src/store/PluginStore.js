@@ -11,6 +11,7 @@ import {
   PluginScopes,
   PluginUsersType,
   PluginDevices,
+  PluginStatus,
 } from "SRC_DIR/helpers/plugins/constants";
 import { getPluginUrl, messageActions } from "SRC_DIR/helpers/plugins/utils";
 
@@ -86,7 +87,40 @@ class PluginStore {
     const pluginIdx = this.plugins.findIndex((p) => p.id === id);
 
     if (pluginIdx !== -1) {
+      if (this.plugins[pluginIdx].status === newStatus) return;
+
       this.plugins[pluginIdx].status = newStatus;
+
+      if (
+        newStatus === PluginStatus.active &&
+        this.plugins[pluginIdx].enabled
+      ) {
+        if (this.plugins[pluginIdx].scopes.includes(PluginScopes.ContextMenu)) {
+          this.updateContextMenuItems(this.plugins[pluginIdx].id);
+        }
+
+        if (this.plugins[pluginIdx].scopes.includes(PluginScopes.InfoPanel)) {
+          this.updateInfoPanelItems(this.plugins[pluginIdx].id);
+        }
+
+        if (this.plugins[pluginIdx].scopes.includes(PluginScopes.MainButton)) {
+          this.updateMainButtonItems(this.plugins[pluginIdx].id);
+        }
+
+        if (this.plugins[pluginIdx].scopes.includes(PluginScopes.ProfileMenu)) {
+          this.updateProfileMenuItems(this.plugins[pluginIdx].id);
+        }
+
+        if (
+          this.plugins[pluginIdx].scopes.includes(PluginScopes.EventListener)
+        ) {
+          this.updateEventListenerItems(this.plugins[pluginIdx].id);
+        }
+
+        if (this.plugins[pluginIdx].scopes.includes(PluginScopes.File)) {
+          this.updateFileItems(this.plugins[pluginIdx].id);
+        }
+      }
     }
   };
 
@@ -178,7 +212,7 @@ class PluginStore {
     frameDoc.body.appendChild(script);
   };
 
-  installPlugin = (plugin, addToList = true) => {
+  installPlugin = async (plugin, addToList = true) => {
     if (addToList) {
       const idx = this.plugins.findIndex((p) => p.id === plugin.id);
 
@@ -196,8 +230,12 @@ class PluginStore {
     }
 
     if (plugin.onLoadCallback) {
-      plugin.onLoadCallback();
+      await plugin.onLoadCallback();
+
+      this.updatePluginStatus(plugin.id);
     }
+
+    if (plugin.status === PluginStatus.hide) return;
 
     if (plugin.scopes.includes(PluginScopes.ContextMenu)) {
       this.updateContextMenuItems(plugin.id);
@@ -377,6 +415,10 @@ class PluginStore {
           if (!item.fileType) return;
 
           if (item.fileType.includes(PluginFileType.Image)) {
+            const correctFileExt = item.fileExt
+              ? item.fileExt.includes(fileExst)
+              : true;
+
             const correctUserType = item.usersType
               ? item.usersType.includes(userRole)
               : true;
@@ -385,7 +427,8 @@ class PluginStore {
               ? item.devices.includes(device)
               : true;
 
-            if (correctUserType && correctDevice) keys.push(item.key);
+            if (correctUserType && correctDevice && correctFileExt)
+              keys.push(item.key);
           }
         });
         break;

@@ -110,13 +110,12 @@ const PluginDialog = ({
   }, []);
 
   const onLoadAction = React.useCallback(async () => {
-    if (onLoad) {
-      const res = await onLoad();
-
-      setDialogHeaderProps(res.newDialogHeader);
-      setDialogBodyProps(res.newDialogBody);
-      setDialogFooterProps(res.newDialogFooter);
-    }
+    // if (onLoad) {
+    //   const res = await onLoad();
+    //   setDialogHeaderProps(res.newDialogHeader);
+    //   setDialogBodyProps(res.newDialogBody);
+    //   setDialogFooterProps(res.newDialogFooter);
+    // }
   }, [onLoad]);
 
   React.useEffect(() => {
