@@ -130,7 +130,10 @@ const DeleteProfileEverDialogComponent = (props) => {
   };
 
   const onDeleteProfileEver = () => {
-    if (!needReassignData) onDeleteUser(user.id);
+    if (!needReassignData) {
+      onDeleteUser(user.id);
+      return;
+    }
 
     setDialogData(user);
 
