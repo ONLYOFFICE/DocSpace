@@ -83,7 +83,6 @@ public class TextileStyler : IPatternStyler
         var unsubscribeText = GetUnsubscribeText(message, mailSettings);
 
         InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent);
-        var rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
 
         message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
                                .Replace("%LOGO%", logoImg)
@@ -92,9 +91,7 @@ public class TextileStyler : IPatternStyler
                                .Replace("%FOOTER%", footerContent)
                                .Replace("%FOOTERSOCIAL%", footerSocialContent)
                                .Replace("%TEXTFOOTER%", unsubscribeText)
-                               .Replace("%IMAGEPATH%", imagePath)
-                               .Replace("%CSSDIRECTION%", rtl ? "direction:rtl" : "direction:ltr")
-                               .Replace("%CSSALIGN%", rtl ? "text-align:right" : "text-align:left");
+                               .Replace("%IMAGEPATH%", imagePath);
     }
 
     private static string GetTemplate(NoticeMessage message)

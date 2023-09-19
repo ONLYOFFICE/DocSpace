@@ -79,13 +79,8 @@ StyledUploadIcon.defaultProps = { theme: Base };
 
 const UploadXML = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
-  const {
-    enableSso,
-    uploadXmlUrl,
-    isLoadingXml,
-    uploadByUrl,
-    uploadXml,
-  } = props;
+  const { enableSso, uploadXmlUrl, isLoadingXml, uploadByUrl, uploadXml } =
+    props;
 
   const isDisabledProp = {
     disabled: !enableSso || uploadXmlUrl.trim().length === 0 || isLoadingXml,
@@ -143,13 +138,8 @@ const UploadXML = (props) => {
 };
 
 export default inject(({ ssoStore }) => {
-  const {
-    enableSso,
-    uploadXmlUrl,
-    isLoadingXml,
-    uploadByUrl,
-    uploadXml,
-  } = ssoStore;
+  const { enableSso, uploadXmlUrl, isLoadingXml, uploadByUrl, uploadXml } =
+    ssoStore;
 
   return {
     enableSso,
