@@ -32,6 +32,7 @@ public class Logo
     public string Large { get; set; }
     public string Medium { get; set; }
     public string Small { get; set; }
+    public string Color { get; set; }
 
     public bool IsDefault()
     {

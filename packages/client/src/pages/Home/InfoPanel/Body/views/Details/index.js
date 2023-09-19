@@ -9,7 +9,7 @@ import Text from "@docspace/components/text";
 import DetailsHelper from "../../helpers/DetailsHelper.js";
 import { StyledNoThumbnail, StyledThumbnail } from "../../styles/details.js";
 import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
-
+import RoomIcon from "@docspace/client/src/components/RoomIcon";
 const Details = ({
   t,
   selection,
@@ -67,6 +67,9 @@ const Details = ({
 
   //console.log("InfoPanel->Details render", { selection });
 
+  const isLoadedRoomIcon = !!selection.logo?.large;
+  const showDefaultRoomIcon = !isLoadedRoomIcon && selection.isRoom;
+
   return (
     <>
       {selection.thumbnailUrl && !isThumbnailError ? (
@@ -86,16 +89,26 @@ const Details = ({
         </StyledThumbnail>
       ) : (
         <StyledNoThumbnail>
-          <img
-            className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
-              selection.isRoom &&
-              !selection.isArchive &&
-              selection.logo?.large &&
-              "custom-logo"
-            }`}
-            src={currentIcon}
-            alt="thumbnail-icon-big"
-          />
+          {showDefaultRoomIcon ? (
+            <RoomIcon
+              color={selection.logo.color}
+              title={selection.title}
+              isArchive={selection.isArchive}
+              size="96px"
+              radius="16px"
+            />
+          ) : (
+            <img
+              className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
+                selection.isRoom &&
+                !selection.isArchive &&
+                selection.logo?.large &&
+                "custom-logo"
+              }`}
+              src={currentIcon}
+              alt="thumbnail-icon-big"
+            />
+          )}
         </StyledNoThumbnail>
       )}
 

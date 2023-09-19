@@ -29,7 +29,6 @@ namespace ASC.Web.Files.Services.WCFService;
 [Scope]
 public class FileStorageService //: IFileStorageService
 {
-    private static readonly FileEntrySerializer _serializer = new FileEntrySerializer();
     private readonly CompressToArchive _compressToArchive;
     private readonly OFormRequestManager _oFormRequestManager;
     private readonly ThirdPartySelector _thirdPartySelector;
@@ -46,7 +45,6 @@ public class FileStorageService //: IFileStorageService
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly CustomNamingPeople _customNamingPeople;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly PathProvider _pathProvider;
@@ -88,6 +86,7 @@ public class FileStorageService //: IFileStorageService
     private readonly QuotaSocketManager _quotaSocketManager;
     private readonly ExternalShare _externalShare;
     private readonly TenantUtil _tenantUtil;
+    private readonly RoomLogoManager _roomLogoManager;
 
     public FileStorageService(
         Global global,
@@ -100,7 +99,6 @@ public class FileStorageService //: IFileStorageService
         FilesLinkUtility filesLinkUtility,
         BaseCommonLinkUtility baseCommonLinkUtility,
         CoreBaseSettings coreBaseSettings,
-        CustomNamingPeople customNamingPeople,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         IHttpContextAccessor httpContextAccessor,
         ILoggerProvider optionMonitor,
@@ -147,7 +145,8 @@ public class FileStorageService //: IFileStorageService
         TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
         QuotaSocketManager quotaSocketManager,
         ExternalShare externalShare,
-        TenantUtil tenantUtil)
+        TenantUtil tenantUtil,
+        RoomLogoManager roomLogoManager)
     {
         _global = global;
         _globalStore = globalStore;
@@ -159,7 +158,6 @@ public class FileStorageService //: IFileStorageService
         _filesLinkUtility = filesLinkUtility;
         _baseCommonLinkUtility = baseCommonLinkUtility;
         _coreBaseSettings = coreBaseSettings;
-        _customNamingPeople = customNamingPeople;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _httpContextAccessor = httpContextAccessor;
         _pathProvider = pathProvider;
@@ -207,6 +205,7 @@ public class FileStorageService //: IFileStorageService
         _quotaSocketManager = quotaSocketManager;
         _externalShare = externalShare;
         _tenantUtil = tenantUtil;
+        _roomLogoManager = roomLogoManager;
     }
 
     public async Task<Folder<T>> GetFolderAsync<T>(T folderId)
@@ -614,7 +613,7 @@ public class FileStorageService //: IFileStorageService
             newFolder.ParentId = parent.Id;
             newFolder.FolderType = folderType;
             newFolder.Private = parent.Private ? parent.Private : privacy;
-
+            newFolder.Color = _roomLogoManager.GetRandomColour();
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
 
@@ -634,6 +633,8 @@ public class FileStorageService //: IFileStorageService
         {
             throw GenerateException(e);
         }
+
+
     }
 
     public async Task<Folder<T>> FolderRenameAsync<T>(T folderId, string title)

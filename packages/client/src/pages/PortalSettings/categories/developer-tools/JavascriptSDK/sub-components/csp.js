@@ -7,6 +7,7 @@ import HelpButton from "@docspace/components/help-button";
 import Text from "@docspace/components/text";
 import SelectorAddButton from "@docspace/components/selector-add-button";
 import SelectedItem from "@docspace/components/selected-item";
+import { tablet } from "@docspace/components/utils/device";
 
 const CategoryHeader = styled.div`
   margin-top: 24px;
@@ -18,10 +19,26 @@ const CategoryHeader = styled.div`
 `;
 
 const Container = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
   margin-bottom: 16px;
+
+  &.description-holder {
+    display: block;
+  }
+
+  &.description-holder > div {
+    display: inline-block;
+    margin-inline-start: 4px;
+    transform: translateY(1px);
+  }
+
+  &.input-holder {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    @media ${tablet} {
+      margin-bottom: 8px;
+    }
+  }
 `;
 
 const ChipsContainer = styled.div`
@@ -92,15 +109,16 @@ const CSP = ({ t, cspDomains, getCSPSettings, setCSPSettings }) => {
   return (
     <>
       <CategoryHeader>{t("CSPHeader")}</CategoryHeader>
-      <Container>
+      <Container className="description-holder">
         {t("CSPDescription")}
         <HelpButton
+          className="csp-helpbutton"
           offsetRight={0}
           size={12}
           tooltipContent={<Text fontSize="12px">{t("CSPHelp")}</Text>}
         />
       </Container>
-      <Container>
+      <Container className="input-holder">
         <TextInput
           onChange={onChangeDomain}
           value={domain}
