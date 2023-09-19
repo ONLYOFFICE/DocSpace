@@ -12,7 +12,6 @@ import toastr from "@docspace/components/toast/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
 import config from "PACKAGE_FILE";
-import { combineUrl } from "@docspace/common/utils";
 
 const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;

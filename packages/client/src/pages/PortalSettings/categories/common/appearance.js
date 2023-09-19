@@ -740,7 +740,7 @@ const Appearance = (props) => {
 
           <Button
             className="edit-current-theme button"
-            label={t("Settings:EditCurrentTheme")}
+            label={t("Common:EditButton")}
             onClick={onClickEdit}
             size="small"
             isDisabled={isDisabledEditButton}

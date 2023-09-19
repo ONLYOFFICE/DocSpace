@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   StyledHeadline,
   StyledContainer,
+  StyledSubmitToGalleryButton,
   StyledInfoPanelToggleWrapper,
 } from "./StyledGallery";
 import config from "PACKAGE_FILE";
@@ -18,11 +19,12 @@ import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 const SectionHeaderContent = (props) => {
   const {
     t,
-
+    canSubmitToFormGallery,
     isInfoPanelVisible,
     setIsInfoPanelVisible,
     setGallerySelected,
     categoryType,
+    setSubmitToGalleryDialogVisible,
   } = props;
 
   const navigate = useNavigate();
@@ -46,6 +48,10 @@ const SectionHeaderContent = (props) => {
     );
   };
 
+  const onOpenSubmitToGalleryDialog = () => {
+    setSubmitToGalleryDialogVisible(true);
+  };
+
   const toggleInfoPanel = () => {
     setIsInfoPanelVisible(!isInfoPanelVisible);
   };
@@ -63,6 +69,14 @@ const SectionHeaderContent = (props) => {
       <StyledHeadline type="content" truncate>
         {t("Common:OFORMsGallery")}
       </StyledHeadline>
+      {canSubmitToFormGallery() && (
+        <StyledSubmitToGalleryButton
+          primary
+          size="small"
+          onClick={onOpenSubmitToGalleryDialog}
+          label={t("Common:SubmitToFormGallery")}
+        />
+      )}
       <StyledInfoPanelToggleWrapper isInfoPanelVisible={isInfoPanelVisible}>
         <div className="info-panel-toggle-bg">
           <IconButton
@@ -79,14 +93,20 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, filesStore, oformsStore }) => {
-  const { isVisible, setIsVisible } = auth.infoPanelStore;
-  const { categoryType } = filesStore;
-  const { setGallerySelected } = oformsStore;
-  return {
-    isInfoPanelVisible: isVisible,
-    setIsInfoPanelVisible: setIsVisible,
-    setGallerySelected,
-    categoryType,
-  };
-})(withTranslation("Common")(observer(SectionHeaderContent)));
+export default inject(
+  ({ auth, accessRightsStore, filesStore, dialogsStore, oformsStore }) => {
+    const { isVisible, setIsVisible } = auth.infoPanelStore;
+    const { canSubmitToFormGallery } = accessRightsStore;
+    const { categoryType } = filesStore;
+    const { setGallerySelected } = oformsStore;
+    const { setSubmitToGalleryDialogVisible } = dialogsStore;
+    return {
+      isInfoPanelVisible: isVisible,
+      canSubmitToFormGallery,
+      setIsInfoPanelVisible: setIsVisible,
+      setGallerySelected,
+      categoryType,
+      setSubmitToGalleryDialogVisible,
+    };
+  }
+)(withTranslation("Common")(observer(SectionHeaderContent)));

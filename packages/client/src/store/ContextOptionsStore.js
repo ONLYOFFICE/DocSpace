@@ -21,6 +21,7 @@ import FormFillRectSvgUrl from "PUBLIC_DIR/images/form.fill.rect.svg?url";
 import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
 import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
 import FormPlusReactSvgUrl from "PUBLIC_DIR/images/form.plus.react.svg?url";
+import FormFileReactSvgUrl from "PUBLIC_DIR/images/form.file.react.svg?url";
 import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import PinReactSvgUrl from "PUBLIC_DIR/images/pin.react.svg?url";
@@ -194,6 +195,17 @@ class ContextOptionsStore {
       });
       setConvertPasswordDialogVisible(true);
     });
+  };
+
+  onClickSubmitToFormGallery = (item) => {
+    if (item && !item.exst) {
+      const splitTitle = item.title.split(".");
+      item.title = splitTitle.slice(0, -1).join(".");
+      item.exst = splitTitle.length !== 1 ? `.${splitTitle.at(-1)}` : null;
+    }
+
+    this.dialogsStore.setFormItem(item);
+    this.dialogsStore.setSubmitToGalleryDialogVisible(true);
   };
 
   onOpenLocation = (item) => {
@@ -1020,6 +1032,19 @@ class ContextOptionsStore {
       },
       separator0,
       {
+        id: "option_submit-to-gallery",
+        key: "submit-to-gallery",
+        label: t("Common:SubmitToFormGallery"),
+        icon: FormFileReactSvgUrl,
+        onClick: () => this.onClickSubmitToFormGallery(item),
+        isOutsideLink: true,
+        disabled: !item.security.SubmitToFormGallery,
+      },
+      {
+        key: "separator-SubmitToGallery",
+        isSeparator: true,
+      },
+      {
         id: "option_reconnect-storage",
         key: "reconnect-storage",
         label: t("Common:ReconnectStorage"),
@@ -1192,7 +1217,7 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
-        key: "separator2",
+        key: "separator3",
         isSeparator: true,
       },
       {
