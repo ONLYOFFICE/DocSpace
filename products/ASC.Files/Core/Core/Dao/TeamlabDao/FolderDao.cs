@@ -401,6 +401,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             toUpdate.ModifiedOn = _tenantUtil.DateTimeToUtc(folder.ModifiedOn);
             toUpdate.ModifiedBy = folder.ModifiedBy;
             toUpdate.HasLogo = folder.HasLogo;
+            toUpdate.Color = folder.Color;
 
             await filesDbContext.SaveChangesAsync();
 
@@ -423,6 +424,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 ModifiedBy = folder.ModifiedBy,
                 FolderType = folder.FolderType,
                 Private = folder.Private,
+                Color = folder.Color,
                 TenantId = TenantID
             };
 

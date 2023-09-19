@@ -82,7 +82,6 @@ public class TextileStyler : IPatternStyler
         var mailSettings = GetMailSettings(message);
         var unsubscribeText = GetUnsubscribeText(message, mailSettings);
 
-
         InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent);
 
         message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
