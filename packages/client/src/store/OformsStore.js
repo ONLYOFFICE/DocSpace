@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import api from "@docspace/common/api";
-
-const { OformsFilter } = api;
+import OformsFilter from "@docspace/common/api/oforms/filter";
+import { submitToGallery } from "@docspace/common/api/oforms";
 
 class OformsStore {
   authStore;
@@ -38,7 +37,13 @@ class OformsStore {
   };
 
   submitToFormGallery = async (file, formName, language) => {
-    const res = await api.settings.submitToGallery(file, formName, language);
+    const res = await submitToGallery(
+      this.authStore.settingsStore.formGallery.uploadUrl,
+      file,
+      formName,
+      language
+    );
+
     return res;
   };
 

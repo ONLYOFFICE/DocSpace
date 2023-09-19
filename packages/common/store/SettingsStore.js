@@ -88,7 +88,13 @@ class SettingsStore {
   enabledJoin = false;
   urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
   urlSupport = "https://helpdesk.onlyoffice.com/";
-  urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms";
+
+  formGallery = {
+    url: "",
+    ext: ".oform",
+    uploadUrl: "",
+    uploadExt: ".docxf",
+  };
 
   logoUrl = "";
 
