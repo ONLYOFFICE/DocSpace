@@ -155,8 +155,8 @@ $enterprise_prerequisites = @(
 
   @{  
     download_allways = $false; 
-    name = "elasticsearch-7.10.0.msi";
-    link = "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0.msi";
+    name = "elasticsearch-7.16.3.msi";
+    link = "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.3.msi";
   }
 
   @{  
