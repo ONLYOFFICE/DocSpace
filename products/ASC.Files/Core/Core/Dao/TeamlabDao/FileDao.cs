@@ -635,18 +635,18 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-        var removeFiles = await Queries.DbFilesByVersionAsync(filesDbContext, TenantID, file.Id, file.Version).ToListAsync();
-        filesDbContext.RemoveRange(removeFiles);
-
-        var updateFiles = await Queries.DbFilesByVersionAsync(filesDbContext, TenantID, file.Id, file.Version - 1).ToListAsync();
-        updateFiles.ForEach(uf =>
+        await strategy.ExecuteAsync(async () =>
         {
-            uf.CurrentVersion = true;
-        });
-        filesDbContext.UpdateRange(updateFiles);
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            using var tr = await filesDbContext.Database.BeginTransactionAsync();
 
-        await filesDbContext.SaveChangesAsync();
+            await Queries.DeleteDbFilesByVersionAsync(filesDbContext, TenantID, file.Id, file.Version);
+            await Queries.UpdateDbFilesByVersionAsync(filesDbContext, TenantID, file.Id, file.Version);
+
+            await tr.CommitAsync();
+        });
     }
 
     private async Task DeleteVersionStreamAsync(File<int> file)
@@ -1834,12 +1834,21 @@ static file class Queries
                     .OrderByDescending(r => r.Level)
                     .AsQueryable());
 
-    public static readonly Func<FilesDbContext, int, int, int, IAsyncEnumerable<DbFile>> DbFilesByVersionAsync =
+    public static readonly Func<FilesDbContext, int, int, int, Task<int>> DeleteDbFilesByVersionAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int fileId, int version) =>
                 ctx.Files
                     .Where(r => r.TenantId == tenantId)
-                    .Where(r => r.Id == fileId && r.Version == version));
+                    .Where(r => r.Id == fileId && r.Version == version)
+                    .ExecuteDelete());
+
+    public static readonly Func<FilesDbContext, int, int, int, Task<int>> UpdateDbFilesByVersionAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int fileId, int version) =>
+                ctx.Files
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id == fileId && r.Version == version)
+                    .ExecuteUpdate(q => q.SetProperty(p => p.CurrentVersion, true)));
 
     public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<int>> ParentIdsAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
