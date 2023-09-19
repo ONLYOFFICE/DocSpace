@@ -345,35 +345,30 @@ public class EFUserService : IUserService
         var ids = await CollectGroupChildsAsync(userDbContext, tenant, id);
         var stringIds = ids.Select(r => r.ToString()).ToList();
 
-        userDbContext.Acl.RemoveRange(await Queries.AclsByIdsAsync(userDbContext, tenant, ids).ToListAsync());
-        userDbContext.Subscriptions.RemoveRange(await Queries.SubscriptionsByIdsAsync(userDbContext, tenant, stringIds).ToListAsync());
-        userDbContext.SubscriptionMethods.RemoveRange(await Queries.DbSubscriptionMethodsByIdsAsync(userDbContext, tenant, stringIds).ToListAsync());
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
-        var userGroups = Queries.UserGroupsByIdsAsync(userDbContext, tenant, ids);
-        var groups = Queries.DbGroupsAsync(userDbContext, tenant, ids);
-
-        if (immediate)
+        await strategy.ExecuteAsync(async () =>
         {
-            userDbContext.UserGroups.RemoveRange(await userGroups.ToListAsync());
-            userDbContext.Groups.RemoveRange(await groups.ToListAsync());
-        }
-        else
-        {
-            await userGroups.ForEachAsync(ug =>
-            {
-                ug.Removed = true;
-                ug.LastModified = DateTime.UtcNow;
-            });
-            userDbContext.UpdateRange(userGroups);
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            await groups.ForEachAsync(g =>
+            await Queries.DeleteAclsByIdsAsync(userDbContext, tenant, ids);
+            await Queries.DeteteSubscriptionsByIdsAsync(userDbContext, tenant, stringIds);
+            await Queries.DeleteDbSubscriptionMethodsByIdsAsync(userDbContext, tenant, stringIds);
+
+            if (immediate)
             {
-                g.Removed = true;
-                g.LastModified = DateTime.UtcNow;
-            });
-            userDbContext.UpdateRange(groups);
-        }
-        await userDbContext.SaveChangesAsync();
+                await Queries.DeteleUserGroupsByIdsAsync(userDbContext, tenant, ids);
+                await Queries.DeleteDbGroupsAsync(userDbContext, tenant, ids);
+            }
+            else
+            {
+                await Queries.UpdateUserGroupsByIdsAsync(userDbContext, tenant, ids);
+                await Queries.UpdateDbGroupsAsync(userDbContext, tenant, ids);
+            }
+
+            await tx.CommitAsync();
+        });
     }
 
     public async Task RemoveUserAsync(int tenant, Guid id)
@@ -848,40 +843,63 @@ static file class Queries
                     .Where(r => r.ParentId == parentId)
                     .Select(r => r.Id));
 
-    public static readonly Func<UserDbContext, int, IEnumerable<Guid>, IAsyncEnumerable<Acl>> AclsByIdsAsync =
+    public static readonly Func<UserDbContext, int, IEnumerable<Guid>, Task<int>> DeleteAclsByIdsAsync =
         EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, IEnumerable<Guid> ids) =>
                 ctx.Acl
                     .Where(r => r.TenantId == tenantId
-                                && ids.Any(i => i == r.Subject)));
+                                && ids.Any(i => i == r.Subject))
+                    .ExecuteDelete());
 
-    public static readonly Func<UserDbContext, int, IEnumerable<string>, IAsyncEnumerable<Subscription>>
-        SubscriptionsByIdsAsync = EF.CompileAsyncQuery(
+    public static readonly Func<UserDbContext, int, IEnumerable<string>, Task<int>>
+        DeteteSubscriptionsByIdsAsync = EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, IEnumerable<string> ids) =>
                 ctx.Subscriptions
                     .Where(r => r.TenantId == tenantId
-                                && ids.Any(i => i == r.Recipient)));
+                                && ids.Any(i => i == r.Recipient))
+                    .ExecuteDelete());
 
-    public static readonly Func<UserDbContext, int, IEnumerable<string>, IAsyncEnumerable<DbSubscriptionMethod>>
-        DbSubscriptionMethodsByIdsAsync = EF.CompileAsyncQuery(
+    public static readonly Func<UserDbContext, int, IEnumerable<string>, Task<int>>
+        DeleteDbSubscriptionMethodsByIdsAsync = EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, IEnumerable<string> ids) =>
                 ctx.SubscriptionMethods
                     .Where(r => r.TenantId == tenantId
-                                && ids.Any(i => i == r.Recipient)));
+                                && ids.Any(i => i == r.Recipient))
+                    .ExecuteDelete());
 
-    public static readonly Func<UserDbContext, int, IEnumerable<Guid>, IAsyncEnumerable<UserGroup>>
-        UserGroupsByIdsAsync = EF.CompileAsyncQuery(
+    public static readonly Func<UserDbContext, int, IEnumerable<Guid>, Task<int>>
+        DeteleUserGroupsByIdsAsync = EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, IEnumerable<Guid> ids) =>
                 ctx.UserGroups
                     .Where(r => r.TenantId == tenantId
-                                && ids.Any(i => i == r.UserGroupId)));
+                                && ids.Any(i => i == r.UserGroupId))
+                    .ExecuteDelete());
 
-    public static readonly Func<UserDbContext, int, IEnumerable<Guid>, IAsyncEnumerable<DbGroup>> DbGroupsAsync =
+    public static readonly Func<UserDbContext, int, IEnumerable<Guid>, Task<int>>
+        UpdateUserGroupsByIdsAsync = EF.CompileAsyncQuery(
+            (UserDbContext ctx, int tenantId, IEnumerable<Guid> ids) =>
+                ctx.UserGroups
+                    .Where(r => r.TenantId == tenantId
+                                && ids.Any(i => i == r.UserGroupId))
+                    .ExecuteUpdate(q => q.SetProperty(p => p.Removed, true)
+                                         .SetProperty(p => p.LastModified, DateTime.UtcNow)));
+
+    public static readonly Func<UserDbContext, int, IEnumerable<Guid>, Task<int>> DeleteDbGroupsAsync =
         EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, IEnumerable<Guid> ids) =>
                 ctx.Groups
                     .Where(r => r.TenantId == tenantId
-                                && ids.Any(i => i == r.Id)));
+                                && ids.Any(i => i == r.Id))
+                    .ExecuteDelete());
+
+    public static readonly Func<UserDbContext, int, IEnumerable<Guid>, Task<int>> UpdateDbGroupsAsync =
+        EF.CompileAsyncQuery(
+            (UserDbContext ctx, int tenantId, IEnumerable<Guid> ids) =>
+                ctx.Groups
+                    .Where(r => r.TenantId == tenantId
+                                && ids.Any(i => i == r.Id))
+                    .ExecuteUpdate(q => q.SetProperty(p => p.Removed, true)
+                                         .SetProperty(p => p.LastModified, DateTime.UtcNow)));
 
     public static readonly Func<UserDbContext, int, Guid, IAsyncEnumerable<Acl>> AclsAsync =
         EF.CompileAsyncQuery(
