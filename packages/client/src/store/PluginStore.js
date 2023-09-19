@@ -186,7 +186,7 @@ class PluginStore {
         ...this.pluginFrame.contentWindow.Plugins[plugin.pluginName],
       });
 
-      newPlugin.createBy = newPlugin.createBy.displayName;
+      // newPlugin.createBy = newPlugin.createBy.displayName;
       newPlugin.scopes = newPlugin.scopes.split(",");
       newPlugin.iconUrl = getPluginUrl(newPlugin.url, "");
 
@@ -226,7 +226,7 @@ class PluginStore {
     if (!plugin || !plugin.enabled) return;
 
     if (plugin.scopes.includes(PluginScopes.API)) {
-      plugin.setAPI(origin, proxy, prefix);
+      plugin.setAPI && plugin.setAPI(origin, proxy, prefix);
     }
 
     if (plugin.onLoadCallback) {
