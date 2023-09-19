@@ -90,9 +90,9 @@ public class WebPluginsController : BaseSettingsController
 
         var dbPlugins = await _webPluginManager.GetWebPluginsAsync(Tenant.Id, enabled);
 
-        var dbDtoPlugins = _mapper.Map<IEnumerable<DbWebPlugin>, IEnumerable<WebPluginDto>>(dbPlugins);
+        var dtoPlugins = _mapper.Map<IEnumerable<DbWebPlugin>, IEnumerable<WebPluginDto>>(dbPlugins);
 
-        outDto.AddRange(dbDtoPlugins);
+        outDto.AddRange(dtoPlugins);
 
         if (outDto.Any())
         {
