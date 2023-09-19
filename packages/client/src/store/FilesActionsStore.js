@@ -2266,8 +2266,6 @@ class FilesActionStore {
 
     const id = this.selectedFolderStore.parentId;
 
-    console.log(id);
-
     const { navigationPath, rootFolderType } = this.selectedFolderStore;
 
     const filter = FilesFilter.getDefault();
