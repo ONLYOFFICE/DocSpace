@@ -23,10 +23,10 @@ const Footer = ({
           <Button
             label={
               isAbortTransfer && percent !== 100
-                ? "Start transfer again"
+                ? t("DataReassignmentDialog:StartTransferAgain")
                 : percent === 100
                 ? t("Common:OkButton")
-                : "Abort transfer"
+                : t("DataReassignmentDialog:AbortTransfer")
             }
             size="normal"
             scale

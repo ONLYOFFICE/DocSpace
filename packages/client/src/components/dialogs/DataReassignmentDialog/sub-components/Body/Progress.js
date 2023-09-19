@@ -129,9 +129,7 @@ const Progress = ({
   const interruptedNode = (
     <div className="transfer-information">
       <InterruptIcon className="status-icon" />
-      <Text className="status">
-        Interrupted, some data could be transferred
-      </Text>
+      <Text className="status">{t("DataReassignmentDialog:Interrupted")}</Text>
     </div>
   );
 
