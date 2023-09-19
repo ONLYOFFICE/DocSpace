@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "Kopioi {{element}}",
   "TooltipElementsCopyMessage": "Kopioi {{element}} elementit",
   "TooltipElementsMoveMessage": "Siirrä {{element}} elementit",
-  "TrashEmptyDescription": "Kaikki poistetut tiedostot siirretään 'Roskakoriin'. Voit palauttaa vahingossa poistetut tiedostot tai poistaa ne pysyvästi. Huomaa, että 'Roskakorista' poistettuja tiedostoja ei voida palauttaa.",
+  "TrashEmptyDescription": "Kaikki poistetut tiedostot siirretään 'Roskakoriin'. Voit palauttaa vahingossa poistetut tiedostot tai poistaa ne pysyvästi. Roskakorin tiedostot poistetaan automaattisesti 30 päivän kuluttua. Huomaa, että 'Roskakorista' poistettuja tiedostoja ei voida palauttaa.",
   "TrashErasureWarning": "Roskakorin kohteet poistetaan automaattisesti 30 päivän jälkeen.",
   "UnarchivedRoomAction": "Huone '{{name}}' on arkistoimaton.",
   "UnarchivedRoomsAction": "Huoneet ovat arkistoimattomia.",

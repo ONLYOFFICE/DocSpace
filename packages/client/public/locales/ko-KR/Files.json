@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "{{element}} 복사",
   "TooltipElementsCopyMessage": "{{element}} 요소 복사",
   "TooltipElementsMoveMessage": "{{element}} 요소 이동",
-  "TrashEmptyDescription": "모든 삭제 된 파일이 이동되는 위치는 '휴지통'섹션입니다. 실수로 삭제된 경우, 복원하거나 완전삭제를 할수있습니다. 참고하시기 바랍니다, '휴지통'에서 파일을 삭제하변 더 이상 복원 할수없습니다.",
+  "TrashEmptyDescription": "모든 삭제 된 파일이 이동되는 위치는 '휴지통'섹션입니다. 실수로 삭제된 경우, 복원하거나 완전삭제를 할수있습니다. '휴지통'에 있는 파일은 30일 후에 자동으로 삭제됩니다. 참고하시기 바랍니다, '휴지통'에서 파일을 삭제하변 더 이상 복원 할수없습니다.",
   "TrashErasureWarning": "휴지통에 든 항목은 30일 후에 자동으로 삭제됩니다.",
   "UnarchivedRoomAction": "'{{name}}' 방의 아카이브가 취소되었습니다.",
   "UnarchivedRoomsAction": "방의 아카이브가 취소되었습니다.",
