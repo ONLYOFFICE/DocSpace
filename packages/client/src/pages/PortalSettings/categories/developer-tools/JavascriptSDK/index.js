@@ -324,7 +324,7 @@ const PortalIntegration = (props) => {
   const code = (
     <>
       <CategorySubHeader>{t("CopyWindowCode")}</CategorySubHeader>
-      <Textarea value={codeBlock} />
+      <Textarea value={codeBlock} heightTextArea={153} />
     </>
   );
 
