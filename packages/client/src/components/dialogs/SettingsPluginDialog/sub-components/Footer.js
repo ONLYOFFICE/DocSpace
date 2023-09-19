@@ -27,7 +27,7 @@ const Footer = ({
         component={{
           ...saveButtonProps,
           props: {
-            ...saveButtonProps.props,
+            ...saveButtonProps?.props,
             scale: true,
             isSaveButton: true,
             primary: true,
