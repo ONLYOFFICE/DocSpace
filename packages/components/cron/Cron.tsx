@@ -46,7 +46,7 @@ function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
 
       onError?.(undefined);
     } catch (error) {
-      onError?.(error);
+      if (error instanceof Error) onError?.(error);
     }
   }, [period, hours, months, minutes, weekDays, monthDays]);
 
@@ -70,7 +70,7 @@ function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
       setPeriod(period);
     } catch (error) {
       console.log(error);
-      onError?.(error);
+      if (error instanceof Error) onError?.(error);
     }
   };
 
