@@ -51,7 +51,7 @@ public class WebPluginsController : BaseSettingsController
     [HttpPost("webplugins")]
     public async Task<WebPluginDto> AddWebPluginFromFile(bool system)
     {
-        var tenantId = system ? Tenant.DefaultTenant :Tenant.Id;
+        var tenantId = system ? Tenant.DefaultTenant : Tenant.Id;
 
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
@@ -83,16 +83,16 @@ public class WebPluginsController : BaseSettingsController
     {
         var outDto = await _webPluginManager.GetSystemWebPluginsAsync<WebPluginDto>();
 
+        var dbPlugins = await _webPluginManager.GetWebPluginsAsync(Tenant.Id);
+
+        var dtoPlugins = _mapper.Map<List<DbWebPlugin>, List<WebPluginDto>>(dbPlugins);
+
+        outDto.AddRange(dtoPlugins);
+
         if (enabled.HasValue)
         {
             outDto = outDto.Where(i => i.Enabled == enabled).ToList();
         }
-
-        var dbPlugins = await _webPluginManager.GetWebPluginsAsync(Tenant.Id, enabled);
-
-        var dtoPlugins = _mapper.Map<IEnumerable<DbWebPlugin>, IEnumerable<WebPluginDto>>(dbPlugins);
-
-        outDto.AddRange(dtoPlugins);
 
         if (outDto.Any())
         {

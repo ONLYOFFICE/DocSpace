@@ -186,13 +186,17 @@ public class WebPluginManager
 
                 webPlugin = System.Text.Json.JsonSerializer.Deserialize<DbWebPlugin>(configContent, options);
 
-                if (webPlugin == null || string.IsNullOrEmpty(webPlugin.Name))
+                if (webPlugin == null)
                 {
                     throw new ArgumentException("Wrong plugin archive");
                 }
 
-                //TODO: think about special characters
-                webPlugin.Name = webPlugin.Name.Replace(" ", string.Empty).ToLowerInvariant();
+                var nameRegex = new Regex(@"^[a-z0-9_.-]+$");
+
+                if (string.IsNullOrEmpty(webPlugin.Name) || !nameRegex.IsMatch(webPlugin.Name) || webPlugin.Name.StartsWith('.'))
+                {
+                    throw new ArgumentException("Wrong plugin name");
+                }
 
                 var existingPlugin = await _webPluginService.GetByNameAsync(tenantId, webPlugin.Name);
                 if (existingPlugin != null)
@@ -247,17 +251,17 @@ public class WebPluginManager
         return webPlugin;
     }
 
-    public async Task<IEnumerable<DbWebPlugin>> GetWebPluginsAsync(int tenantId, bool? enabled = null)
+    public async Task<List<DbWebPlugin>> GetWebPluginsAsync(int tenantId)
     {
         DemandWebPlugins();
 
         var key = GetCacheKey(tenantId);
 
-        var plugins = _webPluginCache.Get<IEnumerable<DbWebPlugin>>(key);
+        var plugins = _webPluginCache.Get<List<DbWebPlugin>>(key);
 
         if (plugins == null)
         {
-            plugins = await _webPluginService.GetAsync(tenantId, enabled) ?? new List<DbWebPlugin>();
+            plugins = await _webPluginService.GetAsync(tenantId) ?? new List<DbWebPlugin>();
 
             _webPluginCache.Insert(key, plugins);
         }
