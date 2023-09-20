@@ -156,7 +156,7 @@ public static class ShortUrl
         ulong num = 0;
         for (var i = 0; i < str.Length; i++)
         {
-            num = num * (ulong)(_base + Alphabet.IndexOf(str.ElementAt(i)));
+            num = num * (ulong)_base + (ulong)Alphabet.IndexOf(str.ElementAt(i));
         }
         return num;
     }
