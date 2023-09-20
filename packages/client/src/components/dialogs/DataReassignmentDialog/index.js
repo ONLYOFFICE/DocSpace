@@ -44,10 +44,9 @@ const DataReassignmentDialog = ({
   isDeletingUserWithReassignment,
   t,
   tReady,
-  setFilter,
+  getUsersList,
   setIsDeletingUserWithReassignment,
   setDataReassignmentDeleteProfile,
-  dataReassignmentUrl,
 }) => {
   const [selectorVisible, setSelectorVisible] = useState(false);
   const defaultSelectedUser = isDeletingUserWithReassignment
@@ -61,15 +60,9 @@ const DataReassignmentDialog = ({
 
   const [percent, setPercent] = useState(0);
 
-  const navigate = useNavigate();
-
   const updateAccountsAfterDeleteUser = () => {
     const filter = Filter.getDefault();
-    const params = filter.toUrlParams();
-    const url = `/accounts/filter?${params}`;
-
-    navigate(url, params);
-    setFilter(filter);
+    getUsersList(filter, true);
     return;
   };
 
@@ -222,7 +215,6 @@ const DataReassignmentDialog = ({
           selectedUser={selectedUser}
           percent={percent}
           isAbortTransfer={isAbortTransfer}
-          dataReassignmentUrl={dataReassignmentUrl}
           currentColorScheme={currentColorScheme}
           onTogglePeopleSelector={onTogglePeopleSelector}
         />
@@ -255,7 +247,7 @@ export default inject(({ auth, peopleStore, setup }) => {
     isDeletingUserWithReassignment,
     setIsDeletingUserWithReassignment,
   } = peopleStore.dialogStore;
-  const { currentColorScheme, dataReassignmentUrl } = auth.settingsStore;
+  const { currentColorScheme } = auth.settingsStore;
   const {
     dataReassignment,
     dataReassignmentProgress,
@@ -264,7 +256,7 @@ export default inject(({ auth, peopleStore, setup }) => {
 
   const { user: currentUser } = peopleStore.authStore.userStore;
 
-  const { setFilterParams: setFilter } = peopleStore.filterStore;
+  const { getUsersList } = peopleStore.usersStore;
 
   return {
     setDataReassignmentDialogVisible,
@@ -276,10 +268,9 @@ export default inject(({ auth, peopleStore, setup }) => {
     dataReassignmentTerminate,
     deleteProfile: dataReassignmentDeleteProfile,
     setDataReassignmentDeleteProfile,
-    setFilter,
+    getUsersList,
     isDeletingUserWithReassignment,
     setIsDeletingUserWithReassignment,
-    dataReassignmentUrl,
   };
 })(
   observer(

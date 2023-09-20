@@ -14,7 +14,6 @@ const Body = ({
   percent,
   currentColorScheme,
   isAbortTransfer,
-  dataReassignmentUrl,
   onTogglePeopleSelector,
   onTerminate,
 }) => {
@@ -45,7 +44,7 @@ const Body = ({
         currentColorScheme={currentColorScheme}
         onTogglePeopleSelector={onTogglePeopleSelector}
       />
-      <Description t={t} dataReassignmentUrl={dataReassignmentUrl} />
+      <Description t={t} />
     </>
   );
 };

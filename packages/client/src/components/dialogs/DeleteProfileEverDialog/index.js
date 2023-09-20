@@ -67,7 +67,6 @@ const DeleteProfileEverDialogComponent = (props) => {
   const {
     user,
     t,
-    setFilter,
     onClose,
     tReady,
     visible,
@@ -77,10 +76,9 @@ const DeleteProfileEverDialogComponent = (props) => {
     setIsDeletingUserWithReassignment,
     userPerformedDeletion,
     setDialogData,
+    getUsersList,
   } = props;
   const [isRequestRunning, setIsRequestRunning] = React.useState(false);
-
-  const navigate = useNavigate();
 
   const needReassignData = user.isRoomAdmin || user.isOwner || user.isAdmin;
 
@@ -110,15 +108,12 @@ const DeleteProfileEverDialogComponent = (props) => {
 
   const onDeleteUser = (id) => {
     const filter = Filter.getDefault();
-    const params = filter.toUrlParams();
-    const url = `/accounts/filter?${params}`;
     setIsRequestRunning(true);
 
     deleteUser(id)
       .then(() => {
         toastr.success(t("SuccessfullyDeleteUserInfoMessage"));
-        navigate(url, params);
-        setFilter(filter);
+        getUsersList(filter, true);
 
         return;
       })
@@ -212,9 +207,9 @@ DeleteProfileEverDialog.propTypes = {
 };
 
 export default inject(({ peopleStore }) => {
-  const { dialogStore, filterStore, selectionStore } = peopleStore;
+  const { dialogStore, selectionStore } = peopleStore;
 
-  const { setFilterParams: setFilter } = filterStore;
+  const { getUsersList } = peopleStore.usersStore;
 
   const {
     setDataReassignmentDialogVisible,
@@ -227,7 +222,6 @@ export default inject(({ peopleStore }) => {
   const { setSelected } = selectionStore;
 
   return {
-    setFilter,
     setDataReassignmentDialogVisible,
     setDeleteProfileDialogVisible,
     setDataReassignmentDeleteProfile,
@@ -236,6 +230,6 @@ export default inject(({ peopleStore }) => {
     setSelected,
     removeUser: peopleStore.usersStore.removeUser,
     userPerformedDeletion: peopleStore.authStore.userStore.user,
-    filter: peopleStore.filterStore.filter,
+    getUsersList,
   };
 })(observer(DeleteProfileEverDialog));

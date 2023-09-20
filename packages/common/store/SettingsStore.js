@@ -323,10 +323,6 @@ class SettingsStore {
     return `${this.apiDocsLink}/docspace/basic`;
   }
 
-  get dataReassignmentUrl() {
-    return `${this.helpLink}/userguides/groups-gettingstarted-people.aspx#DeletingProfile_block`;
-  }
-
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
   }
