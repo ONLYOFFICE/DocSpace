@@ -443,6 +443,18 @@ class SettingsSetupStore {
     return api.settings.sendOwnerChange(id);
   };
 
+  dataReassignment = (fromUserId, toUserId, deleteProfile) => {
+    return api.settings.dataReassignment(fromUserId, toUserId, deleteProfile);
+  };
+
+  dataReassignmentProgress = (id) => {
+    return api.settings.dataReassignmentProgress(id);
+  };
+
+  dataReassignmentTerminate = (userId) => {
+    return api.settings.dataReassignmentTerminate(userId);
+  };
+
   getCommonThirdPartyList = async () => {
     const res = await api.settings.getCommonThirdPartyList();
 

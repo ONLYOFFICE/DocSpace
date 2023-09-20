@@ -25,6 +25,8 @@ import {
   getPDFContextModel,
 } from "./helpers/contextModel";
 
+import { checkDialogsOpen } from "../../utils/checkDialogsOpen";
+
 function MediaViewer({
   playlistPos,
   nextMedia,
@@ -137,7 +139,6 @@ function MediaViewer({
     props.files.length,
     playlistPos,
     props.deleteDialogVisible,
-    props.someDialogIsOpen,
   ]);
 
   const getContextModel = () => {
@@ -257,7 +258,9 @@ function MediaViewer({
 
   const onKeydown = (event: KeyboardEvent) => {
     const { code, ctrlKey } = event;
-    if (props.deleteDialogVisible || props.someDialogIsOpen) return;
+
+    const someDialogIsOpen = checkDialogsOpen();
+    if (props.deleteDialogVisible || someDialogIsOpen) return;
 
     if (code in KeyboardEventKeys) {
       const includesKeyboardCode = [
@@ -397,7 +400,6 @@ function MediaViewer({
           errorTitle={props.t("Common:MediaError")}
           headerIcon={headerIcon}
           audioIcon={audioIcon}
-          someDialogIsOpen={props.someDialogIsOpen}
         />
       )}
     </>

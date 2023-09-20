@@ -1,5 +1,0 @@
-{
-  "DeleteGroupUsersSuccessMessage": "사용자가 성공적으로 삭제되었습니다.",
-  "DeleteUsers": "사용자 삭제",
-  "DeleteUsersMessage": "선택한 비활성 사용자가 DocSpace에서 삭제됩니다. 다른 사용자가 사용할 수 있는 해당 비활성 사용자의 개인 문서도 삭제됩니다."
-}

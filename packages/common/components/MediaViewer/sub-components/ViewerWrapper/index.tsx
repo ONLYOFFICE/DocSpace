@@ -124,7 +124,6 @@ function ViewerWrapper(props: ViewerWrapperProps) {
       onDownloadClick={props.onDownloadClick}
       generateContextMenu={generateContextMenu}
       onSetSelectionFile={props.onSetSelectionFile}
-      someDialogIsOpen={props.someDialogIsOpen}
     />
   );
 }

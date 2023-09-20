@@ -51,5 +51,8 @@ public class Startup : BaseStartup
 
         services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
         services.AddScoped<CountRoomCheckerStatistic>();
+
+        DIHelper.TryAdd<ReassignProgressItem>();
+        DIHelper.TryAdd<RemoveProgressItem>();
     }
 }

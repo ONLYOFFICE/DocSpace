@@ -2,7 +2,6 @@
   "CodeSubtitle": "Nous avons envoyé un code à 6 chiffres à {{email}}. Le code a une durée de validité limitée, saisissez-le dès que possible.",
   "CodeTitle": "Le code vous a été envoyé par e-mail",
   "CookieSettingsTitle": "Durée de validité de la session",
-  "ErrorInvalidHeader": "Lien expiré",
   "ErrorInvalidText": "En 10 secondes, vous serez redirigé vers <1>DocSpace</1>",
   "ExpiredCode": "Ce code n'est plus valide. Veuillez demander un nouveau code et réessayer.",
   "ForgotPassword": "Mot de passe oublié ?",

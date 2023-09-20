@@ -44,7 +44,6 @@
   "State": "State",
   "UnselectAll": "Unselect all",
   "URL": "URL",
-  "UTC": "UTC",
   "ViewRawPayload": "View raw payload",
   "Webhook": "Webhook",
   "WebhookCreationHint": "This webhook will be assigned to all events in DocSpace",

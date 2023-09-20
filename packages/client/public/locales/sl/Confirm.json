@@ -28,6 +28,5 @@
   "SetAppTitle": "Konfigurirajte vašo aplikacijo za avtentikacijo",
   "SuccessDeactivate": "Vaš račun je bil uspešno ponovno aktiviran. Čez 10 sekund boste preusmerjeni na <1>stran</1>.",
   "SuccessReactivate": "Vaš račun je bil uspešno ponovno aktiviran. Čez 10 sekund boste preusmerjeni v <1>portal</1>.",
-  "SuccessRemoved": "Vaš račun je bil uspešno odstranjen. Čez 10 sekund boste preusmerjeni na <1>stran</1>.",
-  "WelcomeUser": "Dobrodošli na našem DocSpace!\nZa začetek se registrirajte ali se prijavite prek družbenih omrežij."
+  "SuccessRemoved": "Vaš račun je bil uspešno odstranjen. Čez 10 sekund boste preusmerjeni na <1>stran</1>."
 }

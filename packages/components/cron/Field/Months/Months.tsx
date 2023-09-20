@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import Select from "../../Select";
 
@@ -17,4 +17,4 @@ function Months({ months, unit, setMonths, t }: MonthsProps) {
   );
 }
 
-export default Months;
+export default memo(Months);

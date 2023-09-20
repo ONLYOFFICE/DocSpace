@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, memo } from "react";
 import Select from "../../Select";
 
 import type MonthDaysProps from "./MonthDays.props";
@@ -27,4 +27,4 @@ function MonthDays({
     />
   );
 }
-export default MonthDays;
+export default memo(MonthDays);

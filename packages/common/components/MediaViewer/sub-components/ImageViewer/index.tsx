@@ -22,6 +22,7 @@ import {
 } from "../ImageViewerToolbar/ImageViewerToolbar.props";
 import { ToolbarActionType, KeyboardEventKeys, compareTo } from "../../helpers";
 import PlayerMessageError from "../PlayerMessageError";
+import { checkDialogsOpen } from "../../../../utils/checkDialogsOpen";
 
 const MaxScale = 5;
 const MinScale = 0.5;
@@ -54,7 +55,6 @@ function ImageViewer({
   isTiff,
   contextModel,
   errorTitle,
-  someDialogIsOpen,
 }: ImageViewerProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
@@ -107,7 +107,7 @@ function ImageViewer({
     return () => {
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [someDialogIsOpen]);
+  }, []);
 
   const restartScaleAndSize = () => {
     if (!imgRef.current || style.scale.isAnimating) return;
@@ -546,6 +546,7 @@ function ImageViewer({
   const onKeyDown = (event: KeyboardEvent) => {
     const { code, ctrlKey } = event;
 
+    const someDialogIsOpen = checkDialogsOpen();
     if (someDialogIsOpen) return;
 
     switch (code) {

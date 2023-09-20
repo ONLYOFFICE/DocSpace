@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, memo } from "react";
 
 import ComboBox from "../../../combobox";
 import { getLabel, getOptions } from "./Period.helper";
@@ -30,4 +30,4 @@ function Period({ period = "Hour", setPeriod, t }: PeriodProps) {
   );
 }
 
-export default Period;
+export default memo(Period);
