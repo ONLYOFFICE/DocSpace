@@ -361,6 +361,14 @@ class DialogsStore {
     this.formItem = formItem;
   };
 
+  setLinkParams = (linkParams) => {
+    this.linkParams = linkParams;
+  };
+
+  setUnsavedChangesDialog = (unsavedChangesDialogVisible) => {
+    this.unsavedChangesDialogVisible = unsavedChangesDialogVisible;
+  };
+
   setEditLinkPanelIsVisible = (editLinkPanelIsVisible) => {
     this.editLinkPanelIsVisible = editLinkPanelIsVisible;
   };

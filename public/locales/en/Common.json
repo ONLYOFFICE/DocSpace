@@ -201,8 +201,6 @@
   "NOV": "NOV",
   "OCT": "OCT",
   "OFORMsGallery": "OFORMs gallery",
-  "SubmitToFormGallery": "Submit to Form Gallery",
-  "SubmitToGallery": "Submit to Gallery",
   "OKButton": "OK",
   "On": "on",
   "Or": "or",
@@ -261,8 +259,8 @@
   "SearchEmptyRoomsDescription": "No rooms match this filter. Try a different one or clear filter to view all rooms.",
   "SelectAction": "Select",
   "SelectAll": "Select all",
-  "SelectDOCXFormat": "Select .DOCX file",
   "SelectDOCXFFormat": "Select .DOCXF file",
+  "SelectDOCXFormat": "Select .DOCX file",
   "SelectFile": "Select file",
   "SendButton": "Send",
   "Sending": "Sending...",
@@ -289,6 +287,8 @@
   "SortBy": "Sort by",
   "SpacesInLocalPart": "Local part can't contain spaces",
   "Standard": "Standard",
+  "SubmitToFormGallery": "Submit to Form Gallery",
+  "SubmitToGallery": "Submit to Gallery",
   "SubscriptionExpired": "Your subscription to support and updates has expired",
   "SubscriptionIsExpiring": "Your subscription is expiring on {{date}}",
   "SUN": "SUN",
@@ -320,6 +320,6 @@
   "WantToContinue": "Are you sure you want to continue?",
   "Warning": "Warning",
   "Website": "Website",
-  "Yesterday": "Yesterday",
-  "WED": "WED"
+  "WED": "WED",
+  "Yesterday": "Yesterday"
 }
