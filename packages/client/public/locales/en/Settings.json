@@ -99,6 +99,7 @@
   "EveryMonth": "Every month",
   "EveryWeek": "Every week",
   "ForcePathStyle": "Force Path Style",
+  "IncludedInBusiness": "Included in Business plan",
   "IntegrationRequest": "Missing a useful integration or component in ONLYOFFICE DocSpace? Leave a request to our team and we will look into that.",
   "IPSecurity": "IP Security",
   "IPSecurityDescription": "<1>IP Security</1> is used to restrict login to the space from all IP addresses except certain addresses. You can set the allowed IP addresses using either exact IP addresses in the IPv4 format (#.#.#.#, where # is a numeric value from 0 to 255), IP range (in the #.#.#.#-#.#.#.# format), or CIDR masking (in the #.#.#.#/# format). The IP security does not work for space owners, they can access the space from any IP address. Rules set in the For all users section apply to full access administrators as well. At the same time, you can set additional rules for full access administrators in the corresponding section.",
