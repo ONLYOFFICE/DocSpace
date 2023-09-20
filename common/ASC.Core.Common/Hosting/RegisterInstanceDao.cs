@@ -52,6 +52,7 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
         else
         {
             instanceRegistrationContext.Entry(inst).CurrentValues.SetValues(obj);
+            instanceRegistrationContext.Entry(inst).State = EntityState.Modified;
         }
 
         bool saveFailed;
