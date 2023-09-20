@@ -75,14 +75,15 @@ const ChangeRoomOwner = (props) => {
     })
       .then(() => {
         if (!isAdmin) removeFiles(null, [roomId]);
+        else {
+          const newFolders = folders;
+          const folderIndex = newFolders.findIndex((r) => r.id === roomId);
+          newFolders[folderIndex].inRoom = false;
+          setFolders(newFolders);
+        }
         toastr.success(t("Files:LeftAndAppointNewOwner"));
       })
-      .then(() => {
-        const newFolders = folders;
-        const folderIndex = newFolders.findIndex((r) => r.id === roomId);
-        newFolders[folderIndex].inRoom = false;
-        setFolders(newFolders);
-      })
+
       .finally(() => {
         onClose();
         setIsLoading(false);

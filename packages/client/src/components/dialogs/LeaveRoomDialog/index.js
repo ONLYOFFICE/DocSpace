@@ -62,16 +62,16 @@ const LeaveRoomDialog = (props) => {
             } else {
               removeFiles(null, [roomId]);
             }
+          } else {
+            const newFolders = folders;
+            const folderIndex = newFolders.findIndex((r) => r.id === roomId);
+            newFolders[folderIndex].inRoom = false;
+            setFolders(newFolders);
           }
 
           toastr.success(t("Files:YouLeftTheRoom"));
         })
-        .then(() => {
-          const newFolders = folders;
-          const folderIndex = newFolders.findIndex((r) => r.id === roomId);
-          newFolders[folderIndex].inRoom = false;
-          setFolders(newFolders);
-        })
+
         .finally(() => {
           onClose();
           setIsLoading(false);
