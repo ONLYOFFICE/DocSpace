@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
-public class FormGalleryDto
+public class FormGalleryDto : IMapFrom<OFormSettings>
 {
     public string Url { get; set; }
     public string Ext { get; set; }

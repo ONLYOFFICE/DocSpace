@@ -92,6 +92,7 @@ public class DbTenantService : ITenantService
         await using var tenantDbContext = _dbContextFactory.CreateDbContext();
         await using var userDbContext = _userDbContextFactory.CreateDbContext();//TODO: remove
         IQueryable<TenantUserSecurity> query() => tenantDbContext.Tenants
+                
                 .Where(r => r.Status == TenantStatus.Active)
                 .Join(userDbContext.Users, r => r.Id, r => r.TenantId, (tenant, user) => new
                 {
@@ -277,6 +278,7 @@ public class DbTenantService : ITenantService
                 dbTenant.Calls = tenant.Calls;
                 dbTenant.OwnerId = tenant.OwnerId;
 
+                tenantDbContext.Update(dbTenant);
                 await tenantDbContext.SaveChangesAsync();
             }
         }
@@ -304,6 +306,7 @@ public class DbTenantService : ITenantService
             tenant.StatusChanged = DateTime.UtcNow;
             tenant.LastModified = DateTime.UtcNow;
 
+            tenantDbContext.Update(tenant);
             await tenantDbContext.SaveChangesAsync();
         }
     }
@@ -461,7 +464,7 @@ static file class Queries
         EF.CompileAsyncQuery(
             (TenantDbContext ctx) =>
                 ctx.TenantVersion
-                    .AsNoTracking()
+                    
                     .Where(r => r.DefaultVersion == 1 || r.Id == 0)
                     .OrderByDescending(r => r.Id)
                     .Select(r => r.Id)

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, memo } from "react";
 
 import Select from "../../Select";
 
@@ -33,4 +33,4 @@ function WeekDays({
   );
 }
 
-export default WeekDays;
+export default memo(WeekDays);

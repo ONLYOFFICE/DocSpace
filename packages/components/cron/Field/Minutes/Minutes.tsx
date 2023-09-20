@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import Select from "../../Select";
 
 import type MinutesProps from "./Minutes.props";
@@ -19,4 +19,4 @@ function Minutes({ minutes, setMinutes, period, t, unit }: MinutesProps) {
   );
 }
 
-export default Minutes;
+export default memo(Minutes);
