@@ -131,7 +131,7 @@ function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
           setMinutes={setMinutes}
         />
       )}
-      <Suffix>{t("UTC")}</Suffix>
+      <Suffix>{t("Common:UTC")}</Suffix>
     </CronWrapper>
   );
 }
