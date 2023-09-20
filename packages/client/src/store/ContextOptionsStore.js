@@ -1102,9 +1102,7 @@ class ContextOptionsStore {
         key: "external-link",
         label: t("SharingPanel:CopyExternalLink"),
         icon: CopyToReactSvgUrl,
-        disabled:
-          this.treeFoldersStore.isArchiveFolder ||
-          (item.inRoom !== undefined && !item.inRoom),
+        disabled: this.treeFoldersStore.isArchiveFolder,
         onLoad: () => this.onLoadLinks(t, item),
       },
       {
@@ -1273,9 +1271,7 @@ class ContextOptionsStore {
         label: t("LeaveTheRoom"),
         icon: LeaveRoomSvgUrl,
         onClick: this.onLeaveRoom,
-        disabled:
-          this.treeFoldersStore.isArchiveFolder ||
-          (item.inRoom !== undefined && !item.inRoom),
+        disabled: this.treeFoldersStore.isArchiveFolder || !item.inRoom,
       },
       {
         id: "option_unarchive-room",

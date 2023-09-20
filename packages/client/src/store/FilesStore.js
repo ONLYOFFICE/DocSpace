@@ -474,7 +474,7 @@ class FilesStore {
 
       api.files
         .getFolderInfo(folder.id)
-        .then((folderInfo) => this.setFolder(folderInfo))
+        .then(this.setFolder)
         .catch(() => {
           // console.log("Folder deleted")
         });
@@ -1218,6 +1218,10 @@ class FilesStore {
 
   setFilesOwner = (folderIds, fileIds, ownerId) => {
     return api.files.setFileOwner(folderIds, fileIds, ownerId);
+  };
+
+  setRoomOwner = (ownerId, folderIds) => {
+    return api.files.setFileOwner(ownerId, folderIds);
   };
 
   setFilterUrl = (filter) => {
@@ -2872,7 +2876,7 @@ class FilesStore {
         security,
         viewAccessability,
         mute,
-        inRoom,
+        inRoom = true,
       } = item;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(

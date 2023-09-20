@@ -22,6 +22,7 @@ import {
 } from "../ImageViewerToolbar/ImageViewerToolbar.props";
 import { ToolbarActionType, KeyboardEventKeys, compareTo } from "../../helpers";
 import PlayerMessageError from "../PlayerMessageError";
+import { checkDialogsOpen } from "../../../../utils/checkDialogsOpen";
 
 const MaxScale = 5;
 const MinScale = 0.5;
@@ -544,6 +545,9 @@ function ImageViewer({
 
   const onKeyDown = (event: KeyboardEvent) => {
     const { code, ctrlKey } = event;
+
+    const someDialogIsOpen = checkDialogsOpen();
+    if (someDialogIsOpen) return;
 
     switch (code) {
       case KeyboardEventKeys.ArrowLeft:

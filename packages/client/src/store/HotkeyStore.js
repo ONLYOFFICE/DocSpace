@@ -7,6 +7,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { RoomsType } from "@docspace/common/constants";
 import { encryptionUploadDialog } from "../helpers/desktop";
 import getFilesFromEvent from "@docspace/components/drag-and-drop/get-files-from-event";
+import { checkDialogsOpen } from "@docspace/common/utils/checkDialogsOpen";
 
 class HotkeyStore {
   filesStore;
@@ -74,9 +75,7 @@ class HotkeyStore {
       infiniteLoaderComponent.tabIndex = -1;
     }
 
-    const someDialogIsOpen = document.getElementsByClassName(
-      "backdrop-active"
-    )[0];
+    const someDialogIsOpen = checkDialogsOpen();
 
     if (
       someDialogIsOpen ||

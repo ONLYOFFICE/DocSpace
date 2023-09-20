@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Events } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 import throttle from "lodash/throttle";
+import { checkDialogsOpen } from "@docspace/common/utils/checkDialogsOpen";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
@@ -136,9 +137,7 @@ const withHotkeys = (Component) => {
     useHotkeys(
       "*",
       (e) => {
-        const someDialogIsOpen = document.getElementsByClassName(
-          "backdrop-active"
-        )[0];
+        const someDialogIsOpen = checkDialogsOpen();
 
         if (e.shiftKey || e.ctrlKey || someDialogIsOpen) return;
 

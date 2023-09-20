@@ -41,7 +41,7 @@ const ChangeRoomOwner = (props) => {
     visible,
     setIsVisible,
     showBackButton,
-    setFilesOwner,
+    setRoomOwner,
     roomId,
     setFolder,
     updateRoomMemberRole,
@@ -98,7 +98,7 @@ const ChangeRoomOwner = (props) => {
   ) => {
     setIsLoading(true);
 
-    setFilesOwner([roomId], null, user[0].id)
+    setRoomOwner(user[0].id, [roomId])
       .then(async (res) => {
         setFolder(res[0]);
         if (isChecked) await onLeaveRoom();
@@ -165,7 +165,7 @@ export default inject(
     } = dialogsStore;
     const { user } = auth.userStore;
     const {
-      setFilesOwner,
+      setRoomOwner,
       selection,
       bufferSelection,
       setFolder,
@@ -186,7 +186,7 @@ export default inject(
       setIsVisible: setChangeRoomOwnerIsVisible,
       showBackButton: changeRoomOwnerData.showBackButton,
       setRoomParams: changeRoomOwnerData.setRoomParams,
-      setFilesOwner,
+      setRoomOwner,
       userId: user.id,
       roomId,
       setFolder,
