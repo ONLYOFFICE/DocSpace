@@ -68,13 +68,13 @@ export const getPeriodFromCronParts = (cronParts: number[][]): PeriodType => {
   return "Hour";
 };
 
-export const fixFormatValue = (value: number) => {
-  let result = value.toString();
-
-  if (value < 10) {
-    result = result.padStart(2, "0");
-  }
-
+export const fixFormatValue = (value: number, local: string) => {
+  let result = value.toLocaleString(local, {
+    minimumIntegerDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+    useGrouping: false,
+  });
   return result;
 };
 

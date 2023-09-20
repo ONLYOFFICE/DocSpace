@@ -216,7 +216,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
     public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName, int from = 0, int count = 0)
     {
         var filesDbContext = _dbContextFactory.CreateDbContext();
-        var q = Query(filesDbContext.Tag).AsNoTracking().Where(r => r.Type == tagType);
+        var q = Query(filesDbContext.Tag).Where(r => r.Type == tagType);
 
         if (byName)
         {
@@ -952,7 +952,7 @@ static file class Queries
             IAsyncEnumerable<TagLinkData>> TagsBySubjectAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid subject, IEnumerable<TagType> tagType, HashSet<string> filesId,
                     HashSet<string> foldersId) =>
-                ctx.Tag.AsNoTracking()
+                ctx.Tag
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => tagType.Contains(r.Type))
                     .Join(ctx.TagLink, r => r.Id, l => l.TagId,
@@ -966,7 +966,7 @@ static file class Queries
         NewTagsForFilesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid subject, List<string> where) =>
                 ctx.Tag
-                    .AsNoTracking()
+                    
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => subject == Guid.Empty || r.Owner == subject)
                     .Where(r => r.Type == TagType.New)
@@ -986,7 +986,7 @@ static file class Queries
         NewTagsForFoldersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid subject, List<string> monitorFolderIdsStrings) =>
                 ctx.Tag
-                    .AsNoTracking()
+                    
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => subject == Guid.Empty || r.Owner == subject)
                     .Where(r => r.Type == TagType.New)
@@ -1000,7 +1000,7 @@ static file class Queries
         TmpShareFileTagsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid subject, FolderType folderType) =>
                 ctx.Tag
-                    .AsNoTracking()
+                    
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => subject == Guid.Empty || r.Owner == subject)
                     .Where(r => r.Type == TagType.New)
@@ -1033,7 +1033,7 @@ static file class Queries
         TmpShareFolderTagsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid subject, FolderType folderType) =>
                 ctx.Tag
-                    .AsNoTracking()
+                    
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => subject == Guid.Empty || r.Owner == subject)
                     .Where(r => r.Type == TagType.New)
@@ -1067,7 +1067,7 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid subject) =>
                 ctx.Tag
-                    .AsNoTracking()
+                    
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => subject == Guid.Empty || r.Owner == subject)
                     .Where(r => r.Type == TagType.New)
@@ -1091,7 +1091,7 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid subject) =>
                 ctx.Tag
-                    .AsNoTracking()
+                    
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => subject == Guid.Empty || r.Owner == subject)
                     .Where(r => r.Type == TagType.New)
@@ -1110,7 +1110,7 @@ static file class Queries
         NewTagsForSBoxAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid subject, List<string> thirdpartyFolderIds) =>
                 ctx.Tag
-                    .AsNoTracking()
+                    
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => subject == Guid.Empty || r.Owner == subject)
                     .Where(r => r.Type == TagType.New)
@@ -1130,7 +1130,7 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid subject) =>
                 ctx.Tag
-                    .AsNoTracking()
+                    
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => subject == Guid.Empty || r.Owner == subject)
                     .Where(r => r.Type == TagType.New)
@@ -1151,7 +1151,7 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, List<int> monitorFolderIdsInt, bool deepSearch) =>
                 ctx.Tree
-                    .AsNoTracking()
+                    
                     .Where(r => monitorFolderIdsInt.Contains(r.ParentId))
                     .Where(r => deepSearch || r.Level == 1)
                     .Select(r => r.FolderId));
@@ -1213,7 +1213,7 @@ static file class Queries
     public static readonly Func<FilesDbContext, int, IEnumerable<string>, IAsyncEnumerable<DbFilesTag>> TagsInfoAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, IEnumerable<string> names) =>
-                ctx.Tag.AsNoTracking().Where(r => r.TenantId == tenantId && names.Contains(r.Name)));
+                ctx.Tag.Where(r => r.TenantId == tenantId && names.Contains(r.Name)));
 
     public static readonly Func<FilesDbContext, int, DateTime, IAsyncEnumerable<TagLinkData>> MustBeDeletedFilesAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(

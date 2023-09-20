@@ -46,6 +46,7 @@ class DialogsStore {
 
   removeItem = null;
   connectItem = null;
+  formItem = null;
   destFolderId = null;
   newFilesIds = null;
   newFiles = null;
@@ -66,6 +67,7 @@ class DialogsStore {
   changeUserTypeDialogVisible = false;
   editLinkPanelIsVisible = false;
   embeddingPanelIsVisible = false;
+  submitToGalleryDialogVisible = false;
   linkParams = null;
   leaveRoomDialogVisible = false;
   changeRoomOwnerIsVisible = false;
@@ -346,6 +348,23 @@ class DialogsStore {
     this.changeUserTypeDialogVisible = changeUserTypeDialogVisible;
   };
 
+  setSubmitToGalleryDialogVisible = (submitToGalleryDialogVisible) => {
+    this.submitToGalleryDialogVisible = submitToGalleryDialogVisible;
+  };
+
+  setFormItem = (formItem) => {
+    if (formItem && !formItem.exst) {
+      const splitted = formItem.title.split(".");
+      formItem.title = splitted.slice(0, -1).join(".");
+      formItem.exst = splitted.length !== 1 ? `.${splitted.at(-1)}` : null;
+    }
+    this.formItem = formItem;
+  };
+
+  setEditLinkPanelIsVisible = (editLinkPanelIsVisible) => {
+    this.editLinkPanelIsVisible = editLinkPanelIsVisible;
+  };
+
   setLeaveRoomDialogVisible = (visible) => {
     this.leaveRoomDialogVisible = visible;
   };
@@ -362,6 +381,55 @@ class DialogsStore {
       setRoomParams,
     };
   };
+
+  setDeleteLinkDialogVisible = (visible) => {
+    this.deleteLinkDialogVisible = visible;
+  };
+
+  setEmbeddingPanelIsVisible = (embeddingPanelIsVisible) => {
+    this.embeddingPanelIsVisible = embeddingPanelIsVisible;
+  };
+
+  setMoveToPublicRoomVisible = (visible, data = null) => {
+    this.moveToPublicRoomVisible = visible;
+    this.moveToPublicRoomData = data;
+  };
+
+  get someDialogIsOpen() {
+    return (
+      this.sharingPanelVisible ||
+      this.ownerPanelVisible ||
+      this.moveToPanelVisible ||
+      this.copyPanelVisible ||
+      this.deleteThirdPartyDialogVisible ||
+      this.connectDialogVisible ||
+      this.thirdPartyMoveDialogVisible ||
+      this.deleteDialogVisible ||
+      this.downloadDialogVisible ||
+      this.emptyTrashDialogVisible ||
+      this.newFilesPanelVisible ||
+      this.conflictResolveDialogVisible ||
+      this.convertDialogVisible ||
+      this.selectFileDialogVisible ||
+      this.authStore.settingsStore.hotkeyPanelVisible ||
+      this.versionHistoryStore.isVisible ||
+      this.eventDialogVisible ||
+      this.invitePanelOptions.visible ||
+      this.archiveDialogVisible ||
+      this.restoreRoomDialogVisible ||
+      this.restoreAllPanelVisible ||
+      this.inviteUsersWarningDialogVisible ||
+      this.createRoomDialogVisible ||
+      this.createRoomConfirmDialogVisible ||
+      this.changeUserTypeDialogVisible ||
+      this.submitToGalleryDialogVisible ||
+      this.editLinkPanelIsVisible ||
+      this.unsavedChangesDialogVisible ||
+      this.deleteLinkDialogVisible ||
+      this.embeddingPanelIsVisible ||
+      this.moveToPublicRoomVisible
+    );
+  }
 
   deselectActiveFiles = () => {
     this.filesStore.setSelected("none");

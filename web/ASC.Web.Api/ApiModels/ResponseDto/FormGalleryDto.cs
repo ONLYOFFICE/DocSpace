@@ -24,13 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.Services.OFormService;
+namespace ASC.Web.Api.ApiModel.ResponseDto;
 
-public class OFormSettings
+public class FormGalleryDto : IMapFrom<OFormSettings>
 {
     public string Url { get; set; }
-    public int Period { get; set; }
     public string Ext { get; set; }
-
-    public OFormSettings Upload { get; set; }
+    public string UploadUrl { get; set; }
+    public string UploadExt { get; set; }
 }
