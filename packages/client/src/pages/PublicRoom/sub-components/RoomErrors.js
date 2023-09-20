@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 
 const RoomErrors = ({ t, tReady, isInvalid }) => {
-  const headerText = isInvalid ? t("InvalidLink") : t("ExpiredLink");
+  const headerText = isInvalid ? t("InvalidLink") : t("Common:ExpiredLink");
   const bodyText = isInvalid ? t("LinkDoesNotExist") : t("LinkHasExpired");
 
   return tReady ? (
@@ -13,4 +13,4 @@ const RoomErrors = ({ t, tReady, isInvalid }) => {
   );
 };
 
-export default withTranslation(["Errors"])(RoomErrors);
+export default withTranslation(["Errors", "Common"])(RoomErrors);
