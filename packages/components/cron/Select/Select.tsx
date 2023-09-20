@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { DateTime } from "luxon";
+import moment from "moment";
 
 import ComboBox from "../../combobox";
 import { Option } from "../types";
@@ -20,20 +20,27 @@ function Select({
 
   const options = useMemo(() => {
     const { altWithTranslation } = unit;
+    let firstDayOfWeek = 0;
+
+    const isWeek = unit.name === "weekday";
+
+    if (isWeek) {
+      firstDayOfWeek = moment.localeData(i18n.language).firstDayOfWeek();
+    }
 
     if (altWithTranslation) {
-      return altWithTranslation.map((item, index) => {
+      return altWithTranslation.map((item, index, array) => {
         const number = unit.min === 0 ? index : index + 1;
 
+        const key = isWeek ? (number + firstDayOfWeek) % unit.total : number;
+        const label = isWeek ? array[key] : item;
+
         return {
-          key: number,
-          label: item,
+          key,
+          label,
         };
       });
     }
-
-    // const local = new Intl.Locale(i18n.language);
-    // // DateTime.
 
     return [...Array(unit.total)].map((_, index) => {
       const number = unit.min === 0 ? index : index + 1;
