@@ -44,6 +44,7 @@ const InviteInput = ({
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [searchPanelVisible, setSearchPanelVisible] = useState(false);
+  const [isAddEmailPanelBlocked, setIsAddEmailPanelBlocked] = useState(true);
 
   const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
 
@@ -84,6 +85,7 @@ const InviteInput = ({
     if (query.length > 2) {
       const users = await getUsersByQuery(query);
       setUsersList(users);
+      setIsAddEmailPanelBlocked(false);
     }
 
     if (!query) {
@@ -106,6 +108,7 @@ const InviteInput = ({
 
     if (clearValue.length < 3) {
       setUsersList([]);
+      setIsAddEmailPanelBlocked(true);
       return;
     }
 
@@ -217,6 +220,20 @@ const InviteInput = ({
 
   const foundUsers = usersList.map((user) => getItemContent(user));
 
+  const addEmailPanel = isAddEmailPanelBlocked ? (
+    <></>
+  ) : (
+    <DropDownItem
+      className="add-item"
+      style={{ width: "inherit" }}
+      textOverflow
+      onClick={addEmail}
+      height={48}
+    >
+      {t("Common:AddButton")} «{inputValue}»
+    </DropDownItem>
+  );
+
   const accessOptions = getAccessOptions(t, roomType);
 
   const onSelectAccess = (item) => {
@@ -295,19 +312,7 @@ const InviteInput = ({
             eventTypes="click"
             {...dropDownMaxHeight}
           >
-            {!!usersList.length ? (
-              foundUsers
-            ) : (
-              <DropDownItem
-                className="add-item"
-                style={{ width: "inherit" }}
-                textOverflow
-                onClick={addEmail}
-                height={48}
-              >
-                {t("Common:AddButton")} «{inputValue}»
-              </DropDownItem>
-            )}
+            {!!usersList.length ? foundUsers : addEmailPanel}
           </StyledDropDown>
         )}
 
