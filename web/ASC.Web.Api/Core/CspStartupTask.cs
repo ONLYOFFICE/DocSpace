@@ -24,17 +24,45 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Security;
-public class CspSettings : ISettings<CspSettings>
+namespace ASC.Api.Core.Core;
+
+public class CspStartupTask : IStartupTask
 {
-    [JsonIgnore]
-    public Guid ID => new Guid("27504162-16FF-405F-8530-1537B0F2B89D");
+    private readonly IServiceProvider _provider;
+    private readonly IDistributedCache _distributedCache;
+    private const string HeaderKey = $"csp";
 
-    public IEnumerable<string> Domains { get; set; }
-    public bool SetDefaultIfEmpty { get; set; }
-
-    public CspSettings GetDefault()
+    public CspStartupTask(IServiceProvider provider, IDistributedCache distributedCache)
     {
-        return new CspSettings() { Domains = new List<string>() };
+        _provider = provider;
+        _distributedCache = distributedCache;
+    }
+
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
+    {
+        await using var scope = _provider.CreateAsyncScope();
+        var serviceProvider = scope.ServiceProvider;
+        var helper = serviceProvider.GetService<CspSettingsHelper>();
+        var tenantManager = serviceProvider.GetService<TenantManager>();
+        var settingsManager = serviceProvider.GetService<SettingsManager>();
+
+        var oldHeaderValue = await _distributedCache.GetStringAsync(HeaderKey);
+        var currentHeaderValue = helper.CreateHeader(null, true, false);
+
+        if (oldHeaderValue != currentHeaderValue)
+        {
+            var tenantService = serviceProvider.GetService<ITenantService>();
+
+            foreach (var t in tenantService.GetTenantsWithCsp())
+            {
+                tenantManager.SetCurrentTenant(t);
+                var current = settingsManager.Load<CspSettings>();
+                await helper.Save(current.Domains, current.SetDefaultIfEmpty);
+            }
+
+            await _distributedCache.SetStringAsync(HeaderKey, currentHeaderValue);
+        }
+
+
     }
 }

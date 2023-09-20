@@ -75,15 +75,34 @@ public class CspSettingsHelper
 
         if (domain == Tenant.LocalHost && tenant.Alias == Tenant.LocalHost)
         {
-            headerKeys.Add(GetKey(Tenant.HostName));
-            var ips = Dns.GetHostAddresses(Dns.GetHostName(), AddressFamily.InterNetwork);
-
-            foreach (var ip in ips)
+            var domainsKey = $"{GetKey(domain)}:keys";
+            if (_httpContextAccessor.HttpContext != null)
             {
-                headerKeys.Add(GetKey(ip.ToString()));
-            }
+                var keys = new List<string>()
+                {
+                    GetKey(Tenant.HostName)
+                };
 
-            headerKeys.Add(GetKey(_httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()));
+                var ips = Dns.GetHostAddresses(Dns.GetHostName(), AddressFamily.InterNetwork);
+
+                foreach (var ip in ips)
+                {
+                    keys.Add(GetKey(ip.ToString()));
+                }
+
+                keys.Add(GetKey(_httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()));
+                await _distributedCache.SetStringAsync(domainsKey, string.Join(';', keys));
+                headerKeys.AddRange(keys);
+            }
+            else
+            {
+                var domainsValue = await _distributedCache.GetStringAsync(domainsKey);
+
+                if (!string.IsNullOrEmpty(domainsValue))
+                {
+                    headerKeys.AddRange(domainsValue.Split(';'));
+                }
+            }
         }
 
         var headerValue = CreateHeader(domains, setDefaultIfEmpty);
@@ -121,7 +140,7 @@ public class CspSettingsHelper
         }
     }
 
-    public string CreateHeader(IEnumerable<string> domains, bool setDefaultIfEmpty = false)
+    public string CreateHeader(IEnumerable<string> domains, bool setDefaultIfEmpty = false, bool currentTenant = true)
     {
         if (domains == null || !domains.Any())
         {
@@ -143,7 +162,7 @@ public class CspSettingsHelper
             defaultOptions.Def.Add($"*.{_coreBaseSettings.Basedomain}");
         }
 
-        if (_globalStore.GetStore() is S3Storage s3Storage && !string.IsNullOrEmpty(s3Storage.CdnDistributionDomain))
+        if (_globalStore.GetStore(currentTenant) is S3Storage s3Storage && !string.IsNullOrEmpty(s3Storage.CdnDistributionDomain))
         {
             defaultOptions.Img.Add(s3Storage.CdnDistributionDomain);
         }
