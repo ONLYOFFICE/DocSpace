@@ -49,6 +49,8 @@ const ChangeRoomOwner = (props) => {
     isAdmin,
     setRoomParams,
     removeFiles,
+    folders,
+    setFolders,
   } = props;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -74,6 +76,12 @@ const ChangeRoomOwner = (props) => {
       .then(() => {
         if (!isAdmin) removeFiles(null, [roomId]);
         toastr.success(t("Files:LeftAndAppointNewOwner"));
+      })
+      .then(() => {
+        const newFolders = folders;
+        const folderIndex = newFolders.findIndex((r) => r.id === roomId);
+        newFolders[folderIndex].inRoom = false;
+        setFolders(newFolders);
       })
       .finally(() => {
         onClose();
@@ -162,6 +170,8 @@ export default inject(
       setFolder,
       updateRoomMemberRole,
       removeFiles,
+      folders,
+      setFolders,
     } = filesStore;
 
     const roomId = selection.length
@@ -182,6 +192,8 @@ export default inject(
       updateRoomMemberRole,
       isAdmin: user.isOwner || user.isAdmin,
       removeFiles,
+      folders,
+      setFolders,
     };
   }
 )(observer(withTranslation(["Files"])(ChangeRoomOwner)));

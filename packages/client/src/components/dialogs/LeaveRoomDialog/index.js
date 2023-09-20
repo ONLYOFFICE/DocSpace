@@ -24,6 +24,8 @@ const LeaveRoomDialog = (props) => {
     isAdmin,
     setSelected,
     isRoot,
+    folders,
+    setFolders,
   } = props;
 
   const navigate = useNavigate();
@@ -63,6 +65,12 @@ const LeaveRoomDialog = (props) => {
           }
 
           toastr.success(t("Files:YouLeftTheRoom"));
+        })
+        .then(() => {
+          const newFolders = folders;
+          const folderIndex = newFolders.findIndex((r) => r.id === roomId);
+          newFolders[folderIndex].inRoom = false;
+          setFolders(newFolders);
         })
         .finally(() => {
           onClose();
@@ -123,6 +131,8 @@ export default inject(
       updateRoomMemberRole,
       removeFiles,
       setSelected,
+      folders,
+      setFolders,
     } = filesStore;
 
     const roomId = selection.length
@@ -149,6 +159,8 @@ export default inject(
       isAdmin: user.isOwner || user.isAdmin,
       setSelected,
       isRoot,
+      folders,
+      setFolders,
     };
   }
 )(observer(withTranslation(["Common", "Files"])(LeaveRoomDialog)));
