@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import Select from "../../Select";
 
 import type HoursProps from "./Hours.props";
@@ -16,4 +16,4 @@ function Hours({ hours, setHours, unit, t }: HoursProps) {
   );
 }
 
-export default Hours;
+export default memo(Hours);
