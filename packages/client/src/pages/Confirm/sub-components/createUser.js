@@ -189,7 +189,12 @@ const CreateUserForm = (props) => {
     const headerKey = linkData.confirmHeader;
 
     createConfirmUser(personalData, loginData, headerKey)
-      .then(() => window.location.replace(defaultPage))
+      .then(() => {
+        const url = roomData.roomId
+          ? `/rooms/shared/filter?folder=${roomData.roomId}`
+          : defaultPage;
+        window.location.replace(url);
+      })
       .catch((error) => {
         let errorMessage = "";
         if (typeof error === "object") {
@@ -220,7 +225,10 @@ const CreateUserForm = (props) => {
 
     signupOAuth(signupAccount)
       .then(() => {
-        window.location.replace(defaultPage);
+        const url = roomData.roomId
+          ? `/rooms/shared/filter?folder=${roomData.roomId}/`
+          : defaultPage;
+        window.location.replace(url);
       })
       .catch((e) => {
         toastr.error(e);
