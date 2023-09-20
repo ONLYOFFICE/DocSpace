@@ -68,7 +68,7 @@ const DetailsBar = ({ eventDetails }) => {
     return (
       moment(date).locale(i18n.language).format("MMM D, YYYY, h:mm:ss A") +
       " " +
-      t("UTC")
+      t("Common:UTC")
     );
   };
 

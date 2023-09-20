@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Events } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 import throttle from "lodash/throttle";
+import { checkDialogsOpen } from "@docspace/common/utils/checkDialogsOpen";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
@@ -40,7 +41,6 @@ const withHotkeys = (Component) => {
       backToParentFolder,
 
       uploadFile,
-      someDialogIsOpen,
       enabledHotkeys,
       mediaViewerIsVisible,
 
@@ -72,11 +72,7 @@ const withHotkeys = (Component) => {
         ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
-      enabled:
-        !someDialogIsOpen &&
-        enabledHotkeys &&
-        !mediaViewerIsVisible &&
-        !filesIsLoading,
+      enabled: enabledHotkeys && !mediaViewerIsVisible && !filesIsLoading,
       // keyup: true,
       // keydown: false,
     };
@@ -141,7 +137,9 @@ const withHotkeys = (Component) => {
     useHotkeys(
       "*",
       (e) => {
-        if (e.shiftKey || e.ctrlKey) return;
+        const someDialogIsOpen = checkDialogsOpen();
+
+        if (e.shiftKey || e.ctrlKey || someDialogIsOpen) return;
 
         switch (e.key) {
           case "ArrowDown":
@@ -419,7 +417,6 @@ const withHotkeys = (Component) => {
       const {
         setDeleteDialogVisible,
         setSelectFileDialogVisible,
-        someDialogIsOpen,
         setInviteUsersWarningDialogVisible,
       } = dialogsStore;
       const {
@@ -478,7 +475,6 @@ const withHotkeys = (Component) => {
         backToParentFolder,
 
         uploadFile,
-        someDialogIsOpen,
         enabledHotkeys,
         mediaViewerIsVisible,
 

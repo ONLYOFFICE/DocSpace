@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 /// <summary>
@@ -89,6 +88,8 @@ public class FolderContentDto<T>
 public class FolderContentDtoHelper
 {
     private readonly FileSecurity _fileSecurity;
+    private readonly FileSecurityCommon _fileSecurityCommon;
+    private readonly AuthContext _authContext;
     private readonly IDaoFactory _daoFactory;
     private readonly FileDtoHelper _fileDtoHelper;
     private readonly FolderDtoHelper _folderDtoHelper;
@@ -99,13 +100,17 @@ public class FolderContentDtoHelper
         IDaoFactory daoFactory,
         FileDtoHelper fileWrapperHelper,
         FolderDtoHelper folderWrapperHelper,
-        BadgesSettingsHelper badgesSettingsHelper)
+        BadgesSettingsHelper badgesSettingsHelper,
+        FileSecurityCommon fileSecurityCommon,
+        AuthContext authContext)
     {
         _fileSecurity = fileSecurity;
         _daoFactory = daoFactory;
         _fileDtoHelper = fileWrapperHelper;
         _folderDtoHelper = folderWrapperHelper;
         _badgesSettingsHelper = badgesSettingsHelper;
+        _fileSecurityCommon = fileSecurityCommon;
+        _authContext = authContext;
     }
 
     public async Task<FolderContentDto<T>> GetAsync<T>(DataWrapper<T> folderItems, int startIndex)
@@ -201,16 +206,44 @@ public class FolderContentDtoHelper
 
         async IAsyncEnumerable<FileEntryDto> GetFoldersDto(IEnumerable<FileEntry> folderEntries)
         {
+            List<FileShareRecord> currentUsersRecords = null;
+
             foreach (var r in folderEntries)
             {
                 if (r is Folder<int> fol1)
                 {
-                    yield return await _folderDtoHelper.GetAsync(fol1, foldersIntWithRights);
+                    yield return await GetFolder(fol1, foldersIntWithRights);
                 }
                 else if (r is Folder<string> fol2)
                 {
-                    yield return await _folderDtoHelper.GetAsync(fol2, foldersStringWithRights);
+                    yield return await GetFolder(fol2, foldersStringWithRights);
                 }
+            }
+
+            async Task<FolderDto<T1>> GetFolder<T1>(Folder<T1> fol1, List<Tuple<FileEntry<T1>, bool>> foldersWithRights)
+            {
+                var result = await _folderDtoHelper.GetAsync(fol1, foldersWithRights);
+                if (DocSpaceHelper.IsRoom(fol1.FolderType))
+                {
+                    if (fol1.CreateBy == _authContext.CurrentAccount.ID)
+                    {
+                        result.InRoom = true;
+                    }
+                    else
+                    {
+                        if (currentUsersRecords == null && await _fileSecurityCommon.IsDocSpaceAdministratorAsync(_authContext.CurrentAccount.ID))
+                        {
+                            var securityDao = _daoFactory.GetSecurityDao<T>();
+                            var currentUserSubjects = await _fileSecurity.GetUserSubjectsAsync(_authContext.CurrentAccount.ID);
+                            currentUsersRecords = await securityDao.GetSharesAsync(currentUserSubjects).ToListAsync();
+                        }
+                        if (currentUsersRecords != null)
+                        {
+                            result.InRoom = currentUsersRecords.Any(c => c.EntryId.Equals(fol1.Id));
+                        }
+                    }
+                }
+                return result;
             }
         }
     }
