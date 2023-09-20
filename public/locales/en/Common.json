@@ -201,6 +201,7 @@
   "NOV": "NOV",
   "OCT": "OCT",
   "OFORMsGallery": "OFORMs gallery",
+  "OkButton": "Ok",
   "OKButton": "OK",
   "On": "on",
   "Or": "or",
@@ -321,5 +322,6 @@
   "Warning": "Warning",
   "Website": "Website",
   "WED": "WED",
-  "Yesterday": "Yesterday"
+  "Yesterday": "Yesterday",
+  "You": "You"
 }

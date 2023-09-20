@@ -1075,10 +1075,18 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     #region Only in TMFileDao
 
-    public async Task ReassignFilesAsync(Guid oldOwnerId, Guid newOwnerId)
+    public async Task ReassignFilesAsync(Guid oldOwnerId, Guid newOwnerId, IEnumerable<int> exceptFolderIds)
     {
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
-        await Queries.UpdateCreateByAsync(filesDbContext, TenantID, oldOwnerId, newOwnerId);
+
+        if (exceptFolderIds == null || !exceptFolderIds.Any())
+        {
+            await Queries.ReassignFilesAsync(filesDbContext, TenantID, oldOwnerId, newOwnerId);
+        }
+        else
+        {
+            await Queries.ReassignFilesPartiallyAsync(filesDbContext, TenantID, oldOwnerId, newOwnerId, exceptFolderIds);
+        }
     }
 
     public IAsyncEnumerable<File<int>> GetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
@@ -1948,12 +1956,25 @@ static file class Queries
                     .Where(r => r.VersionGroup > versionGroup)
                     .ExecuteUpdate(f => f.SetProperty(p => p.VersionGroup, p => p.VersionGroup - 1)));
 
-    public static readonly Func<FilesDbContext, int, Guid, Guid, Task<int>> UpdateCreateByAsync =
+    public static readonly Func<FilesDbContext, int, Guid, Guid, Task<int>> ReassignFilesAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid oldOwnerId, Guid newOwnerId) =>
                 ctx.Files
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.CreateBy == oldOwnerId)
+                    .ExecuteUpdate(p => p.SetProperty(f => f.CreateBy, newOwnerId)));
+
+    public static readonly Func<FilesDbContext, int, Guid, Guid, IEnumerable<int>, Task<int>> ReassignFilesPartiallyAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, Guid oldOwnerId, Guid newOwnerId, IEnumerable<int> exceptFolderIds) =>
+                ctx.Files
+                    .Where(f => f.TenantId == tenantId)
+                    .Where(f => f.CreateBy == oldOwnerId)
+                    .Where(f => ctx.Tree
+                        .Where(t => t.FolderId == f.ParentId)
+                        .Where(t => exceptFolderIds.Contains(t.ParentId))
+                        .FirstOrDefault() == null
+                    )
                     .ExecuteUpdate(p => p.SetProperty(f => f.CreateBy, newOwnerId)));
 
     public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFileQuery>> DbFileQueriesByTextAsync =

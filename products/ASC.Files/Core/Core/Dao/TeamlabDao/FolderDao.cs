@@ -843,10 +843,18 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     #region Only for TMFolderDao
 
-    public async Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId)
+    public async Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId, IEnumerable<int> exceptFolderIds)
     {
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
-        await Queries.ReassignFoldersAsync(filesDbContext, TenantID, oldOwnerId, newOwnerId);
+
+        if (exceptFolderIds == null || !exceptFolderIds.Any())
+        {
+            await Queries.ReassignFoldersAsync(filesDbContext, TenantID, oldOwnerId, newOwnerId);
+        }
+        else
+        {
+            await Queries.ReassignFoldersPartiallyAsync(filesDbContext, TenantID, oldOwnerId, newOwnerId, exceptFolderIds);
+        }
     }
 
     public async IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text, bool bunch = false)
@@ -1981,6 +1989,19 @@ static file class Queries
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.CreateBy == oldOwnerId)
                     .ExecuteUpdate(f => f.SetProperty(p => p.CreateBy, newOwnerId)));
+
+    public static readonly Func<FilesDbContext, int, Guid, Guid, IEnumerable<int>, Task<int>> ReassignFoldersPartiallyAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, Guid oldOwnerId, Guid newOwnerId, IEnumerable<int> exceptFolderIds) =>
+                ctx.Folders
+                    .Where(f => f.TenantId == tenantId)
+                    .Where(f => f.CreateBy == oldOwnerId)
+                    .Where(f => ctx.Tree
+                        .Where(t => t.FolderId == f.Id)
+                        .Where(t => exceptFolderIds.Contains(t.ParentId))
+                        .FirstOrDefault() == null
+                    )
+                    .ExecuteUpdate(p => p.SetProperty(f => f.CreateBy, newOwnerId)));
 
     public static readonly Func<FilesDbContext, int, IEnumerable<int>, IAsyncEnumerable<DbFolderQuery>>
         DbFolderQueriesByIdsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(

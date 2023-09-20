@@ -263,6 +263,10 @@ class UsersStore {
 
           options.push("details");
 
+          if (userRole === "manager" || userRole === "admin") {
+            options.push("reassign-data");
+          }
+
           options.push("separator-1");
           options.push("delete-user");
         } else {
@@ -377,6 +381,7 @@ class UsersStore {
       isAdmin: isAdministrator,
       isVisitor,
       isCollaborator,
+      isRoomAdmin,
       mobilePhone,
       userName,
       activationStatus,
@@ -412,6 +417,7 @@ class UsersStore {
       isOwner,
       isAdmin: isAdministrator,
       isCollaborator,
+      isRoomAdmin,
       isVisitor,
       displayName,
       avatar: currentAvatar,

@@ -501,7 +501,7 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         return Task.FromResult("tar.gz");
     }
 
-    public Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId)
+    public Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId, IEnumerable<string> exceptFolderIds)
     {
         return Task.CompletedTask;
     }

@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "مفعل",
-  "ChangeUsersDisableStatus": "معطل",
-  "ChangeUserStatusDialog": "المستخدمون الذين لديهم '{{ userStatus }}' سيكونون {{ status }}.",
-  "ChangeUserStatusDialogHeader": "تغيير الحالة",
-  "ChangeUserStatusDialogMessage": "لا يمكنك تغيير حالتك او حالة مالك DocSpace."
-}

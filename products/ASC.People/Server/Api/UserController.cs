@@ -480,7 +480,7 @@ public class UserController : PeopleControllerBase
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         await _userPhotoManager.RemovePhotoAsync(user.Id);
         await _userManager.DeleteUserAsync(user.Id);
-        _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
+        _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false, false);
 
         await _messageService.SendAsync(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
 
@@ -977,7 +977,7 @@ public class UserController : PeopleControllerBase
 
             await _userPhotoManager.RemovePhotoAsync(user.Id);
             await _userManager.DeleteUserAsync(user.Id);
-            _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
+            _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false, false);
         }
 
         await _messageService.SendAsync(MessageAction.UsersDeleted, _messageTarget.Create(users.Select(x => x.Id)), userNames);

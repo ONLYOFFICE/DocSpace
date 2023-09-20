@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "已启用",
-  "ChangeUsersDisableStatus": "已禁用",
-  "ChangeUserStatusDialog": "带有‘{{ userStatus }}’状态的用户将‘{{ userStatus }}",
-  "ChangeUserStatusDialogHeader": "变更用户状态",
-  "ChangeUserStatusDialogMessage": "您无法变更协作空间所有者与您自己的状态。"
-}
