@@ -375,9 +375,10 @@ public class FileStorageService //: IFileStorageService
             }
         }
 
-        parent.Shareable = await shareableTask
-            || parent.FolderType == FolderType.SHARE
-            || parent.RootFolderType == FolderType.Privacy;
+        parent.Shareable =
+            parent.FolderType == FolderType.SHARE ||
+            parent.RootFolderType == FolderType.Privacy ||
+            await shareableTask;
 
         entries = entries.Where(x =>
         {
@@ -2508,20 +2509,13 @@ public class FileStorageService //: IFileStorageService
 
     #endregion
 
-    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<SubjectType> subjectTypes = null,
+    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(
+        IEnumerable<T> fileIds,
+        IEnumerable<T> folderIds,
+        IEnumerable<SubjectType> subjectTypes = null,
         bool withoutTemplates = false)
     {
         return await _fileSharing.GetSharedInfoAsync(fileIds, folderIds, subjectTypes, withoutTemplates);
-    }
-
-    public async Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync<T>(T fileId)
-    {
-        return await _fileSharing.GetSharedInfoShortFileAsync(fileId);
-    }
-
-    public async Task<List<AceShortWrapper>> GetSharedInfoShortFolder<T>(T folderId)
-    {
-        return await _fileSharing.GetSharedInfoShortFolderAsync(folderId);
     }
 
     public async Task<string> SetAceObjectAsync<T>(AceCollection<T> aceCollection, bool notify)
@@ -2926,7 +2920,7 @@ public class FileStorageService //: IFileStorageService
             _logger.ErrorWithException(ex);
         }
 
-        return showSharingSettings ? await GetSharedInfoShortFileAsync(fileId) : null;
+        return showSharingSettings ? await _fileSharing.GetSharedInfoShortFileAsync(fileId) : null;
     }
 
     public async Task<List<EncryptionKeyPairDto>> GetEncryptionAccessAsync<T>(T fileId)
@@ -3015,6 +3009,27 @@ public class FileStorageService //: IFileStorageService
             var newFolder = folder;
             if (folder.CreateBy != userInfo.Id)
             {
+                var createBy = folder.CreateBy;
+
+                await SetAceObjectAsync(new AceCollection<T>
+                {
+                    Files = Array.Empty<T>(),
+                    Folders = new[] { folder.Id },
+                    Aces = new List<AceWrapper>
+                    {
+                        new AceWrapper()
+                        {
+                              Access = FileShare.None,
+                              Id = userInfo.Id
+                        },
+                        new AceWrapper()
+                        {
+                              Access = FileShare.RoomAdmin,
+                              Id = createBy
+                        }
+                    }
+                }, false);
+
                 var folderAccess = folder.Access;
 
                 newFolder.CreateBy = userInfo.Id;
