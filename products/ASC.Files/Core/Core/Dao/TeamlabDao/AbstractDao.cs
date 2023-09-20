@@ -101,7 +101,6 @@ public class AbstractDao
         {
             f.FilesCount = await Queries.FilesCountAsync(filesDbContext, f.TenantId, f.Id);
         }
-
         await filesDbContext.SaveChangesAsync();
     }
 
@@ -198,6 +197,7 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int folderId) =>
                 ctx.Folders
+                    .AsTracking()
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => ctx.Tree.Where(t => t.FolderId == folderId).Any(a => a.ParentId == r.Id)));
 
@@ -218,7 +218,7 @@ static file class Queries
                 ctx.ThirdpartyIdMapping
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.HashId == hashId)
-                    .AsNoTracking()
+                    
                     .Select(r => r.Id)
                     .FirstOrDefault());
 }

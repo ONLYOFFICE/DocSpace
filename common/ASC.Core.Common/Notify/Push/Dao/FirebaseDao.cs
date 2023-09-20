@@ -93,7 +93,7 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FirebaseDbContext ctx, int tenantId, Guid userId, string application, string fbDeviceToken) =>
                 ctx.Users
-                    .AsNoTracking()
+                    
                     .Where(r => r.UserId == userId)
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Application == application)
@@ -104,7 +104,7 @@ static file class Queries
         FireBaseUsersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FirebaseDbContext ctx, int tenantId, Guid userId, string application) =>
                 ctx.Users
-                    .AsNoTracking()
+                    
                     .Where(r => r.UserId == userId)
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Application == application));

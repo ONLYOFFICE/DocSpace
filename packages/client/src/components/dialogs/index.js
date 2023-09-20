@@ -29,6 +29,7 @@ import LogoutAllConnectionDialog from "./LogoutAllConnectionDialog";
 import CreateRoomConfirmDialog from "./CreateRoomConfirmDialog";
 import PortalRenamingDialog from "./PortalRenamingDialog";
 import DataReassignmentDialog from "./DataReassignmentDialog";
+import SubmitToFormGallery from "./SubmitToFormGallery";
 import UnsavedChangesDialog from "./UnsavedChangesDialog";
 import DeleteLinkDialog from "./DeleteLinkDialog";
 import RoomSharingDialog from "./RoomSharingDialog";
@@ -67,6 +68,7 @@ export {
   LogoutAllConnectionDialog,
   PortalRenamingDialog,
   DataReassignmentDialog,
+  SubmitToFormGallery,
   UnsavedChangesDialog,
   DeleteLinkDialog,
   RoomSharingDialog,

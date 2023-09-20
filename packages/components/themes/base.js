@@ -3139,6 +3139,11 @@ const Base = {
     },
   },
 
+  submitToGalleryTile: {
+    bodyText: "#555F65",
+    closeIconFill: "#657077",
+  },
+
   infoBlock: {
     background: "#F8F9F9",
     headerColor: "#333",
