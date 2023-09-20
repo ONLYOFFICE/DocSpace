@@ -47,6 +47,7 @@ const DataReassignmentDialog = ({
   getUsersList,
   setIsDeletingUserWithReassignment,
   setDataReassignmentDeleteProfile,
+  dataReassignmentUrl,
 }) => {
   const [selectorVisible, setSelectorVisible] = useState(false);
   const defaultSelectedUser = isDeletingUserWithReassignment
@@ -215,6 +216,7 @@ const DataReassignmentDialog = ({
           selectedUser={selectedUser}
           percent={percent}
           isAbortTransfer={isAbortTransfer}
+          dataReassignmentUrl={dataReassignmentUrl}
           currentColorScheme={currentColorScheme}
           onTogglePeopleSelector={onTogglePeopleSelector}
         />
@@ -247,7 +249,7 @@ export default inject(({ auth, peopleStore, setup }) => {
     isDeletingUserWithReassignment,
     setIsDeletingUserWithReassignment,
   } = peopleStore.dialogStore;
-  const { currentColorScheme } = auth.settingsStore;
+  const { currentColorScheme, dataReassignmentUrl } = auth.settingsStore;
   const {
     dataReassignment,
     dataReassignmentProgress,
@@ -271,6 +273,7 @@ export default inject(({ auth, peopleStore, setup }) => {
     getUsersList,
     isDeletingUserWithReassignment,
     setIsDeletingUserWithReassignment,
+    dataReassignmentUrl,
   };
 })(
   observer(
