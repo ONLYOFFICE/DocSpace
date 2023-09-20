@@ -81,10 +81,12 @@ const InviteInput = ({
   const searchByQuery = async (value) => {
     const query = value.trim();
 
-    if (!!query.length) {
+    if (query.length > 2) {
       const users = await getUsersByQuery(query);
       setUsersList(users);
-    } else {
+    }
+
+    if (!query) {
       closeInviteInputPanel();
       setInputValue("");
       setUsersList([]);
@@ -100,11 +102,16 @@ const InviteInput = ({
     const value = e.target.value;
     const clearValue = value.trim();
 
+    setInputValue(value);
+
+    if (clearValue.length < 3) {
+      setUsersList([]);
+      return;
+    }
+
     if ((!!usersList.length || clearValue.length > 2) && !searchPanelVisible) {
       openInviteInputPanel();
     }
-
-    setInputValue(value);
 
     if (roomId !== -1) {
       debouncedSearch(clearValue);
