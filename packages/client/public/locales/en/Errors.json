@@ -6,7 +6,6 @@
   "ErrorEmptyResponse": "Empty response",
   "ErrorOfflineText": "No internet connection",
   "ErrorUnavailableText": "DocSpace unavailable",
-  "ExpiredLink": "Expired link",
   "InvalidLink": "Invalid link",
   "LinkDoesNotExist": "The link you are trying to open does not exist.",
   "LinkHasExpired": "The link you followed has expired."

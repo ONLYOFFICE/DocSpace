@@ -2,7 +2,6 @@
   "CodeSubtitle": "Chúng tôi đã gửi một mã 6 chữ số đến{{email}}. Thời gian hiệu lực của mã là có hạn, hãy nhập mã càng sớm càng tốt.",
   "CodeTitle": "Mã đã được gửi qua email cho bạn",
   "CookieSettingsTitle": "Thời lượng của phiên",
-  "ErrorInvalidHeader": "Liên kết đã hết hạn",
   "ErrorInvalidText": "Trong 10 giây, bạn sẽ được chuyển hướng đến <1>DocSpace</1>",
   "ExpiredCode": "Mã này không còn hợp lệ. Yêu cầu mã mới và thử lại.",
   "ForgotPassword": "Bạn quên mật khẩu?",
