@@ -33,6 +33,8 @@ import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.s
 import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
+import LeaveRoomSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
+
 import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
@@ -161,8 +163,10 @@ class ContextOptionsStore {
   };
 
   onClickMakeForm = (item, t) => {
-    const { setConvertPasswordDialogVisible, setFormCreationInfo } =
-      this.dialogsStore;
+    const {
+      setConvertPasswordDialogVisible,
+      setFormCreationInfo,
+    } = this.dialogsStore;
     const { title, id, folderId, fileExst } = item;
 
     const newTitle =
@@ -225,8 +229,10 @@ class ContextOptionsStore {
   };
 
   showVersionHistory = (id, security) => {
-    const { fetchFileVersions, setIsVerHistoryPanel } =
-      this.versionHistoryStore;
+    const {
+      fetchFileVersions,
+      setIsVerHistoryPanel,
+    } = this.versionHistoryStore;
 
     if (this.treeFoldersStore.isRecycleBinFolder) return;
 
@@ -256,8 +262,9 @@ class ContextOptionsStore {
 
   lockFile = (item, t) => {
     const { id, locked } = item;
-    const { setSelection: setInfoPanelSelection } =
-      this.authStore.infoPanelStore;
+    const {
+      setSelection: setInfoPanelSelection,
+    } = this.authStore.infoPanelStore;
 
     this.filesActionsStore
       .lockFileAction(id, !locked)
@@ -432,13 +439,19 @@ class ContextOptionsStore {
   };
 
   onClickDeleteSelectedFolder = (t, isRoom) => {
-    const { setIsFolderActions, setDeleteDialogVisible, setIsRoomDelete } =
-      this.dialogsStore;
+    const {
+      setIsFolderActions,
+      setDeleteDialogVisible,
+      setIsRoomDelete,
+    } = this.dialogsStore;
     const { confirmDelete } = this.settingsStore;
     const { deleteAction, deleteRoomsAction } = this.filesActionsStore;
     const { id: selectedFolderId } = this.selectedFolderStore;
-    const { isThirdPartySelection, getFolderInfo, setBufferSelection } =
-      this.filesStore;
+    const {
+      isThirdPartySelection,
+      getFolderInfo,
+      setBufferSelection,
+    } = this.filesStore;
 
     setIsFolderActions(true);
 
@@ -480,8 +493,10 @@ class ContextOptionsStore {
   onClickDelete = (item, t) => {
     const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
 
-    const { setRemoveItem, setDeleteThirdPartyDialogVisible } =
-      this.dialogsStore;
+    const {
+      setRemoveItem,
+      setDeleteThirdPartyDialogVisible,
+    } = this.dialogsStore;
 
     if (id === this.selectedFolderStore.id) {
       this.onClickDeleteSelectedFolder(t, isRoom);
@@ -686,6 +701,10 @@ class ContextOptionsStore {
     }
   };
 
+  onLeaveRoom = () => {
+    this.dialogsStore.setLeaveRoomDialogVisible(true);
+  };
+
   onSelect = (item) => {
     const { onSelectItem } = this.filesActionsStore;
 
@@ -779,7 +798,7 @@ class ContextOptionsStore {
         label: t("EnableNotifications"),
         icon: UnmuteReactSvgUrl,
         onClick: (e) => this.onClickMute(e, item, t),
-        disabled: false,
+        disabled: !item.inRoom,
         "data-action": "unmute",
         action: "unmute",
       },
@@ -789,7 +808,7 @@ class ContextOptionsStore {
         label: t("DisableNotifications"),
         icon: MuteReactSvgUrl,
         onClick: (e) => this.onClickMute(e, item, t),
-        disabled: false,
+        disabled: !item.inRoom,
         "data-action": "mute",
         action: "mute",
       },
@@ -1247,6 +1266,14 @@ class ContextOptionsStore {
         action: "archive",
       },
       {
+        id: "option_leave-room",
+        key: "leave-room",
+        label: t("LeaveTheRoom"),
+        icon: LeaveRoomSvgUrl,
+        onClick: this.onLeaveRoom,
+        disabled: this.treeFoldersStore.isArchiveFolder || !item.inRoom,
+      },
+      {
         id: "option_unarchive-room",
         key: "unarchive-room",
         label: t("Common:Restore"),
@@ -1311,8 +1338,11 @@ class ContextOptionsStore {
     const { personal } = this.authStore.settingsStore;
     const { selection, allFilesIsEditing } = this.filesStore;
     const { setDeleteDialogVisible } = this.dialogsStore;
-    const { isRecycleBinFolder, isRoomsFolder, isArchiveFolder } =
-      this.treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+    } = this.treeFoldersStore;
 
     const { pinRooms, unpinRooms, deleteRooms } = this.filesActionsStore;
 

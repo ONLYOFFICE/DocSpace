@@ -36,7 +36,7 @@ export const HistoryRowContent = ({ sectionWidth, historyItem }) => {
       .locale(i18n.language)
       .format("MMM D, YYYY, h:mm:ss A") +
     " " +
-    t("UTC");
+    t("Common:UTC");
   return (
     <StyledRowContent sectionWidth={sectionWidth}>
       <ContentWrapper>
