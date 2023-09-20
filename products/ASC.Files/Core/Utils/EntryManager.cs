@@ -1983,11 +1983,4 @@ public class EntryManager
             await fileDao.MoveFileAsync(file.Id, toId);
         }
     }
-
-    public static async Task ReassignItemsAsync<T>(Guid fromUserId, Guid toUserId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
-    {
-        await fileDao.ReassignFilesAsync(fromUserId, toUserId);
-
-        await folderDao.ReassignFoldersAsync(fromUserId, toUserId);
-    }
 }

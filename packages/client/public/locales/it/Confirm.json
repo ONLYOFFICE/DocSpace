@@ -28,6 +28,5 @@
   "SetAppTitle": "Configurare la tua applicazione di autenticazione",
   "SuccessDeactivate": "Il tuo account è stato disattivato con successo. In 10 secondi verrai reindirizzato al <1>sito</1>.",
   "SuccessReactivate": "Il tuo account è stato riattivato con successo. In 10 secondi verrai reindirizzato al <1>portale</1>.",
-  "SuccessRemoved": "Il tuo account è stato rimosso con successo. In 10 secondi verrai reindirizzato al <1>sito</1>.",
-  "WelcomeUser": "Benvenuto nel nostro DocSpace!\nPer iniziare, registrati o accedi tramite social network."
+  "SuccessRemoved": "Il tuo account è stato rimosso con successo. In 10 secondi verrai reindirizzato al <1>sito</1>."
 }

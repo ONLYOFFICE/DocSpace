@@ -27,7 +27,7 @@
 namespace ASC.Web.Core;
 public class UrlShortRewriter
 {
-    public const string BasePath = "/sh/";
+    public const string BasePath = "/s/";
 
     public UrlShortRewriter(RequestDelegate next)
     {

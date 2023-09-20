@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "aktivovaný",
-  "ChangeUsersDisableStatus": "Vypnuté",
-  "ChangeUserStatusDialog": "Používatelia so stavom '{{ userStatus }}' budú {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Zmeniť stav",
-  "ChangeUserStatusDialogMessage": "Nemôžete zmeniť svoj stav a stav vlastníka DocSpace."
-}

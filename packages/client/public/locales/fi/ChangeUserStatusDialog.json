@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "käytössä",
-  "ChangeUsersDisableStatus": "poissa käytöstä",
-  "ChangeUserStatusDialog": "Käyttäjät, joilla on tila {{userStatus}}, tulee {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Muuta käyttäjän tilaa",
-  "ChangeUserStatusDialogMessage": "Et voi muuttaa DocSpacen omistajan ja omaa tilaasi."
-}

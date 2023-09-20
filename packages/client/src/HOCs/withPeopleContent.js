@@ -108,6 +108,7 @@ export default function withContent(WrappedContent) {
       "Files",
       "ChangeUserTypeDialog",
       "RoomSelector",
+      "DataReassignmentDialog",
     ]);
 
     const contextOptionsProps = {

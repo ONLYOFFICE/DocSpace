@@ -96,6 +96,19 @@ internal class ProviderAccountDao : IProviderDao
         return providersInfo.SingleAsync().AsTask();
     }
 
+    public async Task<IProviderInfo> GetProviderInfoByEntryIdAsync(string entryId)
+    {
+        try
+        {
+            var id = Selectors.Pattern.Match(entryId).Groups["id"].Value;
+            return await GetProviderInfoAsync(int.Parse(id));
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public virtual IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync()
     {
         return GetProvidersInfoInternalAsync();
@@ -196,6 +209,7 @@ internal class ProviderAccountDao : IProviderDao
         }
 
         forUpdate.FolderType = rootFolderType;
+        filesDbContext.Update(forUpdate);
 
         await filesDbContext.SaveChangesAsync();
 
@@ -213,6 +227,7 @@ internal class ProviderAccountDao : IProviderDao
         }
 
         forUpdate.HasLogo = hasLogo;
+        filesDbContext.Update(forUpdate);
 
         await filesDbContext.SaveChangesAsync();
 
@@ -234,6 +249,7 @@ internal class ProviderAccountDao : IProviderDao
         forUpdate.FolderType = FolderType.VirtualRooms;
         forUpdate.Private = @private;
         forUpdate.Title = title;
+        filesDbContext.Update(forUpdate);
 
         await filesDbContext.SaveChangesAsync();
 
@@ -379,6 +395,7 @@ internal class ProviderAccountDao : IProviderDao
             thirdparty.Url = newAuthData.Url ?? "";
         }
 
+        filesDbContext.Update(thirdparty);
         await filesDbContext.SaveChangesAsync();
 
         return thirdparty.Id;
@@ -387,23 +404,21 @@ internal class ProviderAccountDao : IProviderDao
     public virtual async Task RemoveProviderInfoAsync(int linkId)
     {
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            using var tr = await filesDbContext.Database.BeginTransactionAsync();
 
-        var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
+            var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
+            var entryIDs = await Queries.HashIdsAsync(filesDbContext, TenantID, folderId).ToListAsync();
 
-        var entryIDs = await Queries.HashIdsAsync(filesDbContext, TenantID, folderId).ToListAsync();
+            await Queries.DeleteDbFilesSecuritiesAsync(filesDbContext, TenantID, entryIDs);
+            await Queries.DeleteDbFilesTagLinksAsync(filesDbContext, TenantID, entryIDs);
+            await Queries.DeleteThirdpartyAccountsByLinkIdAsync(filesDbContext, TenantID, linkId);
 
-        var forDelete = await Queries.DbFilesSecuritiesAsync(filesDbContext, TenantID, entryIDs).ToListAsync();
-
-        filesDbContext.Security.RemoveRange(forDelete);
-
-        var linksForDelete = await Queries.DbFilesTagLinksAsync(filesDbContext, TenantID, entryIDs).ToListAsync();
-
-        filesDbContext.TagLink.RemoveRange(linksForDelete);
-
-        var accountsForDelete = await Queries.ThirdpartyAccountsByLinkIdAsync(filesDbContext, TenantID, linkId).ToListAsync();
-
-        filesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
-        await filesDbContext.SaveChangesAsync();
+            await tr.CommitAsync();
+        });
     }
 
     private IProviderInfo ToProviderInfo(int id, ProviderTypes providerKey, string customerTitle, AuthData authData, Guid owner, FolderType type, DateTime createOn)
@@ -751,7 +766,7 @@ static file class Queries
         ThirdpartyAccountsByFilterAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int linkId, FolderType folderType, Guid userId, string searchText) =>
                 ctx.ThirdpartyAccount
-                    .AsNoTracking()
+                    
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) ||
                                 r.UserId == userId || r.FolderType == FolderType.ThirdpartyBackup)
@@ -792,8 +807,18 @@ static file class Queries
         ThirdpartyAccountsByLinkIdAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int linkId) =>
                 ctx.ThirdpartyAccount
+                    .AsTracking()
                     .Where(r => r.Id == linkId)
                     .Where(r => r.TenantId == tenantId));
+
+    public static readonly Func<FilesDbContext, int, int, Task<int>>
+        DeleteThirdpartyAccountsByLinkIdAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int linkId) =>
+                ctx.ThirdpartyAccount
+                    .AsTracking()
+                    .Where(r => r.Id == linkId)
+                    .Where(r => r.TenantId == tenantId)
+                    .ExecuteDelete());
 
     public static readonly Func<FilesDbContext, int, Task<DbFilesThirdpartyAccount>> ThirdpartyBackupAccountAsync =
         EF.CompileAsyncQuery(
@@ -811,17 +836,19 @@ static file class Queries
                     .Where(r => r.Id.StartsWith(folderId))
                     .Select(r => r.HashId));
 
-    public static readonly Func<FilesDbContext, int, IEnumerable<string>, IAsyncEnumerable<DbFilesSecurity>>
-        DbFilesSecuritiesAsync = EF.CompileAsyncQuery(
+    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Task<int>>
+        DeleteDbFilesSecuritiesAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIDs) =>
                 ctx.Security
                     .Where(r => r.TenantId == tenantId)
-                    .Where(r => entryIDs.Any(a => a == r.EntryId)));
+                    .Where(r => entryIDs.Any(a => a == r.EntryId))
+                    .ExecuteDelete());
 
-    public static readonly Func<FilesDbContext, int, IEnumerable<string>, IAsyncEnumerable<DbFilesTagLink>>
-        DbFilesTagLinksAsync = EF.CompileAsyncQuery(
+    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Task<int>>
+        DeleteDbFilesTagLinksAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIDs) =>
                 ctx.TagLink
                     .Where(r => r.TenantId == tenantId)
-                    .Where(r => entryIDs.Any(e => e == r.EntryId)));
+                    .Where(r => entryIDs.Any(e => e == r.EntryId))
+                    .ExecuteDelete());
 }

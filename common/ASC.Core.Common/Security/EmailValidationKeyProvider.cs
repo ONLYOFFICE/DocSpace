@@ -191,9 +191,13 @@ public class EmailValidationKeyModel
     /// <summary>Confirmation email type</summary>
     /// <type>System.Nullabel{ASC.Web.Studio.Utility.ConfirmType}, System</type>
     public ConfirmType? Type { get; set; }
+    
+    /// <summary>Room ID</summary>
+    /// <type>System.String, System</type>
+    public string RoomId { get; set; }
 
-    public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type)
+    public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out string roomId)
     {
-        (key, emplType, email, uiD, type) = (Key, EmplType, Email, UiD, Type);
+        (key, emplType, email, uiD, type, roomId) = (Key, EmplType, Email, UiD, Type, RoomId);
     }
 }

@@ -140,11 +140,7 @@ Equipe ONLYOFFICE</value>
 
 O processo de remoção de dados do usuário "$FromUserName": "$FromUserLink" foi concluído com sucesso.
 
-A exclusão de dados pessoais permitida para liberar:
-
-# Documentos - $DocsSpace
-# Correio - $MailSpace
-# Fale - $TalkSpace</value>
+A exclusão de dados pessoais permitida para liberar $DocsSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.Novo portal foi registrado

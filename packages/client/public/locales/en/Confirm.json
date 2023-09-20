@@ -29,5 +29,9 @@
   "SuccessDeactivate": "Your account has been successfully deactivated. In 10 seconds you will be redirected to the <1>site</1>.",
   "SuccessReactivate": "Your account has been successfully reactivated. In 10 seconds you will be redirected to the <1>portal</1>.",
   "SuccessRemoved": "Your account has been successfully removed. In 10 seconds you will be redirected to the <1>site</1>.",
-  "WelcomeUser": "Welcome to our DocSpace!\nTo get started, register or log in via social networks."
+  "WelcomeRegister": "To get started register",
+  "WelcomeRegisterViaSocial": "To get started register or log in via social networks",
+  "WelcomeRegisterViaSSO": "To get started register or log in via SSO",
+  "WelcomeToDocspace": "Welcome to our DocSpace!",
+  "WelcomeToRoom": "Welcome to the <1>{{ roomName }}</1> room!"
 }

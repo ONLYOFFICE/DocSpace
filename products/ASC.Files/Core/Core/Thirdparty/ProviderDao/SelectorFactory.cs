@@ -35,8 +35,6 @@ internal class SelectorFactory
 {
     private readonly IServiceProvider _serviceProvider;
 
-    private Regex Selector => new Regex(@"^(?'selector'.*)-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
-
     public SelectorFactory(
         IServiceProvider serviceProvider)
     {
@@ -81,7 +79,7 @@ internal class SelectorFactory
 
     private string Match(string id)
     {
-        var match = Selector.Match(id);
+        var match = Selectors.Pattern.Match(id);
 
         return match.Success ? match.Groups["selector"].Value : "";
     }

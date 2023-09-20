@@ -253,6 +253,14 @@ class SelectionStore {
     return users.length > 0;
   }
 
+  get hasOnlyOneUserToRemove() {
+    const { canRemoveUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canRemoveUser(x));
+
+    return users.length === 1;
+  }
+
   get getUsersToRemoveIds() {
     const { canRemoveUser } = this.peopleStore.accessRightsStore;
 
