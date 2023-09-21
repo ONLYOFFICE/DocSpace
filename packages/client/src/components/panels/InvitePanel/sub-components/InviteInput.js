@@ -24,6 +24,8 @@ import {
   StyledDescription,
 } from "../StyledInvitePanel";
 
+const searchUsersThreshold = 2;
+
 const InviteInput = ({
   defaultAccess,
   getUsersByQuery,
@@ -82,7 +84,7 @@ const InviteInput = ({
   const searchByQuery = async (value) => {
     const query = value.trim();
 
-    if (query.length > 2) {
+    if (query.length >= searchUsersThreshold) {
       const users = await getUsersByQuery(query);
       setUsersList(users);
       setIsAddEmailPanelBlocked(false);
@@ -106,13 +108,16 @@ const InviteInput = ({
 
     setInputValue(value);
 
-    if (clearValue.length < 3) {
+    if (clearValue.length < searchUsersThreshold) {
       setUsersList([]);
       setIsAddEmailPanelBlocked(true);
       return;
     }
 
-    if ((!!usersList.length || clearValue.length > 2) && !searchPanelVisible) {
+    if (
+      (!!usersList.length || clearValue.length >= searchUsersThreshold) &&
+      !searchPanelVisible
+    ) {
       openInviteInputPanel();
     }
 
@@ -301,7 +306,7 @@ const InviteInput = ({
             onKeyDown={onKeyDown}
           />
         </StyledInviteInput>
-        {inputValue.length > 2 && (
+        {inputValue.length >= searchUsersThreshold && (
           <StyledDropDown
             width={searchRef?.current?.offsetWidth}
             isDefaultMode={false}
