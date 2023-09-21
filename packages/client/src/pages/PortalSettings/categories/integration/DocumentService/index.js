@@ -19,6 +19,9 @@ const DocumentService = ({
 }) => {
   const { t } = useTranslation(["Settings", "Common"]);
 
+  const [isSaveLoading, setSaveIsLoading] = useState(false);
+  const [isResetLoading, setResetIsLoading] = useState(false);
+
   const [apiUrl, setApiUrl] = useState("");
   const [apiUrlIsValid, setApiUrlIsValid] = useState(true);
   const onChangeApiUrl = (e) => {
@@ -45,6 +48,7 @@ const DocumentService = ({
 
   const onSubmit = (e) => {
     e.preventDefault();
+    setSaveIsLoading(true);
     changeDocumentServiceLocation(apiUrl, internalUrl, portalUrl)
       .then((response) => {
         toastr.success(t("Common:ChangesSavedSuccessfully"));
@@ -52,7 +56,8 @@ const DocumentService = ({
         setInternalUrl(response[1]);
         setPortalUrl(response[2]);
       })
-      .catch((e) => toastr.error(e));
+      .catch((e) => toastr.error(e))
+      .finally(() => setSaveIsLoading(false));
   };
 
   const onReset = () => {
@@ -60,6 +65,7 @@ const DocumentService = ({
     setInternalUrlIsValid(true);
     setPortalUrlIsValid(true);
 
+    setResetIsLoading(true);
     changeDocumentServiceLocation(null, null, null)
       .then((response) => {
         toastr.success(t("Common:ChangesSavedSuccessfully"));
@@ -67,7 +73,8 @@ const DocumentService = ({
         setInternalUrl(response[1]);
         setPortalUrl(response[2]);
       })
-      .catch((e) => toastr.error(e));
+      .catch((e) => toastr.error(e))
+      .finally(() => setResetIsLoading(false));
   };
 
   const isFormEmpty = !apiUrl && !internalUrl && !portalUrl;
@@ -122,6 +129,7 @@ const DocumentService = ({
               onChange={onChangeApiUrl}
               placeholder={"http://<editors-dns-name>/"}
               hasError={!apiUrlIsValid}
+              isDisabled={isSaveLoading || isResetLoading}
             />
           </div>
           <div className="input-wrapper">
@@ -140,6 +148,7 @@ const DocumentService = ({
               onChange={onChangeInternalUrl}
               placeholder={"http://<editors-dns-name>/"}
               hasError={!internalUrlIsValid}
+              isDisabled={isSaveLoading || isResetLoading}
             />
           </div>
           <div className="input-wrapper">
@@ -158,6 +167,7 @@ const DocumentService = ({
               onChange={onChangePortalUrl}
               placeholder={"http://<win-nvplrl2avjo/"}
               hasError={!portalUrlIsValid}
+              isDisabled={isSaveLoading || isResetLoading}
             />
           </div>
         </div>
@@ -168,14 +178,18 @@ const DocumentService = ({
             primary
             size={"small"}
             label={t("Common:SaveButton")}
-            // isDisabled={isFormEmpty || !allInputsValid}
+            isDisabled={
+              isFormEmpty || !allInputsValid || isSaveLoading || isResetLoading
+            }
+            isLoading={isSaveLoading}
           />
           <Button
             onClick={onReset}
             className="button"
             size={"small"}
             label={t("Common:ResetButton")}
-            isDisabled={!anyInputFilled}
+            isDisabled={!anyInputFilled || isSaveLoading || isResetLoading}
+            isLoading={isResetLoading}
           />
         </div>
       </Styled.LocationForm>
