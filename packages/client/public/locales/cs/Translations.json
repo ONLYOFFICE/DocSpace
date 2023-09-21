@@ -50,7 +50,6 @@
   "RolePowerUserDescription": "Výkonní uživatelé mohou vytvářet a upravovat soubory v místnosti, ale nemohou vytvářet místnosti, spravovat uživatele ani přistupovat k nastavením.",
   "RoleReviewer": "Recenzent",
   "RoleReviewerDescription": "Operace s existujícími soubory: prohlížení, prohlížení, komentování.",
-  "RoleRoomAdminDescription": "Správci místností mohou vytvářet a spravovat přidělené místnosti, zvát nové uživatele a přidělovat role pod svou úrovní. Všichni správci mají přístup do sekce Osobní.",
   "RoleUserDescription": "Uživatelé mají přístup pouze do místností, do kterých je pozvali správci. Nemohou vytvářet vlastní místnosti, složky ani soubory.",
   "RoleViewer": "Prohlížeč",
   "RoleViewerDescription": "Prohlížení souborů",

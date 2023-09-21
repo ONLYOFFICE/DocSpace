@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "有効",
-  "ChangeUsersDisableStatus": "無効になっています",
-  "ChangeUserStatusDialog": "ステータスが'{{ userStatus }}' のユーザーは {{ status }} になります。",
-  "ChangeUserStatusDialogHeader": "ユーザーステータスの変更",
-  "ChangeUserStatusDialogMessage": "DocSpaceの所有者と自分自身のステータスを変更することはできません。"
-}

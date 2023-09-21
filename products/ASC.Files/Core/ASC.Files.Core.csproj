@@ -11,6 +11,7 @@
   <ItemGroup>
     <None Remove="proto\box_cache_item.proto" />
     <None Remove="proto\dropbox_cache_item.proto" />
+    <None Remove="proto\file_marker_cache_item.proto" />
     <None Remove="proto\google_drive_cache_item.proto" />
     <None Remove="proto\one_drive_cache_item.proto" />
     <None Remove="proto\provider_account_cache_item.proto" />
@@ -38,6 +39,7 @@
   <ItemGroup>
     <Protobuf Include="proto\box_cache_item.proto" />
     <Protobuf Include="proto\dropbox_cache_item.proto" />
+    <Protobuf Include="proto\file_marker_cache_item.proto" />
     <Protobuf Include="proto\google_drive_cache_item.proto" />
     <Protobuf Include="proto\one_drive_cache_item.proto" />
     <Protobuf Include="proto\provider_account_cache_item.proto" />

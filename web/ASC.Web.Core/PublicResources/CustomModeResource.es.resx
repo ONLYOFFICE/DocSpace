@@ -128,11 +128,7 @@ Equipo de ONLYOFFICE</value>
 
 El proceso de eliminación de los datos del usuario "$FromUserName":"$FromUserLink" se ha completado con éxito.
 
-La eliminación de datos personales permitió liberar:
-
-# Documentos - $DocsSpace
-# Correo - $MailSpace
-# Chat - $TalkSpace</value>
+La eliminación de datos personales permitió liberar $DocsSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.Se ha registrado un nuevo portal

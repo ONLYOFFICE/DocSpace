@@ -503,7 +503,6 @@ public static class DocumentService
         License
     }
 
-    [Serializable]
     [DebuggerDisplay("{Key}")]
     public class CommandResponse
     {
@@ -540,7 +539,6 @@ public static class DocumentService
             TokenExpire = 7,
         }
 
-        [Serializable]
         [DebuggerDisplay("{BuildVersion}")]
         public class ServerInfo
         {
@@ -585,14 +583,12 @@ public static class DocumentService
             }
         }
 
-        [Serializable]
         [DataContract(Name = "Quota", Namespace = "")]
         public class QuotaInfo
         {
             [JsonPropertyName("users")]
             public List<User> Users { get; set; }
 
-            [Serializable]
             [DebuggerDisplay("{UserId} ({Expire})")]
             public class User
             {
@@ -605,7 +601,6 @@ public static class DocumentService
         }
     }
 
-    [Serializable]
     [DebuggerDisplay("{Command} ({Key})")]
     private class CommandBody
     {
@@ -646,7 +641,6 @@ public static class DocumentService
         public string UserData { get; set; }
     }
 
-    [Serializable]
     [DebuggerDisplay("{Title}")]
     public class MetaData
     {
@@ -655,7 +649,6 @@ public static class DocumentService
         public string Title { get; set; }
     }
 
-    [Serializable]
     [DebuggerDisplay("{Height}x{Width}")]
     public class ThumbnailData
     {
@@ -676,7 +669,6 @@ public static class DocumentService
         public int Width { get; set; }
     }
 
-    [Serializable]
     [DataContract(Name = "spreadsheetLayout", Namespace = "")]
     [DebuggerDisplay("SpreadsheetLayout {IgnorePrintArea} {Orientation} {FitToHeight} {FitToWidth} {Headings} {GridLines}")]
     public class SpreadsheetLayout
@@ -714,7 +706,6 @@ public static class DocumentService
         public LayoutPageSize PageSize { get; set; }
 
 
-        [Serializable]
         [DebuggerDisplay("Margins {Top} {Right} {Bottom} {Left}")]
         public class LayoutMargins
         {
@@ -735,7 +726,6 @@ public static class DocumentService
             public string Bottom { get; set; }
         }
 
-        [Serializable]
         [DebuggerDisplay("PageSize {Width} {Height}")]
         public class LayoutPageSize
         {
@@ -749,7 +739,6 @@ public static class DocumentService
         }
     }
 
-    [Serializable]
     [DebuggerDisplay("{Title} from {FileType} to {OutputType} ({Key})")]
     private class ConvertionBody
     {
@@ -798,7 +787,6 @@ public static class DocumentService
         public string Token { get; set; }
     }
 
-    [Serializable]
     [DebuggerDisplay("{Key}")]
     private class BuilderBody
     {
@@ -819,7 +807,6 @@ public static class DocumentService
         public string Token { get; set; }
     }
 
-    [Serializable]
     public class FileLink
     {
         [JsonProperty(PropertyName = "filetype")]
@@ -835,7 +822,6 @@ public static class DocumentService
         public string Url { get; set; }
     }
 
-    [Serializable]
     public class DocumentServiceException : Exception
     {
         public ErrorCode Code { get; set; }

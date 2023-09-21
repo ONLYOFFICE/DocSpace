@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Jūs gatavojaties izdzēst šo failu. Vai tiešām vēlaties turpināt?",
-  "DeleteFolder": "Jūs gatavojaties izdzēst šo mapi. Vai tiešām vēlaties turpināt?",
-  "DeleteItems": "Jūs gatavojaties izdzēst šos vienumus. Vai tiešām vēlaties turpināt?",
+  "DeleteFile": "Jūs gatavojaties izdzēst šo failu. ",
+  "DeleteFolder": "Jūs gatavojaties izdzēst šo mapi. ",
+  "DeleteItems": "Jūs gatavojaties izdzēst šos vienumus. ",
   "DeleteRoom": "Jūs gatavojaties izdzēst šo telpu. Jūs nevarēsiet to atjaunot.",
   "DeleteRooms": "Jūs gatavojaties izdzēst šīs telpas. Jūs nevarēsiet tos atjaunot.",
   "MoveToTrashButton": "Pārvietot uz miskasti",

@@ -47,6 +47,7 @@
       onAppReady: null,
       onAppError: null,
       onEditorCloseCallback: null,
+      onAuthSuccess: null,
     },
   };
 

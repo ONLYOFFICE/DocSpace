@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionCol" xml:space="preserve">
+    <value>الإجراء</value>
+  </data>
+  <data name="ActionIdCol" xml:space="preserve">
+    <value>معرف الإجراء</value>
+  </data>
+  <data name="ActionTypeCol" xml:space="preserve">
+    <value>نوع الإجراء</value>
+  </data>
+  <data name="AdministratorAdded" xml:space="preserve">
+    <value>تم إضافة المسئول: {0}</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>الإشارات المضافة: [{1}]</value>
+  </data>
+  <data name="AdministratorDeleted" xml:space="preserve">
+    <value>تم حذف المسئول: {0}</value>
+  </data>
+  <data name="AdministratorMessageSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات رسالة المسئول</value>
+  </data>
+  <data name="AdministratorOpenedFullAccess" xml:space="preserve">
+    <value>تم منح الوصول الكامل للمسئولين [{0}]</value>
+  </data>
+  <data name="AttachActionType" xml:space="preserve">
+    <value>قم إضافة مرفقات</value>
+  </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات مدة التدقيق</value>
+  </data>
+  <data name="AuditTrailReportDownloaded" xml:space="preserve">
+    <value>تم تنزيل تقرير المدقق التجريبي</value>
+  </data>
+  <data name="AuditTrailReportName" xml:space="preserve">
+    <value>تقرير المدقق التجريبي ({0}-{1})</value>
+  </data>
+  <data name="AuthorizationKeysSetting" xml:space="preserve">
+    <value>تم تحديث مفتاح المصادقة من الطرف الثالث</value>
+  </data>
+  <data name="BrowserCol" xml:space="preserve">
+    <value>متصفح</value>
+  </data>
+  <data name="ColorThemeChanged" xml:space="preserve">
+    <value>تم تغيير لون السمات</value>
+  </data>
+  <data name="CookieSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات ملفات تعريف الارتباط</value>
+  </data>
+  <data name="CopyActionType" xml:space="preserve">
+    <value>نسخ</value>
+  </data>
+  <data name="CreateActionType" xml:space="preserve">
+    <value>إنشاء</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>تم تحديق إعدادات التصفح المخصص</value>
+  </data>
+  <data name="DateCol" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+  <data name="DefaultStartPageSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات صفحة البداية الافتراضية</value>
+  </data>
+  <data name="DeleteActionType" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>الإشارات المحذوفة: [{1}]</value>
+  </data>
+  <data name="DetachActionType" xml:space="preserve">
+    <value>فصل</value>
+  </data>
+  <data name="DnsSettingsUpdated" xml:space="preserve">
+    <value>DNS تم تحديث إعدادات</value>
+  </data>
+  <data name="DocumentServiceLocationSetting" xml:space="preserve">
+    <value>تم تحديث موقع خدمة المستندات</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>تم تحديث إعدادات الحفظ الاجباري</value>
+  </data>
+  <data name="DocumentsOverwritingSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات الكتابة</value>
+  </data>
+  <data name="DocumentsProduct" xml:space="preserve">
+    <value>المستندات</value>
+  </data>
+  <data name="DocumentsSettingsModule" xml:space="preserve">
+    <value>الإعدادات</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>تم تحديث إعدادات متجر الحفظ الاجباري</value>
+  </data>
+  <data name="DocumentsThirdPartySettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات الطرق الثالث</value>
+  </data>
+  <data name="DocumentsUploadingFormatsSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات تحميل الصيغ</value>
+  </data>
+  <data name="DownloadActionType" xml:space="preserve">
+    <value>تنزيل</value>
+  </data>
+  <data name="ExportActionType" xml:space="preserve">
+    <value>تصدير</value>
+  </data>
+  <data name="FileChangeOwner" xml:space="preserve">
+    <value>تعيين المالك لـ [{0}] إلى [{1}]</value>
+  </data>
+  <data name="FileCopied" xml:space="preserve">
+    <value>تم نسخ الملفات [{0}]. من المجلد "{1}" إلى المجلد: "{2}"</value>
+  </data>
+  <data name="FileConverted" xml:space="preserve">
+    <value>تم تحويل الملف إلى تنسيق داخلي: {0}</value>
+  </data>
+  <data name="FileCopiedWithOverwriting" xml:space="preserve">
+    <value>تم نسخ الملفات [{0}]. مع الكتابة من المجلد "{1}" إلى المجلد: "{2}"</value>
+  </data>
+  <data name="FileCreated" xml:space="preserve">
+    <value>تم انشاء الملف: {0}</value>
+  </data>
+  <data name="FileCreatedVersion" xml:space="preserve">
+    <value>مراجعة الملف [{0}].: {1}. تم إنشاء النسخة</value>
+  </data>
+  <data name="FileDeleted" xml:space="preserve">
+    <value>تم حذف الملف: {0}</value>
+  </data>
+  <data name="FileDeletedVersion" xml:space="preserve">
+    <value>مراجعة الملف [{0}].: {1}. تم حذف النسخة</value>
+  </data>
+  <data name="FileDownloaded" xml:space="preserve">
+    <value>تم تنزيل الملف: {0}</value>
+  </data>
+  <data name="FileDownloadedAs" xml:space="preserve">
+    <value>تم تحميل الملفات [{0}]. كـ: {1}</value>
+  </data>
+  <data name="FileImported" xml:space="preserve">
+    <value>المجلدات[{0}]. تم استيراد الملف: {1}. المزود: {2}</value>
+  </data>
+  <data name="FileLocked" xml:space="preserve">
+    <value>تم قفل الملف: {0}</value>
+  </data>
+  <data name="FileMoved" xml:space="preserve">
+    <value>تم نقل الملفات [{0}]. من المجلد "{1}" إلى المجلد: "{2}"</value>
+  </data>
+  <data name="FileMovedToTrash" xml:space="preserve">
+    <value>تم نقل الملفات [{0}]. إلى سلة المهملات</value>
+  </data>
+  <data name="FileMovedWithOverwriting" xml:space="preserve">
+    <value>تم نقل الملفات [{0}]. مع الكتابة من المجلد "{1}" إلى المجلد: "{2}"</value>
+  </data>
+  <data name="FileRenamed" xml:space="preserve">
+    <value>تم إعادة تسمية الملف: {0}</value>
+  </data>
+  <data name="FileRestoreVersion" xml:space="preserve">
+    <value>مراجعة الملف [{0}].: {1}. تم استعادة النسخة</value>
+  </data>
+  <data name="FilesDocumentSigned" xml:space="preserve">
+    <value>تم تسجيل الدخول للملف {1} بواسطة {0}</value>
+  </data>
+  <data name="FileSendAccessLink" xml:space="preserve">
+    <value>تم ارسال الرابط إلى الملف [{0}]. المستلم: [{1}]</value>
+  </data>
+  <data name="FilesModule" xml:space="preserve">
+    <value>الملفات</value>
+  </data>
+  <data name="FilesRequestSign" xml:space="preserve">
+    <value>الملف {1} تم تحويله إلى تسجيل الدخول بواسطة {0}</value>
+  </data>
+  <data name="FileUnlocked" xml:space="preserve">
+    <value>تم إلغاء قفل الملف: {0}</value>
+  </data>
+  <data name="FileUpdated" xml:space="preserve">
+    <value>تم تحديث الملف: {0}</value>
+  </data>
+  <data name="FileUpdatedAccess" xml:space="preserve">
+    <value>تم تحديث الأذونات للملفات [{0}]</value>
+  </data>
+  <data name="FileUpdatedRevisionComment" xml:space="preserve">
+    <value>مراجعة الملفات [{0}]. {1}. تم تحديث التعليقات</value>
+  </data>
+  <data name="FileUploaded" xml:space="preserve">
+    <value>تم رفع الملف: {0}</value>
+  </data>
+  <data name="FolderCopied" xml:space="preserve">
+    <value>تم نسخ المجلدات [{0}]. إلى المجلد: {1}</value>
+  </data>
+  <data name="FolderCopiedWithOverwriting" xml:space="preserve">
+    <value>تم النسخ مع الكتابة من المجلدات [{0}]. إلى: {1}</value>
+  </data>
+  <data name="FolderCreated" xml:space="preserve">
+    <value>تم إنشاء المجلد: {0}</value>
+  </data>
+  <data name="FolderDeleted" xml:space="preserve">
+    <value>تم حذف المجلد: {0}</value>
+  </data>
+  <data name="FolderMoved" xml:space="preserve">
+    <value>تم نقل المجلدات [{0}]. إلى المجلد : {1}</value>
+  </data>
+  <data name="FolderMovedToTrash" xml:space="preserve">
+    <value>تم نقل المجلدات [{0}]. إلى سلة المحذوفات</value>
+  </data>
+  <data name="FolderMovedWithOverwriting" xml:space="preserve">
+    <value>تم نقل المجلدات [{0}]. مع الكتابة إلى المجلد: {1}</value>
+  </data>
+  <data name="FolderRenamed" xml:space="preserve">
+    <value>تم إعادة تسمية الملف: {0}</value>
+  </data>
+  <data name="FoldersModule" xml:space="preserve">
+    <value>المجلدات</value>
+  </data>
+  <data name="FolderUpdatedAccess" xml:space="preserve">
+    <value>تم تحديث الأذونات للمجلدات [{0}]</value>
+  </data>
+  <data name="FollowActionType" xml:space="preserve">
+    <value>متابعة</value>
+  </data>
+  <data name="FullTextSearchSetting" xml:space="preserve">
+    <value>تم تحديث إعدادات Sphinx</value>
+  </data>
+  <data name="GeneralModule" xml:space="preserve">
+    <value>عام</value>
+  </data>
+  <data name="GreetingSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات البوابة الترحيبية</value>
+  </data>
+  <data name="GroupCreated" xml:space="preserve">
+    <value>تم إنشاء المجموعة: {0}</value>
+  </data>
+  <data name="GroupDeleted" xml:space="preserve">
+    <value>تم حذف المجموعة: {0}</value>
+  </data>
+  <data name="GroupsModule" xml:space="preserve">
+    <value>المجموعات</value>
+  </data>
+  <data name="GroupUpdated" xml:space="preserve">
+    <value>تم تحديث المجموعات: {0}</value>
+  </data>
+  <data name="GuestAccount" xml:space="preserve">
+    <value>حساب ضيف</value>
+  </data>
+  <data name="GuestActivated" xml:space="preserve">
+    <value>تم تفعيل حساب الضيف: {0}</value>
+  </data>
+  <data name="GuestCreated" xml:space="preserve">
+    <value>تم إنشاء حساب الضيف: {0}</value>
+  </data>
+  <data name="GuestCreatedViaInvite" xml:space="preserve">
+    <value>تم إنشاء حساب الضيف من خلال الدعوة: {0}</value>
+  </data>
+  <data name="GuestImported" xml:space="preserve">
+    <value>تم استيراد حساب الضيف: {0}</value>
+  </data>
+  <data name="ImportActionType" xml:space="preserve">
+    <value>استيراد</value>
+  </data>
+  <data name="IpCol" xml:space="preserve">
+    <value>IP</value>
+  </data>
+  <data name="LanguageSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث اعدادات اللغة</value>
+  </data>
+  <data name="LicenseKeyUploaded" xml:space="preserve">
+    <value>تم تحديث مفتاح الرخصة</value>
+  </data>
+  <data name="LinkActionType" xml:space="preserve">
+    <value>رابط</value>
+  </data>
+  <data name="LoginFail" xml:space="preserve">
+    <value>فشل في تسجيل الدخول</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>فشل في تسجيل الدخول، عدد كبير من المحاولات</value>
+  </data>
+  <data name="LoginFailDisabledProfile" xml:space="preserve">
+    <value>فشل في تسجيل الدخول، تم تعطيل الحساب</value>
+  </data>
+  <data name="LoginFailInvalidCombination" xml:space="preserve">
+    <value>فشل في تسجيل الدخول، اسم المستخدم أو كلمة المرور غير صالح</value>
+  </data>
+  <data name="LoginFailIpSecurity" xml:space="preserve">
+    <value>حماية IP: فشل في تسجيل الدخول</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>فشل في تسجيل الدخول، فشل في التحقق</value>
+  </data>
+  <data name="LoginFailSocialAccountNotFound" xml:space="preserve">
+    <value>فشل في تسجيل الدخول، لم يتم العثور على الحساب المرتبط</value>
+  </data>
+  <data name="LoginFailViaApi" xml:space="preserve">
+    <value>فشل في تسجيل الدخول من خلال API</value>
+  </data>
+  <data name="LoginFailViaApiSms" xml:space="preserve">
+    <value>فشل في تسجيل الدخول من خلال API ورمز الرسائل القصيرة</value>
+  </data>
+  <data name="LoginFailViaApiSocialAccount" xml:space="preserve">
+    <value>فشل في تسجيل الدخول من خلال API وحسابات التواصل الاجتماعي</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>فشل في تسجيل الدخول من خلال API وتطبيق المصادقة</value>
+  </data>
+  <data name="LoginFailViaSms" xml:space="preserve">
+    <value>فشل في تسجيل الدخول من خلال الرسائل القصيرة</value>
+  </data>
+  <data name="LoginFailViaSSO" xml:space="preserve">
+    <value>فشل في تسجيل الدخول من خلال بوابة الدخول الموحد</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>فشل في تسجيل الدخول من خلال تطبيق المصادقة</value>
+  </data>
+  <data name="LoginHistoryReportDownloaded" xml:space="preserve">
+    <value>تم تنزيل تقرير سجل تسجيل الدخول</value>
+  </data>
+  <data name="LoginHistoryReportName" xml:space="preserve">
+    <value>تقرير سجل تسجيل الدخول({0}-{1})</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>تم تسجيل الدخول بنجاح</value>
+  </data>
+  <data name="LoginSuccessSocialAccount" xml:space="preserve">
+    <value>تم تسجيل الدخول من خلال حسابات مواقع التواصل الاجتماعي بنجاح</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>تم تسجيل الدخول من خلال تطبيق مواقع التواصل الاجتماعي</value>
+  </data>
+  <data name="LoginSuccessViaApi" xml:space="preserve">
+    <value>تم تسجيل الدخول من خلال API</value>
+  </data>
+  <data name="LoginSuccessViaApiSms" xml:space="preserve">
+    <value>تم تسجيل الدخول من خلال API ورمز الرسائل القصيرة</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>تم تسجيل الدخول من خلال API وتطبيق المصادقة</value>
+  </data>
+  <data name="LoginSuccessViaSms" xml:space="preserve">
+    <value>تم تسجيل الدخول بنجاح من خلال الرسائل القصيرة</value>
+  </data>
+  <data name="LoginSuccessViaSocialAccount" xml:space="preserve">
+    <value>تم تسجيل الدخول بنجاح من خلال API وحسابات التواصل الاجتماعي</value>
+  </data>
+  <data name="LoginSuccessViaSSO" xml:space="preserve">
+    <value>تم تسجيل الدخول بنجاح من خلال بوابة الدخول الموحد</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>تم تسجيل الدخول بنجاح من خلال تطبيق المصادقة</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>تسجيل الخروج</value>
+  </data>
+  <data name="MailServiceSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات خدمة البريد</value>
+  </data>
+  <data name="ModuleCol" xml:space="preserve">
+    <value>نموذج</value>
+  </data>
+  <data name="MoveActionType" xml:space="preserve">
+    <value>نقل</value>
+  </data>
+  <data name="OthersProduct" xml:space="preserve">
+    <value>آخرين</value>
+  </data>
+  <data name="OwnerChanged" xml:space="preserve">
+    <value>تم تغيير المالك: {0}</value>
+  </data>
+  <data name="OwnerSentChangeOwnerInstructions" xml:space="preserve">
+    <value>لقد أرسل المالك [{0}].تغييرات تعليمات المالك</value>
+  </data>
+  <data name="OwnerSentPortalDeactivationInstructions" xml:space="preserve">
+    <value>لقد أرسل المالك [{0}]. تعليمات تعطيل البوابة</value>
+  </data>
+  <data name="OwnerSentPortalDeleteInstructions" xml:space="preserve">
+    <value>لقد أرسل المالك [{0}]. تعليمات حذف البوابة</value>
+  </data>
+  <data name="PageCol" xml:space="preserve">
+    <value>صفحة</value>
+  </data>
+  <data name="PasswordStrengthSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات قوة كلمة المرور</value>
+  </data>
+  <data name="PeopleProduct" xml:space="preserve">
+    <value>الأشخاص</value>
+  </data>
+  <data name="PlatformCol" xml:space="preserve">
+    <value>منصة</value>
+  </data>
+  <data name="PortalAccessSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث إعدادات الوصول إلى البوابة</value>
+  </data>
+  <data name="PortalDeactivated" xml:space="preserve">
+    <value>تم تعطيل البوابة</value>
+  </data>
+  <data name="PortalDeleted" xml:space="preserve">
+    <value>تم حذف البوابة</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>تم تعطيل الغرفة الخاصة</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>تم تفعيل الغرفة الخاصة</value>
+  </data>
+  <data name="ProductAccessOpened" xml:space="preserve">
+    <value>تم منح الوصول للمنتج [{0}]</value>
+  </data>
+  <data name="ProductAccessOpenedForGroups" xml:space="preserve">
+    <value>تم منح الوصول للمنتج [{0}]. من المجموعة [{1}]</value>
+  </data>
+  <data name="ProductAccessOpenedForUsers" xml:space="preserve">
+    <value>تم منح الوصول للمنتج [{0}]. للمستخدم [{1}]</value>
+  </data>
+  <data name="ProductAccessRestricted" xml:space="preserve">
+    <value>تم تقييد الوصول للمنتج [{0}]</value>
+  </data>
+  <data name="ProductAddedAdministrator" xml:space="preserve">
+    <value>تم إضافة المسئول: {1}  للمنتج [{0}]</value>
+  </data>
+  <data name="ProductCol" xml:space="preserve">
+    <value>المنتج</value>
+  </data>
+  <data name="ProductDeletedAdministrator" xml:space="preserve">
+    <value>تم حذف المسئول: {1}  للمنتج [{0}]</value>
+  </data>
+  <data name="ProductsListUpdated" xml:space="preserve">
+    <value>تم تحديث قائمة المنتجات</value>
+  </data>
+  <data name="ProductsModule" xml:space="preserve">
+    <value>المنتجات</value>
+  </data>
+  <data name="ReassignsActionType" xml:space="preserve">
+    <value>إعادات التعيين</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>تم أرشفة الغرفة</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>تم انشاء الغرفة</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>المستخدمين المضافيين: {0}. المسمى: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>تم حذف الغرفة</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>تم انشاء الرابط. المسمى: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>تم حذف الرابط</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>تم تحديث الرابط. المسمى: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>تم انشاء الشعار</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>تم حذف الشعار</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>المستخدمين المحذوفين: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>تم إعادة تسمية الغرفة: {0}</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>الغرف</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>تم إلغاء أرشفة الغرفة</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} قام بتعيين: {1}</value>
+  </data>
+  <data name="SendActionType" xml:space="preserve">
+    <value>أرسل</value>
+  </data>
+  <data name="SentInviteInstructions" xml:space="preserve">
+    <value>تم ارسال تعليمات الدعوة: {0}</value>
+  </data>
+  <data name="SessionCompleted" xml:space="preserve">
+    <value>تم اكتمال الجلسة</value>
+  </data>
+  <data name="SessionStarted" xml:space="preserve">
+    <value>تم بدء الجلسة</value>
+  </data>
+  <data name="SettingsProduct" xml:space="preserve">
+    <value>الاعدادات</value>
+  </data>
+  <data name="SSODisabled" xml:space="preserve">
+    <value>تم تعطيل بوابة الدخول الموحد</value>
+  </data>
+  <data name="SSOEnabled" xml:space="preserve">
+    <value>تم تفعيل بوابة الدخول الموحد</value>
+  </data>
+  <data name="StartBackupSetting" xml:space="preserve">
+    <value>بدء النسخ الاحتياطي</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>بدء فك التشفيرالذاكرة</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>بدء تشفير الذاكرة</value>
+  </data>
+  <data name="StartTransferSetting" xml:space="preserve">
+    <value>بدء ترحيل منطقة البوابة</value>
+  </data>
+  <data name="SystemAccount" xml:space="preserve">
+    <value>حساب النظام</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>تم إنشاء الإشارات: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>تم حذف الإشارات: {0}</value>
+  </data>
+  <data name="TargetIdCol" xml:space="preserve">
+    <value>هوية الهدف</value>
+  </data>
+  <data name="TeamTemplateChanged" xml:space="preserve">
+    <value>تم تغيير قالب الفريق</value>
+  </data>
+  <data name="ThirdPartyCreated" xml:space="preserve">
+    <value>تم انشاء الطرف الثالث: {0}. المزود: {1}</value>
+  </data>
+  <data name="ThirdPartyDeleted" xml:space="preserve">
+    <value>تم حذف الطرف الثالث: {0}. المزود: {1}</value>
+  </data>
+  <data name="ThirdPartyUpdated" xml:space="preserve">
+    <value>تم تحديث الطرف الثالث: {0}. المزود: {1}</value>
+  </data>
+  <data name="TimeTrackingModule" xml:space="preserve">
+    <value>تعقب الوقت</value>
+  </data>
+  <data name="TimeZoneSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث اعدادات المنطقة الزمنية</value>
+  </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>تم إفراغ سلة المهملات</value>
+  </data>
+  <data name="TrustedMailDomainSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث اعدادات نطاق البريد الموثوق</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>تم تحديث اعدادات المصادقة  ثنائية العوامل: المصادقة ثنائية العوامل كانت معطلة</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>تم تحديث اعدادات المصادقة  ثنائية العوامل: التحقق من خلال الرسائل القصيرة كانت مفعلة</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>تم تحديث اعدادات المصادقة  ثنائية العوامل: تطبيق المصادقة كان معطل</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsUpdated" xml:space="preserve">
+    <value>تم تحديث اعدادات المصادقة ثنائية العوامل</value>
+  </data>
+  <data name="UnfollowActionType" xml:space="preserve">
+    <value>إلغاء المتابعة</value>
+  </data>
+  <data name="UnknownAccount" xml:space="preserve">
+    <value>حساب غير معروف</value>
+  </data>
+  <data name="UnlinkActionType" xml:space="preserve">
+    <value>فك الربط</value>
+  </data>
+  <data name="UpdateAccessActionType" xml:space="preserve">
+    <value>الأذونات المحدثة</value>
+  </data>
+  <data name="UpdateActionType" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="UploadActionType" xml:space="preserve">
+    <value>رفع</value>
+  </data>
+  <data name="UserActivated" xml:space="preserve">
+    <value>تفعل المستخدم: {0}</value>
+  </data>
+  <data name="UserAddedAvatar" xml:space="preserve">
+    <value>تم إضافة صورة شخصية للمستخدمين[{0}]</value>
+  </data>
+  <data name="UserCol" xml:space="preserve">
+    <value>المستخدم</value>
+  </data>
+  <data name="UserCreated" xml:space="preserve">
+    <value>تم انشاء حساب المستخدمين: {0}</value>
+  </data>
+  <data name="UserCreatedViaInvite" xml:space="preserve">
+    <value>تم انشاء حساب المستخدم من خلال دعوة: {0}</value>
+  </data>
+  <data name="UserDataReassigns" xml:space="preserve">
+    <value>تم إعادة تكليف البيانات من المستخدم {0} للمستخدم {1}</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>تم حذف بيانات المستخدم {0}</value>
+  </data>
+  <data name="UserDeleted" xml:space="preserve">
+    <value>تم حذف المستخدم : {0}</value>
+  </data>
+  <data name="UserDeletedAvatar" xml:space="preserve">
+    <value>تم حذف الصورة الشخصية للمستخدمين [{0}]</value>
+  </data>
+  <data name="UserFileUpdated" xml:space="preserve">
+    <value>تم تحديث الملف: {1} بواسطة المستخدم [{0}]</value>
+  </data>
+  <data name="UserImported" xml:space="preserve">
+    <value>تم استيراد المستخدم: {0}</value>
+  </data>
+  <data name="UserLinkedSocialAccount" xml:space="preserve">
+    <value>تم ربط حسابات السوشيال ميديا، المزود: {0}</value>
+  </data>
+  <data name="UsersDeleted" xml:space="preserve">
+    <value>تم حذف المستخدمين: {0}</value>
+  </data>
+  <data name="UserSentActivationInstructions" xml:space="preserve">
+    <value>تم ارسال تعليمات التفعيل بواسطة المستخدمين [{0}]</value>
+  </data>
+  <data name="UserSentDeleteInstructions" xml:space="preserve">
+    <value>تم ارسال تعليمات حذف الحساب</value>
+  </data>
+  <data name="UserSentEmailInstructions" xml:space="preserve">
+    <value>تم ارسال تعليمات تغيير البريد بواسطة المستخدمين [{0}]</value>
+  </data>
+  <data name="UserSentPasswordInstructions" xml:space="preserve">
+    <value>تم ارسال تعليمات تغيير كلمة المرور بواسطة المستخدمين [{0}]</value>
+  </data>
+  <data name="UsersModule" xml:space="preserve">
+    <value>المستخدمين</value>
+  </data>
+  <data name="UsersSentActivationInstructions" xml:space="preserve">
+    <value>تم ارسال تعليمات التفعيل بواسطة المستخدمين [{0}]</value>
+  </data>
+  <data name="UsersUpdatedStatus" xml:space="preserve">
+    <value>تم تحديث الحالة للمستخدمين [{0}]</value>
+  </data>
+  <data name="UsersUpdatedType" xml:space="preserve">
+    <value>تم تحديث النوع للمستخدمين [{0}]</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>تم قطع الاتصال مع تطبيق المصادقة: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>تم انشاء أكواد جديدة للنسخ الاحتياطية</value>
+  </data>
+  <data name="UserUnlinkedSocialAccount" xml:space="preserve">
+    <value>تم الغاء ربط حسابات السوشيال ميديا. المزود: {0}</value>
+  </data>
+  <data name="UserUpdated" xml:space="preserve">
+    <value>تم تحديث المستخدم: {0}</value>
+  </data>
+  <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
+    <value>تم تحديث الصور المصغرة للمستخدمين [{0}]</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>تم تحديث البريد</value>
+  </data>
+  <data name="UserUpdatedLanguage" xml:space="preserve">
+    <value>تم تحديث اللغة</value>
+  </data>
+  <data name="UserUpdatedMobileNumber" xml:space="preserve">
+    <value>تم تحديق رقم الهاتف: {1} للمستخدمين [{0}]</value>
+  </data>
+  <data name="UserUpdatedPassword" xml:space="preserve">
+    <value>تم تحديث كلمة المرور</value>
+  </data>
+</root>

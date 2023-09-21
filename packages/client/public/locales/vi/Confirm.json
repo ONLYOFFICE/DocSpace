@@ -28,6 +28,5 @@
   "SetAppTitle": "Thiết lập cấu hình ứng dụng xác thực của bạn",
   "SuccessDeactivate": "Tài khoản của bạn đã bị vô hiệu hóa  thành công. Trong 10 giây, bạn sẽ được chuyển hướng đến <1>trang</1>.",
   "SuccessReactivate": "Tài khoản của bạn đã được kích hoạt lại thành công. Trong 10 giây, bạn sẽ được chuyển hướng đến <1>không gian</1>.",
-  "SuccessRemoved": "Tài khoản của bạn đã được xóa thành công. Trong vòng 10 giây, bạn sẽ được chuyển hướng đến <1>trang</1>.",
-  "WelcomeUser": "Chào mừng bạn đến với DocSpace của chúng tôi!\nĐể bắt đầu, hãy đăng ký, hoặc đăng nhập qua mạng xã hội."
+  "SuccessRemoved": "Tài khoản của bạn đã được xóa thành công. Trong vòng 10 giây, bạn sẽ được chuyển hướng đến <1>trang</1>."
 }

@@ -32,7 +32,8 @@ export const YearsHeader = ({
   return (
     <HeaderContainer>
       <Title disabled className="years-header" isMobile={isMobile}>
-        {firstYear}-{firstYear + 9}
+        {moment(firstYear, "YYYY").format("YYYY")}-
+        {moment(firstYear + 9, "YYYY").format("YYYY")}
         <HeaderActionIcon isMobile={isMobile} />
       </Title>
       <HeaderButtons

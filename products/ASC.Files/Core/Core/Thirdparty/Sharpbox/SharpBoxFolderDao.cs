@@ -115,7 +115,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
-        bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
+        bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1, string roomId = default)
     {
         if (CheckInvalidFilter(filterType))
         {
@@ -248,31 +248,13 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             await using var filesDbContext = _dbContextFactory.CreateDbContext();
             await using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
-                var link = await Queries.TagLinksAsync(filesDbContext, _tenantId, id).ToListAsync();
-
-                filesDbContext.TagLink.RemoveRange(link);
-                await filesDbContext.SaveChangesAsync();
-
-                var tagsToRemove = await Queries.TagsAsync(filesDbContext).ToListAsync();
-
-                filesDbContext.Tag.RemoveRange(tagsToRemove);
-
-                var securityToDelete = await Queries.SecuritiesAsync(filesDbContext, _tenantId, id).ToListAsync();
-
-                filesDbContext.Security.RemoveRange(securityToDelete);
-                await filesDbContext.SaveChangesAsync();
-
-                var mappingToDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, id).ToListAsync();
-
-                filesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                await filesDbContext.SaveChangesAsync();
-
+                await Queries.DeleteTagLinksAsync(filesDbContext, _tenantId, id);
+                await Queries.DeleteTagsAsync(filesDbContext);
+                await Queries.DeleteSecuritiesAsync(filesDbContext, _tenantId, id);
+                await Queries.DeleteThirdpartyIdMappingsAsync(filesDbContext, _tenantId, id);
                 await tx.CommitAsync();
             }
         });
-
-
-
 
         if (folder is not ErrorEntry)
         {
@@ -514,7 +496,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
 static file class Queries
 {
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>> TagLinksAsync =
+    public static readonly Func<FilesDbContext, int, string, Task<int>> DeleteTagLinksAsync =
         EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string idStart) =>
                 ctx.TagLink
@@ -522,21 +504,23 @@ static file class Queries
                     .Where(r => ctx.ThirdpartyIdMapping
                         .Where(m => m.TenantId == tenantId)
                         .Where(m => m.Id.StartsWith(idStart))
-                        .Select(m => m.HashId).Any(h => h == r.EntryId)));
+                        .Select(m => m.HashId).Any(h => h == r.EntryId))
+                        .ExecuteDelete());
 
-    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>> TagsAsync =
+    public static readonly Func<FilesDbContext, Task<int>> DeleteTagsAsync =
         EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
-                from ft in ctx.Tag
-                join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
-                {
-                    TenantId = ftl.TenantId,
-                    Id = ftl.TagId
-                }
-                where ftl == null
-                select ft);
+                (from ft in ctx.Tag
+                 join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
+                 {
+                     TenantId = ftl.TenantId,
+                     Id = ftl.TagId
+                 }
+                 where ftl == null
+                 select ft)
+                .ExecuteDelete());
 
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> SecuritiesAsync =
+    public static readonly Func<FilesDbContext, int, string, Task<int>> DeleteSecuritiesAsync =
         EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string idStart) =>
                 ctx.Security
@@ -544,13 +528,15 @@ static file class Queries
                     .Where(r => ctx.ThirdpartyIdMapping
                         .Where(m => m.TenantId == tenantId)
                         .Where(m => m.Id.StartsWith(idStart))
-                        .Select(m => m.HashId).Any(h => h == r.EntryId)));
+                        .Select(m => m.HashId).Any(h => h == r.EntryId))
+                        .ExecuteDelete());
 
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
-        ThirdpartyIdMappingsAsync =
+    public static readonly Func<FilesDbContext, int, string, Task<int>>
+        DeleteThirdpartyIdMappingsAsync =
             EF.CompileAsyncQuery(
                 (FilesDbContext ctx, int tenantId, string idStart) =>
                     ctx.ThirdpartyIdMapping
                         .Where(r => r.TenantId == tenantId)
-                        .Where(m => m.Id.StartsWith(idStart)));
+                        .Where(m => m.Id.StartsWith(idStart))
+                        .ExecuteDelete());
 }

@@ -117,7 +117,7 @@ public interface IFileDao<T>
     ///    Return only the latest versions of files of a folder
     /// </remarks>
     IAsyncEnumerable<File<T>> GetFilesAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, 
-        bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1);
+        bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1, T roomId = default);
 
     /// <summary>
     /// Get stream of file
@@ -252,7 +252,8 @@ public interface IFileDao<T>
     /// </summary>
     /// <param name="oldOwnerId"></param>
     /// <param name="newOwnerId"></param>
-    Task ReassignFilesAsync(Guid oldOwnerId, Guid newOwnerId);
+    /// <param name="exceptFolderIds"></param>
+    Task ReassignFilesAsync(Guid oldOwnerId, Guid newOwnerId, IEnumerable<T> exceptFolderIds);
 
     /// <summary>
     /// Search files in SharedWithMe &amp; Projects
@@ -306,7 +307,7 @@ public interface IFileDao<T>
     Task SaveProperties(T fileId, EntryProperties entryProperties);
     
     Task<int> GetFilesCountAsync(T parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders = false, 
-        bool excludeSubject = false);
+        bool excludeSubject = false, T roomId = default);
 
     #endregion
 }

@@ -53,6 +53,7 @@ const AlertComponent = (props) => {
     needArrowIcon = false,
     needCloseIcon = false,
     link,
+    onLinkClick,
     linkColor,
     linkTitle,
     onAlertClick,
@@ -70,7 +71,7 @@ const AlertComponent = (props) => {
       needArrowIcon={needArrowIcon}
       id={id}
     >
-      <div>
+      <div className="main-content">
         <Text
           className="alert-component_title"
           fontSize={titleFontSize ?? "12px"}
@@ -88,8 +89,14 @@ const AlertComponent = (props) => {
         >
           {description}
         </Text>
-        {link && (
-          <Link type="page" href={link} noHover color={linkColor}>
+        {(link || onLinkClick) && (
+          <Link
+            type="page"
+            href={link}
+            onClick={onLinkClick}
+            noHover
+            color={linkColor}
+          >
             {linkTitle}
           </Link>
         )}

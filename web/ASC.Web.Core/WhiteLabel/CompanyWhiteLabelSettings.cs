@@ -37,7 +37,6 @@ public class CompanyWhiteLabelSettingsWrapper
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 {
     /// <summary>Core settings</summary>

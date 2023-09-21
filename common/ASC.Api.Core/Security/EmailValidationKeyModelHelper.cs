@@ -99,7 +99,7 @@ public class EmailValidationKeyModelHelper
 
     public async Task<ValidationResult> ValidateAsync(EmailValidationKeyModel inDto)
     {
-        var (key, emplType, email, uiD, type) = inDto;
+        var (key, emplType, email, uiD, type, _) = inDto;
 
         ValidationResult checkKeyResult;
 

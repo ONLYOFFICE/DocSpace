@@ -79,13 +79,8 @@ public class NotifyCleanerService : BackgroundService
             using var scope = _scopeFactory.CreateScope();
             await using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
-            var info = await Queries.NotifyInfosAsync(dbContext, date).ToListAsync();
-            var queue = await Queries.NotifyQueuesAsync(dbContext, date).ToListAsync();
-            
-            dbContext.NotifyInfo.RemoveRange(info);
-            dbContext.NotifyQueue.RemoveRange(queue);
-
-            await dbContext.SaveChangesAsync();
+            await Queries.DeleteNotifyInfosAsync(dbContext, date);
+            await Queries.DeleteNotifyQueuesAsync(dbContext, date);
 
         }
         catch (ThreadAbortException)
@@ -101,15 +96,17 @@ public class NotifyCleanerService : BackgroundService
 
 static file class Queries
 {
-    public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyInfo>> NotifyInfosAsync =
+    public static readonly Func<NotifyDbContext, DateTime, Task<int>> DeleteNotifyInfosAsync =
         EF.CompileAsyncQuery(
             (NotifyDbContext ctx, DateTime date) =>
                 ctx.NotifyInfo
-                    .Where(r => r.ModifyDate < date && r.State == 4));
+                    .Where(r => r.ModifyDate < date && r.State == 4)
+                    .ExecuteDelete());
 
-    public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyQueue>> NotifyQueuesAsync =
+    public static readonly Func<NotifyDbContext, DateTime, Task<int>> DeleteNotifyQueuesAsync =
         EF.CompileAsyncQuery(
             (NotifyDbContext ctx, DateTime date) =>
                 ctx.NotifyQueue
-                    .Where(r => r.CreationDate < date));
+                    .Where(r => r.CreationDate < date)
+                    .ExecuteDelete());
 }

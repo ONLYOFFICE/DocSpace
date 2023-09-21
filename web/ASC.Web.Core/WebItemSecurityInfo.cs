@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Core;
 
-[Serializable]
 public class WebItemSecurityInfo
 {
     public string WebItemId { get; set; }

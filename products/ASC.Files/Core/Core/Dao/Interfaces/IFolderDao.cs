@@ -91,7 +91,7 @@ public interface IFolderDao<T>
     /// <param name="count"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
-        bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1);
+        bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1, T roomId = default);
 
     /// <summary>
     /// Gets the folder (s) by ID (s)
@@ -229,7 +229,8 @@ public interface IFolderDao<T>
     /// </summary>
     /// <param name="oldOwnerId"></param>
     /// <param name="newOwnerId"></param>
-    Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId);
+    /// <param name="exceptFolderIds"></param>
+    Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId, IEnumerable<T> exceptFolderIds);
 
 
     /// <summary>
@@ -373,7 +374,8 @@ public interface IFolderDao<T>
     /// <param name="fileEntry"></param>
     /// <returns></returns>
     Task<(int RoomId, string RoomTitle)> GetParentRoomInfoFromFileEntryAsync<TTo>(FileEntry<TTo> fileEntry);
-    Task<int> GetFoldersCountAsync(T parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool withSubfolders = false, bool excludeSubject = false);
+    Task<int> GetFoldersCountAsync(T parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool withSubfolders = false, bool excludeSubject = false,
+        T roomId = default);
 
     #endregion
 }

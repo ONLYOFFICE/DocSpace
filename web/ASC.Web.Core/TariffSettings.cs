@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Studio.UserControls.Management;
 
-[Serializable]
 public class TariffSettings : ISettings<TariffSettings>
 {
     private static readonly CultureInfo _cultureInfo = CultureInfo.CreateSpecificCulture("en-US");

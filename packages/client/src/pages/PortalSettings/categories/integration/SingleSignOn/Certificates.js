@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -19,6 +20,12 @@ import {
   verifyAlgorithmsOptions,
 } from "./sub-components/constants";
 
+const StyledWrapper = styled.div`
+  .icon-button {
+    padding: 0 5px;
+  }
+`;
+
 const Certificates = (props) => {
   const { t } = useTranslation("SingleSignOn");
   const {
@@ -34,6 +41,9 @@ const Certificates = (props) => {
     spEncryptAlgorithm,
     spDecryptAlgorithm,
     isLoadingXml,
+    isDisabledSpSigning,
+    isDisabledSpEncrypt,
+    isDisabledIdpSigning,
   } = props;
 
   let prefix = "";
@@ -54,7 +64,7 @@ const Certificates = (props) => {
   }
 
   return (
-    <Box>
+    <StyledWrapper>
       <Box
         alignItems="center"
         displayProp="flex"
@@ -132,7 +142,7 @@ const Certificates = (props) => {
           {provider === "IdentityProvider" && (
             <>
               <SsoComboBox
-                isDisabled={idpCertificates.length === 0}
+                isDisabled={isDisabledIdpSigning}
                 labelText={t("idpSigningAlgorithm")}
                 name="idpVerifyAlgorithm"
                 options={verifyAlgorithmsOptions}
@@ -145,7 +155,7 @@ const Certificates = (props) => {
           {provider === "ServiceProvider" && (
             <>
               <SsoComboBox
-                isDisabled={spCertificates.length === 0}
+                isDisabled={isDisabledSpSigning}
                 labelText={t("spSigningAlgorithm")}
                 name="spSigningAlgorithm"
                 options={verifyAlgorithmsOptions}
@@ -154,7 +164,7 @@ const Certificates = (props) => {
               />
 
               <SsoComboBox
-                isDisabled={spCertificates.length === 0}
+                isDisabled={isDisabledSpEncrypt}
                 labelText={t("StandardDecryptionAlgorithm")}
                 name={"spEncryptAlgorithm"}
                 options={decryptAlgorithmsOptions}
@@ -165,7 +175,7 @@ const Certificates = (props) => {
           )}
         </>
       )}
-    </Box>
+    </StyledWrapper>
   );
 };
 
@@ -186,6 +196,9 @@ export default inject(({ ssoStore }) => {
     spEncryptAlgorithm,
     spDecryptAlgorithm,
     isLoadingXml,
+    isDisabledSpSigning,
+    isDisabledSpEncrypt,
+    isDisabledIdpSigning,
   } = ssoStore;
 
   return {
@@ -200,5 +213,8 @@ export default inject(({ ssoStore }) => {
     spEncryptAlgorithm,
     spDecryptAlgorithm,
     isLoadingXml,
+    isDisabledSpSigning,
+    isDisabledSpEncrypt,
+    isDisabledIdpSigning,
   };
 })(observer(Certificates));
