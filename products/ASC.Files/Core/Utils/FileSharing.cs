@@ -559,6 +559,14 @@ public class FileSharing
         }
     }
 
+    public async Task<int> GetRoomSharesCountAsync<T>(Folder<T> room, ShareFilterType filterType)
+    {
+        var defaultAces = await GetDefaultRoomAcesAsync(room, filterType, null).CountAsync();
+        var sharesCount = await _fileSecurity.GetPureSharesCountAsync(room, filterType, null);
+
+        return defaultAces + sharesCount;
+    }
+
     public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(FileEntry<T> entry, IEnumerable<SubjectType> subjectsTypes = null, bool withoutTemplates = false)
     {
         if (entry == null)

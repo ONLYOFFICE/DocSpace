@@ -332,26 +332,20 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     [HttpGet("rooms/{id}/share")]
     public async IAsyncEnumerable<FileShareDto> GetRoomSecurityInfoAsync(T id, ShareFilterType filterType = ShareFilterType.User)
     {
-        const int margin = 1;
-        
         var offset = Convert.ToInt32(_apiContext.StartIndex);
         var count = Convert.ToInt32(_apiContext.Count);
         var counter = 0;
 
-        await foreach (var ace in _fileStorageService.GetRoomSharedInfoAsync(id, filterType, offset, count + margin))
+        var totalCountTask = _fileStorageService.GetRoomSharesCountAsync(id, filterType);
+
+        await foreach (var ace in _fileStorageService.GetRoomSharedInfoAsync(id, filterType, offset, count))
         {
             counter++;
-
-            if (counter > count)
-            {
-                _apiContext.SetCount(count).SetNextPage(true);
-                yield break;
-            }
 
             yield return await _fileShareDtoHelper.Get(ace);
         }
 
-        _apiContext.SetCount(counter).SetNextPage(false);
+        _apiContext.SetCount(counter).SetTotalCount(await totalCountTask);
     }
 
     /// <summary>

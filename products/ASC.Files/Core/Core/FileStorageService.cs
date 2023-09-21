@@ -2418,11 +2418,6 @@ public class FileStorageService //: IFileStorageService
         return await _fileSharing.GetSharedInfoShortFileAsync(fileId);
     }
 
-    public async Task<List<AceShortWrapper>> GetSharedInfoShortFolder<T>(T folderId)
-    {
-        return await _fileSharing.GetSharedInfoShortFolderAsync(folderId);
-    }
-
     public async IAsyncEnumerable<AceWrapper> GetRoomSharedInfoAsync<T>(T roomId, ShareFilterType filterType, int offset, int count)
     {
         var room = await GetFolderDao<T>().GetFolderAsync(roomId).NotFoundIfNull();
@@ -2431,6 +2426,13 @@ public class FileStorageService //: IFileStorageService
         {
             yield return ace;
         }
+    }
+
+    public async Task<int> GetRoomSharesCountAsync<T>(T roomId, ShareFilterType filterType)
+    {
+        var room = await GetFolderDao<T>().GetFolderAsync(roomId).NotFoundIfNull();
+
+        return await _fileSharing.GetRoomSharesCountAsync(room, filterType);
     }
 
     public async IAsyncEnumerable<AceWrapper> GetSharedInfoAsync<T>(T roomId, IEnumerable<Guid> subjects)
@@ -3186,7 +3188,7 @@ public class FileStorageService //: IFileStorageService
                 var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, ace.Access, _authContext.CurrentAccount.ID);
                 var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
 
-            await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, shortenLink);
+                await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, shortenLink);
             }
 
             if (counter <= packSize)
