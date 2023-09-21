@@ -15,7 +15,7 @@ export function getUserList(filter = Filter.getDefault(), fake = false) {
     checkFilterInstance(filter, Filter);
 
     params = `/filter?${filter.toApiUrlParams(
-      "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
+      "id,status,isAdmin,isOwner,isRoomAdmin,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
     )}`;
   }
 

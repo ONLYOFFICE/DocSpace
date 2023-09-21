@@ -35,6 +35,16 @@ const PortalRenaming = loadable(() =>
 const WhiteLabel = loadable(() =>
   import("../pages/PortalSettings/categories/common/Branding/whitelabel")
 );
+const CompanyInfoSettings = loadable(() =>
+  import(
+    "../pages/PortalSettings/categories/common/Branding/companyInfoSettings"
+  )
+);
+const AdditionalResources = loadable(() =>
+  import(
+    "../pages/PortalSettings/categories/common/Branding/additionalResources"
+  )
+);
 const SecuritySettings = loadable(() =>
   import("../pages/PortalSettings/categories/security/index.js")
 );
@@ -153,6 +163,18 @@ const PortalSettingsRoutes = {
       element: <CustomizationSettings />,
     },
     {
+      path: "customization/branding/white-label",
+      element: <WhiteLabel />,
+    },
+    {
+      path: "customization/branding/company-info-settings",
+      element: <CompanyInfoSettings />,
+    },
+    {
+      path: "customization/branding/additional-resources",
+      element: <AdditionalResources />,
+    },
+    {
       path: "customization/appearance",
       element: <CustomizationSettings />,
     },
@@ -171,10 +193,6 @@ const PortalSettingsRoutes = {
     {
       path: "customization/general/portal-renaming",
       element: <PortalRenaming />,
-    },
-    {
-      path: "common/whitelabel",
-      element: <WhiteLabel />,
     },
     {
       path: "security",

@@ -209,7 +209,6 @@ function Viewer(props: ViewerProps) {
               resetToolbarVisibleTimer={resetToolbarVisibleTimer}
               contextModel={props.contextModel}
               errorTitle={props.errorTitle}
-              someDialogIsOpen={props.someDialogIsOpen}
             />,
             containerRef.current
           )

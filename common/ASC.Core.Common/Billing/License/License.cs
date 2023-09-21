@@ -28,7 +28,6 @@ namespace ASC.Core.Billing;
 
 /// <summary>
 /// </summary>
-[Serializable]
 [DebuggerDisplay("{DueDate}")]
 public class License
 {

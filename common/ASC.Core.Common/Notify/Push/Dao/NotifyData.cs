@@ -26,7 +26,6 @@
 
 namespace ASC.Core.Common.Notify.Push.Dao;
 
-[Serializable]
 public class NotifyData
 {
     [JsonProperty("portal")]

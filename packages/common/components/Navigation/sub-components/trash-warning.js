@@ -20,21 +20,6 @@ const StyledTrashWarning = styled.div`
   color: ${({ theme }) => theme.section.header.trashErasureLabelText};
   background: ${({ theme }) =>
     theme.section.header.trashErasureLabelBackground};
-
-  ${({ isTabletView }) =>
-    !isTabletView
-      ? css`
-          @media ${tablet} {
-            display: none;
-          }
-        `
-      : css`
-          margin-bottom: 16px;
-          display: none;
-          @media ${tablet} {
-            display: flex;
-          }
-        `}
 `;
 
 const TrashWarning = ({ title, isTabletView }) => {

@@ -98,6 +98,7 @@ global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Helpers;
 global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
+global using ASC.Files.Core.Services.OFormService;
 global using ASC.Files.Core.VirtualRooms;
 global using ASC.Geolocation;
 global using ASC.IPSecurity;

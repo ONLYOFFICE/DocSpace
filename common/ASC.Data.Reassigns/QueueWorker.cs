@@ -28,20 +28,21 @@ namespace ASC.Data.Reassigns;
 
 public class QueueWorker<T> where T : DistributedTaskProgress
 {
-    protected IServiceScopeFactory _serviceProvider;
     private readonly object _synchRoot = new object();
+
+    protected readonly IServiceProvider _serviceProvider;
     protected readonly DistributedTaskQueue _queue;
     protected readonly IDictionary<string, StringValues> _httpHeaders;
 
     public QueueWorker(
         IHttpContextAccessor httpContextAccessor,
-            IServiceScopeFactory serviceProvider,
+            IServiceProvider serviceProvider,
             IDistributedTaskQueueFactory queueFactory,
             string queueName)
     {
         _serviceProvider = serviceProvider;
         _queue = queueFactory.CreateQueue(queueName);
-        _httpHeaders = httpContextAccessor.HttpContext.Request?.Headers;
+        _httpHeaders = httpContextAccessor.HttpContext?.Request?.Headers;
     }
 
     public static string GetProgressItemId(int tenantId, Guid userId)
@@ -96,15 +97,17 @@ public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
 
     public QueueWorkerReassign(
         IHttpContextAccessor httpContextAccessor,
-            IServiceScopeFactory serviceProvider,
+            IServiceProvider serviceProvider,
             IDistributedTaskQueueFactory queueFactory) :
             base(httpContextAccessor, serviceProvider, queueFactory, CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME)
     {
     }
 
-    public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+    public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool notify, bool deleteProfile)
     {
-        var result = new ReassignProgressItem(_serviceProvider, _httpHeaders, tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
+        var result = _serviceProvider.GetService<ReassignProgressItem>();
+
+        result.Init(_httpHeaders, tenantId, fromUserId, toUserId, currentUserId, notify, deleteProfile);
 
         return Start(tenantId, fromUserId, result);
     }
@@ -117,15 +120,17 @@ public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
 
     public QueueWorkerRemove(
         IHttpContextAccessor httpContextAccessor,
-            IServiceScopeFactory serviceProvider,
+            IServiceProvider serviceProvider,
             IDistributedTaskQueueFactory queueFactory) :
             base(httpContextAccessor, serviceProvider, queueFactory, CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME)
     {
     }
 
-    public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
+    public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify, bool deleteProfile)
     {
-        var result = new RemoveProgressItem(_serviceProvider, _httpHeaders, tenantId, user, currentUserId, notify);
+        var result = _serviceProvider.GetService<RemoveProgressItem>();
+
+        result.Init(_httpHeaders, tenantId, user, currentUserId, notify, deleteProfile);
 
         return Start(tenantId, user.Id, result);
     }

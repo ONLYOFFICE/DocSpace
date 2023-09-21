@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Bạn sắp xóa tập tin này. Bạn có chắc chắn muốn tiếp tục không?",
-  "DeleteFolder": "Bạn sắp xóa thư mục này. Bạn có chắc chắn muốn tiếp tục không?",
-  "DeleteItems": "Bạn sắp xóa các mục này. Bạn có chắc chắn muốn tiếp tục không?",
+  "DeleteFile": "Bạn sắp xóa tập tin này. ",
+  "DeleteFolder": "Bạn sắp xóa thư mục này. ",
+  "DeleteItems": "Bạn sắp xóa các mục này. ",
   "DeleteRoom": "Bạn sắp xóa phòng này. Bạn sẽ không thể khôi phục nó.",
   "DeleteRooms": "Bạn sắp xóa các phòng này. Bạn sẽ không thể khôi phục chúng.",
   "MoveToTrashButton": "Chuyển vào Thùng rác",

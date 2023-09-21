@@ -4,10 +4,6 @@ import moment from "moment";
 import { getCalendarDays } from "./getCalendarDays";
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
-const onDateClick = (handleDateChange, newDate) => {
-  handleDateChange(moment(newDate));
-};
-
 export const getDayElements = (
   observedDate,
   selectedDate,
@@ -16,11 +12,10 @@ export const getDayElements = (
   maxDate,
   isMobile
 ) => {
-  const onClick = (newDate) => onDateClick(handleDateChange, newDate);
-
   const dateFormat = "YYYY-MM-D";
 
   const calendarDays = getCalendarDays(observedDate);
+
   const monthDays = {
     prevMonthDays: calendarDays.prevMonthDays.map((day) => (
       <ColorTheme
@@ -28,7 +23,7 @@ export const getDayElements = (
         themeId={ThemeType.DateItem}
         isSecondary
         key={day.key}
-        onClick={() => onClick(moment(day.key, dateFormat))}
+        onClick={() => handleDateChange(moment(day.key, dateFormat))}
         disabled={
           moment(day.key, dateFormat) < minDate ||
           moment(day.key, dateFormat) > maxDate
@@ -43,7 +38,7 @@ export const getDayElements = (
         className="day"
         themeId={ThemeType.DateItem}
         key={day.key}
-        onClick={() => onClick(moment(day.key, dateFormat))}
+        onClick={() => handleDateChange(moment(day.key, dateFormat))}
         disabled={
           moment(day.key, dateFormat) < minDate ||
           moment(day.key, dateFormat) > maxDate
@@ -59,7 +54,7 @@ export const getDayElements = (
         themeId={ThemeType.DateItem}
         isSecondary
         key={day.key}
-        onClick={() => onClick(moment(day.key, dateFormat))}
+        onClick={() => handleDateChange(moment(day.key, dateFormat))}
         disabled={
           moment(day.key, dateFormat) < minDate ||
           moment(day.key, dateFormat) > maxDate
@@ -71,9 +66,9 @@ export const getDayElements = (
     )),
   };
 
-  const currentDate = moment().format("YYYY-MM") + "-" + moment().date();
+  const currentDate = moment().format("YYYY-MM-") + moment().format("D");
   const selectedDateFormated =
-    moment(selectedDate).format("YYYY-MM") + "-" + moment(selectedDate).date();
+    moment(selectedDate).format("YYYY-MM-") + moment(selectedDate).format("D");
 
   for (const key in calendarDays) {
     calendarDays[key].forEach((day, index) => {
@@ -84,7 +79,7 @@ export const getDayElements = (
             themeId={ThemeType.DateItem}
             isCurrent
             key={day.key}
-            onClick={() => onClick(moment(day.key, dateFormat))}
+            onClick={() => handleDateChange(moment(day.key, dateFormat))}
             disabled={
               moment(day.key, dateFormat) < minDate ||
               moment(day.key, dateFormat) > maxDate
@@ -101,7 +96,7 @@ export const getDayElements = (
             themeId={ThemeType.DateItem}
             key={day.key}
             focused
-            onClick={() => onClick(moment(day.key, dateFormat))}
+            onClick={() => handleDateChange(moment(day.key, dateFormat))}
             disabled={
               moment(day.key, dateFormat) < minDate ||
               moment(day.key, dateFormat) > maxDate

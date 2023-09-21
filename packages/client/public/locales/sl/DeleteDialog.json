@@ -1,7 +1,7 @@
 {
-  "DeleteFile": "Izbrisali boste to datoteko. Ste prepričani, da želite nadaljevati?",
-  "DeleteFolder": "To mapo boste izbrisali. Ste prepričani, da želite nadaljevati?",
-  "DeleteItems": "Izbrisali boste te elemente. Ste prepričani, da želite nadaljevati?",
+  "DeleteFile": "Izbrisali boste to datoteko. ",
+  "DeleteFolder": "To mapo boste izbrisali. ",
+  "DeleteItems": "Izbrisali boste te elemente. ",
   "DeleteRoom": "Izbrisali boste to sobo. Ne boste je mogli obnoviti.",
   "DeleteRooms": "Izbrisali boste te sobe. Ne boste jih mogli obnoviti.",
   "MoveToTrashButton": "Premakni v koš",

@@ -27,6 +27,41 @@
 namespace ASC.Web.Files.Utils;
 
 [Singletone]
+public class FileMarkerCache
+{
+    private readonly ICache _ñache;
+    private readonly ICacheNotify<FileMarkerCacheItem> _notify;
+    private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(10);
+
+    public FileMarkerCache(ICacheNotify<FileMarkerCacheItem> notify, ICache cache)
+    {
+        _ñache = cache;
+        _notify = notify;
+
+        _notify.Subscribe((i) => _ñache.Remove(i.Key), CacheNotifyAction.Remove);
+    }
+
+    public T Get<T>(string key) where T : class
+    {
+        return _ñache.Get<T>(key);
+    }
+
+    public void Insert(string key, object value)
+    {
+        _notify.Publish(new FileMarkerCacheItem { Key = key }, CacheNotifyAction.Remove);
+
+        _ñache.Insert(key, value, _cacheExpiration);
+    }
+
+    public void Remove(string key)
+    {
+        _notify.Publish(new FileMarkerCacheItem { Key = key }, CacheNotifyAction.Remove);
+
+        _ñache.Remove(key);
+    }
+}
+
+[Singletone]
 public class FileMarkerHelper
 {
     public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "file_marker";
@@ -68,8 +103,6 @@ public class FileMarkerHelper
 [Scope(Additional = typeof(FileMarkerExtention))]
 public class FileMarker
 {
-    private readonly ICache _cache;
-
     private const string CacheKeyFormat = "MarkedAsNew/{0}/folder_{1}";
 
     private readonly TenantManager _tenantManager;
@@ -82,6 +115,7 @@ public class FileMarker
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
+    private readonly FileMarkerCache _fileMarkerCache;
 
     public FileMarker(
         TenantManager tenantManager,
@@ -93,7 +127,7 @@ public class FileMarker
         IServiceProvider serviceProvider,
         FilesSettingsHelper filesSettingsHelper,
         RoomsNotificationSettingsHelper roomsNotificationSettingsHelper,
-        ICache cache)
+        FileMarkerCache fileMarkerCache)
     {
         _tenantManager = tenantManager;
         _userManager = userManager;
@@ -104,7 +138,7 @@ public class FileMarker
         _serviceProvider = serviceProvider;
         _filesSettingsHelper = filesSettingsHelper;
         _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
-        _cache = cache;
+        _fileMarkerCache = fileMarkerCache;
     }
 
     internal async Task ExecMarkFileAsNewAsync<T>(AsyncTaskData<T> obj, SocketManager socketManager)
@@ -982,13 +1016,13 @@ public class FileMarker
     private void InsertToCahce(object folderId, int count)
     {
         var key = string.Format(CacheKeyFormat, _authContext.CurrentAccount.ID, folderId);
-        _cache.Insert(key, count.ToString(), TimeSpan.FromMinutes(10));
+        _fileMarkerCache.Insert(key, count.ToString());
     }
 
     private int GetCountFromCahce(object folderId)
     {
         var key = string.Format(CacheKeyFormat, _authContext.CurrentAccount.ID, folderId);
-        var count = _cache.Get<string>(key);
+        var count = _fileMarkerCache.Get<string>(key);
 
         return count == null ? -1 : int.Parse(count);
     }
@@ -1001,7 +1035,7 @@ public class FileMarker
     private void RemoveFromCahce(object folderId, Guid userId)
     {
         var key = string.Format(CacheKeyFormat, userId, folderId);
-        _cache.Remove(key);
+        _fileMarkerCache.Remove(key);
     }
 
     private static async Task SendChangeNoticeAsync(IEnumerable<Tag> tags, SocketManager socketManager)

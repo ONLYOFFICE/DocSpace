@@ -139,11 +139,7 @@ public class FeedAggregateDataProvider
     {
         await using var feedDbContext = _dbContextFactory.CreateDbContext();
 
-        var aggregates = await Queries.FeedAggregatesByFromTimeAsync(feedDbContext, fromTime).ToListAsync();
-
-        feedDbContext.FeedAggregates.RemoveRange(aggregates);
-
-        await feedDbContext.SaveChangesAsync();
+        await Queries.DeleteFeedAggregatesByFromTimeAsync(feedDbContext, fromTime);
     }
 
     public async Task<List<FeedResultItem>> GetFeedsAsync(FeedApiFilter filter)
@@ -183,7 +179,7 @@ public class FeedAggregateDataProvider
     {
         await using var feedDbContext = _dbContextFactory.CreateDbContext();
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-        var q = feedDbContext.FeedAggregates.AsNoTracking()
+        var q = feedDbContext.FeedAggregates
             .Where(r => r.TenantId == tenant.Id);
 
         var feeds = filter.History ? GetFeedsAsHistoryQuery(q, filter) : GetFeedsDefaultQuery(feedDbContext, q, filter);
@@ -303,10 +299,7 @@ public class FeedAggregateDataProvider
     public async Task RemoveFeedItemAsync(string id)
     {
         await using var feedDbContext = _dbContextFactory.CreateDbContext();
-        var aggregates = await Queries.FeedAggregatesAsync(feedDbContext, id).ToListAsync();
-
-        feedDbContext.FeedAggregates.RemoveRange(aggregates);
-        await feedDbContext.SaveChangesAsync();
+        await Queries.DeleteFeedAggregatesAsync(feedDbContext, id);
     }
 }
 
@@ -348,11 +341,12 @@ static file class Queries
                 ctx.FeedUsers
                     .FirstOrDefault(r => r.FeedId == id));
 
-    public static readonly Func<FeedDbContext, DateTime, IAsyncEnumerable<FeedAggregate>>
-        FeedAggregatesByFromTimeAsync = EF.CompileAsyncQuery(
+    public static readonly Func<FeedDbContext, DateTime, Task<int>>
+        DeleteFeedAggregatesByFromTimeAsync = EF.CompileAsyncQuery(
             (FeedDbContext ctx, DateTime fromTime) =>
                 ctx.FeedAggregates
-                    .Where(r => r.AggregateDate <= fromTime));
+                    .Where(r => r.AggregateDate <= fromTime)
+                    .ExecuteDelete());
 
     public static readonly Func<FeedDbContext, DateTime, IAsyncEnumerable<FeedUsers>> FeedsUsersByFromTimeAsync =
         EF.CompileAsyncQuery(
@@ -387,11 +381,12 @@ static file class Queries
                 ctx.FeedAggregates
                     .FirstOrDefault(r => r.Id == id));
 
-    public static readonly Func<FeedDbContext, string, IAsyncEnumerable<FeedAggregate>> FeedAggregatesAsync =
+    public static readonly Func<FeedDbContext, string, Task<int>> DeleteFeedAggregatesAsync =
         EF.CompileAsyncQuery(
             (FeedDbContext ctx, string id) =>
                 ctx.FeedAggregates
-                    .Where(r => r.Id == id));
+                    .Where(r => r.Id == id)
+                    .ExecuteDelete());
 
     public static readonly Func<FeedDbContext, string, IAsyncEnumerable<FeedUsers>> FeedsUsersAsync =
         EF.CompileAsyncQuery(

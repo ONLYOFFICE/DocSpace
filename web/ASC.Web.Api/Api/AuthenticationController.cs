@@ -76,6 +76,7 @@ public class AuthenticationController : ControllerBase
     private readonly ILogger<AuthenticationController> _logger;
     private readonly InvitationLinkService _invitationLinkService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMapper _mapper;
 
     public AuthenticationController(
         UserManager userManager,
@@ -114,7 +115,8 @@ public class AuthenticationController : ControllerBase
         EmailValidationKeyProvider emailValidationKeyProvider,
         ILogger<AuthenticationController> logger,
         InvitationLinkService invitationLinkService,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor, 
+        IMapper mapper)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -153,6 +155,7 @@ public class AuthenticationController : ControllerBase
         _logger = logger;
         _invitationLinkService = invitationLinkService;
         _httpContextAccessor = httpContextAccessor;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -288,7 +291,7 @@ public class AuthenticationController : ControllerBase
             };
         }
 
-        if (_tfaAppAuthSettingsHelper.IsVisibleSettings &&await  _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && await _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
             if (!await TfaAppUserSettings.EnableForUserAsync(_settingsManager, user.Id))
             {
@@ -319,8 +322,8 @@ public class AuthenticationController : ControllerBase
 
             if (!session)
             {
-            var tenant = await _tenantManager.GetCurrentTenantIdAsync();
-            var expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
+                var tenant = await _tenantManager.GetCurrentTenantIdAsync();
+                var expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
 
                 outDto.Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires);
             }
@@ -371,7 +374,7 @@ public class AuthenticationController : ControllerBase
         {
             var settings = _settingsManager.Load<SsoSettingsV2>();
 
-            if (settings.EnableSso && !string.IsNullOrEmpty(settings.IdpSettings.SloUrl))
+            if (settings.EnableSso.GetValueOrDefault() && !string.IsNullOrEmpty(settings.IdpSettings.SloUrl))
             {
                 var logoutSsoUserData = _signature.Create(new LogoutSsoUserData
                 {
@@ -380,7 +383,7 @@ public class AuthenticationController : ControllerBase
                 });
 
                 return _setupInfo.SsoSamlLogoutUrl + "?data=" + HttpUtility.UrlEncode(logoutSsoUserData);
-    }
+            }
         }
 
         return null;
@@ -398,16 +401,16 @@ public class AuthenticationController : ControllerBase
     /// <returns type="ASC.Security.Cryptography.EmailValidationKeyProvider.ValidationResult, ASC.Security.Cryptography">Validation result: Ok, Invalid, or Expired</returns>
     [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
-    public async Task<ValidationResult> CheckConfirm(EmailValidationKeyModel inDto)
+    public async Task<ConfirmDto> CheckConfirm(EmailValidationKeyModel inDto)
     {
         if (inDto.Type != ConfirmType.LinkInvite)
         {
-            return await _emailValidationKeyModelHelper.ValidateAsync(inDto);
+            return new ConfirmDto { Result = await _emailValidationKeyModelHelper.ValidateAsync(inDto)};
         }
 
-        var linkData = await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, inDto.Email, inDto.EmplType ?? default, inDto.UiD ?? default);
+        var result = await _invitationLinkService.ValidateAsync(inDto.Key, inDto.Email, inDto.EmplType ?? default, inDto.RoomId);
 
-        return linkData.Result;
+        return _mapper.Map<Validation, ConfirmDto>(result);
     }
 
     /// <summary>

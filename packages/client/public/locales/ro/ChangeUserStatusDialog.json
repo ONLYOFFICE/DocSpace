@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "activat",
-  "ChangeUsersDisableStatus": "desactivat",
-  "ChangeUserStatusDialog": "Utilizatorii cu statutul '{{ userStatus }}' vor fi {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Schimbați statutul",
-  "ChangeUserStatusDialogMessage": "Nu puteți schimba statutul proprietarului spațiului DocSpace și nici al dumneavoastră."
-}

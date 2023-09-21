@@ -36,19 +36,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>NotifyTemplateResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\NotifyTemplateResource.ru.resx">
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.ar-SA.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\NotifyTemplateResource.de.resx">
-      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\NotifyTemplateResource.es.resx">
-      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\NotifyTemplateResource.fr.resx">
-      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\NotifyTemplateResource.it.resx">
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.az.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.bg.resx">
@@ -57,13 +48,31 @@
     <EmbeddedResource Update="Resources\NotifyTemplateResource.cs.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.de.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.el-GR.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.es.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.fi.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.fr.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.hy-AM.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.it.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.ja-JP.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.ko-KR.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.lv.resx">
@@ -75,10 +84,22 @@
     <EmbeddedResource Update="Resources\NotifyTemplateResource.pl.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.pt.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.pt-BR.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.ro.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.ru.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.sk.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.sl.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.tr.resx">
@@ -91,9 +112,6 @@
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.zh-CN.resx">
-      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\NotifyTemplateResource.az.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

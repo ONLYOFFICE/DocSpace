@@ -26,7 +26,6 @@
 
 namespace ASC.Web.Core.Utility.Settings;
 
-[Serializable]
 public class TenantAccessSettings : ISettings<TenantAccessSettings>
 {
     public bool Anyone { get; set; }

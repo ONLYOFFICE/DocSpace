@@ -403,6 +403,31 @@ export function sendOwnerChange(ownerId) {
   });
 }
 
+export function dataReassignment(fromUserId, toUserId, deleteProfile) {
+  const data = { fromUserId, toUserId, deleteProfile };
+  return request({
+    method: "post",
+    url: `/people/reassign/start`,
+    data,
+  });
+}
+
+export function dataReassignmentProgress(id) {
+  return request({
+    method: "get",
+    url: `/people/reassign/progress/${id}`,
+  });
+}
+
+export function dataReassignmentTerminate(userId) {
+  const data = { userId };
+  return request({
+    method: "put",
+    url: `/people/reassign/terminate`,
+    data,
+  });
+}
+
 export function ownerChange(ownerId, confirmKey = null) {
   const data = { ownerId };
 
@@ -722,6 +747,15 @@ export function getMetadata() {
 
 export function getOforms(url) {
   return axios.get(url);
+}
+
+export function submitToGallery(url, file, formName, language) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("formName", formName);
+  formData.append("language", language);
+
+  return axios.post(url, formData);
 }
 
 export function getStorageRegions() {

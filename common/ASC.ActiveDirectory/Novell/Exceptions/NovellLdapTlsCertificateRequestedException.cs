@@ -26,7 +26,6 @@
 
 namespace ASC.ActiveDirectory.Novell.Exceptions;
 
-[Serializable]
 public class NovellLdapTlsCertificateRequestedException : Exception
 {
     public LdapCertificateConfirmRequest CertificateConfirmRequest { get; set; }

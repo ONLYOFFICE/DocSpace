@@ -85,7 +85,7 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (TelegramDbContext ctx, long telegramId) =>
                 ctx.Users
-                    .AsNoTracking()
+                    
                     .Where(r => r.TelegramUserId == telegramId));
 
     public static readonly Func<TelegramDbContext, int, Guid, Task<int>> DeleteTelegramUsersAsync =

@@ -1,0 +1,1056 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>لا يمكن ترك حقل رمز التحقق فارغ</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>قم بإدخال رقم الهاتف الخاص بك</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>لا يمكن ترك حقل رمز التحقق فارغ</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>اشعار للمسئولين</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>تم ارسال الرسالة بنجاح. سيتم التواصل معك من قبل مسئول البوابة.</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>بواسطة الرسائل القصيرة</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>بواسطة تطبيق المصادقة</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>مفتاح الوصول S3</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>مفتاح api لـ Rackspace</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>معرف Apple</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>معرف طلب العميل</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>قم بتفعيل التطبيق لتسجيل الدخول للبوابة باستخدام حساب معرف Apple.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>قم بتفعيل هذا التطبيق للسماح للمستخدمين بتسجيل الدخول إلى ONLYOFFICE بواسطة معرف Apple. {0} إذهب لبوابة مطورين Apple وقم بانشاء تطبيق ONLYOFFICE جديد. وقم بادراج البيانات المستلمة بالأسفل:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>تم انشاء معرف رئيسي مكون من 10 أحرف لتسجيل الدخول بواسطة مفتاح Apple الخاص</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>تم تحميل الرمز الخاص من Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>معرف حساب فريق المطور المكون من 10 أحرف</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>تحديد كلمة مرور المصادقة</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>تحديد مستخدم المصادقة</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>تسجيل الدخول</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>رمز api</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>قم بالسماح لهذا التطبيق لتقصير روابط دعوة البوابة وروابطة المشاركة في المستندات باستخدام خدمة Bitly.</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>فم بالسماح لهذا التطبيق لتقصير روابط الدعوة وروابط الدعوة. {0} قم بإدخال مفتاح تسجيل الدخول إلى Bitly و API في الأسفل:</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>معرف Box</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>رمز Box</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>قم بالسماح للتطبيق بالتحكم بملفات ومجلدات Box.</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>قم بالسماح لهذا التطبيق بتوصيل حساب BOX الخاص بك بوحدة المستندات.
+ستتمكن من إدارة الملفات وتعديلها ومشاركتها من Box مع مستخدمين ONLYOFFICE. {0} سجل الدخول إلى حسابك في صفحة مطوري Box وأنشئ تطبيقاً جديداً لتكامل ONLYOFFICE. أدخل البيانات المستلمة في الأسفل:</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>رمز api</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>قم بالسماح للتطبيق بالمصادقة الثنائية عبر Clickatell.</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>استخدم هذا التطبيق لتمكين المصادقة الثنائية مع خدمة Clickatell. {0} سجل الدخول إلى حساس الرسائل القصيري في المنصة وأنشئ تكاملاً جديداً لـ ONLYOFFICE. انسخ مفتاح api وأدخله أدناه:</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>مفتاح DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign Secret</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>قم بالسماح بالتطبيق بالتوقيع رقمياً على مستنداتك باستخدام DocuSign.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>نقطة نهاية مصادقة DocuSign</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>قم بالسماح لهذا التطبيق بتوقيع المستندات رقمياً باستخدام DocuSign. {0} انتقل إلى وحدة  تحكم المسئول في DocuSign وأضف تكاملاً لـ ONLYOFFICE. أدخل البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>قم بالسماح للتطبيق بإدارة ملفات ومجلدات DropBox.</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>قم بالسماح لهذا التطبيق بربط حساب DropBox الخاص بك بوحدة المستندات. ستتمكن نم إدارة الملفات وتحريرها ومشاركتها من DropBox مع مستخدمين ONLYOFFICE. {0} سجل الدخول إلى حسابك على موقع Dropbox Developers وأنشئ تطبيقاً جديداً لتكامل ONLYOFFICE. أدخل البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>عرف DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>مفتاح DropBox</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>رمز التطبيق</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق لإنشاء قوائم ببليوغرافية في المستندات باستخدام EasyBib.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق لإنشاء قوائم المراجع في محرري ONLYOFFICE.  {0} انتقل إلى صفحة الاشتراك في EasyBib واملأ النموذج لإضافة تكامل ONLYOFFICE بعد الحصول على مفتاح التطبيق قم بلصقه أدناه:</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>فيسبوك</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>رمز التطبيق</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>معرف فيسبوك</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>مفتاح فيسبوك</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>قم بتفعيل التطبيق لتسجيل الدخول للبوابة من خلال حساب فيسبوك.</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق للسماح للمستخدمين بتسجيل الدخول إلى ONLYOFFICE باستخدام فيسبوك وربط حسابات زبائن الفيسبوك بوحدة الـ CRM.
+{0} انتقل إلى بوابة مطورين فيسبوك وأنشئ تكامل تطبيقاً جديداً ONLYOFFICE. أدخل البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>مفتاح Web API</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>مفتاح الخادم</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>معرف المرسل</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>معرف المشروع</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق لاستلام اشعارات عن المستلمة من المراسلة السحابية من Firebase.</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق للسماح للمستخدمين بتلقي إشعارات حول الرسائل حتى في وضع عدم الاتصال. {0} انتقل إلى وحدة تحكم Firebase وأضف مشروعاً جديداً لتكامل ONLYOFFICE. أدخل البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>جوجل</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>معرف جوجل</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>مفتاح جوجل</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>ذاكرة جوجل السحابية</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>أدخل اسم حاوية سحابة جوجل لتخزين النسخ الاحتياطية.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>قم بتوصيل خدمة ذاكرة سحابة جوجل للنسخ الاحتياطي وتخزين البيانات من البوابة الالكترونية.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>قم بتوصيل خدمة ذاكرة سحابة جوجل للنسخ الاجتياطي وتخزين البيانات من البوابة الالكترونية. {0} انتقل إلى منصة سحابة جوجل وقم بإنشاء حساب خدمة جديد لـ ONLYOFFIC. الق البيانات التي تلقيتها هنا:</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>قم بتوصيل المشروع لتسجيل الجخول إلى البوابة باستخدام حساب جوجل وقم بإدارة ملفات ومجلدات جوجل درايف.</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق لتوصيل حساب جوجل درايف الخاص بك بوحدة المستندات. ستتمكن من إدارة الملفات وتعديلها ومشاركتها من جوجل درايف مع مستخدمين ONLYOFFICE. {0} انتقل إلى وحدة تحكم Google APIs وأنشئ مشروعاً جديداً لتكامل ONLYOFFICE. أدخل البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>لينكدان</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>قم بتفعيل التطبيق لتسجيل الدخول للبوابة من خلال حساب لينكدان.</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق للسماح للمستخدمين بتسجيل الدخول إلى ONLYOFFICE باستخدام حسابات لينكدان. {0} انتقل إلى موقع مطورين لينكدان وأنشئ تطبيق جديد لتكامل ONLYOFFICE.
+أدخل البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>معرف لينكدان</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>مفتاح لينكدان</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>معرف</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>المفتاح السري</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>قم بتفعيل التطبيق لتسجيل الدخول للبوابة من خلال حساب Mail.ru.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>عند إضافة تطبيق Mail.ru، يمكنك تمكين تسجيل الدخول إلى البوابة باستخدام حساب Mail.ru في صفحة ملفك الشخصي.</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>مايكروسوفت</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>معرف مستخدم التطبيق</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>خصوصية المستخدم</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>قم بتفعيل التطبيق لتسجيل الدخول للبوابة من خلال حساب مايكروسوفت.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق للسماح للمستخدمين بتسجيل الدخول إلى ONLYOFFICE باستخدام مايكروسوفت. {0} انتقل إلى Microsoft Azure وأنشئ تطبيق كامل لتكامل ONLYOFFICE. أدخل البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>ذاكرة السحابة في Rackspace</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>قم بتوصيل خدمة ذاكرة سحابة Rackspace  للنسخ الاحتياطي وتخزين البيانات من البوابة الالكترونية.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>قم بتوصيل خدمة Rackspace Cloud Storage للنسخ الاحتياطي وتخزين البيانات من البوابة الإلكترونية. {0}من خلال إعدادات الأمان الخاصة بلوحة تحكم Rackspace Cloud ثم انقر على الرابط إظهار بجوار مفتاح Rackspace API . الصق البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>حاوية خاصة</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>أدخل عنوان URL للحاوية الخاصة Rackspace لتخزين النسخ الاحتياطية.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>حاوية عامة</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>حاوية عامة</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>حاوية خاصة</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>أدخل عنوان URL للحاوية العامة Rackspace لتخزين النسخ الاحتياطية.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>المنطقة</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>أدخل المنطقة التي توجد بها حاويات Rackspace الخاصة بك.</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>أمازون AWS S3</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>أدخل الاسم الفريد لحاوية أمازون لتخزين النسخ الاحتياطية.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>قم بتوصيل أمازون  AWS S3 بالنسخ الاحتياطي وتخزين البيانات من بوابتك الإلكترونية.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>قم بتوصيل Amazon AWS S3 بالنسخ الاحتياطي وتخزين البيانات من بوابتك الإلكترونية. {0} انتقل إلى وحدة إدارة AWS وأنشئ مفاتيح وصول لـ ONLYOFFICE. الصق البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>المنطقة</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>أدخل منطقة AWS حيث يوجد bucket Amazon الخاص بك.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>مفتاح الوصول السري S3</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>الذاكرة السحابية لـ Selectel</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>كلمة السر للوصول إلى التخزين</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>مستخدم المصادقة</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>قم بتوصيل خدمة التخزين السحابي Selectel للنسخ الاحتياطي وتخزين البيانات من البوابة الإلكترونية.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>قم بتوصيل خدمة التخزين السحابي Selectel للنسخ الاحتياطي وتخزين البيانات من البوابة الإلكترونية. {0} احصل على بيانات الوصول لمستخدم لديه حقوق القراءة أو الكتابة للحاويات التي تخطط لتخزين نسخك الاحتياطية الخاصة بها وثم إلصقها أدناه:</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>أدخل اسم حاوية Selectel الخاصة لتخزين النسخ الاحتياطية.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>أدخل اسم حاوية Selectel العامة لتخزين النسخ الاحتياطية.</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>معرف التطبيق</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>خصوصية العميل</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>تمكين التطبيق لإدارة ملفات ومجلدات OneDrive.</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق لتوصيل حساب OneDrive الخاص بك بوحدة المستندات. ستتمكن من إدارة الملفات وتحريرها ومشاركتها من OneDrive مع مستخدمين ONLYOFFICE. {0}قم بتسجيل الدخول إلى حساب Microsoft Azure الخاص بك وإنشاء تطبيق جديد لتكامل ONLYOFFICE. ثم قم بإدراج البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>مركز الرسائل القصيرة</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>قم بتمكين تطبيق المصادقة ثنائية العامل عبر مركز الرسائل القصيرة.</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>استخدم هذا التطبيق لتمكين المصادقة الثنائية مع خدمة مركز الرسائل القصيرة. {0} أدخل معلومات تسجيل الدخول إلى حساب smsc وكلمة المرور (أو تجزئة #MD5 لكلمة المرور) بأحرف صغيرة:</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>تسجيل الدخول</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>كلمة المرور أو كلمة المرور #MD5 بأحرف صغيرة</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>تليجرام</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>اسم البوت</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>رمز البوت</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>قم بتوصيل حساب تلجرام لتلقي إشعارات البوابة عبر تلجرام.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>قم بتمكين Telegram bot لتلقي إشعارات البوابة عبر تلجرام، يمكنك إنشاء روبوت جديد باستخدام BotFather في Telegram Desktop. لاستخدام هذا الروبوت، يحتاج مستخدمو البوابة إلى تمكين إشعارات تلجرام على صفحة الملف الشخصي الخاصة بهم. {0} قم بلصق اسم مستخدم البوت والرمز الذي تلقيته في الحقول أدناه.</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>معرف حماية الحساب</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>رمز المصادقة</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق للاتصال بجهات اتصال CRM في Twilio.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق للسماح للمستخدمين بالاتصال بجهات الاتصال الخاصة بهم من وحدة CRM باستخدام Twilio. {0} انتقل إلى Twilio Console ثم ألصق البيانات التالية أدناه:</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>رقم هاتف من Twilio (مطلوب لمصادقة الرسائل القصيرة)</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>تويتر</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>معرف العميل</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>خصوصية العميل</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>قم بتمكين التطبيق لتسجيل الدخول إلى البوابة باستخدام حساب تويتر والبحث عن جهات الاتصال.</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق للسماح للمستخدمين بالاتصال بجهات الاتصال الخاصة بهم من وحدة CRM باستخدام Twilio. {0}انتقل إلى Twilio Console ثم ألصق البيانات التالية أدناه:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>مفتاح API</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>مفتاح API السري</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>اسم مستخدم Rackspace</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>معرف التطبيق</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>المفتاح الآمن</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>قم بتمكين التطبيق لتسجيل الدخول إلى البوابة الإلكترونية باستخدام حساب VK.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>عند إضافة تطبيق VK، يمكنك تمكين تسجيل الدخول إلى البوابة باستخدام حساب VK في صفحة ملفك الشخصي.</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>قم بالسماح للتطبيق بنشر المستندات مباشرة في WordPress.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>قم بتمكين التطبيق لنشر المستندات بسهولة على موقع WordPress الخاص بك. {0}أنشئ تطبيقًا جديدًا لتكامل ONLYOFFICE في صفحة مطوري ONLYOFFICE. ثم الصق البيانات التي تلقيتها أدناه:</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>مفتاح WordPress</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>خصوصية WordPress</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>معرف العميل</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>خصوصية العميل</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>قم بتمكين التطبيق لاستيراد المستخدمين من خدمة Yahoo.</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>قم بتمكين هذا التطبيق لإضافة مستخدمي البوابة الجديدة من قائمة جهات اتصال في .Yahoo {0}انتقل إلى صفحة إنشاء تطبيق في شبكة مطوري Yahoo وأنشئ تطبيقًا جديدًا لتكامل ONLYOFFICE. ثم قم بإدراج البيانات المتلقاة:</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>المعرف</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>كلمة المرور</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>تمكين التطبيق من تسجيل الدخول إلى البوابة باستخدام حساب Yandex.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>يمكنك تمكين تسجيل الدخول إلى البوابة باستخدام حساب Yandex عند إضافة تطبيق Yandex في صفحة ملفك الشخصي.</value>
+  </data>
+  <data name="ConsumersZoom" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>عملية استرداد كلمة المرور ممنوعة لمستخدم LDAP</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>عملية استرداد كلمة المرور ممنوعة لمستخدمين بوابة الدخول الموحد</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>تخصيص</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>تم إرسال رابط لتأكيد العملية إلى {0} (عنوان البريد الإلكتروني لمالك البوابة).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>هوية غير صحيحة.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>بريد الكتروني غير صحيح</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>لا توجد أذونات للقيام بهذا الإجراء</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>الوصول إلى البوابة مقيد.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>المفتاح غير فعّال</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>تم تعليق ملفك الشخصي</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!المستخدم} صاحب هذا البريد الإلكتروني مسجل بالفعل</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>رسائل البريد الإلكتروني من هذا المجال غير مسموح لها التسجيل</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>الحقل الخاص بالبريد الالكتروني فارغ</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>البريد الإلكتروني الحالي والبريد الإلكتروني الجديد متماثلان</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>الرجاء ملء جميع الحقول</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>نص الرسالة فارغ</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>تعذر العثور على الملف الذي تم تحميله</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>نوع ملف صورة غير معروف</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>حجم الصورة يتجاوز المقاييس المسموح بها</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>حجم ملف الصورة كبير جدًا</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>الاسم الأول أو الأخير غير صحيح</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>الوصول إلى البوابة مقيد</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>الخطة الخاصة بك الخاصة بك لا تدعم هذا الخيار</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>بريد الكتروني غير صحيح</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>اسم النطاق غير صالح</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>حقل كلمة المرور فارغ.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>من {0} إلى {1} حرف</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>يجب أن تحتوي كلمة المرور على</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>أرقام</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>عدم وجود مسافات</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>رموز خاصة</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>حروف كبيرة</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>أحرف لاتينية فقط</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>تم تجاوز حد الطلب</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>لا يمكن أن يكون مجال المستأجر فارغًا.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>يجب أن يكون طول اسم المجال بين {0} و {1} حرف.</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>لا يمكن العثور على اسم المستخدم</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>لا يمكن العثور على المستخدم صاحب البريد الالكتروني "{0}"</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>منطقة أوروبا (فرانكفورت)</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>تم تجاوز الحد الأقصى لحجم الملف</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>ملاحظة: لا يمكن أن يتجاوز حجم الملف {1} {0} {2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>بايت، كيلوبايت، ميجابايت، جيجابايت، تيرابايت</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>تم إرسال الرابط لتأكيد حسابك إلى البريد الإلكتروني المحدد</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>الاسم الأول</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>اسم العائلة</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>خطأ في الاتصال</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>لا يمكن إنشاء المستخدمين، البيانات الواردة غير صحيحة.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>لم يتمكن الخادم من الحصول على إعدادات.</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>لم يتمكن الخادم من حفظ الإعدادات.</value>
+  </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>خطأ في اسم المستخدم أو كلمة المرور.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>مجال LDAP غير موجود.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>لا يمكن العثور على مجموعات.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>قيمة الفلتر المستخدم غير صالحة.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>حاولت سحب حقوق الإدارة من نفسك. لم تتأثر حقوقك الإدارية.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>لم يعد حسابك مرتبطًا بدليل LDAP ولم تعد كلمة مرور LDAP الخاصة بك نشطة. يرجى تغيير أو ضبط كلمة المرور على حسابك من خلال صفحة إعدادات الملف الشخصي.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>خطأ غير معروف.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>لا يمكن العثور على مستخدمين.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>لا يمكن الحصول على رمزلمجموعة واحدة أو عدة مجموعات.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>فلتر مجموعة غير صحيح.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>لم يتمكن من الحصول على رمز اسم مجموعة واحدة أو عدة مجموعات.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>لم يتم الحصول على رمز تسجيل الدخول لمستخدم واحد أو عدة مستخدمين.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>تعذر الاتصال بخادم LDAP. يرجى التحقق من صحة عنوان الخادم ورقم المنفذ.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>تعذر الحصول على رمز المستخدم لمستخدم واحد أو عدة مستخدمين.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>خطأ داخلي في النظام.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>تعديل مستخدمي LDAP على مستخدمي البوابة العادية</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>إضافة مستخدم</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>التحقق من الشهادات</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>التحقق من إعدادات دعم LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>قطع اتصال LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>استرجاع قائمة المجموعة من خادم LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>استرجاع قائمة المستخدمين من خادم LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>تعيين المستخدم {0} كمسئول {1}</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>تحميل معلومات قاعدة LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>إزالة مستخدم</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>إزالة المجموعات القديمة التي تم تحميلها عبر LDAP في وقت سابق</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>إزالة حقوق الوصول القديمة التي تم تحميلها عبر LDAP في وقت سابق</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>تعطيل ملفات تعريف المستخدم القديمة التي تم تحميلها عبر LDAP في وقت سابق</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>حفظ المجموعات</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>حفظ الاعدادات</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>حفظ الصورة</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>حفظ المستخدمين</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>مزامنة المستخدمين</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>تحديث حقوق وصول المستخدمين</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>تحديث صور المستخدم</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>مطلوب نوع توثيق أكثر أمانًا. الرجاء استخدام اتصال مشفر أو تمكين المصادقة البسيطة على الخادم.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>تم الوصول إلى الحد الأقصى للمستخدم في خطة التسعير الحالية</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS غير مدعوم لخادم LDAP الحالي.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>عدد كبير من عمليات LDAP.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>تعذر الحصول على بطاقة هوية فريدة للمستخدم/المجموعة. سيحاول النظام افتراضيًا مطابقة أحد المعرفات التالية: entryUUID أو nsuniqueid أو GUID أو  objectSid. إذا لم تتطابق أي من الرموز مع خادم LDAP الخاص بك، فيرجى تحديد الرموز اللازمة في الإعداد ldap.unique.id لملف web.appsettings.config.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>الرخصة ليست صحيحة</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>الترخيص غير صالح لنسخة البوابة هذه.</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>يتجاوز عدد البوابات العدد المسموح به بموجب الترخيص</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>يتجاوز عدد المستخدمين العدد المسموح به بموجب الترخيص</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>تم التحميل بنجاح</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>{0} لا يتوفر الدعم والتحديثات لهذه الرخصة منذ {2}.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>تم الرفع بنجاح. {0} الدعم والتحديثات غير متوفرة لهذا الترخيص منذ {2}.{1}</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>تم إرسال تعليمات تغيير البريد الإلكتروني بنجاح</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>إذا كان هناك مستخدم يحمل البريد الإلكتروني {0}، فقد تم إرسال تعليمات تغيير كلمة المرور إلى عنوان البريد الإلكتروني هذا.</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>تحتاج إلى حذف رقم هاتفك الحالي لتغيير الرقم</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>منطقة ORG</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>المالك</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>تم تجاوز حصة مساحة القرص</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>مساحة سحابية لمستندات مكتبك</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>الوصول للبوابة</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>لم تكتمل عملية إعادة تخصيص البيانات لـ {0}.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>تحقق غير صالح</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>آسيا والمحيط الهادئ (سنغافورة)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>رمز غير صحيح</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>رمز: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>انتهى وقت استخدام الرمز. يرجى طلب رسالة نصية جديدة.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>إعدادات الرسائل القصيرة غير متوفرة</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>لقد أرسلت الكثير من الرسائل النصية. الرجاء معاودة المحاولة في وقت لاحق.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>لا يمكن حفظ الإعدادات</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>الإعدادات لا يمكن أن تكون فارغة</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>ربط غير صالح: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>كيان غير صالح</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>رسم خرائط الحقول غير الصالحة</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>تم حفظ إعدادات الصفحة الترحيبية بنجاح</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>تم تحديث الإعدادات بنجاح</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>تم إرسال تعليمات بحذف ملفك الشخصي إلى عنوان البريد الإلكتروني {0}</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>تجاري</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>شركة ناشئة</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>تتبع تسجيل دخول المستخدم والإجراء</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>الحد الأقصى لحجم الملف</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>لا ينبغي أن يتجاوز حجم الملف {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>لا ينبغي أن يتجاوز عدد المسؤولين {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>عدد المديرين</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>النسخ الاحتياطي التلقائي والاسترداد</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>عدد غير محدود من الغرف النشطة</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>لا ينبغي أن يتجاوز عدد الغرف {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>بوابة الدخول الموحد</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} مساحة تخزين</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>لا ينبغي أن يتجاوز حجم التخزين المستخدم {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>مساحة التخزين</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>عدد الإداريين/مستخدمي الطاقة:</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>الغرف:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>مساحة التخزين المستخدمة:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>عدد المستخدمين في الغرفة:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>عدد غير محدود من المستخدمين</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>يجب ألا يتجاوز عدد المستخدمين {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>مستخدمون في الغرفة</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>يجب ألا يتجاوز عدد المستخدمين في الغرفة {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>العلامة التجارية والتخصيص</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>رمز غير صحيح</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>إعدادات تطبيق TFA غير متوفرة</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>لقد أرسلت الكثير من الرسائل النصية. الرجاء معاودة المحاولة في وقت لاحق.</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>منطقة غرب الولايات المتحدة (أوريغون)</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>جديدنا</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>عمليات دمج الجهات الخارجية</value>
+  </data>
+</root>
