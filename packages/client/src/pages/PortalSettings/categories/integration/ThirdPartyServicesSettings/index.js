@@ -68,6 +68,7 @@ const RootContainer = styled(Box)`
   .business-plan {
     display: flex;
     gap: 8px;
+    align-items: center;
     margin-bottom: 16px;
   }
 `;
