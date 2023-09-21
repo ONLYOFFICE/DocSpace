@@ -43,7 +43,7 @@ import RoomsFilter from "@docspace/common/api/rooms/filter";
 import AccountsFilter from "@docspace/common/api/people/filter";
 import { RoomSearchArea } from "@docspace/common/constants";
 import { getObjectByLocation } from "@docspace/common/utils";
-
+import { Events } from "@docspace/common/constants";
 import uniqueid from "lodash/uniqueId";
 import FilesFilter from "@docspace/common/api/files/filter";
 import {
@@ -1740,6 +1740,19 @@ class FilesActionStore {
             iconUrl: CopyToReactSvgUrl,
           };
 
+      case "create-room":
+        // if (!this.isAvailableOption("download")) return null;
+        // else
+        return {
+          id: "menu-create-room",
+          label: "Create room",
+          onClick: () => {
+            const event = new Event(Events.ROOM_CREATE);
+            window.dispatchEvent(event);
+          },
+          iconUrl: DownloadReactSvgUrl,
+        };
+
       case "download":
         if (!this.isAvailableOption("download")) return null;
         else
@@ -1879,6 +1892,7 @@ class FilesActionStore {
   };
 
   getAnotherFolderOptions = (itemsCollection, t) => {
+    const create = this.getOption("create-room", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const moveTo = this.getOption("moveTo", t);
@@ -1887,6 +1901,7 @@ class FilesActionStore {
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
+      .set("create", create)
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("moveTo", moveTo)

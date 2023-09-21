@@ -147,6 +147,14 @@ class CreateEditRoomStore {
           img.src = url;
         });
       } else !withPaging && this.onOpenNewRoom(room);
+      //if roomIsCreated then method copy
+
+      //processCreatingRoomFromData
+      if (true) {
+        this.filesActionsStore.uploadDataStore.onPreparingDataForCopyingRoom(
+          room.id
+        );
+      }
 
       this.roomIsCreated = true;
     } catch (err) {
