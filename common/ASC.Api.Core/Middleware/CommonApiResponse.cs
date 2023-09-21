@@ -106,19 +106,6 @@ public class SuccessApiResponse : CommonApiResponse
         }
     }
 
-    public bool? NextPage
-    {
-        get
-        {
-            if (_httpContext.Items.TryGetValue("NextPage", out var nextPage))
-            {
-                return (bool?)nextPage;
-            }
-
-            return null;
-        }
-    }
-
     public List<Link> Links { get; set; }
 
     public SuccessApiResponse()
