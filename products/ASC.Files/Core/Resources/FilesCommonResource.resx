@@ -484,4 +484,7 @@ Highest compatibility with docx, xlsx, pptx.</value>
   <data name="ErrorMessage_SharePasswordManyAttempts" xml:space="preserve">
     <value>You have tried too many times to enter your password. Please try again later</value>
   </data>
+  <data name="DefaultInvitationLinkTitle" xml:space="preserve">
+    <value>Invitation link</value>
+  </data>
 </root>
