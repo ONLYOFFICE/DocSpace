@@ -1939,34 +1939,22 @@ public class UserControllerAdditional<T> : ApiControllerBase
     [HttpGet("room/{id}")]
     public async IAsyncEnumerable<EmployeeFullDto> GetUsersWithRoomSharedAsync(T id, EmployeeStatus? employeeStatus, EmployeeActivationStatus? activationStatus, bool? excludeShared)
     {
-        const int margin = 1;
-        
         var offset = Convert.ToInt32(_apiContext.StartIndex);
         var count = Convert.ToInt32(_apiContext.Count);
 
-        var room = await _daoFactory.GetFolderDao<T>().GetFolderAsync(id);
-
-        if (room == null)
-        {
-            throw new ItemNotFoundException();
-        }
+        var room = (await _daoFactory.GetFolderDao<T>().GetFolderAsync(id)).NotFoundIfNull();
+        var totalCountTask = _fileSecurity.GetUsersWithSharedCountAsync(room, _apiContext.FilterValue, employeeStatus, activationStatus, excludeShared ?? false);
 
         var counter = 0;
 
         await foreach (var u in _fileSecurity.GetUsersWithSharedAsync(room, _apiContext.FilterValue, employeeStatus, activationStatus, excludeShared ?? false, offset, 
-                           count + margin))
+                           count))
         {
             counter++;
-
-            if (counter > count)
-            {
-                _apiContext.SetCount(count).SetNextPage(true);
-                yield break;
-            }
             
-            yield return await _employeeFullDtoHelper.GetFullAsync(u.User, u.Shared);
+            yield return await _employeeFullDtoHelper.GetFullAsync(u.UserInfo, u.Shared);
         }
 
-        _apiContext.SetCount(counter).SetNextPage(false);
+        _apiContext.SetCount(counter).SetTotalCount(await totalCountTask);
     }
 }

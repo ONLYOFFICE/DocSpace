@@ -272,7 +272,7 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         }
     }
 
-    public async IAsyncEnumerable<UserWithShared> GetUsersWithSharedAsync(FileEntry<T> entry, string text, EmployeeStatus? employeeStatus, EmployeeActivationStatus? activationStatus, 
+    public async IAsyncEnumerable<UserInfoWithShared> GetUsersWithSharedAsync(FileEntry<T> entry, string text, EmployeeStatus? employeeStatus, EmployeeActivationStatus? activationStatus, 
         bool excludeShared, int offset, int count)
     {
         if (entry == null || count == 0)
@@ -282,8 +282,46 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
 
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var tenantId = TenantID;
-        var entryId = (await MappingIDAsync(entry.Id)).ToString();
+        var mappedId = (await MappingIDAsync(entry.Id)).ToString();
 
+        var q1 = GetUsersWithSharedQuery(tenantId, mappedId, entry, text, employeeStatus, activationStatus, excludeShared, filesDbContext);
+
+        if (offset > 0)
+        {
+            q1 = q1.Skip(offset);
+        }
+        
+        if (count > 0)
+        {
+            q1 = q1.Take(count);
+        }
+
+        await foreach (var r in q1.ToAsyncEnumerable())
+        {
+            yield return new UserInfoWithShared { UserInfo = _mapper.Map<User, UserInfo>(r.User), Shared = r.Shared };
+        }
+    }
+
+    public async Task<int> GetUsersWithSharedCountAsync(FileEntry<T> entry, string text, EmployeeStatus? employeeStatus, EmployeeActivationStatus? activationStatus,
+        bool excludeShared)
+    {
+        if (entry == null)
+        {
+            return 0;
+        }
+        
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var tenantId = TenantID;
+        var mappedId = (await MappingIDAsync(entry.Id)).ToString();
+        
+        var q1 = GetUsersWithSharedQuery(tenantId, mappedId, entry, text, employeeStatus, activationStatus, excludeShared, filesDbContext);
+
+        return await q1.CountAsync();
+    }
+
+    private static IQueryable<UserWithShared> GetUsersWithSharedQuery(int tenantId, string entryId, FileEntry entry, string text, EmployeeStatus? employeeStatus, 
+        EmployeeActivationStatus? activationStatus, bool excludeShared, FilesDbContext filesDbContext)
+    {
         var q = filesDbContext.Users.AsNoTracking().Where(u => u.TenantId == tenantId);
 
         if (employeeStatus.HasValue)
@@ -306,28 +344,15 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
                            u.Id != entry.CreateBy)
                 .OrderBy(u => u.ActivationStatus)
                 .ThenBy(u => u.FirstName)
-                .Select(u => new { User = u, Shared = false })
+                .Select(u => new UserWithShared { User = u, Shared = false })
             : from user in q
             join security in filesDbContext.Security.Where(s => s.TenantId == tenantId && s.EntryId == entryId && s.EntryType == entry.FileEntryType) on user.Id equals
                 security.Subject into grouping
             from s in grouping.DefaultIfEmpty()
             orderby user.ActivationStatus, user.FirstName
-            select new { User = user, Shared = s != null || user.Id == entry.CreateBy };
-
-        if (offset > 0)
-        {
-            q1 = q1.Skip(offset);
-        }
+            select new UserWithShared { User = user, Shared = s != null || user.Id == entry.CreateBy };
         
-        if (count > 0)
-        {
-            q1 = q1.Take(count);
-        }
-
-        await foreach (var r in q1.ToAsyncEnumerable())
-        {
-            yield return new UserWithShared { User = _mapper.Map<User, UserInfo>(r.User), Shared = r.Shared };
-        }
+        return q1;
     }
 
     internal async IAsyncEnumerable<FileShareRecord> InternalGetPureShareRecordsAsync(FileEntry<T> entry)
@@ -724,9 +749,15 @@ public class SecurityUserRecord
     public User User { get; init; }
 }
 
+public class UserInfoWithShared
+{
+    public UserInfo UserInfo { get; set; }
+    public bool Shared { get; set; }
+}
+
 public class UserWithShared
 {
-    public UserInfo User { get; set; }
+    public User User { get; set; }
     public bool Shared { get; set; }
 }
 
