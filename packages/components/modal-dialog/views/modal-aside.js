@@ -58,7 +58,7 @@ const Modal = ({
       modalSwipeOffset={modalSwipeOffset}
     >
       <ModalBackdrop
-        className={visible ? "modal-backdrop-active" : ""}
+        className={visible ? "modal-backdrop-active backdrop-active" : ""}
         visible={true}
         zIndex={zIndex}
         modalSwipeOffset={modalSwipeOffset}

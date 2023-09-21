@@ -375,9 +375,10 @@ public class FileStorageService //: IFileStorageService
             }
         }
 
-        parent.Shareable = await shareableTask
-            || parent.FolderType == FolderType.SHARE
-            || parent.RootFolderType == FolderType.Privacy;
+        parent.Shareable =
+            parent.FolderType == FolderType.SHARE ||
+            parent.RootFolderType == FolderType.Privacy ||
+            await shareableTask;
 
         entries = entries.Where(x =>
         {
@@ -2226,54 +2227,155 @@ public class FileStorageService //: IFileStorageService
         return _filesLinkUtility.GetFileWebEditorUrl(file.Id);
     }
 
-    public async Task ReassignStorageAsync<T>(Guid userFromId, Guid userToId)
+    #region [Reassign|Delete] Data Manager
+
+    public async Task DemandPermissionToReassignDataAsync(Guid userFromId, Guid userToId)
+    {
+        await DemandPermissionToDeletePersonalDataAsync(userFromId);
+
+        //check exist userTo
+        var userTo = await _userManager.GetUsersAsync(userToId);
+        ErrorIf(Equals(userTo, Constants.LostUser), FilesCommonResource.ErrorMassage_UserNotFound);
+
+        //check user can have personal data
+        ErrorIf(await _userManager.IsUserAsync(userTo), FilesCommonResource.ErrorMassage_SecurityException);
+    }
+
+    public async Task DemandPermissionToDeletePersonalDataAsync(Guid userFromId)
+    {
+        var userFrom = await _userManager.GetUsersAsync(userFromId);
+
+        await DemandPermissionToDeletePersonalDataAsync(userFrom);
+    }
+
+    public async Task DemandPermissionToDeletePersonalDataAsync(UserInfo userFrom)
     {
         //check current user have access
         ErrorIf(!await _global.IsDocSpaceAdministratorAsync, FilesCommonResource.ErrorMassage_SecurityException);
 
         //check exist userFrom
-        var userFrom = await _userManager.GetUsersAsync(userFromId);
         ErrorIf(Equals(userFrom, Constants.LostUser), FilesCommonResource.ErrorMassage_UserNotFound);
 
-        //check exist userTo
-        var userTo = await _userManager.GetUsersAsync(userToId);
-        ErrorIf(Equals(userTo, Constants.LostUser), FilesCommonResource.ErrorMassage_UserNotFound);
-        ErrorIf(await _userManager.IsUserAsync(userTo), FilesCommonResource.ErrorMassage_SecurityException);
+        //check user have personal data
+        ErrorIf(await _userManager.IsUserAsync(userFrom), FilesCommonResource.ErrorMassage_SecurityException);
+    }
 
-        var providerDao = GetProviderDao<T>();
-        if (providerDao != null)
+    public async Task<List<T>> GetPersonalFolderIdsAsync<T>(Guid userId)
+    {
+        var result = new List<T>();
+
+        var folderDao = GetFolderDao<T>();
+        if (folderDao == null)
         {
-            //move thirdparty storage userFrom
-            await foreach (var commonProviderInfo in providerDao.GetProvidersInfoAsync(userFrom.Id))
-            {
-                _logger.InformationReassignProvider(commonProviderInfo.ProviderId, userFrom.Id, userTo.Id);
-                await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ProviderId, null, null, FolderType.DEFAULT, userTo.Id);
-            }
+            return result;
+        }
+
+        var folderIdMy = await folderDao.GetFolderIDUserAsync(false, userId);
+        if (!Equals(folderIdMy, 0))
+        {
+            result.Add(folderIdMy);
+        }
+
+        var folderIdTrash = await folderDao.GetFolderIDTrashAsync(false, userId);
+        if (!Equals(folderIdTrash, 0))
+        {
+            result.Add(folderIdTrash);
+        }
+
+        return result;
+    }
+
+    public async Task DeletePersonalDataAsync<T>(Guid userFromId, bool checkPermission = false)
+    {
+        if (checkPermission)
+        {
+            await DemandPermissionToDeletePersonalDataAsync(userFromId);
         }
 
         var folderDao = GetFolderDao<T>();
-        var fileDao = GetFileDao<T>();
-
-        if (!await _userManager.IsUserAsync(userFrom))
+        if (folderDao == null)
         {
-            _logger.InformationDeletePersonalData(userFrom.Id);
-
-            var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFrom.Id);
-            if (!Equals(folderIdFromMy, 0))
-            {
-                await folderDao.DeleteFolderAsync(folderIdFromMy);
-            }
-
-            var folderIdFromTrash = await folderDao.GetFolderIDTrashAsync(false, userFrom.Id);
-            if (!Equals(folderIdFromTrash, 0))
-            {
-                await folderDao.DeleteFolderAsync(folderIdFromTrash);
-            }
+            return;
         }
 
-        _logger.InformationReassignData(userFrom.Id, userTo.Id);
-        await EntryManager.ReassignItemsAsync(userFrom.Id, userTo.Id, folderDao, fileDao);
+        _logger.InformationDeletePersonalData(userFromId);
+
+        var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFromId);
+        if (!Equals(folderIdFromMy, 0))
+        {
+            await folderDao.DeleteFolderAsync(folderIdFromMy);
+        }
+
+        var folderIdFromTrash = await folderDao.GetFolderIDTrashAsync(false, userFromId);
+        if (!Equals(folderIdFromTrash, 0))
+        {
+            await folderDao.DeleteFolderAsync(folderIdFromTrash);
+        }
     }
+
+    public async Task ReassignProvidersAsync<T>(Guid userFromId, Guid userToId, bool checkPermission = false)
+    {
+        if (checkPermission)
+        {
+            await DemandPermissionToReassignDataAsync(userFromId, userToId);
+        }
+
+        var providerDao = GetProviderDao<T>();
+        if (providerDao == null)
+        {
+            return;
+        }
+
+        //move thirdparty storage userFrom
+        await foreach (var commonProviderInfo in providerDao.GetProvidersInfoAsync(userFromId))
+        {
+            _logger.InformationReassignProvider(commonProviderInfo.ProviderId, userFromId, userToId);
+            await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ProviderId, null, null, FolderType.DEFAULT, userToId);
+        }
+    }
+
+    public async Task ReassignFoldersAsync<T>(Guid userFromId, Guid userToId, IEnumerable<T> exceptFolderIds, bool checkPermission = false)
+    {
+        if (checkPermission)
+        {
+            await DemandPermissionToReassignDataAsync(userFromId, userToId);
+        }
+
+        var folderDao = GetFolderDao<T>();
+        if (folderDao == null)
+        {
+            return;
+        }
+
+        _logger.InformationReassignFolders(userFromId, userToId);
+
+        await folderDao.ReassignFoldersAsync(userFromId, userToId, exceptFolderIds);
+
+        var folderIdVirtualRooms = await folderDao.GetFolderIDVirtualRooms(false);
+        var folderVirtualRooms = await folderDao.GetFolderAsync(folderIdVirtualRooms);
+
+        await _fileMarker.RemoveMarkAsNewAsync(folderVirtualRooms, userFromId);
+    }
+
+    public async Task ReassignFilesAsync<T>(Guid userFromId, Guid userToId, IEnumerable<T> exceptFolderIds, bool checkPermission = false)
+    {
+        if (checkPermission)
+        {
+            await DemandPermissionToReassignDataAsync(userFromId, userToId);
+        }
+
+        var fileDao = GetFileDao<T>();
+        if (fileDao == null)
+        {
+            return;
+        }
+
+        _logger.InformationReassignFiles(userFromId, userToId);
+
+        await fileDao.ReassignFilesAsync(userFromId, userToId, exceptFolderIds);
+    }
+
+    #endregion
 
     #region Favorites Manager
 
@@ -2407,20 +2509,13 @@ public class FileStorageService //: IFileStorageService
 
     #endregion
 
-    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<SubjectType> subjectTypes = null,
+    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(
+        IEnumerable<T> fileIds,
+        IEnumerable<T> folderIds,
+        IEnumerable<SubjectType> subjectTypes = null,
         bool withoutTemplates = false)
     {
         return await _fileSharing.GetSharedInfoAsync(fileIds, folderIds, subjectTypes, withoutTemplates);
-    }
-
-    public async Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync<T>(T fileId)
-    {
-        return await _fileSharing.GetSharedInfoShortFileAsync(fileId);
-    }
-
-    public async Task<List<AceShortWrapper>> GetSharedInfoShortFolder<T>(T folderId)
-    {
-        return await _fileSharing.GetSharedInfoShortFolderAsync(folderId);
     }
 
     public async Task<string> SetAceObjectAsync<T>(AceCollection<T> aceCollection, bool notify)
@@ -2825,7 +2920,7 @@ public class FileStorageService //: IFileStorageService
             _logger.ErrorWithException(ex);
         }
 
-        return showSharingSettings ? await GetSharedInfoShortFileAsync(fileId) : null;
+        return showSharingSettings ? await _fileSharing.GetSharedInfoShortFileAsync(fileId) : null;
     }
 
     public async Task<List<EncryptionKeyPairDto>> GetEncryptionAccessAsync<T>(T fileId)
@@ -2914,6 +3009,27 @@ public class FileStorageService //: IFileStorageService
             var newFolder = folder;
             if (folder.CreateBy != userInfo.Id)
             {
+                var createBy = folder.CreateBy;
+
+                await SetAceObjectAsync(new AceCollection<T>
+                {
+                    Files = Array.Empty<T>(),
+                    Folders = new[] { folder.Id },
+                    Aces = new List<AceWrapper>
+                    {
+                        new AceWrapper()
+                        {
+                              Access = FileShare.None,
+                              Id = userInfo.Id
+                        },
+                        new AceWrapper()
+                        {
+                              Access = FileShare.RoomAdmin,
+                              Id = createBy
+                        }
+                    }
+                }, false);
+
                 var folderAccess = folder.Access;
 
                 newFolder.CreateBy = userInfo.Id;
@@ -3172,7 +3288,7 @@ public class FileStorageService //: IFileStorageService
                 continue;
             }
 
-            var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, share.Access, _authContext.CurrentAccount.ID);
+            var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, share.Access, _authContext.CurrentAccount.ID, id.ToString());
             var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
 
             await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, shortenLink);

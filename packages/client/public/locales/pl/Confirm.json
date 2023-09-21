@@ -28,6 +28,5 @@
   "SetAppTitle": "Skonfiguruj swoją aplikację uwierzytelniającą",
   "SuccessDeactivate": "Twoje konto zostało dezaktywowane. Za 10 sekund nastąpi przekierowanie na <1>site</1>.",
   "SuccessReactivate": "Twoje konto zostało reaktywowane. Za 10 sekund nastąpi przekierowanie do <1>portal</1>.",
-  "SuccessRemoved": "Twoje konto zostało usunięte. Za 10 sekund nastąpi przekierowanie na <1>site</1>.",
-  "WelcomeUser": "Witaj na naszym DocSpace!\nAby rozpocząć pracę, zarejestruj się lub zaloguj za pośrednictwem mediów społecznościowych."
+  "SuccessRemoved": "Twoje konto zostało usunięte. Za 10 sekund nastąpi przekierowanie na <1>site</1>."
 }

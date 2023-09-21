@@ -341,6 +341,10 @@ class SettingsStore {
     return `${this.helpLink}/administration/docspace-webhooks.aspx`;
   }
 
+  get dataReassignmentUrl() {
+    return `${this.helpLink}/userguides/docspace-managing-users.aspx`;
+  }
+
   get sdkLink() {
     return `${this.apiDocsLink}/docspace/jssdk/`;
   }

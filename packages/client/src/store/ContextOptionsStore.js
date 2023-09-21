@@ -34,6 +34,8 @@ import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import PluginActionsSvgUrl from "PUBLIC_DIR/images/plugin.actions.react.svg?url";
+import LeaveRoomSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
+
 import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
@@ -690,6 +692,10 @@ class ContextOptionsStore {
     }
   };
 
+  onLeaveRoom = () => {
+    this.dialogsStore.setLeaveRoomDialogVisible(true);
+  };
+
   onSelect = (item) => {
     const { onSelectItem } = this.filesActionsStore;
 
@@ -783,7 +789,7 @@ class ContextOptionsStore {
         label: t("EnableNotifications"),
         icon: UnmuteReactSvgUrl,
         onClick: (e) => this.onClickMute(e, item, t),
-        disabled: false,
+        disabled: !item.inRoom,
         "data-action": "unmute",
         action: "unmute",
       },
@@ -793,7 +799,7 @@ class ContextOptionsStore {
         label: t("DisableNotifications"),
         icon: MuteReactSvgUrl,
         onClick: (e) => this.onClickMute(e, item, t),
-        disabled: false,
+        disabled: !item.inRoom,
         "data-action": "mute",
         action: "mute",
       },
@@ -1291,6 +1297,14 @@ class ContextOptionsStore {
         disabled: false,
         "data-action": "archive",
         action: "archive",
+      },
+      {
+        id: "option_leave-room",
+        key: "leave-room",
+        label: t("LeaveTheRoom"),
+        icon: LeaveRoomSvgUrl,
+        onClick: this.onLeaveRoom,
+        disabled: this.treeFoldersStore.isArchiveFolder || !item.inRoom,
       },
       {
         id: "option_unarchive-room",

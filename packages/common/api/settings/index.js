@@ -403,6 +403,31 @@ export function sendOwnerChange(ownerId) {
   });
 }
 
+export function dataReassignment(fromUserId, toUserId, deleteProfile) {
+  const data = { fromUserId, toUserId, deleteProfile };
+  return request({
+    method: "post",
+    url: `/people/reassign/start`,
+    data,
+  });
+}
+
+export function dataReassignmentProgress(id) {
+  return request({
+    method: "get",
+    url: `/people/reassign/progress/${id}`,
+  });
+}
+
+export function dataReassignmentTerminate(userId) {
+  const data = { userId };
+  return request({
+    method: "put",
+    url: `/people/reassign/terminate`,
+    data,
+  });
+}
+
 export function ownerChange(ownerId, confirmKey = null) {
   const data = { ownerId };
 

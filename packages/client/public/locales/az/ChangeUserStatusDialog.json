@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "iz ver",
-  "ChangeUsersDisableStatus": "söndürülüb",
-  "ChangeUserStatusDialog": "{{ userStatus }} olan istifadəçilər {{ status }} olacaqlar.",
-  "ChangeUserStatusDialogHeader": "İstifadəçi statusunun dəyişdirilməsi",
-  "ChangeUserStatusDialogMessage": "DocSpace-in sahibi və özünüz üçün vəziyyəti dəyişdirə bilməzsiniz."
-}

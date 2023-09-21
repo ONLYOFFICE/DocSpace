@@ -11,6 +11,7 @@ const ConfirmRoute = (props) => {
   const [state, setState] = React.useState({
     linkData: {},
     isLoaded: false,
+    roomData: {},
   });
 
   const location = useLocation();
@@ -36,7 +37,9 @@ const ConfirmRoute = (props) => {
     }
 
     checkConfirmLink(confirmLinkData)
-      .then((validationResult) => {
+      .then((res) => {
+        const validationResult = res.result;
+
         switch (validationResult) {
           case ValidationResult.Ok:
             const confirmHeader = search.slice(1);
@@ -45,13 +48,18 @@ const ConfirmRoute = (props) => {
               confirmHeader,
             };
 
+            const roomData = {
+              roomId: res?.roomId,
+              title: res?.title,
+            };
+
             console.log("checkConfirmLink", {
               confirmLinkData,
               validationResult,
               linkData,
             });
 
-            setState((val) => ({ ...val, isLoaded: true, linkData }));
+            setState((val) => ({ ...val, isLoaded: true, linkData, roomData }));
             break;
           case ValidationResult.Invalid:
             console.error("invlid link", { confirmLinkData, validationResult });
@@ -117,6 +125,7 @@ const ConfirmRoute = (props) => {
   ) : (
     React.cloneElement(props.children, {
       linkData: state.linkData,
+      roomData: state.roomData,
     })
   );
 };

@@ -38,6 +38,8 @@ import RestoreRoomDialog from "../dialogs/RestoreRoomDialog";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
 import FilesSelector from "../FilesSelector";
 import { FilesSelectorFilterTypes } from "@docspace/common/constants";
+import LeaveRoomDialog from "../dialogs/LeaveRoomDialog";
+import ChangeRoomOwnerPanel from "../panels/ChangeRoomOwnerPanel";
 
 const Panels = (props) => {
   const {
@@ -80,6 +82,8 @@ const Panels = (props) => {
     moveToPublicRoomVisible,
     settingsPluginDialogVisible,
     pluginDialogVisible,
+    leaveRoomDialogVisible,
+    changeRoomOwnerIsVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -173,6 +177,10 @@ const Panels = (props) => {
     moveToPublicRoomVisible && (
       <MoveToPublicRoom key="move-to-public-room-panel" />
     ),
+    leaveRoomDialogVisible && <LeaveRoomDialog key="leave-room-dialog" />,
+    changeRoomOwnerIsVisible && (
+      <ChangeRoomOwnerPanel key="change-room-owner" />
+    ),
   ];
 };
 
@@ -222,6 +230,8 @@ export default inject(
       embeddingPanelIsVisible,
       roomSharingPanelVisible,
       moveToPublicRoomVisible,
+      leaveRoomDialogVisible,
+      changeRoomOwnerIsVisible,
     } = dialogsStore;
 
     const { preparationPortalDialogVisible } = backup;
@@ -273,6 +283,8 @@ export default inject(
       moveToPublicRoomVisible,
       settingsPluginDialogVisible,
       pluginDialogVisible,
+      leaveRoomDialogVisible,
+      changeRoomOwnerIsVisible,
     };
   }
 )(observer(Panels));

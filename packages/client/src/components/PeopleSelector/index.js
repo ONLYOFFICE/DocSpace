@@ -15,6 +15,7 @@ import Filter from "@docspace/common/api/people/filter";
 import { getUserList } from "@docspace/common/api/people";
 import Loaders from "@docspace/common/components/Loaders";
 import { getUserRole } from "@docspace/common/utils";
+import { EmployeeStatus } from "@docspace/common/constants";
 
 let timer = null;
 
@@ -52,6 +53,10 @@ const PeopleSelector = ({
   currentUserId,
   theme,
   withOutCurrentAuthorizedUser,
+  withAbilityCreateRoomUsers,
+  withFooterCheckbox,
+  footerCheckboxLabel,
+  isChecked,
 }) => {
   const [itemsList, setItemsList] = useState(items);
   const [searchValue, setSearchValue] = useState("");
@@ -162,7 +167,12 @@ const PeopleSelector = ({
 
         const items = response.items
           .filter((item) => {
-            if (excludeItems.includes(item.id)) {
+            const excludeUser =
+              withAbilityCreateRoomUsers &&
+              ((!item.isAdmin && !item.isOwner && !item.isRoomAdmin) ||
+                item.status === EmployeeStatus.Disabled);
+
+            if (excludeItems.includes(item.id) || excludeUser) {
               totalDifferent++;
               return false;
             } else {
@@ -245,6 +255,9 @@ const PeopleSelector = ({
       loadNextPage={loadNextPage}
       totalItems={total}
       isLoading={isLoading}
+      withFooterCheckbox={withFooterCheckbox}
+      footerCheckboxLabel={footerCheckboxLabel}
+      isChecked={isChecked}
       searchLoader={<Loaders.SelectorSearchLoader />}
       rowLoader={
         <Loaders.SelectorRowLoader

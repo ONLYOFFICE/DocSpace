@@ -30,6 +30,7 @@ namespace ASC.Files.Core;
 public interface IProviderDao
 {
     Task<IProviderInfo> GetProviderInfoAsync(int linkId);
+    Task<IProviderInfo> GetProviderInfoByEntryIdAsync(string entryId);
     IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync();
     IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync(FolderType folderType, string searchText = null);
     IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync(Guid userId);

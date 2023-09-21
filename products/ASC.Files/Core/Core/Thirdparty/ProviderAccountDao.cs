@@ -96,6 +96,19 @@ internal class ProviderAccountDao : IProviderDao
         return providersInfo.SingleAsync().AsTask();
     }
 
+    public async Task<IProviderInfo> GetProviderInfoByEntryIdAsync(string entryId)
+    {
+        try
+        {
+            var id = Selectors.Pattern.Match(entryId).Groups["id"].Value;
+            return await GetProviderInfoAsync(int.Parse(id));
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public virtual IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync()
     {
         return GetProvidersInfoInternalAsync();
