@@ -22,5 +22,5 @@ function getAndSaveAppsettings() {
 
     nconf.file("appsettingsWithEnv", path.join(appsettings, 'appsettings.' + env + '.json'));
     nconf.file("appsettings", path.join(appsettings, 'appsettings.json'));
-    nconf.file("pluginsConf", path.join(appsettings, "plugins.json"));
+    nconf.file("telegramConf", path.join(appsettings, "telegram.json"));
 }

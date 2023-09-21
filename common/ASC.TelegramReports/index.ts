@@ -1,9 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./src/app/app.module";
 
-import * as config from "./config";
-
-const port = config.default.get("app").port || 5016;
+const port = 5016;
 const winston = require("./src/log.js");
 
 async function bootstrap() {

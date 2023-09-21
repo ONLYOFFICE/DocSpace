@@ -5,7 +5,7 @@ import * as config from "../../config";
 
 const winston = require("../log.js");
 
-const { botKey, chatId } = config.default.get("telegram");
+const { botKey, chatId } = config.default.get("telegramConf");
 
 const MAX_LENGTH = 4096; //TG Limit
 
