@@ -46,19 +46,28 @@ const DocumentService = ({
   const onSubmit = (e) => {
     e.preventDefault();
     changeDocumentServiceLocation(apiUrl, internalUrl, portalUrl)
-      .then(() => toastr.success("Success"))
-      .catch((e) =>
-        toastr.error(`${e.message}:\n${e.response.data.error.message}`)
-      );
+      .then((response) => {
+        toastr.success(t("Common:ChangesSavedSuccessfully"));
+        setApiUrl(response[0]);
+        setInternalUrl(response[1]);
+        setPortalUrl(response[2]);
+      })
+      .catch((e) => toastr.error(e));
   };
 
   const onReset = () => {
-    setApiUrl("");
-    setInternalUrl("");
-    setPortalUrl("");
     setApiUrlIsValid(true);
     setInternalUrlIsValid(true);
     setPortalUrlIsValid(true);
+
+    changeDocumentServiceLocation(null, null, null)
+      .then((response) => {
+        toastr.success(t("Common:ChangesSavedSuccessfully"));
+        setApiUrl(response[0]);
+        setInternalUrl(response[1]);
+        setPortalUrl(response[2]);
+      })
+      .catch((e) => toastr.error(e));
   };
 
   const isFormEmpty = !apiUrl && !internalUrl && !portalUrl;
