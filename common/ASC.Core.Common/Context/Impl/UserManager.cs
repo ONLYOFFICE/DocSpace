@@ -180,7 +180,7 @@ public class UserManager
 
         return await users.ToArrayAsync();
     }
-    
+
     public Task<int> GetUsersCountAsync(
         bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
@@ -316,6 +316,39 @@ public class UserManager
         var u = await _userService.GetUserAsync(Tenant.Id, email);
 
         return u != null && !u.Removed ? u : Constants.LostUser;
+    }
+
+    public async Task<UserInfo> SearchUserAsync(string id)
+    {
+        var result = Constants.LostUser;
+
+        if (32 <= id.Length)
+        {
+            var guid = default(Guid);
+            try
+            {
+                guid = new Guid(id);
+            }
+            catch (FormatException) { }
+            catch (OverflowException) { }
+
+            if (guid != default)
+            {
+                result = await GetUsersAsync(guid);
+            }
+        }
+
+        if (Constants.LostUser.Equals(result))
+        {
+            result = await GetUserByEmailAsync(id);
+        }
+
+        if (Constants.LostUser.Equals(result))
+        {
+            result = await GetUserByUserNameAsync(id);
+        }
+
+        return result;
     }
 
     public async Task<UserInfo[]> SearchAsync(string text, EmployeeStatus status)
@@ -559,8 +592,8 @@ public class UserManager
                 new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
             var davUsersEmails = await GetDavUserEmailsAsync();
             var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, delUser.Email.ToLower(), true, true);
-            
-            if(rootAuthorization != null)
+
+            if (rootAuthorization != null)
             {
                 var addBookCollection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
                 if (addBookCollection.Completed && addBookCollection.StatusCode != 404)

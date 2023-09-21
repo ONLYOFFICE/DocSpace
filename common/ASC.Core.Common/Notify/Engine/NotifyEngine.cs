@@ -207,8 +207,8 @@ public class NotifyEngine
         try
         {
             await PrepareRequestFillSendersAsync(request, serviceScope);
-            PrepareRequestFillPatterns(request, serviceScope);
-            PrepareRequestFillTags(request, serviceScope);
+            await PrepareRequestFillPatterns(request, serviceScope);
+            await PrepareRequestFillTags(request, serviceScope);
         }
         catch (Exception ex)
         {
@@ -310,7 +310,7 @@ public class NotifyEngine
         noticeMessage.Pattern = pattern;
         noticeMessage.ContentType = pattern.ContentType;
         noticeMessage.AddArgument(request.Arguments.ToArray());
-        var patternProvider = request.GetPatternProvider(serviceScope);
+        var patternProvider = await request.GetPatternProvider(serviceScope);
 
         var formatter = patternProvider.GetFormatter(pattern);
         try
@@ -375,7 +375,7 @@ public class NotifyEngine
         }
     }
 
-    private void PrepareRequestFillPatterns(NotifyRequest request, IServiceScope serviceScope)
+    private async Task PrepareRequestFillPatterns(NotifyRequest request, IServiceScope serviceScope)
     {
         if (request._patterns == null)
         {
@@ -385,7 +385,7 @@ public class NotifyEngine
                 return;
             }
 
-            var apProvider = request.GetPatternProvider(serviceScope);
+            var apProvider = await request.GetPatternProvider(serviceScope);
             for (var i = 0; i < request._senderNames.Length; i++)
             {
                 var senderName = request._senderNames[i];
@@ -404,9 +404,9 @@ public class NotifyEngine
         }
     }
 
-    private void PrepareRequestFillTags(NotifyRequest request, IServiceScope serviceScope)
+    private async Task PrepareRequestFillTags(NotifyRequest request, IServiceScope serviceScope)
     {
-        var patternProvider = request.GetPatternProvider(serviceScope);
+        var patternProvider = await request.GetPatternProvider(serviceScope);
         foreach (var pattern in request._patterns)
         {
             IPatternFormatter formatter;

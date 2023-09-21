@@ -125,14 +125,9 @@ public class NotifyRequest
         return new NoticeMessage(recipient, NotifyAction, ObjectID);
     }
 
-    public IActionProvider GetActionProvider(IServiceScope scope)
+    public async Task<IPatternProvider> GetPatternProvider(IServiceScope scope)
     {
-        return ((INotifySource)scope.ServiceProvider.GetService(_notifySource.GetType())).GetActionProvider();
-    }
-
-    public IPatternProvider GetPatternProvider(IServiceScope scope)
-    {
-        return ((INotifySource)scope.ServiceProvider.GetService(_notifySource.GetType())).GetPatternProvider();
+        return await ((INotifySource)scope.ServiceProvider.GetService(_notifySource.GetType())).GetPatternProvider(this);
     }
 
     public IRecipientProvider GetRecipientsProvider(IServiceScope scope)

@@ -36,8 +36,6 @@ public sealed class Context : INotifyRegistry
 
     private readonly Dictionary<string, ISenderChannel> _channels = new Dictionary<string, ISenderChannel>(2);
 
-    public event Action<Context, INotifyClient> NotifyClientRegistration;
-
     public void RegisterSender(DispatchEngine dispatchEngine, string senderName, ISink senderSink)
     {
         lock (_channels)
