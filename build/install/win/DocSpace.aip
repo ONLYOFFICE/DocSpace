@@ -75,23 +75,23 @@
     <ROW Property="REDIS_PWD" Value=" " Options="1" ValueLocId="-"/>
     <ROW Property="SUBFOLDER_SERVER" Value="--core:products:subfolder=server"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
-    <ROW Property="ServiceName_ApiSystemService" Value="ASC.ApiSystemService"/>
-    <ROW Property="ServiceName_BackgroundTasks" Value="ASC.Data.Backup.BackgroundTasks"/>
-    <ROW Property="ServiceName_BackupService" Value="ASC.BackupService"/>
-    <ROW Property="ServiceName_ClearEvents" Value="ASC.ClearEvents"/>
-    <ROW Property="ServiceName_DocEditor" Value="ASC.DocEditor"/>
-    <ROW Property="ServiceName_FileServer" Value="ASC.FileServer"/>
-    <ROW Property="ServiceName_FileService" Value="ASC.FileService"/>
-    <ROW Property="ServiceName_WebHealthChecksUI" Value="ASC.Web.HealthChecks.UI"/>
-    <ROW Property="ServiceName_Login" Value="ASC.Login"/>
-    <ROW Property="ServiceName_MigrationRunner" Value="ASC.MigrationRunner"/>
-    <ROW Property="ServiceName_NotifyService" Value="ASC.NotifyService"/>
-    <ROW Property="ServiceName_PeopleServer" Value="ASC.PeopleServer"/>
-    <ROW Property="ServiceName_Socket.IO" Value="ASC.Socket.IO"/>
-    <ROW Property="ServiceName_SsoAuth" Value="ASC.SsoAuth.Svc"/>
-    <ROW Property="ServiceName_StudioNotifyService" Value="ASC.StudioNotifyService"/>
-    <ROW Property="ServiceName_WebApi" Value="ASC.WebApi"/>
-    <ROW Property="ServiceName_WebStudio" Value="ASC.WebStudio"/>
+    <ROW Property="ServiceName_ApiSystemService" Value="DocSpace.ApiSystemService"/>
+    <ROW Property="ServiceName_BackgroundTasks" Value="DocSpace.Data.Backup.BackgroundTasks"/>
+    <ROW Property="ServiceName_BackupService" Value="DocSpace.BackupService"/>
+    <ROW Property="ServiceName_ClearEvents" Value="DocSpace.ClearEvents"/>
+    <ROW Property="ServiceName_DocEditor" Value="DocSpace.DocEditor"/>
+    <ROW Property="ServiceName_FileServer" Value="DocSpace.FileServer"/>
+    <ROW Property="ServiceName_FileService" Value="DocSpace.FileService"/>
+    <ROW Property="ServiceName_WebHealthChecksUI" Value="DocSpace.Web.HealthChecks.UI"/>
+    <ROW Property="ServiceName_Login" Value="DocSpace.Login"/>
+    <ROW Property="ServiceName_MigrationRunner" Value="DocSpace.MigrationRunner"/>
+    <ROW Property="ServiceName_NotifyService" Value="DocSpace.NotifyService"/>
+    <ROW Property="ServiceName_PeopleServer" Value="DocSpace.PeopleServer"/>
+    <ROW Property="ServiceName_Socket.IO" Value="DocSpace.Socket.IO"/>
+    <ROW Property="ServiceName_SsoAuth" Value="DocSpace.SsoAuth.Svc"/>
+    <ROW Property="ServiceName_StudioNotifyService" Value="DocSpace.StudioNotifyService"/>
+    <ROW Property="ServiceName_WebApi" Value="DocSpace.WebApi"/>
+    <ROW Property="ServiceName_WebStudio" Value="DocSpace.WebStudio"/>
     <ROW Property="ShortProductName" Value="ONLYOFFICE DocSpace"/>
     <ROW Property="Socket.IO_Port" Value="9899"/>
     <ROW Property="SsoAuth_Port" Value="9834"/>

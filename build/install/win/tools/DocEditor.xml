@@ -1,5 +1,5 @@
 <service>
-	<id>ASC.DocEditor</id>
+	<id>DocSpace.DocEditor</id>
 	<name>ONLYOFFICE DocSpace DocEditor</name>
 	<description>ONLYOFFICE DocSpace DocEditor</description>
 	<priority>RealTime</priority>
