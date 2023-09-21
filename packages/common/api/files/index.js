@@ -830,10 +830,6 @@ export function removeFromFavorite(ids) {
   return request(options);
 }
 
-export function getDocServiceUrl() {
-  return request({ method: "get", url: `/files/docservice` });
-}
-
 export function getIsEncryptionSupport() {
   return request({
     method: "get",
@@ -1008,6 +1004,14 @@ export function sendEditorNotify(fileId, actionLink, emails, message) {
       emails,
       message,
     },
+  });
+}
+
+export function getDocumentServiceLocation(version = true) {
+  return request({
+    method: "get",
+    url: `/files/docservice`,
+    params: { version },
   });
 }
 

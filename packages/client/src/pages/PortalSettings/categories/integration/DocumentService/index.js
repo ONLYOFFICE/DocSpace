@@ -13,7 +13,10 @@ import toastr from "@docspace/components/toast/toastr";
 
 const URL_REGEX = /^https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\/?$/;
 
-const DocumentService = ({ changeDocumentServiceLocation }) => {
+const DocumentService = ({
+  getDocumentServiceLocation,
+  changeDocumentServiceLocation,
+}) => {
   const { t } = useTranslation(["Settings", "Common"]);
 
   const [apiUrl, setApiUrl] = useState("");
@@ -65,11 +68,13 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
   const anyInputFilled = apiUrl || internalUrl || portalUrl;
 
   useEffect(() => {
-    const fetchDocumentServiceLocation = async () => {
-      const result = await changeDocumentServiceLocation();
-      console.log(result);
-    };
-    fetchDocumentServiceLocation();
+    getDocumentServiceLocation()
+      .then((result) => {
+        setPortalUrl(result?.docServicePortalUrl);
+        setInternalUrl(result?.docServiceUrlInternal);
+        setApiUrl(result?.docServiceUrl);
+      })
+      .catch((error) => toastr.error(error));
   }, []);
 
   return (
@@ -171,6 +176,7 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
 
 export default inject(({ auth, settingsStore }) => {
   return {
+    getDocumentServiceLocation: settingsStore.getDocumentServiceLocation,
     changeDocumentServiceLocation: settingsStore.changeDocumentServiceLocation,
   };
 })(observer(DocumentService));
