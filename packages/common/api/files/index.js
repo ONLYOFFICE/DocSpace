@@ -1015,12 +1015,16 @@ export function getDocumentServiceLocation(version = true) {
   });
 }
 
-export function changeDocumentServiceLocation(apiUrl, internalUrl, portalUrl) {
+export function changeDocumentServiceLocation(
+  docServiceUrl,
+  internalUrl,
+  portalUrl
+) {
   return request({
     method: "put",
     url: `files/docservice`,
     data: {
-      DocServiceUrl: apiUrl,
+      DocServiceUrl: docServiceUrl,
       DocServiceUrlInternal: internalUrl,
       DocServiceUrlPortal: portalUrl,
     },

@@ -192,8 +192,12 @@ class SettingsStore {
 
   getDocumentServiceLocation = () => api.files.getDocumentServiceLocation();
 
-  changeDocumentServiceLocation = (apiUrl, internalUrl, portalUrl) =>
-    api.files.changeDocumentServiceLocation(apiUrl, internalUrl, portalUrl);
+  changeDocumentServiceLocation = (docServiceUrl, internalUrl, portalUrl) =>
+    api.files.changeDocumentServiceLocation(
+      docServiceUrl,
+      internalUrl,
+      portalUrl
+    );
 
   setForcesave = (val) => (this.forcesave = val);
 
