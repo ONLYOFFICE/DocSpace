@@ -589,7 +589,7 @@
     <ROW Action="AI_ConfigureChainer" Type="1" Source="Prereq.dll" Target="ConfigurePrereqLauncher"/>
     <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActionData" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DATA_SETTER_1" Type="51" Source="CustomActionData" Target="HOST=[ELASTICSEARCH_HOST];PORT=[ELASTICSEARCH_PORT];OUTPUT=ELK_CONNECTION"/>
-    <ROW Action="AI_DATA_SETTER_10" Type="51" Source="StartWebApi" Target="ASC.WebApi"/>
+    <ROW Action="AI_DATA_SETTER_10" Type="51" Source="StartWebApi" Target="DocSpace.WebApi"/>
     <ROW Action="AI_DATA_SETTER_2" Type="51" Source="CustomActionData" Target="[ELASTICSEARCH_MSG]&#13;\n[ELASTICSEARCH_SCHEME]://[ELASTICSEARCH_HOST]:[ELASTICSEARCH_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_3" Type="51" Source="CustomActionData" Target="[PostgreSqlConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="[RabbitMQServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
@@ -597,7 +597,7 @@
     <ROW Action="AI_DATA_SETTER_6" Type="51" Source="CustomActionData" Target="[SqlConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_7" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_8" Type="51" Source="CustomActionData" Target="[~]"/>
-    <ROW Action="AI_DATA_SETTER_9" Type="51" Source="StopWebApi" Target="ASC.WebApi"/>
+    <ROW Action="AI_DATA_SETTER_9" Type="51" Source="StopWebApi" Target="DocSpace.WebApi"/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DeleteLzma" Type="1025" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>

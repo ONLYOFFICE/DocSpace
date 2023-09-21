@@ -1,5 +1,5 @@
 <service>
-	<id>ASC.SsoAuth</id>
+	<id>DocSpace.SsoAuth.Svc</id>
 	<name>ONLYOFFICE DocSpace SsoAuth.Svc</name>
 	<description>ONLYOFFICE DocSpace ASC.SsoAuth.Svc</description>
 	<priority>RealTime</priority>
