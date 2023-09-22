@@ -22,24 +22,46 @@ const DocumentService = ({
   const [isSaveLoading, setSaveIsLoading] = useState(false);
   const [isResetLoading, setResetIsLoading] = useState(false);
 
+  const [isDefaultSettings, setIsDefaultSettiings] = useState(false);
+  const [portalUrl, setPortalUrl] = useState("");
+  const [portalUrlIsValid, setPortalUrlIsValid] = useState(true);
   const [docServiceUrl, setDocServiceUrl] = useState("");
   const [docServiceUrlIsValid, setDocServiceUrlIsValid] = useState(true);
-  const onChangeApiUrl = (e) => {
+  const [internalUrl, setInternalUrl] = useState("");
+  const [internalUrlIsValid, setInternalUrlIsValid] = useState(true);
+
+  const [initPortalUrl, setInitPortalUrl] = useState("");
+  const [initDocServiceUrl, setInitDocServiceUrl] = useState("");
+  const [initInternalUrl, setInitInternalUrl] = useState("");
+
+  useEffect(() => {
+    getDocumentServiceLocation()
+      .then((result) => {
+        setIsDefaultSettiings(result?.isDefault || false);
+
+        setPortalUrl(result?.docServicePortalUrl);
+        setInternalUrl(result?.docServiceUrlInternal);
+        setDocServiceUrl(result?.docServiceUrl);
+
+        setInitPortalUrl(result?.docServicePortalUrl);
+        setInitInternalUrl(result?.docServiceUrlInternal);
+        setInitDocServiceUrl(result?.docServiceUrl);
+      })
+      .catch((error) => toastr.error(error));
+  }, []);
+
+  const onChangeDocServiceUrl = (e) => {
     setDocServiceUrl(e.target.value);
     if (!e.target.value) setDocServiceUrlIsValid(true);
     else setDocServiceUrlIsValid(URL_REGEX.test(e.target.value));
   };
 
-  const [internalUrl, setInternalUrl] = useState("");
-  const [internalUrlIsValid, setInternalUrlIsValid] = useState(true);
   const onChangeInternalUrl = (e) => {
     setInternalUrl(e.target.value);
     if (!e.target.value) setInternalUrlIsValid(true);
     else setInternalUrlIsValid(URL_REGEX.test(e.target.value));
   };
 
-  const [portalUrl, setPortalUrl] = useState("");
-  const [portalUrlIsValid, setPortalUrlIsValid] = useState(true);
   const onChangePortalUrl = (e) => {
     setPortalUrl(e.target.value);
     if (!e.target.value) setPortalUrlIsValid(true);
@@ -52,9 +74,16 @@ const DocumentService = ({
     changeDocumentServiceLocation(docServiceUrl, internalUrl, portalUrl)
       .then((response) => {
         toastr.success(t("Common:ChangesSavedSuccessfully"));
+
         setDocServiceUrl(response[0]);
         setInternalUrl(response[1]);
         setPortalUrl(response[2]);
+
+        setInitDocServiceUrl(response[0]);
+        setInitInternalUrl(response[1]);
+        setInitPortalUrl(response[2]);
+
+        setIsDefaultSettiings(false);
       })
       .catch((e) => toastr.error(e))
       .finally(() => setSaveIsLoading(false));
@@ -69,9 +98,16 @@ const DocumentService = ({
     changeDocumentServiceLocation(null, null, null)
       .then((response) => {
         toastr.success(t("Common:ChangesSavedSuccessfully"));
+
         setDocServiceUrl(response[0]);
         setInternalUrl(response[1]);
         setPortalUrl(response[2]);
+
+        setInitDocServiceUrl(response[0]);
+        setInitInternalUrl(response[1]);
+        setInitPortalUrl(response[2]);
+
+        setIsDefaultSettiings(true);
       })
       .catch((e) => toastr.error(e))
       .finally(() => setResetIsLoading(false));
@@ -81,17 +117,18 @@ const DocumentService = ({
   const allInputsValid =
     docServiceUrlIsValid && internalUrlIsValid && portalUrlIsValid;
 
-  const anyInputFilled = docServiceUrl || internalUrl || portalUrl;
+  const isValuesInit =
+    docServiceUrl == initDocServiceUrl &&
+    internalUrl == initInternalUrl &&
+    portalUrl == initPortalUrl;
 
-  useEffect(() => {
-    getDocumentServiceLocation()
-      .then((result) => {
-        setPortalUrl(result?.docServicePortalUrl);
-        setInternalUrl(result?.docServiceUrlInternal);
-        setDocServiceUrl(result?.docServiceUrl);
-      })
-      .catch((error) => toastr.error(error));
-  }, []);
+  console.log({
+    isValuesInit,
+    isFormEmpty,
+    allInputsValid,
+    isSaveLoading,
+    isResetLoading,
+  });
 
   return (
     <Styled.Location>
@@ -126,7 +163,7 @@ const DocumentService = ({
               scale
               iconButtonClassName={"icon-button"}
               value={docServiceUrl}
-              onChange={onChangeApiUrl}
+              onChange={onChangeDocServiceUrl}
               placeholder={"http://<editors-dns-name>/"}
               hasError={!docServiceUrlIsValid}
               isDisabled={isSaveLoading || isResetLoading}
@@ -179,7 +216,11 @@ const DocumentService = ({
             size={"small"}
             label={t("Common:SaveButton")}
             isDisabled={
-              isFormEmpty || !allInputsValid || isSaveLoading || isResetLoading
+              isFormEmpty ||
+              isValuesInit ||
+              !allInputsValid ||
+              isSaveLoading ||
+              isResetLoading
             }
             isLoading={isSaveLoading}
           />
@@ -188,7 +229,7 @@ const DocumentService = ({
             className="button"
             size={"small"}
             label={t("Settings:RestoreDefaultButton")}
-            isDisabled={!anyInputFilled || isSaveLoading || isResetLoading}
+            isDisabled={isDefaultSettings || isSaveLoading || isResetLoading}
             isLoading={isResetLoading}
           />
         </div>
