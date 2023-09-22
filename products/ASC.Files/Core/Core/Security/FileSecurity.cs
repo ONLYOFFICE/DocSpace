@@ -57,47 +57,125 @@ public class FileSecurity : IFileSecurity
     public readonly FileShare DefaultArchiveShare = FileShare.Restrict;
     public readonly FileShare DefaultVirtualRoomsShare = FileShare.Restrict;
 
-    public static readonly Dictionary<FolderType, HashSet<FileShare>> AvailableRoomRights = new()
+    public static readonly Dictionary<FolderType, Dictionary<SubjectType, HashSet<FileShare>>> AvailableRoomAccesses = new()
     {
         {
-            FolderType.CustomRoom, new HashSet<FileShare>
+            FolderType.CustomRoom, new Dictionary<SubjectType, HashSet<FileShare>>
             {
-                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None
+                {
+                    SubjectType.User, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None
+                    }
+                },
+                {
+                    SubjectType.InvitationLink, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None
+                    }
+                },
+                {
+                    SubjectType.ExternalLink, new HashSet<FileShare>
+                    {
+                        FileShare.Read, FileShare.None
+                    }
+                }
             }
         },
         {
-            FolderType.FillingFormsRoom, new HashSet<FileShare>
+            FolderType.PublicRoom, new Dictionary<SubjectType, HashSet<FileShare>>
             {
-                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.FillForms, FileShare.Read, FileShare.None
+                {
+                    SubjectType.User, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.None
+                    }
+                },
+                {
+                    SubjectType.InvitationLink, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Read, FileShare.None
+                    }
+                },
+                {
+                    SubjectType.ExternalLink, new HashSet<FileShare>
+                    {
+                        FileShare.Read, FileShare.None
+                    }
+                }
             }
         },
         {
-            FolderType.EditingRoom, new HashSet<FileShare>
+            FolderType.FillingFormsRoom, new Dictionary<SubjectType, HashSet<FileShare>>
             {
-                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Read, FileShare.None
+                {
+                    SubjectType.User, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.FillForms, FileShare.Read, FileShare.None
+                    }
+                },
+                {
+                    SubjectType.InvitationLink, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.FillForms, FileShare.Read, FileShare.None
+                    }
+                }
             }
         },
         {
-            FolderType.ReviewRoom, new HashSet<FileShare>
+            FolderType.EditingRoom, new Dictionary<SubjectType, HashSet<FileShare>>
             {
-                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Review, FileShare.Comment, FileShare.Read, FileShare.None
+                {
+                    SubjectType.User, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Read, FileShare.None
+                    }
+                },
+                {
+                    SubjectType.InvitationLink, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Read, FileShare.None
+                    }
+                }
             }
         },
         {
-            FolderType.ReadOnlyRoom, new HashSet<FileShare>
+            FolderType.ReviewRoom, new Dictionary<SubjectType, HashSet<FileShare>>
             {
-                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Read, FileShare.None
+                {
+                    SubjectType.User, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Review, FileShare.Comment, FileShare.Read, FileShare.None
+                    }
+                },
+                {
+                    SubjectType.InvitationLink, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Review, FileShare.Comment, FileShare.Read, FileShare.None
+                    }
+                }
             }
         },
         {
-            FolderType.PublicRoom, new HashSet<FileShare>
+            FolderType.ReadOnlyRoom, new Dictionary<SubjectType, HashSet<FileShare>>
             {
-                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Read, FileShare.None,
-        }
+                {
+                    SubjectType.User, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Read, FileShare.None
+                    }
+                },
+                {
+                    SubjectType.InvitationLink, new HashSet<FileShare>
+                    {
+                        FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Read, FileShare.None
+                    }
+                }
+            }
         }
     };
 
-    public static readonly Dictionary<EmployeeType, HashSet<FileShare>> AvailableUserRights = new()
+    public static readonly Dictionary<EmployeeType, HashSet<FileShare>> AvailableUserAccesses = new()
     {
         {
             EmployeeType.DocSpaceAdmin, new HashSet<FileShare>

@@ -118,72 +118,48 @@ public class FileSharingAceHelper
             var currentUserType = await _userManager.GetUserTypeAsync(w.Id);
             var userType = EmployeeType.User;
             var existedShare = shares.Get(w.Id);
-            var rightIsAvailable = FileSecurity.AvailableUserRights.TryGetValue(currentUserType, out var userAccesses)
-                                  && userAccesses.Contains(w.Access);
             var eventType = existedShare != null ? w.Access == FileShare.None ? EventType.Remove : EventType.Update : EventType.Create;
 
             if (room != null)
             {
-                if (FileSecurity.AvailableRoomRights.TryGetValue(room.FolderType, out var roomAccesses) && !roomAccesses.Contains(w.Access))
-                {
-                    continue;
-                }
-                
-                if (room.FolderType == FolderType.PublicRoom && w.Access == FileShare.Read && w.SubjectType != SubjectType.ExternalLink)
+                if (!FileSecurity.AvailableRoomAccesses.TryGetValue(room.FolderType, out var subjectAccesses) 
+                    || !subjectAccesses.TryGetValue(w.SubjectType, out var accesses) || !accesses.Contains(w.Access))
                 {
                     continue;
                 }
 
-                switch (w.SubjectType)
+                if (w.IsLink && eventType == EventType.Create)
                 {
-                    case SubjectType.ExternalLink when room.FolderType is not (FolderType.PublicRoom or FolderType.CustomRoom):
-                    case SubjectType.ExternalLink when w.Access is not (FileShare.Read or FileShare.None):
+                    var linksCount = shares.Values.Count(s => s.SubjectType == w.SubjectType);
+
+                    var maxCount = w.SubjectType == SubjectType.InvitationLink ? MaxInvitationLinks : MaxExternalLinks;
+
+                    if (linksCount >= maxCount)
+                    {
+                        warning ??= string.Format(FilesCommonResource.ErrorMessage_MaxLinksCount, maxCount);
                         continue;
-                    case SubjectType.ExternalLink:
-                        {
-                            if (eventType == EventType.Create)
-                            {
-                                var linksCount = shares.Values.Count(s => s.SubjectType == SubjectType.ExternalLink);
-
-                                if (linksCount >= MaxExternalLinks)
-                                {
-                                    warning ??= string.Format(FilesCommonResource.ErrorMessage_MaxLinksCount, MaxExternalLinks);
-                                    continue;
-                                }
-                            }
-
-                            break;
-                        }
-                    case SubjectType.InvitationLink when eventType == EventType.Create:
-                        {
-                            var linksCount = shares.Values.Count(s => s.SubjectType == SubjectType.InvitationLink);
-                    
-                            if (linksCount >= MaxInvitationLinks)
-                            {
-                                warning ??= string.Format(FilesCommonResource.ErrorMessage_MaxLinksCount, MaxInvitationLinks);
-                                continue;
-                            }
-
-                            break;
-                        }
+                    }
                 }
             }
 
             if (room != null && existedShare is not { IsLink: true } && !w.IsLink)
             {
-                if (currentUserType == EmployeeType.DocSpaceAdmin && !rightIsAvailable)
+                var correctAccess = FileSecurity.AvailableUserAccesses.TryGetValue(currentUserType, out var userAccesses)
+                                       && userAccesses.Contains(w.Access);
+                
+                if (currentUserType == EmployeeType.DocSpaceAdmin && !correctAccess)
                 {
                     continue;
                 }
 
-                if (existedShare != null && !rightIsAvailable)
+                if (existedShare != null && !correctAccess)
                 {
                     throw new InvalidOperationException(FilesCommonResource.ErrorMessage_RoleNotAvailable);
                 }
 
                 try
                 {
-                    if (!rightIsAvailable && currentUserType == EmployeeType.User)
+                    if (!correctAccess && currentUserType == EmployeeType.User)
                     {
                         await _countPaidUserChecker.CheckAppend();
                     }
