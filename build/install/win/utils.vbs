@@ -290,6 +290,13 @@ Function ElasticSearchSetup
     oRE.Pattern = "path.logs:.*"
     fileContent = oRE.Replace(fileContent, "path.logs: " & Session.Property("APPDIR") & "Logs\")                           
     
+	If InStrRev(fileContent, "ingest.geoip.downloader.enabled") = 0 Then
+        fileContent = fileContent & Chr(13) & Chr(10) & "ingest.geoip.downloader.enabled: false"
+    Else
+        oRE.Pattern = "ingest.geoip.downloader.enabled.*"
+        fileContent = oRE.Replace(fileContent, "ingest.geoip.downloader.enabled: false")
+    End if
+
     Call WriteToLog("ElasticSearchSetup: New config:" & fileContent)    
     Call WriteToLog("ElasticSearchSetup:  CommonAppDataFolder :" & Session.Property("CommonAppDataFolder") & "Elastic\Elasticsearch\data")
         
@@ -329,13 +336,6 @@ Function ElasticSearchSetup
     Else
         oRE.Pattern = "-Dlog4j2.formatMsgNoLookups.*"
         fileContent = oRE.Replace(fileContent, "-Dlog4j2.formatMsgNoLookups=true")
-    End if
-
-    If InStrRev(fileContent, "ingest.geoip.downloader.enabled") = 0 Then
-        fileContent = fileContent & Chr(13) & Chr(10) & "ingest.geoip.downloader.enabled: false"
-    Else
-        oRE.Pattern = "ingest.geoip.downloader.enabled.*"
-        fileContent = oRE.Replace(fileContent, "ingest.geoip.downloader.enabled: false")
     End if
 
     Set objFile = objFSO.OpenTextFile(Session.Property("CommonAppDataFolder") & "Elastic\Elasticsearch\config\jvm.options", ForWriting)
