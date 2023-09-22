@@ -1580,6 +1580,10 @@ class FilesActionStore {
         const canDelete = selection.every((s) => s.security?.Delete);
 
         return !allFilesIsEditing && canDelete && hasSelection;
+      case "create-room":
+        const canCreateRoom = rootFolderType === FolderType.USER;
+
+        return canCreateRoom;
     }
   };
 
@@ -1715,6 +1719,12 @@ class FilesActionStore {
     this.processCreatingRoomFromData = processCreatingRoomFromData;
   };
 
+  onClickCreateRoom = () => {
+    this.setProcessCreatingRoomFromData(true);
+    const event = new Event(Events.ROOM_CREATE);
+    window.dispatchEvent(event);
+  };
+
   getOption = (option, t) => {
     const {
       setSharingPanelVisible,
@@ -1746,18 +1756,14 @@ class FilesActionStore {
           };
 
       case "create-room":
-        // if (!this.isAvailableOption("download")) return null;
-        // else
-        return {
-          id: "menu-create-room",
-          label: "Create room",
-          onClick: () => {
-            this.setProcessCreatingRoomFromData(true);
-            const event = new Event(Events.ROOM_CREATE);
-            window.dispatchEvent(event);
-          },
-          iconUrl: DownloadReactSvgUrl,
-        };
+        if (!this.isAvailableOption("create-room")) return null;
+        else
+          return {
+            id: "menu-create-room",
+            label: "Create room",
+            onClick: this.onClickCreateRoom,
+            iconUrl: DownloadReactSvgUrl,
+          };
 
       case "download":
         if (!this.isAvailableOption("download")) return null;

@@ -52,6 +52,7 @@ import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { getOAuthToken } from "@docspace/common/utils";
 import api from "@docspace/common/api";
+import { FolderType } from "@docspace/common/constants";
 
 const LOADER_TIMER = 500;
 let loadingTime;
@@ -1200,8 +1201,8 @@ class ContextOptionsStore {
         key: "create-room",
         label: "Create room",
         icon: DownloadReactSvgUrl,
-        onClick: () => this.onClickCreateRoom(item, t),
-        disabled: false,
+        onClick: this.onClickCreateRoom,
+        disabled: this.selectedFolderStore.rootFolderType !== FolderType.USER,
       },
       {
         id: "option_download",
