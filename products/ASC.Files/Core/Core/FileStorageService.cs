@@ -3282,7 +3282,7 @@ public class FileStorageService //: IFileStorageService
             {
                 var user = await _userManager.GetUsersAsync(ace.Id);
                 
-                var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, ace.Access, _authContext.CurrentAccount.ID);
+                var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, ace.Access, _authContext.CurrentAccount.ID, room.Id.ToString());
                 await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, link);
             }
             
