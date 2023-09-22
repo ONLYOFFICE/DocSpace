@@ -29,35 +29,35 @@ namespace ASC.Web.Files.Utils;
 [Singletone]
 public class FileMarkerCache
 {
-    private readonly ICache _ñache;
+    private readonly ICache _cache;
     private readonly ICacheNotify<FileMarkerCacheItem> _notify;
     private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(10);
 
     public FileMarkerCache(ICacheNotify<FileMarkerCacheItem> notify, ICache cache)
     {
-        _ñache = cache;
+        _cache = cache;
         _notify = notify;
 
-        _notify.Subscribe((i) => _ñache.Remove(i.Key), CacheNotifyAction.Remove);
+        _notify.Subscribe((i) => _cache.Remove(i.Key), CacheNotifyAction.Remove);
     }
 
     public T Get<T>(string key) where T : class
     {
-        return _ñache.Get<T>(key);
+        return _cache.Get<T>(key);
     }
 
     public void Insert(string key, object value)
     {
         _notify.Publish(new FileMarkerCacheItem { Key = key }, CacheNotifyAction.Remove);
 
-        _ñache.Insert(key, value, _cacheExpiration);
+        _cache.Insert(key, value, _cacheExpiration);
     }
 
     public void Remove(string key)
     {
         _notify.Publish(new FileMarkerCacheItem { Key = key }, CacheNotifyAction.Remove);
 
-        _ñache.Remove(key);
+        _cache.Remove(key);
     }
 }
 
@@ -631,7 +631,7 @@ public class FileMarker
         });
 
         await SendChangeNoticeAsync(updateTags.Concat(toRemove), socketManager);
-        
+
         return;
 
         async Task UpdateRemoveTags<TFolder>(Folder<TFolder> folder)
@@ -906,7 +906,7 @@ public class FileMarker
 
         if (parentFolderTag.Count != countSubNew)
         {
-            if(parent.FolderType == FolderType.VirtualRooms)
+            if (parent.FolderType == FolderType.VirtualRooms)
             {
                 parentFolderTag.Count = countSubNew;
                 if (parentFolderTag.Id == -1)
@@ -1041,7 +1041,7 @@ public class FileMarker
     private static async Task SendChangeNoticeAsync(IEnumerable<Tag> tags, SocketManager socketManager)
     {
         const int chunkSize = 1000;
-        
+
         foreach (var chunk in tags.Where(t => t.EntryType == FileEntryType.File).Chunk(chunkSize))
         {
             await socketManager.ExecMarkAsNewFilesAsync(chunk);
