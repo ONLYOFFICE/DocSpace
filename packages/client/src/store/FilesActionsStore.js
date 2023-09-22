@@ -8,6 +8,7 @@ import PinReactSvgUrl from "PUBLIC_DIR/images/pin.react.svg?url";
 import UnpinReactSvgUrl from "PUBLIC_DIR/images/unpin.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
+import CatalogRoomsReactSvgUrl from "PUBLIC_DIR/images/catalog.rooms.react.svg?url";
 import {
   checkFileConflicts,
   deleteFile,
@@ -1760,9 +1761,9 @@ class FilesActionStore {
         else
           return {
             id: "menu-create-room",
-            label: "Create room",
+            label: t("Files:CreateRoom"),
             onClick: this.onClickCreateRoom,
-            iconUrl: DownloadReactSvgUrl,
+            iconUrl: CatalogRoomsReactSvgUrl,
           };
 
       case "download":

@@ -34,6 +34,7 @@ import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import LeaveRoomSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
+import CatalogRoomsReactSvgUrl from "PUBLIC_DIR/images/catalog.rooms.react.svg?url";
 
 import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
@@ -1199,8 +1200,8 @@ class ContextOptionsStore {
       {
         id: "option_create_room",
         key: "create-room",
-        label: "Create room",
-        icon: DownloadReactSvgUrl,
+        label: t("Files:CreateRoom"),
+        icon: CatalogRoomsReactSvgUrl,
         onClick: this.onClickCreateRoom,
         disabled: this.selectedFolderStore.rootFolderType !== FolderType.USER,
       },
@@ -1506,8 +1507,8 @@ class ContextOptionsStore {
       {
         id: "create_room",
         key: "create-room",
-        label: "Create room",
-        icon: DownloadReactSvgUrl,
+        label: t("Files:CreateRoom"),
+        icon: CatalogRoomsReactSvgUrl,
         onClick: this.onClickCreateRoom,
         disabled: this.selectedFolderStore.rootFolderType !== FolderType.USER,
       },
