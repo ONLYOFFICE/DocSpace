@@ -53,6 +53,8 @@ const getTreeItems = (data, path, t) => {
         return t("PortalDeletion");
       case "Common:PaymentsTitle":
         return t("Common:PaymentsTitle");
+      case "DocumentService":
+        return t("DocumentService");
       case "SingleSignOn":
         return t("SingleSignOn");
       case "SMTPSettings":
