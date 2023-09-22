@@ -94,7 +94,7 @@ const MembersList = (props) => {
   );
 
   return (
-    <StyledMembersList className="aaaaaaaaaw">
+    <StyledMembersList>
       <AutoSizer>
         {({ height, width }) => (
           <InfiniteLoader

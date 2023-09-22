@@ -2459,13 +2459,9 @@ class FilesStore {
     });
   };
 
-  // 2 (External link), 3 (All links);
-
   getRoomLinks = (id) => {
-    // 1 (Invitation link)
-
     return api.rooms
-      .getRoomMembers(id, { filterType: 1 })
+      .getRoomMembers(id, { filterType: 2 }) // 2 (External link)
       .then((res) => res.items);
   };
 
