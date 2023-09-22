@@ -10,7 +10,6 @@ interface ViewerProps {
   visible: boolean;
   isImage: boolean;
   isPdf: boolean;
-  someDialogIsOpen: boolean;
 
   playlist: PlaylistType[];
   inactive: boolean;

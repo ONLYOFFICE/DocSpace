@@ -735,12 +735,7 @@ Exception message: $Message</value>
 
 The process of data removal from user "$FromUserName":"$FromUserLink" has been successfully completed.
 
-The deletion of personal data allowed to free:
-
-# Documents - $DocsSpace
-# CRM - $CrmSpace
-# Mail - $MailSpace
-# Talk - $TalkSpace</value>
+The deletion of personal data allowed to free $DocsSpace</value>
   </data>
   <data name="pattern_remove_user_data_failed" xml:space="preserve">
     <value>Dear $UserName,

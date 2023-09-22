@@ -88,7 +88,6 @@
   "DownloadReportDescription": "보고서가 내 문서에 저장됩니다",
   "DownloadStatisticsText": "선택한 저장 기간 동안 이용 가능한 데이터에 대한 보고서를 다운로드하여 자세한 통계를 볼 수 있습니다.",
   "EditColorScheme": "색 구성표 편집",
-  "EditCurrentTheme": "현재 테마 편집",
   "Employees": "사용자",
   "EmptyBackupList": "아직 백업이 생성되지 않았습니다. 이 목록에 표시될 하나 이상의 백업을 생성하세요.",
   "EnableAutomaticBackup": "자동 백업을 활성화하세요.",

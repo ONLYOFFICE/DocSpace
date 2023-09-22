@@ -474,7 +474,7 @@ class FilesStore {
 
       api.files
         .getFolderInfo(folder.id)
-        .then(() => this.setFolder(folderInfo))
+        .then(this.setFolder)
         .catch(() => {
           // console.log("Folder deleted")
         });
@@ -1220,6 +1220,10 @@ class FilesStore {
     return api.files.setFileOwner(folderIds, fileIds, ownerId);
   };
 
+  setRoomOwner = (ownerId, folderIds) => {
+    return api.files.setFileOwner(ownerId, folderIds);
+  };
+
   setFilterUrl = (filter) => {
     const filterParamsStr = filter.toUrlParams();
 
@@ -1826,6 +1830,8 @@ class FilesStore {
       const canViewVersionFileHistory = item.security?.ReadHistory;
       const canFillForm = item.security?.FillForms;
 
+      const canSubmitToFormGallery = item.security?.SubmitToFormGallery;
+
       const canEditFile = item.security.Edit && item.viewAccessability.WebEdit;
       const canOpenPlayer =
         item.viewAccessability.ImageView || item.viewAccessability.MediaView;
@@ -1844,6 +1850,8 @@ class FilesStore {
         "pdf-view",
         "make-form",
         "separator0",
+        "submit-to-gallery",
+        "separator-SubmitToGallery",
         "link-for-room-members",
         // "sharing-settings",
         // "external-link",
@@ -1937,6 +1945,13 @@ class FilesStore {
 
       if (!(isMasterForm && canDuplicate))
         fileOptions = this.removeOptions(fileOptions, ["make-form"]);
+
+      if (!canSubmitToFormGallery) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "submit-to-gallery",
+          "separator-SubmitToGallery",
+        ]);
+      }
 
       if (item.rootFolderType === FolderType.Archive) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -2094,6 +2109,7 @@ class FilesStore {
         "download",
         "archive-room",
         "unarchive-room",
+        "leave-room",
         "delete",
       ];
 
@@ -2514,7 +2530,11 @@ class FilesStore {
   };
 
   removeFiles = (fileIds, folderIds, showToast, destFolderId) => {
-    const newFilter = this.filter.clone();
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+
+    const isRooms = isRoomsFolder || isArchiveFolder;
+    const newFilter = isRooms ? this.roomsFilter.clone() : this.filter.clone();
+
     const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
 
     if (destFolderId && destFolderId === this.selectedFolderStore.id) return;
@@ -2538,7 +2558,7 @@ class FilesStore {
       newFilter.total -= deleteCount;
 
       runInAction(() => {
-        this.setFilter(newFilter);
+        isRooms ? this.setRoomsFilter(newFilter) : this.setFilter(newFilter);
         this.setFiles(files);
         this.setFolders(folders);
         this.setTempActionFilesIds([]);
@@ -2856,6 +2876,7 @@ class FilesStore {
         security,
         viewAccessability,
         mute,
+        inRoom = true,
       } = item;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
@@ -2991,6 +3012,7 @@ class FilesStore {
         providerType,
         security,
         viewAccessability,
+        inRoom,
       };
     });
 
@@ -2998,8 +3020,12 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
-      this.filesSettingsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];

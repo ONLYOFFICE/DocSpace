@@ -26,6 +26,8 @@
 
 public static class Selectors
 {
+    public static Regex Pattern => new(@"^(?'selector'.*)-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
+    
     public static readonly Selector SharpBox = new Selector() { Name = "SharpBox", Id = "sbox" };
     public static readonly Selector SharePoint = new Selector() { Name = "sharepoint", Id = "spoint" };
     public static readonly Selector GoogleDrive = new Selector() { Name = "GoogleDrive", Id = "drive" };

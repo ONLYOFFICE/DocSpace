@@ -46,10 +46,10 @@ public class FileSharingAceHelper
     private readonly StudioNotifyService _studioNotifyService;
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly CountPaidUserChecker _countPaidUserChecker;
-
+    private readonly IUrlShortener _urlShortener;
+    
     private const int MaxInvitationLinks = 1;
     private const int MaxExternalLinks = 10;
-    private readonly IUrlShortener _urlShortener;
 
     public FileSharingAceHelper(
         FileSecurity fileSecurity,
@@ -230,8 +230,7 @@ public class FileSharingAceHelper
 
             var subjects = await _fileSecurity.GetUserSubjectsAsync(w.Id);
 
-            if (entry.RootFolderType == FolderType.COMMON && subjects.Contains(Constants.GroupAdmin.ID)
-                || ownerId == w.Id)
+            if (entry.RootFolderType == FolderType.COMMON && subjects.Contains(Constants.GroupAdmin.ID))
             {
                 continue;
             }
@@ -261,7 +260,7 @@ public class FileSharingAceHelper
 
             if (emailInvite)
             {
-                var link = await _invitationLinkService.GetInvitationLinkAsync(w.Email, share, _authContext.CurrentAccount.ID);
+                var link = await _invitationLinkService.GetInvitationLinkAsync(w.Email, share, _authContext.CurrentAccount.ID, entry.Id.ToString());
                 var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
 
                 await _studioNotifyService.SendEmailRoomInviteAsync(w.Email, entry.Title, shortenLink);
@@ -658,8 +657,8 @@ public class FileSharing
                     continue;
                 }
 
-                var link = r.SubjectType == SubjectType.InvitationLink 
-                    ? _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) 
+                var link = r.SubjectType == SubjectType.InvitationLink
+                    ? _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID)
                     : await _externalShare.GetLinkAsync(r.Subject);
 
                 w.Link = await _urlShortener.GetShortenLinkAsync(link);
@@ -878,18 +877,6 @@ public class FileSharing
     {
         var aces = await GetSharedInfoAsync(new List<T> { fileID }, new List<T>());
 
-        return GetAceShortWrappers(aces);
-    }
-
-    public async Task<List<AceShortWrapper>> GetSharedInfoShortFolderAsync<T>(T folderId)
-    {
-        var aces = await GetSharedInfoAsync(new List<T>(), new List<T> { folderId });
-
-        return GetAceShortWrappers(aces);
-    }
-
-    private List<AceShortWrapper> GetAceShortWrappers(List<AceWrapper> aces)
-    {
         return new List<AceShortWrapper>(aces
             .Where(aceWrapper => !aceWrapper.Id.Equals(FileConstant.ShareLinkId) || aceWrapper.Access != FileShare.Restrict)
             .Select(aceWrapper => new AceShortWrapper(aceWrapper)));

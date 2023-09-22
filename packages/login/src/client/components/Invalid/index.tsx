@@ -52,7 +52,7 @@ const InvalidError = ({ theme, setTheme, match }: InvalidErrorProps) => {
   const message = getMessageFromKey(match?.messageKey);
   const errorTitle = match?.messageKey
     ? getMessageKeyTranslate(t, message)
-    : t("ErrorInvalidHeader");
+    : t("Common:ExpiredLink");
 
   return (
     <>

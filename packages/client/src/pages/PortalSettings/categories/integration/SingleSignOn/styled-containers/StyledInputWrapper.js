@@ -3,7 +3,7 @@ import { smallTablet } from "@docspace/components/utils/device";
 
 const StyledInputWrapper = styled.div`
   width: 100%;
-  max-width: ${(props) => props.maxWidth || "350px"};
+  max-width: ${(props) => props.maxWidth || "520px"};
 
   @media ${smallTablet} {
     max-width: 100%;
@@ -19,7 +19,7 @@ const StyledInputWrapper = styled.div`
   .field-label-icon {
     align-items: center;
     margin-bottom: 4px;
-    max-width: 350px;
+    max-width: 520px;
   }
 
   .field-label {

@@ -252,7 +252,8 @@ public interface IFileDao<T>
     /// </summary>
     /// <param name="oldOwnerId"></param>
     /// <param name="newOwnerId"></param>
-    Task ReassignFilesAsync(Guid oldOwnerId, Guid newOwnerId);
+    /// <param name="exceptFolderIds"></param>
+    Task ReassignFilesAsync(Guid oldOwnerId, Guid newOwnerId, IEnumerable<T> exceptFolderIds);
 
     /// <summary>
     /// Search files in SharedWithMe &amp; Projects

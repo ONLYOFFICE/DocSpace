@@ -96,37 +96,44 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
             }
 
             await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-            var files = new List<string>();
-
-            if (r.EntryType == FileEntryType.Folder)
+            await strategy.ExecuteAsync(async () =>
             {
-                var folders = new List<string>();
-                if (int.TryParse(entryId, out var intEntryId))
-                {
-                    var foldersInt = await Queries.FolderIdsAsync(filesDbContext, entryId).ToListAsync();
+                using var filesDbContext = _dbContextFactory.CreateDbContext();
+                using var tr = await filesDbContext.Database.BeginTransactionAsync();
 
-                    folders.AddRange(foldersInt.Select(folderInt => folderInt.ToString()));
-                    files.AddRange(await Queries.FilesIdsAsync(filesDbContext, TenantID, foldersInt).ToListAsync());
+                var files = new List<string>();
+
+                if (r.EntryType == FileEntryType.Folder)
+                {
+                    var folders = new List<string>();
+                    if (int.TryParse(entryId, out var intEntryId))
+                    {
+                        var foldersInt = await Queries.FolderIdsAsync(filesDbContext, entryId).ToListAsync();
+
+                        folders.AddRange(foldersInt.Select(folderInt => folderInt.ToString()));
+                        files.AddRange(await Queries.FilesIdsAsync(filesDbContext, TenantID, foldersInt).ToListAsync());
+                    }
+                    else
+                    {
+                        folders.Add(entryId);
+                    }
+                    await Queries.DeleteForSetShareAsync(filesDbContext, r.TenantId, r.Subject, folders, FileEntryType.Folder);
                 }
                 else
                 {
-                    folders.Add(entryId);
+                    files.Add(entryId);
                 }
-                var forSetShare = await Queries.ForSetShareAsync(filesDbContext, r.TenantId, r.Subject, folders, FileEntryType.Folder).ToListAsync();
-                filesDbContext.Security.RemoveRange(forSetShare);
-            }
-            else
-            {
-                files.Add(entryId);
-            }
 
-            if (files.Count > 0)
-            {
-                filesDbContext.Security.RemoveRange(await Queries.ForSetShareAsync(filesDbContext, r.TenantId, r.Subject, files, FileEntryType.File).ToListAsync());
-            }
+                if (files.Count > 0)
+                {
+                    await Queries.DeleteForSetShareAsync(filesDbContext, r.TenantId, r.Subject, files, FileEntryType.File);
+                }
 
-            await filesDbContext.SaveChangesAsync();
+                await filesDbContext.SaveChangesAsync();
+                await tr.CommitAsync();
+            });
         }
         else
         {
@@ -784,14 +791,15 @@ static file class Queries
                     .Select(r => r.Id.ToString()));
 
     public static readonly
-        Func<FilesDbContext, int, Guid, IEnumerable<string>, FileEntryType, IAsyncEnumerable<DbFilesSecurity>>
-        ForSetShareAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        Func<FilesDbContext, int, Guid, IEnumerable<string>, FileEntryType, Task<int>>
+        DeleteForSetShareAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid subject, IEnumerable<string> entryIds, FileEntryType type) =>
                 ctx.Security
                     .Where(a => a.TenantId == tenantId &&
                                 entryIds.Contains(a.EntryId) &&
                                 a.EntryType == type &&
-                                a.Subject == subject));
+                                a.Subject == subject)
+                    .ExecuteDelete());
 
     public static readonly Func<FilesDbContext, int, string, FileEntryType, Task<bool>> IsSharedAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(

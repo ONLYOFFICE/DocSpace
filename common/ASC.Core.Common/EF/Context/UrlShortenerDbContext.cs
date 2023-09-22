@@ -39,6 +39,7 @@ public class UrlShortenerDbContext : DbContext
     {
         ModelBuilderWrapper
             .From(modelBuilder, Database)
-            .AddShortLinks();
+            .AddShortLinks()
+            .AddDbTenant();
     }
 }

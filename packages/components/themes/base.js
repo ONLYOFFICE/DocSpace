@@ -3128,11 +3128,20 @@ const Base = {
     dashedBorder: "1px dashed #5299E0",
   },
 
+  dialogs: {
+    disableText: "#A3A9AE",
+  },
+
   editLink: {
     text: {
       color: "#A3A9AE",
       errorColor: "#F21C0E",
     },
+  },
+
+  submitToGalleryTile: {
+    bodyText: "#555F65",
+    closeIconFill: "#657077",
   },
 
   infoBlock: {

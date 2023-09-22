@@ -28,6 +28,5 @@
   "SetAppTitle": "Nakonfigurujte si aplikáciu autentifikátora",
   "SuccessDeactivate": "Váš účet bol úspešne deaktivovaný. Po 10 sekundách budete presmerovaní na <1>webovú stránku</1>.",
   "SuccessReactivate": "Váš účet bol úspešne znovu aktivovaný. Po 10 sekundách budete presmerovaní do <1>priestoru</1>.",
-  "SuccessRemoved": "Váš účet bol úspešne odstránený. O 10 sekúnd budete presmerovaní na <1>webovú stránku</1>.",
-  "WelcomeUser": "Vitajte na našom DocSpace!\nAk chcete začať, zaregistrujte sa alebo sa prihláste cez sociálne siete."
+  "SuccessRemoved": "Váš účet bol úspešne odstránený. O 10 sekúnd budete presmerovaní na <1>webovú stránku</1>."
 }
