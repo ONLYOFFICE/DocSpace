@@ -29,7 +29,7 @@ const Item = memo(({ data, index, style }) => {
   const user = members[index];
 
   return (
-    <div key={user.id} style={{ ...style, width: "calc(100% - 30px)" }}>
+    <div key={user.id} style={{ ...style, width: "calc(100% - 8px)" }}>
       <User
         t={t}
         user={user}
