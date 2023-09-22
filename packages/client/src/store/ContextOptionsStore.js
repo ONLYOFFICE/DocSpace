@@ -1504,6 +1504,14 @@ class ContextOptionsStore {
         action: "remove",
       },
       {
+        id: "create_room",
+        key: "create-room",
+        label: "Create room",
+        icon: DownloadReactSvgUrl,
+        onClick: this.onClickCreateRoom,
+        disabled: this.selectedFolderStore.rootFolderType !== FolderType.USER,
+      },
+      {
         key: "download",
         label: t("Common:Download"),
         icon: DownloadReactSvgUrl,

@@ -1069,7 +1069,6 @@ class FilesStore {
   };
 
   setSelection = (selection) => {
-    console.log("setSelection", selection);
     this.selection = selection;
   };
 
