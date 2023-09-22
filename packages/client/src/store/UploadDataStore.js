@@ -1506,6 +1506,7 @@ class UploadDataStore {
     }
 
     this.filesStore.setSelection([]);
+    this.filesStore.setBufferSelection(null);
 
     const operationData = {
       destFolderId,
