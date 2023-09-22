@@ -406,7 +406,8 @@ public class EditorController : ApiControllerBase
             docServiceUrlApi = url,
             _filesLinkUtility.DocServiceUrl,
             _filesLinkUtility.DocServiceUrlInternal,
-            _filesLinkUtility.DocServicePortalUrl
+            _filesLinkUtility.DocServicePortalUrl,
+            _filesLinkUtility.IsDefault
         };
     }
 }
