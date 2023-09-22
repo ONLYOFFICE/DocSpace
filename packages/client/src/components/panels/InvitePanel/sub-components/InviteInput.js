@@ -218,7 +218,7 @@ const InviteInput = ({
   };
 
   const closeInviteInputPanel = (e) => {
-    // if (e?.target.tagName.toUpperCase() == "INPUT") return;
+    if (e?.target.tagName.toUpperCase() === "INPUT") return;
 
     setSearchPanelVisible(false);
   };
