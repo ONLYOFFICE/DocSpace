@@ -1485,7 +1485,7 @@ class UploadDataStore {
         );
   };
 
-  onPreparingDataForCopyingRoom = (destFolderId, t) => {
+  preparingDataForCopyingToRoom = (destFolderId, t) => {
     const { selection, bufferSelection } = this.filesStore;
     let fileIds = [];
     let folderIds = [];
@@ -1496,6 +1496,8 @@ class UploadDataStore {
         : bufferSelection != null
         ? [bufferSelection]
         : [];
+
+    if (!selections.length) return;
 
     for (let item of selections) {
       if (item.fileExst || item.contentLength) {

@@ -85,7 +85,7 @@ class CreateEditRoomStore {
       uploadRoomLogo,
       addLogoToRoom,
     } = this.filesStore;
-    const { onPreparingDataForCopyingRoom } =
+    const { preparingDataForCopyingToRoom } =
       this.filesActionsStore.uploadDataStore;
 
     const createRoomData = {
@@ -157,8 +157,7 @@ class CreateEditRoomStore {
 
       if (processCreatingRoomFromData) {
         setSelectedItems();
-        onPreparingDataForCopyingRoom(room.id, t);
-        setProcessCreatingRoomFromData(false);
+        preparingDataForCopyingToRoom(room.id, t);
       }
 
       this.roomIsCreated = true;
@@ -170,6 +169,7 @@ class CreateEditRoomStore {
       this.onClose();
       this.roomIsCreated = true;
     } finally {
+      processCreatingRoomFromData && setProcessCreatingRoomFromData(false);
       if (withPaging) await updateCurrentFolder(null, currentFolderId);
     }
   };
