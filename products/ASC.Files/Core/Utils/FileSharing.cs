@@ -940,9 +940,11 @@ public class FileSharing
 
         if (record.IsLink)
         {
-            w.Link = record.SubjectType == SubjectType.InvitationLink ? 
+            var link = record.SubjectType == SubjectType.InvitationLink ? 
                 _invitationLinkService.GetInvitationLink(record.Subject, _authContext.CurrentAccount.ID) : 
                 await _externalShare.GetLinkAsync(record.Subject);
+            
+            w.Link = await _urlShortener.GetShortenLinkAsync(link);
             w.SubjectGroup = true;
             w.CanEditAccess = false;
             w.FileShareOptions.Password = await _externalShare.GetPasswordAsync(w.FileShareOptions.Password);
