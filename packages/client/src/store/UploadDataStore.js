@@ -1485,11 +1485,19 @@ class UploadDataStore {
         );
   };
 
-  onPreparingDataForCopyingRoom = (destFolderId) => {
+  onPreparingDataForCopyingRoom = (destFolderId, t) => {
+    const { selection, bufferSelection } = this.filesStore;
     let fileIds = [];
     let folderIds = [];
 
-    for (let item of this.filesStore.selection) {
+    const selections =
+      selection.length > 0 && selection[0] != null
+        ? selection
+        : bufferSelection != null
+        ? [bufferSelection]
+        : [];
+
+    for (let item of selections) {
       if (item.fileExst || item.contentLength) {
         fileIds.push(item.id);
       } else {
@@ -1497,8 +1505,7 @@ class UploadDataStore {
       }
     }
 
-    console.log("selection", this.filesStore.selection);
-    console.log("onPreparingDataForCopyingRoom", fileIds, folderIds);
+    this.filesStore.setSelection([]);
 
     const operationData = {
       destFolderId,
@@ -1506,11 +1513,8 @@ class UploadDataStore {
       fileIds,
       deleteAfter: false,
       isCopy: true,
-      // translations: {
-      //   copy: t("Common:CopyOperation"),
-      // },
       translations: {
-        copy: "CopyOperation",
+        copy: t("Common:CopyOperation"),
       },
     };
 

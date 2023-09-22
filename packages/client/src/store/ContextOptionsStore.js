@@ -406,7 +406,7 @@ class ContextOptionsStore {
   };
 
   onClickCreateRoom = () => {
-    let processCreatingRoomFromData = true;
+    this.filesActionsStore.setProcessCreatingRoomFromData(true);
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   };

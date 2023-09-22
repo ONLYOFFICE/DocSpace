@@ -68,6 +68,7 @@ class FilesActionStore {
   isLoadedSearchFiles = false;
   isGroupMenuBlocked = false;
   emptyTrashInProgress = false;
+  processCreatingRoomFromData = false;
 
   constructor(
     authStore,
@@ -1710,6 +1711,10 @@ class FilesActionStore {
     setIsVisible(true);
   };
 
+  setProcessCreatingRoomFromData = (processCreatingRoomFromData) => {
+    this.processCreatingRoomFromData = processCreatingRoomFromData;
+  };
+
   getOption = (option, t) => {
     const {
       setSharingPanelVisible,
@@ -1747,6 +1752,7 @@ class FilesActionStore {
           id: "menu-create-room",
           label: "Create room",
           onClick: () => {
+            this.setProcessCreatingRoomFromData(true);
             const event = new Event(Events.ROOM_CREATE);
             window.dispatchEvent(event);
           },
