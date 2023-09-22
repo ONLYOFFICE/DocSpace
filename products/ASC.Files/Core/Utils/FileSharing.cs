@@ -115,6 +115,11 @@ public class FileSharingAceHelper
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
+            if (w.Id == _authContext.CurrentAccount.ID)
+            {
+                continue;
+            }
+            
             var emailInvite = !string.IsNullOrEmpty(w.Email);
             var currentUserType = await _userManager.GetUserTypeAsync(w.Id);
             var userType = EmployeeType.User;
