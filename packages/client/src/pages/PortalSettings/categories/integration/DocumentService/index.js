@@ -12,6 +12,7 @@ import {
   Text,
 } from "@docspace/components";
 import toastr from "@docspace/components/toast/toastr";
+import Loaders from "@docspace/common/components/Loaders";
 
 const URL_REGEX = /^https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\/?$/;
 const EDITOR_URL_PLACEHOLDER = `${window.location.protocol}//<editors-dns-name>/`;
@@ -22,8 +23,9 @@ const DocumentService = ({
   currentColorScheme,
   integrationSettingsUrl,
 }) => {
-  const { t } = useTranslation(["Settings", "Common"]);
+  const { t, ready } = useTranslation(["Settings", "Common"]);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaveLoading, setSaveIsLoading] = useState(false);
   const [isResetLoading, setResetIsLoading] = useState(false);
 
@@ -40,6 +42,7 @@ const DocumentService = ({
   const [initInternalUrl, setInitInternalUrl] = useState("");
 
   useEffect(() => {
+    setIsLoading(true);
     getDocumentServiceLocation()
       .then((result) => {
         setIsDefaultSettiings(result?.isDefault || false);
@@ -52,7 +55,8 @@ const DocumentService = ({
         setInitInternalUrl(result?.docServiceUrlInternal);
         setInitDocServiceUrl(result?.docServiceUrl);
       })
-      .catch((error) => toastr.error(error));
+      .catch((error) => toastr.error(error))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const onChangeDocServiceUrl = (e) => {
@@ -126,6 +130,8 @@ const DocumentService = ({
     docServiceUrl == initDocServiceUrl &&
     internalUrl == initInternalUrl &&
     portalUrl == initPortalUrl;
+
+  if (isLoading || !ready) return <Loaders.SettingsDSConnect />;
 
   return (
     <Styled.Location>
