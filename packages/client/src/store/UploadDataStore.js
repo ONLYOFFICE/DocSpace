@@ -1485,6 +1485,45 @@ class UploadDataStore {
         );
   };
 
+  preparingDataForCopyingToRoom = (destFolderId, t) => {
+    const { selection, bufferSelection } = this.filesStore;
+    let fileIds = [];
+    let folderIds = [];
+
+    const selections =
+      selection.length > 0 && selection[0] != null
+        ? selection
+        : bufferSelection != null
+        ? [bufferSelection]
+        : [];
+
+    if (!selections.length) return;
+
+    for (let item of selections) {
+      if (item.fileExst || item.contentLength) {
+        fileIds.push(item.id);
+      } else {
+        folderIds.push(item.id);
+      }
+    }
+
+    this.filesStore.setSelection([]);
+    this.filesStore.setBufferSelection(null);
+
+    const operationData = {
+      destFolderId,
+      folderIds,
+      fileIds,
+      deleteAfter: false,
+      isCopy: true,
+      translations: {
+        copy: t("Common:CopyOperation"),
+      },
+    };
+
+    this.itemOperationToFolder(operationData);
+  };
+
   loopFilesOperations = async (data, pbData, isDownloadAction) => {
     const { clearSecondaryProgressData, setSecondaryProgressBarData } =
       this.secondaryProgressDataStore;
