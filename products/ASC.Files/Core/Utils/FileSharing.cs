@@ -545,9 +545,10 @@ public class FileSharing
         
         var canEditAccess = await _fileSecurity.CanEditAccessAsync(room);
 
-        var defaultAces = await GetDefaultRoomAcesAsync(room, filterType, status).Skip(offset).Take(count).ToListAsync();
+        var allDefaultAces = await GetDefaultRoomAcesAsync(room, filterType, status).ToListAsync();
+        var defaultAces = allDefaultAces.Skip(offset).Take(count).ToList();
         
-        offset = Math.Max(offset == 0 ? offset : offset - defaultAces.Count, 0);
+        offset = Math.Max(defaultAces.Count > 0 ? 0 : offset - allDefaultAces.Count, 0);
         count -= defaultAces.Count;
 
         var records = _fileSecurity.GetPureSharesAsync(room, filterType, status, offset, count);
