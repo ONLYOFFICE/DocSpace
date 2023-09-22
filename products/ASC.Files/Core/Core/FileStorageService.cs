@@ -2407,10 +2407,9 @@ public class FileStorageService //: IFileStorageService
 
     #endregion
 
-    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<SubjectType> subjectTypes = null,
-        bool withoutTemplates = false)
+    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<SubjectType> subjectTypes = null)
     {
-        return await _fileSharing.GetSharedInfoAsync(fileIds, folderIds, subjectTypes, withoutTemplates);
+        return await _fileSharing.GetSharedInfoAsync(fileIds, folderIds, subjectTypes);
     }
 
     public async Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync<T>(T fileId)

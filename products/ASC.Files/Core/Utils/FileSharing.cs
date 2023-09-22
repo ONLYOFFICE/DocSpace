@@ -543,7 +543,7 @@ public class FileSharing
 
         var defaultAces = await GetDefaultRoomAcesAsync(room, filterType, status).Skip(offset).Take(count).ToListAsync();
         
-        offset = offset == 0 ? offset : offset - defaultAces.Count;
+        offset = Math.Max(offset == 0 ? offset : offset - defaultAces.Count, 0);
         count -= defaultAces.Count;
 
         var records = _fileSecurity.GetPureSharesAsync(room, filterType, status, offset, count);
@@ -567,7 +567,7 @@ public class FileSharing
         return defaultAces + sharesCount;
     }
 
-    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(FileEntry<T> entry, IEnumerable<SubjectType> subjectsTypes = null, bool withoutTemplates = false)
+    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(FileEntry<T> entry, IEnumerable<SubjectType> subjectsTypes = null)
     {
         if (entry == null)
         {
@@ -680,38 +680,6 @@ public class FileSharing
             result.Add(w);
         }
 
-        if (isRoom && canEditAccess&& !withoutTemplates)
-        {
-            var invitationId = Guid.NewGuid();
-
-            var invitationAceTemplate = new AceWrapper
-            {
-                Id = invitationId,
-                Link = _invitationLinkService.GetInvitationLink(invitationId, _authContext.CurrentAccount.ID),
-                SubjectGroup = true,
-                Access = ((Folder<T>)entry).FolderType == FolderType.PublicRoom ? FileShare.RoomAdmin : FileShare.Read,
-                Owner = false,
-                IsTemplate = true,
-                SubjectType = SubjectType.InvitationLink
-            };
-
-            var externalId = Guid.NewGuid();
-
-            var externalAceTemplate = new AceWrapper
-            {
-                Id = externalId,
-                Link = await _externalShare.GetLinkAsync(externalId),
-                SubjectGroup = true,
-                Access = FileShare.Read,
-                Owner = false,
-                IsTemplate = true,
-                SubjectType = SubjectType.ExternalLink
-            };
-
-            result.Add(invitationAceTemplate);
-            result.Add(externalAceTemplate);
-        }
-
         if (entry.FileEntryType == FileEntryType.File && result.All(w => w.Id != FileConstant.ShareLinkId)
             && entry.FileEntryType == FileEntryType.File
             && !((File<T>)entry).Encrypted)
@@ -790,8 +758,7 @@ public class FileSharing
         return result;
     }
 
-    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<SubjectType> subjectTypes = null,
-        bool withoutTemplates = false)
+    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<SubjectType> subjectTypes = null)
     {
         if (!_authContext.IsAuthenticated)
         {
@@ -813,7 +780,7 @@ public class FileSharing
             IEnumerable<AceWrapper> acesForObject;
             try
             {
-                acesForObject = await GetSharedInfoAsync(entry, subjectTypes, withoutTemplates);
+                acesForObject = await GetSharedInfoAsync(entry, subjectTypes);
             }
             catch (Exception e)
             {
@@ -930,40 +897,6 @@ public class FileSharing
     
     private async IAsyncEnumerable<AceWrapper> GetDefaultRoomAcesAsync<T>(Folder<T> room, ShareFilterType filterType, EmployeeActivationStatus? status)
     {
-        if (filterType is ShareFilterType.InvitationLink or ShareFilterType.Link)
-        {
-            var id = Guid.NewGuid();
-            var invitationTemplate = new AceWrapper
-            {
-                Id = id,
-                Link = _invitationLinkService.GetInvitationLink(id, _authContext.CurrentAccount.ID),
-                SubjectGroup = true,
-                Access = FileShare.Read,
-                Owner = false,
-                IsTemplate = true,
-                SubjectType = SubjectType.InvitationLink
-            };
-
-            yield return invitationTemplate;
-        }
-        
-        if (filterType is ShareFilterType.ExternalLink or ShareFilterType.Link)
-        {
-            var id = Guid.NewGuid();
-            var externalTemplate = new AceWrapper
-            {
-                Id = id,
-                Link = await _externalShare.GetLinkAsync(id),
-                SubjectGroup = true,
-                Access = FileShare.Read,
-                Owner = false,
-                IsTemplate = true,
-                SubjectType = SubjectType.ExternalLink
-            };
-
-            yield return externalTemplate;
-        }
-
         if (filterType != ShareFilterType.User)
         {
             yield break;
