@@ -1905,7 +1905,7 @@ class FilesActionStore {
   };
 
   getAnotherFolderOptions = (itemsCollection, t) => {
-    const create = this.getOption("create-room", t);
+    const createRoom = this.getOption("create-room", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const moveTo = this.getOption("moveTo", t);
@@ -1914,7 +1914,7 @@ class FilesActionStore {
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("create", create)
+      .set("createRoom", createRoom)
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("moveTo", moveTo)
