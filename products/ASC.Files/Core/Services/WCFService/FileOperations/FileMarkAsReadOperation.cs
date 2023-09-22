@@ -30,7 +30,7 @@ class FileMarkAsReadOperationData<T> : FileOperationData<T>
 {
     public IDictionary<string, StringValues> Headers { get; }
 
-    public FileMarkAsReadOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, IDictionary<string, StringValues> headers, ExternalShareData externalShareData, 
+    public FileMarkAsReadOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, IDictionary<string, StringValues> headers, ExternalShareData externalShareData,
         bool holdResult = true) : base(folders, files, tenant, externalShareData, holdResult)
     {
         Headers = headers;
@@ -87,12 +87,12 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
             if (entry.FileEntryType == FileEntryType.File)
             {
                 ProcessedFile(((File<T>)entry).Id);
-                _ = filesMessageService.SendAsync(entry, _headers, MessageAction.FileMarkedAsRead, entry.Title);
+                _ = filesMessageService.SendAsync(MessageAction.FileMarkedAsRead, entry, _headers, entry.Title);
             }
             else
             {
                 ProcessedFolder(((Folder<T>)entry).Id);
-                _ = filesMessageService.SendAsync(entry, _headers, MessageAction.FolderMarkedAsRead, entry.Title);
+                _ = filesMessageService.SendAsync(MessageAction.FolderMarkedAsRead, entry, _headers, entry.Title);
             }
 
             ProgressStep();

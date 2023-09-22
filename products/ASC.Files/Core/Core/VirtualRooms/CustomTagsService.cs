@@ -52,8 +52,6 @@ public class CustomTagsService
         _userManager = userManager;
     }
 
-    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
-
     public async Task<string> CreateTagAsync(string name)
     {
         if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
@@ -80,7 +78,7 @@ public class CustomTagsService
 
         var savedTag = await tagDao.SaveTagInfoAsync(tagInfo);
 
-        await _filesMessageService.SendAsync(Headers, MessageAction.TagCreated, savedTag.Name);
+        await _filesMessageService.SendAsync(MessageAction.TagCreated, savedTag.Name);
 
         return savedTag.Name;
     }
@@ -103,7 +101,7 @@ public class CustomTagsService
 
         await tagDao.RemoveTagsAsync(tags.Select(t => t.Id));
 
-        await _filesMessageService.SendAsync(Headers, MessageAction.TagsDeleted, string.Join(',', tags.Select(t => t.Name).ToArray()));
+        await _filesMessageService.SendAsync(MessageAction.TagsDeleted, string.Join(',', tags.Select(t => t.Name).ToArray()));
     }
 
     public async Task<Folder<T>> AddRoomTagsAsync<T>(T folderId, IEnumerable<string> names)
@@ -128,7 +126,7 @@ public class CustomTagsService
 
         await tagDao.SaveTags(tags);
 
-        _ = _filesMessageService.SendAsync(folder, Headers, MessageAction.AddedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
+        _ = _filesMessageService.SendAsync(MessageAction.AddedRoomTags, folder, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
 
         return folder;
     }
@@ -153,7 +151,7 @@ public class CustomTagsService
 
         await tagDao.RemoveTagsAsync(folder, tagsInfos.Select(t => t.Id));
 
-        _ = _filesMessageService.SendAsync(folder, Headers, MessageAction.DeletedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
+        _ = _filesMessageService.SendAsync(MessageAction.DeletedRoomTags, folder, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
 
         return folder;
     }

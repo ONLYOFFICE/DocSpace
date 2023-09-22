@@ -78,7 +78,6 @@ public class RoomLogoManager
 
     public bool EnableAudit { get; set; } = true;
     private int TenantId => _tenantManager.GetCurrentTenant().Id;
-    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request.Headers;
 
     private async ValueTask<IDataStore> GetDataStoreAsync()
     {
@@ -126,7 +125,7 @@ public class RoomLogoManager
 
         if (EnableAudit)
         {
-            _ = _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoCreated, room.Title);
+            _ = _filesMessageService.SendAsync(MessageAction.RoomLogoCreated, room, room.Title);
         }
 
         return room;
@@ -160,7 +159,7 @@ public class RoomLogoManager
 
             if (EnableAudit)
             {
-                _ = _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
+                _ = _filesMessageService.SendAsync(MessageAction.RoomLogoDeleted, room, room.Title);
             }
         }
         catch (Exception e)

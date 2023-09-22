@@ -30,7 +30,7 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace ASC.Web.Files.Utils;
 
 [Singletone]
-public class FileConverterQueue 
+public class FileConverterQueue
 {
     private readonly object _locker = new object();
     private readonly IDistributedCache _distributedCache;
@@ -312,7 +312,7 @@ public class FileConverter
         IServiceProvider serviceProvider,
         IHttpClientFactory clientFactory,
         SocketManager socketManager,
-        FileConverterQueue fileConverterQueue, 
+        FileConverterQueue fileConverterQueue,
         ExternalShare externalShare)
     {
         _fileUtility = fileUtility;
@@ -535,7 +535,7 @@ public class FileConverter
 
         await _fileMarker.RemoveMarkAsNewAsync(file);
 
-        _fileConverterQueue.Add(file, password, (await _tenantManager.GetCurrentTenantAsync()).Id, _authContext.CurrentAccount, deleteAfter, _httpContextAccesor?.HttpContext?.Request.GetDisplayUrl(), 
+        _fileConverterQueue.Add(file, password, (await _tenantManager.GetCurrentTenantAsync()).Id, _authContext.CurrentAccount, deleteAfter, _httpContextAccesor?.HttpContext?.Request.GetDisplayUrl(),
             _baseCommonLinkUtility.ServerRootPath, await _externalShare.GetLinkIdAsync() != default ? await _externalShare.GetCurrentShareDataAsync() : null);
     }
 
@@ -660,7 +660,7 @@ public class FileConverter
             throw new Exception(errorString);
         }
 
-        _ = _filesMessageService.SendAsync(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
+        _ = _filesMessageService.SendAsync(MessageAction.FileConverted, newFile, MessageInitiator.DocsService, newFile.Title);
 
         var linkDao = _daoFactory.GetLinkDao();
         await linkDao.DeleteAllLinkAsync(file.Id.ToString());

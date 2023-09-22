@@ -66,17 +66,22 @@ public class FilesMessageService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task SendAsync(IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task SendAsync(MessageAction action, params string[] description)
     {
-        await SendHeadersMessageAsync(headers, action, null, description);
+        await _messageService.SendHeadersMessageAsync(action, description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, IDictionary<string, StringValues> headers, params string[] description)
     {
-        await SendAsync(entry, headers, action, null, FileShare.None, Guid.Empty, description);
+        await SendAsync(action, entry, headers, null, Guid.Empty, FileShare.None, description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, List<AceWrapper> aces, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, params string[] description)
+    {
+        await SendAsync(action, entry, GetHttpHeaders(), null, Guid.Empty, FileShare.None, description);
+    }
+
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, IDictionary<string, StringValues> headers, List<AceWrapper> aces, params string[] description)
     {
         if (action == MessageAction.RoomDeleted)
         {
@@ -84,26 +89,26 @@ public class FilesMessageService
             await _notifyClient.SendRoomRemovedAsync(entry, aces, userId);
         }
 
-        await SendAsync(entry, headers, action, null, FileShare.None, Guid.Empty, description);
+        await SendAsync(action, entry, headers, null, Guid.Empty, FileShare.None, description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, string oldTitle, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, string oldTitle, FileEntry<T> entry, params string[] description)
     {
-        await SendAsync(entry, headers, action, oldTitle, FileShare.None, Guid.Empty, description);
+        await SendAsync(action, entry, GetHttpHeaders(), oldTitle, description: description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, Guid userId, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, Guid userId, params string[] description)
     {
-        await SendAsync(entry, headers, action, null, FileShare.None, userId, description);
+        await SendAsync(action, entry, GetHttpHeaders(), userId: userId, description: description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, FileShare userRole, Guid userId, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, Guid userId, FileShare userRole, params string[] description)
     {
         description = description.Append(FileStorageService.GetAccessString(userRole)).ToArray();
-        await SendAsync(entry, headers, action, null, userRole, userId, description);
+        await SendAsync(action, entry, GetHttpHeaders(), null, userId, userRole, description);
     }
 
-    private async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, string oldTitle, FileShare userRole, Guid userId, params string[] description)
+    private async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, IDictionary<string, StringValues> headers, string oldTitle = null, Guid userId = default(Guid), FileShare userRole = FileShare.None, params string[] description)
     {
         if (entry == null)
         {
@@ -120,7 +125,7 @@ public class FilesMessageService
         await SendHeadersMessageAsync(headers, action, _messageTarget.Create(entry.Id), description);
     }
 
-    public async Task SendAsync<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task SendAsync<T1, T2>(MessageAction action, FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, params string[] description)
     {
         if (entry1 == null || entry2 == null)
         {
@@ -146,10 +151,10 @@ public class FilesMessageService
             return;
         }
 
-        await _messageService.SendAsync(headers, action, target, description);
+        await _messageService.SendHeadersMessageAsync(action, target, headers, description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, MessageAction action, string description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, string description)
     {
         if (entry == null)
         {
@@ -175,7 +180,7 @@ public class FilesMessageService
         }
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, string d1, string d2)
     {
         if (entry == null)
         {
@@ -191,7 +196,7 @@ public class FilesMessageService
         await _messageService.SendAsync(action, _messageTarget.Create(entry.Id), d1, d2);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, MessageInitiator initiator, params string[] description)
     {
         if (entry == null)
         {
@@ -248,5 +253,10 @@ public class FilesMessageService
         var serializedParam = JsonSerializer.Serialize(info);
 
         return serializedParam;
+    }
+
+    private IDictionary<string, StringValues> GetHttpHeaders()
+    {
+        return _httpContextAccessor?.HttpContext?.Request?.Headers?.ToDictionary(k => k.Key, v => v.Value);
     }
 }
