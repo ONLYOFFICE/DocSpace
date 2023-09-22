@@ -43,12 +43,15 @@ const IntegrationWrapper = (props) => {
     },
   ];
 
-  const documentServiceData = {
-    id: "document-service",
-    name: t("DocumentService"),
-    content: <DocumentService />,
-  };
-  if (standalone) data.push(documentServiceData);
+  if (standalone) {
+    const documentServiceData = {
+      id: "document-service",
+      name: t("DocumentService"),
+      content: <DocumentService />,
+    };
+
+    data.push(documentServiceData);
+  }
 
   const getCurrentTab = () => {
     const path = location.pathname;
