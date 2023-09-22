@@ -2,29 +2,22 @@ import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
-import { FolderType } from "@docspace/common/constants";
-import Loaders from "@docspace/common/components/Loaders";
 
-import PersonPlusReactSvgUrl from "PUBLIC_DIR/images/person+.react.svg?url";
-import EmailPlusReactSvgUrl from "PUBLIC_DIR/images/e-mail+.react.svg?url";
+import {
+  EmployeeActivationStatus,
+  RoomsType,
+  ShareAccessRights,
+} from "@docspace/common/constants";
 
-import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
-
-import { RoomsType, ShareAccessRights } from "@docspace/common/constants";
-
-import IconButton from "@docspace/components/icon-button";
-import Text from "@docspace/components/text";
-import User from "./User";
 import MembersHelper from "../../helpers/MembersHelper";
-
 import PublicRoomBlock from "./sub-components/PublicRoomBlock";
+import MembersList from "./MembersList";
 
 const Members = ({
   t,
   selfId,
   selection,
 
-  setIsMobileHidden,
   updateRoomMembers,
   setUpdateRoomMembers,
 
@@ -34,17 +27,16 @@ const Members = ({
   setIsScrollLocked,
 
   getRoomMembers,
+  getRoomLinks,
   updateRoomMemberRole,
   setView,
   roomsView,
   resendEmailInvitations,
-  setInvitePanelOptions,
-  setInviteUsersWarningDialogVisible,
   changeUserType,
-  isGracePeriod,
   isPublicRoomType,
 
   setExternalLinks,
+  membersFilter,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -53,34 +45,66 @@ const Members = ({
 
   const security = selectionParentRoom ? selectionParentRoom.security : {};
 
-  const canInviteUserInRoomAbility = security?.EditAccess;
-
-  const fetchMembers = async (roomId) => {
+  const fetchMembers = async (roomId, clearFilter = true) => {
     let timerId;
-    if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
-    let data = await getRoomMembers(roomId);
+    // if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
 
-    setExternalLinks(data);
+    const data = await getRoomMembers(roomId, clearFilter);
+    // const links = await getRoomLinks(roomId);
 
-    data = data.filter((m) => m.sharedTo.email || m.sharedTo.displayName);
+    // console.log("links", links);
+    // setExternalLinks(data); TODO:
+
     clearTimeout(timerId);
 
-    let inRoomMembers = [];
-    let expectedMembers = [];
+    const users = [];
+    const administrators = [];
+    const expectedMembers = [];
     data.map((fetchedMember) => {
       const member = {
         access: fetchedMember.access,
         canEditAccess: fetchedMember.canEditAccess,
         ...fetchedMember.sharedTo,
       };
-      if (member.activationStatus !== 2) inRoomMembers.push(member);
-      else expectedMembers.push(member);
+
+      if (member.activationStatus === EmployeeActivationStatus.Pending) {
+        expectedMembers.push(member);
+      } else if (
+        member.access === ShareAccessRights.FullAccess ||
+        member.access === ShareAccessRights.RoomManager
+      ) {
+        administrators.push(member);
+      } else {
+        users.push(member);
+      }
     });
+
+    if (administrators.length && !members?.administrators?.length) {
+      administrators.unshift({
+        id: "administration",
+        displayName: t("Administration"),
+        isTitle: true,
+      });
+    }
+
+    if (users.length && !members?.users?.length) {
+      users.unshift({ id: "user", displayName: t("Users"), isTitle: true });
+    }
+
+    if (expectedMembers.length && !members?.expected?.length) {
+      expectedMembers.unshift({
+        id: "expected",
+        displayName: t("ExpectUsers"),
+        isTitle: true,
+        isExpect: true,
+      });
+    }
 
     setShowLoader(false);
     setUpdateRoomMembers(false);
     return {
-      inRoom: inRoomMembers,
+      users,
+      administrators,
       expected: expectedMembers,
     };
   };
@@ -129,6 +153,7 @@ const Members = ({
       ...selectionParentRoom,
       members: fetchedMembers,
     });
+
     setMembers(fetchedMembers);
   }, [selectionParentRoom, selection?.id, updateRoomMembers]);
 
@@ -141,25 +166,6 @@ const Members = ({
     updateMembersAction,
   ]);
 
-  const onClickInviteUsers = () => {
-    setIsMobileHidden(true);
-    const parentRoomId = selectionParentRoom.id;
-
-    if (isGracePeriod) {
-      setInviteUsersWarningDialogVisible(true);
-      return;
-    }
-
-    setInvitePanelOptions({
-      visible: true,
-      roomId: parentRoomId,
-      hideSelector: false,
-      defaultAccess: isPublicRoomType
-        ? ShareAccessRights.RoomManager
-        : ShareAccessRights.ReadOnly,
-    });
-  };
-
   const onRepeatInvitation = async () => {
     const userIds = members.expected.map((user) => user.id);
     resendEmailInvitations(selectionParentRoom.id, userIds)
@@ -169,105 +175,55 @@ const Members = ({
       .catch((err) => toastr.error(err));
   };
 
-  if (showLoader) return <Loaders.InfoPanelViewLoader view="members" />;
   if (!selectionParentRoom || !members) return null;
 
-  const [currentMember] = members.inRoom.filter(
+  const [currentMember] = members.administrators.filter(
     (member) => member.id === selfId
   );
+
+  const loadNextPage = async () => {
+    const roomId = selectionParentRoom.id;
+    const fetchedMembers = await fetchMembers(roomId, false);
+    const { users, administrators, expected } = fetchedMembers;
+
+    const newMembers = {
+      administrators: [...members.administrators, administrators],
+      users: [...members.users, ...users],
+      expected: [...members.expected, ...expected],
+    };
+
+    setMembers(newMembers);
+  };
+
+  const { administrators, users, expected } = members;
+  const membersList = [...administrators, ...users, ...expected];
 
   return (
     <>
       {isPublicRoomType && <PublicRoomBlock t={t} />}
-
-      <StyledUserTypeHeader>
-        <Text className="title">
-          {t("UsersInRoom")} : {members.inRoom.length}
-        </Text>
-        {canInviteUserInRoomAbility && (
-          <IconButton
-            id="info_add-user"
-            className={"icon"}
-            title={t("Common:AddUsers")}
-            iconName={PersonPlusReactSvgUrl}
-            isFill={true}
-            onClick={onClickInviteUsers}
-            size={16}
-          />
-        )}
-      </StyledUserTypeHeader>
-
-      <StyledUserList>
-        {Object.values(members.inRoom).map((user) => (
-          <User
-            security={security}
-            key={user.id}
-            t={t}
-            user={user}
-            membersHelper={membersHelper}
-            currentMember={currentMember}
-            updateRoomMemberRole={updateRoomMemberRole}
-            roomId={selectionParentRoom.id}
-            roomType={selectionParentRoom.roomType}
-            selectionParentRoom={selectionParentRoom}
-            setSelectionParentRoom={setSelectionParentRoom}
-            changeUserType={changeUserType}
-            setIsScrollLocked={setIsScrollLocked}
-          />
-        ))}
-      </StyledUserList>
-
-      {!!members.expected.length && (
-        <StyledUserTypeHeader isExpect>
-          <Text className="title">{t("PendingInvitations")}</Text>
-          {canInviteUserInRoomAbility && (
-            <IconButton
-              className={"icon"}
-              title={t("Common:RepeatInvitation")}
-              iconName={EmailPlusReactSvgUrl}
-              isFill={true}
-              onClick={onRepeatInvitation}
-              size={16}
-            />
-          )}
-        </StyledUserTypeHeader>
-      )}
-
-      <StyledUserList>
-        {Object.values(members.expected).map((user, i) => (
-          <User
-            security={security}
-            isExpect
-            key={i}
-            t={t}
-            user={user}
-            membersHelper={membersHelper}
-            currentMember={currentMember}
-            updateRoomMemberRole={updateRoomMemberRole}
-            roomId={selectionParentRoom.id}
-            roomType={selectionParentRoom.roomType}
-            selectionParentRoom={selectionParentRoom}
-            setSelectionParentRoom={setSelectionParentRoom}
-            changeUserType={changeUserType}
-            setIsScrollLocked={setIsScrollLocked}
-          />
-        ))}
-      </StyledUserList>
+      <MembersList
+        loadNextPage={loadNextPage}
+        t={t}
+        security={security}
+        members={membersList}
+        membersHelper={membersHelper}
+        currentMember={currentMember}
+        updateRoomMemberRole={updateRoomMemberRole}
+        selectionParentRoom={selectionParentRoom}
+        setSelectionParentRoom={setSelectionParentRoom}
+        changeUserType={changeUserType}
+        setIsScrollLocked={setIsScrollLocked}
+        hasNextPage={membersList.length < membersFilter.total}
+        itemCount={membersFilter.total}
+        onRepeatInvitation={onRepeatInvitation}
+      />
     </>
   );
 };
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    peopleStore,
-    dialogsStore,
-    selectedFolderStore,
-    publicRoomStore,
-  }) => {
+  ({ auth, filesStore, peopleStore, selectedFolderStore, publicRoomStore }) => {
     const {
-      setIsMobileHidden,
       selectionParentRoom,
 
       setSelectionParentRoom,
@@ -279,12 +235,14 @@ export default inject(
 
       setIsScrollLocked,
     } = auth.infoPanelStore;
-    const { getRoomMembers, updateRoomMemberRole, resendEmailInvitations } =
-      filesStore;
+    const {
+      getRoomMembers,
+      getRoomLinks,
+      updateRoomMemberRole,
+      resendEmailInvitations,
+      membersFilter,
+    } = filesStore;
     const { id: selfId } = auth.userStore.user;
-    const { isGracePeriod } = auth.currentTariffStatusStore;
-    const { setInvitePanelOptions, setInviteUsersWarningDialogVisible } =
-      dialogsStore;
 
     const { changeType: changeUserType } = peopleStore;
     const { setExternalLinks } = publicRoomStore;
@@ -298,13 +256,13 @@ export default inject(
     return {
       setView,
       roomsView,
-      setIsMobileHidden,
       selectionParentRoom,
       setSelectionParentRoom,
 
       setIsScrollLocked,
 
       getRoomMembers,
+      getRoomLinks,
       updateRoomMemberRole,
 
       updateRoomMembers,
@@ -312,13 +270,11 @@ export default inject(
 
       selfId,
 
-      setInvitePanelOptions,
-      setInviteUsersWarningDialogVisible,
       resendEmailInvitations,
       changeUserType,
-      isGracePeriod,
       isPublicRoomType,
       setExternalLinks,
+      membersFilter,
     };
   }
 )(

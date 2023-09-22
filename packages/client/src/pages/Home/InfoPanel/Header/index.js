@@ -126,12 +126,14 @@ const InfoPanelHeaderContent = (props) => {
               style={{ width: "100%" }}
               data={roomsSubmenu}
               forsedActiveItemId={roomsView}
+              size="scale"
             />
           ) : (
             <Submenu
               style={{ width: "100%" }}
               data={personalSubmenu}
               forsedActiveItemId={fileView}
+              size="scale"
             />
           )}
         </div>

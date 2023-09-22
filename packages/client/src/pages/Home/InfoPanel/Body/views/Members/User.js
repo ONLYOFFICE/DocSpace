@@ -9,6 +9,10 @@ import { isMobileOnly } from "react-device-detect";
 import { decode } from "he";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
 import { getUserRole } from "@docspace/common/utils";
+import Text from "@docspace/components/text";
+import EmailPlusReactSvgUrl from "PUBLIC_DIR/images/e-mail+.react.svg?url";
+import { StyledUserTypeHeader } from "../../styles/members";
+import IconButton from "@docspace/components/icon-button";
 
 const User = ({
   t,
@@ -21,6 +25,9 @@ const User = ({
   setSelectionParentRoom,
   changeUserType,
   setIsScrollLocked,
+  isTitle,
+  onRepeatInvitation,
+  showInviteIcon,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -126,7 +133,22 @@ const User = ({
     user.isOwner ? t("Common:DocSpaceOwner") : t("Common:DocSpaceAdmin")
   }. ${t("Common:HasFullAccess")}`;
 
-  return (
+  return isTitle ? (
+    <StyledUserTypeHeader isExpect={isExpect}>
+      <Text className="title">{user.displayName}</Text>
+
+      {showInviteIcon && (
+        <IconButton
+          className={"icon"}
+          title={t("Common:RepeatInvitation")}
+          iconName={EmailPlusReactSvgUrl}
+          isFill={true}
+          onClick={onRepeatInvitation}
+          size={16}
+        />
+      )}
+    </StyledUserTypeHeader>
+  ) : (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
         role={role}
