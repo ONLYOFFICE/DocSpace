@@ -40,13 +40,17 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
     else setPortalUrlIsValid(URL_REGEX.test(e.target.value));
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const onSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     changeDocumentServiceLocation(apiUrl, internalUrl, portalUrl)
       .then(() => toastr.success("Success"))
-      .catch((e) =>
-        toastr.error(`${e.message}:\n${e.response.data.error.message}`)
-      );
+      .catch((err) =>
+        toastr.error(`${err.message}:\n${err.response?.data.error.message}`)
+      )
+      .finally(() => setIsLoading(false));
   };
 
   const onReset = () => {
@@ -154,7 +158,8 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
             primary
             size={"small"}
             label={t("Common:SaveButton")}
-            // isDisabled={isFormEmpty || !allInputsValid}
+            isLoading={isLoading}
+            isDisabled={isFormEmpty || !allInputsValid}
           />
           <Button
             onClick={onReset}
