@@ -13,15 +13,21 @@ import toastr from "@docspace/components/toast/toastr";
 
 const URL_REGEX = /^https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\/?$/;
 
-const DocumentService = ({ changeDocumentServiceLocation }) => {
+const DocumentService = ({
+  getDocumentServiceLocation,
+  changeDocumentServiceLocation,
+}) => {
   const { t } = useTranslation(["Settings", "Common"]);
 
-  const [apiUrl, setApiUrl] = useState("");
-  const [apiUrlIsValid, setApiUrlIsValid] = useState(true);
+  const [isSaveLoading, setSaveIsLoading] = useState(false);
+  const [isResetLoading, setResetIsLoading] = useState(false);
+
+  const [docServiceUrl, setDocServiceUrl] = useState("");
+  const [docServiceUrlIsValid, setDocServiceUrlIsValid] = useState(true);
   const onChangeApiUrl = (e) => {
-    setApiUrl(e.target.value);
-    if (!e.target.value) setApiUrlIsValid(true);
-    else setApiUrlIsValid(URL_REGEX.test(e.target.value));
+    setDocServiceUrl(e.target.value);
+    if (!e.target.value) setDocServiceUrlIsValid(true);
+    else setDocServiceUrlIsValid(URL_REGEX.test(e.target.value));
   };
 
   const [internalUrl, setInternalUrl] = useState("");
@@ -40,40 +46,51 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
     else setPortalUrlIsValid(URL_REGEX.test(e.target.value));
   };
 
-  const [isLoading, setIsLoading] = useState(false);
-
   const onSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    changeDocumentServiceLocation(apiUrl, internalUrl, portalUrl)
-      .then(() => toastr.success("Success"))
-      .catch((err) =>
-        toastr.error(`${err.message}:\n${err.response?.data.error.message}`)
-      )
-      .finally(() => setIsLoading(false));
+    setSaveIsLoading(true);
+    changeDocumentServiceLocation(docServiceUrl, internalUrl, portalUrl)
+      .then((response) => {
+        toastr.success(t("Common:ChangesSavedSuccessfully"));
+        setDocServiceUrl(response[0]);
+        setInternalUrl(response[1]);
+        setPortalUrl(response[2]);
+      })
+      .catch((e) => toastr.error(e))
+      .finally(() => setSaveIsLoading(false));
   };
 
   const onReset = () => {
-    setApiUrl("");
-    setInternalUrl("");
-    setPortalUrl("");
-    setApiUrlIsValid(true);
+    setDocServiceUrlIsValid(true);
     setInternalUrlIsValid(true);
     setPortalUrlIsValid(true);
+
+    setResetIsLoading(true);
+    changeDocumentServiceLocation(null, null, null)
+      .then((response) => {
+        toastr.success(t("Common:ChangesSavedSuccessfully"));
+        setDocServiceUrl(response[0]);
+        setInternalUrl(response[1]);
+        setPortalUrl(response[2]);
+      })
+      .catch((e) => toastr.error(e))
+      .finally(() => setResetIsLoading(false));
   };
 
-  const isFormEmpty = !apiUrl && !internalUrl && !portalUrl;
+  const isFormEmpty = !docServiceUrl && !internalUrl && !portalUrl;
   const allInputsValid =
-    apiUrlIsValid && internalUrlIsValid && portalUrlIsValid;
+    docServiceUrlIsValid && internalUrlIsValid && portalUrlIsValid;
 
-  const anyInputFilled = apiUrl || internalUrl || portalUrl;
+  const anyInputFilled = docServiceUrl || internalUrl || portalUrl;
 
   useEffect(() => {
-    const fetchDocumentServiceLocation = async () => {
-      const result = await changeDocumentServiceLocation();
-      console.log(result);
-    };
-    fetchDocumentServiceLocation();
+    getDocumentServiceLocation()
+      .then((result) => {
+        setPortalUrl(result?.docServicePortalUrl);
+        setInternalUrl(result?.docServiceUrlInternal);
+        setDocServiceUrl(result?.docServiceUrl);
+      })
+      .catch((error) => toastr.error(error));
   }, []);
 
   return (
@@ -98,29 +115,30 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
         <div className="form-inputs">
           <div className="input-wrapper">
             <Label
-              htmlFor="editingAdress"
+              htmlFor="docServiceAdress"
               text={t("Settings:DocumentServiceLocationUrlApi")}
             />
             <InputBlock
-              id="editingAdress"
+              id="docServiceAdress"
               type="text"
               autoComplete="off"
               tabIndex={1}
               scale
               iconButtonClassName={"icon-button"}
-              value={apiUrl}
+              value={docServiceUrl}
               onChange={onChangeApiUrl}
               placeholder={"http://<editors-dns-name>/"}
-              hasError={!apiUrlIsValid}
+              hasError={!docServiceUrlIsValid}
+              isDisabled={isSaveLoading || isResetLoading}
             />
           </div>
           <div className="input-wrapper">
             <Label
-              htmlFor="fromDocspaceAdress"
+              htmlFor="internalAdress"
               text={t("Settings:DocumentServiceLocationUrlInternal")}
             />
             <InputBlock
-              id="fromDocspaceAdress"
+              id="internalAdress"
               type="text"
               autoComplete="off"
               tabIndex={2}
@@ -130,15 +148,16 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
               onChange={onChangeInternalUrl}
               placeholder={"http://<editors-dns-name>/"}
               hasError={!internalUrlIsValid}
+              isDisabled={isSaveLoading || isResetLoading}
             />
           </div>
           <div className="input-wrapper">
             <Label
-              htmlFor="fromDocServiceAdress"
+              htmlFor="portalAdress"
               text={t("Settings:DocumentServiceLocationUrlPortal")}
             />
             <InputBlock
-              id="fromDocServiceAdress"
+              id="portalAdress"
               type="text"
               autoComplete="off"
               tabIndex={3}
@@ -146,8 +165,9 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
               iconButtonClassName={"icon-button"}
               value={portalUrl}
               onChange={onChangePortalUrl}
-              placeholder={"http://<win-nvplrl2avjo/"}
+              placeholder={"http://<docspace-dns-name>/"}
               hasError={!portalUrlIsValid}
+              isDisabled={isSaveLoading || isResetLoading}
             />
           </div>
         </div>
@@ -158,15 +178,18 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
             primary
             size={"small"}
             label={t("Common:SaveButton")}
-            isLoading={isLoading}
-            isDisabled={isFormEmpty || !allInputsValid}
+            isDisabled={
+              isFormEmpty || !allInputsValid || isSaveLoading || isResetLoading
+            }
+            isLoading={isSaveLoading}
           />
           <Button
             onClick={onReset}
             className="button"
             size={"small"}
-            label={t("Common:ResetButton")}
-            isDisabled={!anyInputFilled}
+            label={t("Settings:RestoreDefaultButton")}
+            isDisabled={!anyInputFilled || isSaveLoading || isResetLoading}
+            isLoading={isResetLoading}
           />
         </div>
       </Styled.LocationForm>
@@ -176,6 +199,7 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
 
 export default inject(({ auth, settingsStore }) => {
   return {
+    getDocumentServiceLocation: settingsStore.getDocumentServiceLocation,
     changeDocumentServiceLocation: settingsStore.changeDocumentServiceLocation,
   };
 })(observer(DocumentService));

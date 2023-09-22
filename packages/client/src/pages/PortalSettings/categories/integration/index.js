@@ -13,7 +13,7 @@ import SMTPSettings from "./SMTPSettings";
 import DocumentService from "./DocumentService";
 
 const IntegrationWrapper = (props) => {
-  const { t, tReady, baseDomain, enablePlugins, toDefault, isSSOAvailable } =
+  const { t, tReady, enablePlugins, toDefault, isSSOAvailable, standalone } =
     props;
   const navigate = useNavigate();
 
@@ -48,7 +48,7 @@ const IntegrationWrapper = (props) => {
     name: t("DocumentService"),
     content: <DocumentService />,
   };
-  if (baseDomain) data.push(documentServiceData);
+  if (standalone) data.push(documentServiceData);
 
   const getCurrentTab = () => {
     const path = location.pathname;
@@ -72,16 +72,16 @@ const IntegrationWrapper = (props) => {
 };
 
 export default inject(({ auth, ssoStore }) => {
-  const { baseDomain } = auth.settingsStore;
+  const { standalone } = auth.settingsStore;
   const { load: toDefault } = ssoStore;
   const { enablePlugins } = auth.settingsStore;
   const { isSSOAvailable } = auth.currentQuotaStore;
 
   return {
-    baseDomain,
     enablePlugins,
     toDefault,
     isSSOAvailable,
+    standalone,
   };
 })(
   withTranslation(["Settings", "SingleSignOn", "Translations"])(

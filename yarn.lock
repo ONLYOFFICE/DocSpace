@@ -3147,7 +3147,7 @@ __metadata:
     react-player: ^1.15.3
     react-router: ^6.10.0
     react-router-dom: ^6.10.0
-    react-tooltip: 5.21.1
+    react-tooltip: ^5.21.1
     react-viewer: ^3.2.2
     react-virtualized-auto-sizer: ^1.0.7
     react-window: ^1.8.8
@@ -22255,19 +22255,6 @@ __metadata:
     react: ">=16"
     react-dom: ">=16"
   checksum: 63bedc8f03016b0960ea5b6d101181464ec16cf44240229210119e9db3b344dd59c4df3df23832803b136a225a9671096027131fee9b072f0eb87cd8e38f742d
-  languageName: node
-  linkType: hard
-
-"react-tooltip@npm:5.21.1":
-  version: 5.21.1
-  resolution: "react-tooltip@npm:5.21.1"
-  dependencies:
-    "@floating-ui/dom": ^1.0.0
-    classnames: ^2.3.0
-  peerDependencies:
-    react: ">=16.14.0"
-    react-dom: ">=16.14.0"
-  checksum: 44fbe22169eecc12b32e401460997c3b26bae96f70c527260ad41b5015c2ead37b8f713e01737be2fb748ffbb7b6ee8c461a9f46b064c36e6b39a542aab1b852
   languageName: node
   linkType: hard
 

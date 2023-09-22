@@ -830,10 +830,6 @@ export function removeFromFavorite(ids) {
   return request(options);
 }
 
-export function getDocServiceUrl() {
-  return request({ method: "get", url: `/files/docservice` });
-}
-
 export function getIsEncryptionSupport() {
   return request({
     method: "get",
@@ -1011,12 +1007,24 @@ export function sendEditorNotify(fileId, actionLink, emails, message) {
   });
 }
 
-export function changeDocumentServiceLocation(apiUrl, internalUrl, portalUrl) {
+export function getDocumentServiceLocation(version = true) {
+  return request({
+    method: "get",
+    url: `/files/docservice`,
+    params: { version },
+  });
+}
+
+export function changeDocumentServiceLocation(
+  docServiceUrl,
+  internalUrl,
+  portalUrl
+) {
   return request({
     method: "put",
     url: `files/docservice`,
     data: {
-      DocServiceUrl: apiUrl,
+      DocServiceUrl: docServiceUrl,
       DocServiceUrlInternal: internalUrl,
       DocServiceUrlPortal: portalUrl,
     },
