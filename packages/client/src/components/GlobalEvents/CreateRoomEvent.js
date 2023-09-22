@@ -38,7 +38,7 @@ const CreateRoomEvent = ({
     ) {
       setCreateRoomConfirmDialogVisible(true);
     } else {
-      onCreateRoom();
+      onCreateRoom(false, t);
     }
   };
 
