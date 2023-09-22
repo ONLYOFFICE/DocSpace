@@ -46,16 +46,20 @@ const Members = ({
   const security = selectionParentRoom ? selectionParentRoom.security : {};
 
   const fetchMembers = async (roomId, clearFilter = true) => {
-    let timerId;
+    // let timerId;
     // if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
 
-    const data = await getRoomMembers(roomId, clearFilter);
-    // const links = await getRoomLinks(roomId);
+    const isPublic = selection?.roomType ?? selectionParentRoom?.roomType;
+    const requests = [getRoomMembers(roomId, clearFilter)];
 
-    // console.log("links", links);
-    // setExternalLinks(data); TODO:
+    if (isPublic && clearFilter) {
+      requests.push(getRoomLinks(roomId));
+    }
 
-    clearTimeout(timerId);
+    const [data, links] = await Promise.all(requests);
+
+    links && links.length && setExternalLinks(links);
+    // clearTimeout(timerId);
 
     const users = [];
     const administrators = [];
@@ -79,7 +83,13 @@ const Members = ({
       }
     });
 
-    if (administrators.length && !members?.administrators?.length) {
+    let hasPrevAdminsTitle = false;
+    if (members && members.administrators.length) {
+      hasPrevAdminsTitle =
+        members.administrators.findIndex((x) => x.id === "administration") > -1;
+    }
+
+    if (administrators.length && !hasPrevAdminsTitle) {
       administrators.unshift({
         id: "administration",
         displayName: t("Administration"),
@@ -87,11 +97,22 @@ const Members = ({
       });
     }
 
-    if (users.length && !members?.users?.length) {
+    let hasPrevUsersTitle = false;
+    if (members && members.users.length) {
+      hasPrevUsersTitle = members.users.findIndex((x) => x.id === "user") > -1;
+    }
+
+    if (users.length && !hasPrevUsersTitle) {
       users.unshift({ id: "user", displayName: t("Users"), isTitle: true });
     }
 
-    if (expectedMembers.length && !members?.expected?.length) {
+    let hasPrevExpectedTitle = false;
+    if (members && members.expected.length) {
+      hasPrevExpectedTitle =
+        members.expected.findIndex((x) => x.id === "expected") > -1;
+    }
+
+    if (expectedMembers.length && !hasPrevExpectedTitle) {
       expectedMembers.unshift({
         id: "expected",
         displayName: t("ExpectUsers"),
@@ -187,7 +208,7 @@ const Members = ({
     const { users, administrators, expected } = fetchedMembers;
 
     const newMembers = {
-      administrators: [...members.administrators, administrators],
+      administrators: [...members.administrators, ...administrators],
       users: [...members.users, ...users],
       expected: [...members.expected, ...expected],
     };
