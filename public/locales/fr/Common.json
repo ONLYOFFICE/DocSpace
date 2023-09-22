@@ -113,6 +113,7 @@
   "ErrorReportDescription": "Ouvrez le rapport ci-dessous pour voir quelles données sont incluses. Les rapports d’erreur ne contiennent aucune donnée personnelle des utilisateurs. Pour aider notre équipe à mieux comprendre le problème, décrivez-le dans le champ de commentaire. ",
   "ErrorReportSuccess": "Le rapport d’erreur a été envoyé avec succès",
   "Exabyte": "Eo",
+  "Example": "Exemple : {{example}}",
   "ExpiredLink": "Lien expiré",
   "FeedbackAndSupport": "Commentaires & assistance",
   "FillFormButton": "Remplissez le formulaire",

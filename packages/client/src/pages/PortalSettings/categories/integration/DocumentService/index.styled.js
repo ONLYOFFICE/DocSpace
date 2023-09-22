@@ -11,7 +11,7 @@ export const LocationHeader = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin: 5px 0 8px 0;
+  margin: 5px 0 2px 0;
 
   .main {
     display: flex;
@@ -62,6 +62,10 @@ export const LocationForm = styled.form`
       .icon-button {
         display: none;
       }
+    }
+
+    .subtitle {
+      color: ${(props) => props.theme.client.settings.common.descriptionColor};
     }
   }
 

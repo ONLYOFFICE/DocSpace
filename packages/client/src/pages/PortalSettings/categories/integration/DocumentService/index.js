@@ -3,19 +3,24 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import * as Styled from "./index.styled";
 import {
+  Link,
   Button,
   Heading,
   HelpButton,
   InputBlock,
   Label,
+  Text,
 } from "@docspace/components";
 import toastr from "@docspace/components/toast/toastr";
 
 const URL_REGEX = /^https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\/?$/;
+const EDITOR_URL_PLACEHOLDER = `${window.location.protocol}//<editors-dns-name>/`;
 
 const DocumentService = ({
   getDocumentServiceLocation,
   changeDocumentServiceLocation,
+  currentColorScheme,
+  integrationSettingsUrl,
 }) => {
   const { t } = useTranslation(["Settings", "Common"]);
 
@@ -122,14 +127,6 @@ const DocumentService = ({
     internalUrl == initInternalUrl &&
     portalUrl == initPortalUrl;
 
-  console.log({
-    isValuesInit,
-    isFormEmpty,
-    allInputsValid,
-    isSaveLoading,
-    isResetLoading,
-  });
-
   return (
     <Styled.Location>
       <Styled.LocationHeader>
@@ -145,6 +142,17 @@ const DocumentService = ({
         </div>
         <div className="secondary">
           {t("Settings:DocumentServiceLocationHeaderInfo")}
+        </div>
+        <div>
+          <Link
+            className="third-party-link"
+            color={currentColorScheme.main.accent}
+            isHovered
+            target="_blank"
+            href={integrationSettingsUrl}
+          >
+            {t("Common:LearnMore")}
+          </Link>
         </div>
       </Styled.LocationHeader>
 
@@ -164,10 +172,15 @@ const DocumentService = ({
               iconButtonClassName={"icon-button"}
               value={docServiceUrl}
               onChange={onChangeDocServiceUrl}
-              placeholder={"http://<editors-dns-name>/"}
+              placeholder={EDITOR_URL_PLACEHOLDER}
               hasError={!docServiceUrlIsValid}
               isDisabled={isSaveLoading || isResetLoading}
             />
+            <Text className="subtitle">
+              {t("Common:Example", {
+                example: EDITOR_URL_PLACEHOLDER,
+              })}
+            </Text>
           </div>
           <div className="input-wrapper">
             <Label
@@ -183,10 +196,15 @@ const DocumentService = ({
               iconButtonClassName={"icon-button"}
               value={internalUrl}
               onChange={onChangeInternalUrl}
-              placeholder={"http://<editors-dns-name>/"}
+              placeholder={EDITOR_URL_PLACEHOLDER}
               hasError={!internalUrlIsValid}
               isDisabled={isSaveLoading || isResetLoading}
             />
+            <Text className="subtitle">
+              {t("Common:Example", {
+                example: EDITOR_URL_PLACEHOLDER,
+              })}
+            </Text>
           </div>
           <div className="input-wrapper">
             <Label
@@ -206,6 +224,11 @@ const DocumentService = ({
               hasError={!portalUrlIsValid}
               isDisabled={isSaveLoading || isResetLoading}
             />
+            <Text className="subtitle">
+              {t("Common:Example", {
+                example: `${window.location.origin}`,
+              })}
+            </Text>
           </div>
         </div>
         <div className="form-buttons">
@@ -239,8 +262,13 @@ const DocumentService = ({
 };
 
 export default inject(({ auth, settingsStore }) => {
+  const { currentColorScheme, integrationSettingsUrl } = auth.settingsStore;
+  const { getDocumentServiceLocation, changeDocumentServiceLocation } =
+    settingsStore;
   return {
-    getDocumentServiceLocation: settingsStore.getDocumentServiceLocation,
-    changeDocumentServiceLocation: settingsStore.changeDocumentServiceLocation,
+    getDocumentServiceLocation,
+    changeDocumentServiceLocation,
+    currentColorScheme,
+    integrationSettingsUrl,
   };
 })(observer(DocumentService));

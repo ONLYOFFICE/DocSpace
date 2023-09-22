@@ -112,6 +112,7 @@
   "ErrorReportDescription": "Atveriet tālāk esošo pārskatu, lai redzētu, kādi dati ir iekļauti. Kļūdu ziņojumos nav ietverti nekādi lietotāju personas dati. Lai palīdzētu mūsu komandai labāk izprast problēmu, aprakstiet to brīvā formā, izmantojot komentāru lauku.",
   "ErrorReportSuccess": "Kļūdas pārskats ir veiksmīgi nosūtīts",
   "Exabyte": "EB",
+  "Example": "Piemērs: {{example}}",
   "ExpiredLink": "Saites derīgums ir beidzies",
   "FeedbackAndSupport": "Feedback & Support",
   "FillFormButton": "Aizpildiet veidlapu",

@@ -113,6 +113,7 @@
   "ErrorReportDescription": "Hansı məlumatın daxil olduğunu görmək üçün aşağıdakı hesabatı açın. Xəta hesabatlarında istifadəçilərin şəxsi məlumatları əks olunmur. Komandamızın problemi daha yaxşı başa düşməsi üçün şərh sahəsindən istifadə edərək məsələni aydın şəkildə təsvir edin.",
   "ErrorReportSuccess": "Xəta hesabatı uğurla göndərildi",
   "Exabyte": "EB",
+  "Example": "Nümunə: {{example}}",
   "ExpiredLink": "İstifadə müddəti bitmiş keçid",
   "FeedbackAndSupport": "Rəy və Dəstək",
   "FillFormButton": "Formu doldurun",
