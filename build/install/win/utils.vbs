@@ -290,7 +290,7 @@ Function ElasticSearchSetup
     oRE.Pattern = "path.logs:.*"
     fileContent = oRE.Replace(fileContent, "path.logs: " & Session.Property("APPDIR") & "Logs\")                           
     
-	If InStrRev(fileContent, "ingest.geoip.downloader.enabled") = 0 Then
+    If InStrRev(fileContent, "ingest.geoip.downloader.enabled") = 0 Then
         fileContent = fileContent & Chr(13) & Chr(10) & "ingest.geoip.downloader.enabled: false"
     Else
         oRE.Pattern = "ingest.geoip.downloader.enabled.*"
