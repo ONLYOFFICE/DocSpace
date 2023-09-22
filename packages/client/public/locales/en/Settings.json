@@ -95,7 +95,6 @@
   "DNSSettingsDescription": "Set an alternative URL address for your space. Send your request to our support team to get help with the settings.",
   "DNSSettingsMobile": "Send your request to our support team, and our specialists will help you with the settings.",
   "DNSSettingsNavDescription": "DNS Settings is a way to set an alternative URL for your portal.",
-  "DNSSettingsTooltip": "DNS Settings allow you to set an alternative URL address for your {{ organizationName }} space. Send your request to our support team, and our specialists will help you with the settings.",
   "DNSSettingsTooltipMain": "DNS Settings allow you to set an alternative URL address for your {{ organizationName }} space.",
   "DNSSettingsTooltipStandalone": "Check the 'Custom domain name box' and specify your own domain name for the ONLYOFFICE space in the field below. To make the parameters you set take effect click the 'Save button' at the bottom of the section.",
   "DocumentService": "Document Service",
