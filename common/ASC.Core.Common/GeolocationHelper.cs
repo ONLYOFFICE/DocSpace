@@ -68,7 +68,7 @@ public class GeolocationHelper
         try
         {
             var location = await GetIPGeolocationAsync(IPAddress.Parse(ip));
-            if (string.IsNullOrEmpty(location.Key))
+            if (string.IsNullOrEmpty(location.Key) || (location.Key == "ZZ"))
             {
                 return new string[] { string.Empty, string.Empty };
             }
@@ -96,7 +96,7 @@ public class GeolocationHelper
             var addrType = address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork ? "ipv4" : "ipv6";
 
             var result = await Queries.IpGeolocationInfoAsync(dbContext, addrType, address.GetAddressBytes());
-            
+
             if (result != null)
             {
                 _cache.Insert(cacheKey, result, TimeSpan.FromSeconds(15));

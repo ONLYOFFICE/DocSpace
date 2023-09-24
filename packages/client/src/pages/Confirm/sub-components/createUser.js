@@ -445,7 +445,7 @@ const CreateUserForm = (props) => {
                     {roomName ? (
                       <Trans
                         t={t}
-                        i18nKey="WelcomeToRoomName"
+                        i18nKey="WelcomeToRoom"
                         ns="Confirm"
                         key={roomName}
                       >

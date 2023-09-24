@@ -34,6 +34,7 @@ import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import LeaveRoomSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
+import CatalogRoomsReactSvgUrl from "PUBLIC_DIR/images/catalog.rooms.react.svg?url";
 
 import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
@@ -52,6 +53,7 @@ import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { getOAuthToken } from "@docspace/common/utils";
 import api from "@docspace/common/api";
+import { FolderType } from "@docspace/common/constants";
 
 const LOADER_TIMER = 500;
 let loadingTime;
@@ -163,10 +165,8 @@ class ContextOptionsStore {
   };
 
   onClickMakeForm = (item, t) => {
-    const {
-      setConvertPasswordDialogVisible,
-      setFormCreationInfo,
-    } = this.dialogsStore;
+    const { setConvertPasswordDialogVisible, setFormCreationInfo } =
+      this.dialogsStore;
     const { title, id, folderId, fileExst } = item;
 
     const newTitle =
@@ -229,10 +229,8 @@ class ContextOptionsStore {
   };
 
   showVersionHistory = (id, security) => {
-    const {
-      fetchFileVersions,
-      setIsVerHistoryPanel,
-    } = this.versionHistoryStore;
+    const { fetchFileVersions, setIsVerHistoryPanel } =
+      this.versionHistoryStore;
 
     if (this.treeFoldersStore.isRecycleBinFolder) return;
 
@@ -262,9 +260,8 @@ class ContextOptionsStore {
 
   lockFile = (item, t) => {
     const { id, locked } = item;
-    const {
-      setSelection: setInfoPanelSelection,
-    } = this.authStore.infoPanelStore;
+    const { setSelection: setInfoPanelSelection } =
+      this.authStore.infoPanelStore;
 
     this.filesActionsStore
       .lockFileAction(id, !locked)
@@ -410,6 +407,12 @@ class ContextOptionsStore {
     this.dialogsStore.setDownloadDialogVisible(true);
   };
 
+  onClickCreateRoom = () => {
+    this.filesActionsStore.setProcessCreatingRoomFromData(true);
+    const event = new Event(Events.ROOM_CREATE);
+    window.dispatchEvent(event);
+  };
+
   onDuplicate = (item, t) => {
     this.filesActionsStore
       .duplicateAction(item, t("Common:CopyOperation"))
@@ -439,19 +442,13 @@ class ContextOptionsStore {
   };
 
   onClickDeleteSelectedFolder = (t, isRoom) => {
-    const {
-      setIsFolderActions,
-      setDeleteDialogVisible,
-      setIsRoomDelete,
-    } = this.dialogsStore;
+    const { setIsFolderActions, setDeleteDialogVisible, setIsRoomDelete } =
+      this.dialogsStore;
     const { confirmDelete } = this.settingsStore;
     const { deleteAction, deleteRoomsAction } = this.filesActionsStore;
     const { id: selectedFolderId } = this.selectedFolderStore;
-    const {
-      isThirdPartySelection,
-      getFolderInfo,
-      setBufferSelection,
-    } = this.filesStore;
+    const { isThirdPartySelection, getFolderInfo, setBufferSelection } =
+      this.filesStore;
 
     setIsFolderActions(true);
 
@@ -493,10 +490,8 @@ class ContextOptionsStore {
   onClickDelete = (item, t) => {
     const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
 
-    const {
-      setRemoveItem,
-      setDeleteThirdPartyDialogVisible,
-    } = this.dialogsStore;
+    const { setRemoveItem, setDeleteThirdPartyDialogVisible } =
+      this.dialogsStore;
 
     if (id === this.selectedFolderStore.id) {
       this.onClickDeleteSelectedFolder(t, isRoom);
@@ -1203,6 +1198,14 @@ class ContextOptionsStore {
         action: "remove",
       },
       {
+        id: "option_create_room",
+        key: "create-room",
+        label: t("Files:CreateRoom"),
+        icon: CatalogRoomsReactSvgUrl,
+        onClick: this.onClickCreateRoom,
+        disabled: this.selectedFolderStore.rootFolderType !== FolderType.USER,
+      },
+      {
         id: "option_download",
         key: "download",
         label: t("Common:Download"),
@@ -1338,11 +1341,8 @@ class ContextOptionsStore {
     const { personal } = this.authStore.settingsStore;
     const { selection, allFilesIsEditing } = this.filesStore;
     const { setDeleteDialogVisible } = this.dialogsStore;
-    const {
-      isRecycleBinFolder,
-      isRoomsFolder,
-      isArchiveFolder,
-    } = this.treeFoldersStore;
+    const { isRecycleBinFolder, isRoomsFolder, isArchiveFolder } =
+      this.treeFoldersStore;
 
     const { pinRooms, unpinRooms, deleteRooms } = this.filesActionsStore;
 
@@ -1503,6 +1503,14 @@ class ContextOptionsStore {
         disabled: favoriteItems.length || !removeFromFavoriteItems.length,
         "data-action": "remove",
         action: "remove",
+      },
+      {
+        id: "create_room",
+        key: "create-room",
+        label: t("Files:CreateRoom"),
+        icon: CatalogRoomsReactSvgUrl,
+        onClick: this.onClickCreateRoom,
+        disabled: this.selectedFolderStore.rootFolderType !== FolderType.USER,
       },
       {
         key: "download",
