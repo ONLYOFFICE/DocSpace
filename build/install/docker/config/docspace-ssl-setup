@@ -7,6 +7,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DOCKERCOMPOSE=$(dirname "$DIR")
 LETSENCRYPT="/etc/letsencrypt/live";
 DHPARAM_FILE="/etc/ssl/certs/dhparam.pem"
+WEBROOT_PATH="/letsencrypt"
 
 if [ "$#" -ge "2" ]; then
   if [ "$1" != "-f" ]; then 
@@ -15,12 +16,20 @@ if [ "$#" -ge "2" ]; then
     LETSENCRYPT_ENABLE="true"
 
     if [ -f "${DOCKERCOMPOSE}/proxy.yml" ]; then 
-      docker-compose -f ${DOCKERCOMPOSE}/proxy.yml down
+      :
     elif [ -f "/app/onlyoffice/proxy.yml" ]; then
       DOCKERCOMPOSE="/app/onlyoffice"
       DIR="/app/onlyoffice/config"
     else
       echo "Error: proxy configuration file not found." && exit 1
+    fi
+
+    if ! docker ps -f "name=onlyoffice-proxy" --format '{{.Names}}' | grep -q "onlyoffice-proxy"; then
+      echo "Error: the proxy container is not running" && exit 1
+    fi
+
+    if ! docker volume inspect "onlyoffice_webroot_path" &> /dev/null; then
+      echo "Error: missing webroot_path volume" && exit 1
     fi
 
     echo "Generating Let's Encrypt SSL Certificates..."
@@ -29,8 +38,11 @@ if [ "$#" -ge "2" ]; then
     docker run -it --rm \
     -v /etc/letsencrypt:/etc/letsencrypt \
     -v /var/lib/letsencrypt:/var/lib/letsencrypt \
+    -v /var/log:/var/log \
+    -v onlyoffice_webroot_path:${WEBROOT_PATH} \
     certbot/certbot certonly \
-    --webroot --non-interactive --agree-tos --email ${MAIL} -d ${DOMAIN}
+    --expand --webroot -w ${WEBROOT_PATH} \
+    --cert-name ${PRODUCT} --non-interactive --agree-tos --email ${MAIL} -d ${DOMAIN}
   else
     echo "Using specified files to configure SSL..."
 
@@ -38,14 +50,19 @@ if [ "$#" -ge "2" ]; then
     PRIVATEKEY_FILE=$3
   fi
 
-  [[ ! -f "${DHPARAM_FILE}" ]] && openssl dhparam -out ${DHPARAM_FILE} 4096
+  [[ ! -f "${DHPARAM_FILE}" ]] && openssl dhparam -out ${DHPARAM_FILE} 2048
 
-  CERTIFICATE_FILE="${CERTIFICATE_FILE:-"${LETSENCRYPT}/${DOMAIN}/fullchain.pem"}"
-  PRIVATEKEY_FILE="${PRIVATEKEY_FILE:-"${LETSENCRYPT}/${DOMAIN}/privkey.pem"}"
+  CERTIFICATE_FILE="${CERTIFICATE_FILE:-"${LETSENCRYPT}/${PRODUCT}/fullchain.pem"}"
+  PRIVATEKEY_FILE="${PRIVATEKEY_FILE:-"${LETSENCRYPT}/${PRODUCT}/privkey.pem"}"
 
   if [ -f "${CERTIFICATE_FILE}" -a -f ${PRIVATEKEY_FILE} ]; then
     if [ -f ${DOCKERCOMPOSE}/.env -a -f ${DOCKERCOMPOSE}/proxy-ssl.yml ]; then
-      sed -i "s~\(APP_URL_PORTAL=\).*~\1\"https://${DOMAIN:-$(hostname --fqdn)}\"~g" ${DOCKERCOMPOSE}/.env
+      docker-compose -f ${DOCKERCOMPOSE}/proxy.yml down
+      docker-compose -f ${DOCKERCOMPOSE}/docspace.yml stop onlyoffice-files
+
+      if [[ ! -z "$DOMAIN" ]] || [[ "$(grep 'APP_URL_PORTAL=' ${DOCKERCOMPOSE}/.env)" != *"https://"* ]]; then
+        sed -i "s~\(APP_URL_PORTAL=\).*~\1\"https://${DOMAIN:-$(hostname --fqdn)}\"~g" ${DOCKERCOMPOSE}/.env
+      fi
       sed -i "s~\(CERTIFICATE_PATH=\).*~\1\"${CERTIFICATE_FILE}\"~g" ${DOCKERCOMPOSE}/.env
       sed -i "s~\(CERTIFICATE_KEY_PATH=\).*~\1\"${PRIVATEKEY_FILE}\"~g" ${DOCKERCOMPOSE}/.env
       sed -i "s~\(DHPARAM_PATH=\).*~\1\"${DHPARAM_FILE}\"~g" ${DOCKERCOMPOSE}/.env
@@ -69,6 +86,7 @@ if [ "$#" -ge "2" ]; then
       fi
 
       docker-compose -f ${DOCKERCOMPOSE}/proxy-ssl.yml up -d
+      docker-compose -f ${DOCKERCOMPOSE}/docspace.yml up -d onlyoffice-files
 
       echo "OK"
     else

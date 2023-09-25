@@ -74,6 +74,7 @@ services:
       - "ES_JAVA_OPTS=-Xms4g -Xmx4g -Dlog4j2.formatMsgNoLookups=true"
       - "indices.fielddata.cache.size=30%"
       - "indices.memory.index_buffer_size=30%"
+      - "ingest.geoip.downloader.enabled=false"
     ulimits:
       memlock:
         soft: -1

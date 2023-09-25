@@ -10,11 +10,11 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.AppleIdLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "appleID",
+		  "key": "appleid",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "appleID",
+		  "key": "appleid",
 		  "type": "ASC.FederatedLogin.LoginProviders.AppleIdLoginProvider, ASC.FederatedLogin"
 		}
       ],
@@ -180,6 +180,37 @@
 		  },
 		  "additional": {
 			"facebookRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "twitter",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "twitter",
+		  "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "twitter",
+		  "order": "6",
+		  "props": {
+			"twitterKey": "",
+			"twitterSecret": ""
+		  },
+		  "additional": {
+			"twitterRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },

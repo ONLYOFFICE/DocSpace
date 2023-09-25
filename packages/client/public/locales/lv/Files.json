@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "Kopēt {{element}}",
   "TooltipElementsCopyMessage": "Kopēt {{element}} elementus",
   "TooltipElementsMoveMessage": "Pārvietot {{element}} elementus",
-  "TrashEmptyDescription": "'Atkritne' ir sadaļā kur ir pārvietoti visi izdzēstie faili. Jūs varat vai nu atjaunot tos, ja tie tiek izdzēsti kļūdas dēļ vai izdzēst pavisam. Lūdzu, ņemiet vērā, ka, ja izdzēšat failus no 'Atkritne' tās vairs nevar būt atjaunoti.",
+  "TrashEmptyDescription": "'Atkritne' ir sadaļā kur ir pārvietoti visi izdzēstie faili. Jūs varat vai nu atjaunot tos, ja tie tiek izdzēsti kļūdas dēļ vai izdzēst pavisam. Faili miskastē tiek automātiski izdzēsti pēc 30 dienām. Lūdzu, ņemiet vērā, ka, ja izdzēšat failus no 'Atkritne' tās vairs nevar būt atjaunoti.",
   "TrashErasureWarning": "Atkritnē esošie vienumi tiek automātiski izdzēsti pēc 30 dienām.",
   "UnarchivedRoomAction": "Telpa '{{name}}' nav arhivēta.",
   "UnarchivedRoomsAction": "Telpas nav arhivētas.",

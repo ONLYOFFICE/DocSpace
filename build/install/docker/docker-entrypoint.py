@@ -37,6 +37,7 @@ APP_KNOWN_PROXIES = os.environ["APP_KNOWN_PROXIES"]
 APP_KNOWN_NETWORKS = os.environ["APP_KNOWN_NETWORKS"]
 LOG_LEVEL = os.environ["LOG_LEVEL"] if environ.get("LOG_LEVEL") else None
 DEBUG_INFO = os.environ["DEBUG_INFO"] if environ.get("DEBUG_INFO") else "false"
+SAMESITE = os.environ["SAMESITE"] if environ.get("SAMESITE") else "None"
 
 DOCUMENT_CONTAINER_NAME = os.environ["DOCUMENT_CONTAINER_NAME"] if environ.get("DOCUMENT_CONTAINER_NAME") else "onlyoffice-document-server"
 DOCUMENT_SERVER_JWT_SECRET = os.environ["DOCUMENT_SERVER_JWT_SECRET"] if environ.get("DOCUMENT_SERVER_JWT_SECRET") else "your_jwt_secret"
@@ -167,6 +168,7 @@ updateJsonData(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_S
 updateJsonData(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
 updateJsonData(jsonData,"$.Logging.LogLevel.Default", LOG_LEVEL)
 updateJsonData(jsonData,"$.debug-info.enabled", DEBUG_INFO)
+updateJsonData(jsonData,"$.web.samesite", SAMESITE)
 if INSTALLATION_TYPE == "ENTERPRISE":
     updateJsonData(jsonData, "$.license.file.path", "/app/onlyoffice/data/license.lic")
 

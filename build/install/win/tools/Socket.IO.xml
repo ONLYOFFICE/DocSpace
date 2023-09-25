@@ -1,5 +1,5 @@
 <service>
-	<id>ASC.Socket.IO</id>
+	<id>DocSpace.Socket.IO</id>
 	<name>ONLYOFFICE DocSpace Socket.IO</name>
 	<description>ONLYOFFICE DocSpace Socket.IO</description>
 	<priority>RealTime</priority>
