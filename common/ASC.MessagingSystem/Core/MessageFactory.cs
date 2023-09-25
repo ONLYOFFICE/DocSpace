@@ -34,8 +34,8 @@ public class MessageFactory
     private readonly TenantManager _tenantManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public MessageFactory(AuthContext authContext, 
-        TenantManager tenantManager, 
+    public MessageFactory(AuthContext authContext,
+        TenantManager tenantManager,
         ILogger<MessageFactory> logger,
         IHttpContextAccessor httpContextAccessor)
     {
@@ -71,15 +71,15 @@ public class MessageFactory
         }
     }
 
-    public async Task<EventMessage> CreateAsync(MessageUserData userData, IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
+    public async Task<EventMessage> CreateAsync(IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
     {
         try
         {
             var message = new EventMessage
             {
                 Date = DateTime.UtcNow,
-                TenantId = userData == null ? await _tenantManager.GetCurrentTenantIdAsync() : userData.TenantId,
-                UserId = userData == null ? _authContext.CurrentAccount.ID : userData.UserId,
+                TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
+                UserId = _authContext.CurrentAccount.ID,
                 Action = action,
                 Description = description,
                 Target = target

@@ -1,6 +1,6 @@
 ﻿import SsoReactSvgUrl from "PUBLIC_DIR/images/sso.react.svg?url";
 import React, { useEffect, useState, useCallback } from "react";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import PropTypes from "prop-types";
 import { createUser, signupOAuth } from "@docspace/common/api/people";
 import { inject, observer } from "mobx-react";
@@ -46,16 +46,16 @@ const CreateUserForm = (props) => {
     providers,
     isDesktop,
     linkData,
+    roomData,
     capabilities,
     currentColorScheme,
   } = props;
   const inputRef = React.useRef(null);
 
   const emailFromLink = linkData?.email ? linkData.email : "";
+  const roomName = roomData?.title;
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
-  const [ssoLabel, setSsoLabel] = useState("");
-  const [ssoUrl, setSsoUrl] = useState("");
   const [email, setEmail] = useState(emailFromLink);
   const [emailValid, setEmailValid] = useState(true);
   const [emailErrorText, setEmailErrorText] = useState("");
@@ -119,8 +119,6 @@ const CreateUserForm = (props) => {
 
       window.authCallback = authCallback;
 
-      setSsoLabel(capabilities?.ssoLabel);
-      setSsoUrl(capabilities?.ssoUrl);
       onCheckGreeting();
       focusInput();
     };
@@ -191,7 +189,12 @@ const CreateUserForm = (props) => {
     const headerKey = linkData.confirmHeader;
 
     createConfirmUser(personalData, loginData, headerKey)
-      .then(() => window.location.replace(defaultPage))
+      .then(() => {
+        const url = roomData.roomId
+          ? `/rooms/shared/filter?folder=${roomData.roomId}`
+          : defaultPage;
+        window.location.replace(url);
+      })
       .catch((error) => {
         let errorMessage = "";
         if (typeof error === "object") {
@@ -217,12 +220,17 @@ const CreateUserForm = (props) => {
 
     const signupAccount = {
       EmployeeType: linkData.emplType || null,
+      Email: linkData.email,
+      Key: linkData.key,
       SerializedProfile: profile,
     };
 
     signupOAuth(signupAccount)
       .then(() => {
-        window.location.replace(defaultPage);
+        const url = roomData.roomId
+          ? `/rooms/shared/filter?folder=${roomData.roomId}/`
+          : defaultPage;
+        window.location.replace(url);
       })
       .catch((e) => {
         toastr.error(e);
@@ -335,7 +343,7 @@ const CreateUserForm = (props) => {
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
             <SocialButton
               iconName={icon}
-              label={getProviderTranslation(label, t)}
+              label={getProviderTranslation(label, t, false, true)}
               className={`socialButton ${className ? className : ""}`}
               $iconOptions={iconOptions}
               data-url={item.url}
@@ -355,8 +363,8 @@ const CreateUserForm = (props) => {
         <SocialButton
           iconName={SsoReactSvgUrl}
           className="socialButton"
-          label={ssoLabel || getProviderTranslation("sso", t)}
-          onClick={() => (window.location.href = ssoUrl)}
+          label={capabilities?.ssoLabel || getProviderTranslation("sso", t, false, true)}
+          onClick={() => (window.location.href = capabilities?.ssoUrl)}
         />
       </div>
     );
@@ -376,7 +384,7 @@ const CreateUserForm = (props) => {
   };
 
   const ssoExists = () => {
-    if (ssoUrl) return true;
+    if (capabilities?.ssoUrl) return true;
     else return false;
   };
 
@@ -435,7 +443,27 @@ const CreateUserForm = (props) => {
                 )}
 
                 <div className="tooltip">
-                  <span className="tooltiptext">{t("WelcomeUser")}</span>
+                  <p className="tooltiptext">
+                    {roomName ? (
+                      <Trans
+                        t={t}
+                        i18nKey="WelcomeToRoom"
+                        ns="Confirm"
+                        key={roomName}
+                      >
+                        Welcome to the <strong>{{ roomName }}</strong> room!
+                      </Trans>
+                    ) : (
+                      t("WelcomeToDocspace")
+                    )}
+                  </p>
+                  <p className="tooltiptext">
+                    {ssoExists() && !oauthDataExists()
+                      ? t("WelcomeRegisterViaSSO")
+                      : oauthDataExists()
+                      ? t("WelcomeRegisterViaSocial")
+                      : t("WelcomeRegister")}
+                  </p>
                 </div>
               </>
             )}
@@ -443,33 +471,39 @@ const CreateUserForm = (props) => {
 
           <FormWrapper>
             <RegisterContainer>
-              {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
-
-              {oauthDataExists() && (
+              {!emailFromLink && (
                 <>
-                  <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-                  {providers && providers.length > 2 && (
-                    <Link
-                      isHovered
-                      type="action"
-                      fontSize="13px"
-                      fontWeight="600"
-                      color={currentColorScheme?.main?.accent}
-                      className="more-label"
-                      onClick={moreAuthOpen}
-                    >
-                      {t("Common:ShowMore")}
-                    </Link>
+                  {ssoExists() && (
+                    <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>
+                  )}
+
+                  {oauthDataExists() && (
+                    <>
+                      <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+                      {providers && providers.length > 2 && (
+                        <Link
+                          isHovered
+                          type="action"
+                          fontSize="13px"
+                          fontWeight="600"
+                          color={currentColorScheme?.main?.accent}
+                          className="more-label"
+                          onClick={moreAuthOpen}
+                        >
+                          {t("Common:ShowMore")}
+                        </Link>
+                      )}
+                    </>
+                  )}
+
+                  {(oauthDataExists() || ssoExists()) && (
+                    <div className="line">
+                      <Text color="#A3A9AE" className="or-label">
+                        {t("Common:Or")}
+                      </Text>
+                    </div>
                   )}
                 </>
-              )}
-
-              {(oauthDataExists() || ssoExists()) && (
-                <div className="line">
-                  <Text color="#A3A9AE" className="or-label">
-                    {t("Common:Or")}
-                  </Text>
-                </div>
               )}
 
               {showForm && (
@@ -648,8 +682,9 @@ const CreateUserForm = (props) => {
                 onClose={moreAuthClose}
                 providers={providers}
                 onSocialLoginClick={onSocialButtonClick}
-                ssoLabel={ssoLabel}
-                ssoUrl={ssoUrl}
+                ssoLabel={capabilities?.ssoLabel}
+                ssoUrl={capabilities?.ssoUrl}
+                isSignUp
               />
             </RegisterContainer>
           </FormWrapper>

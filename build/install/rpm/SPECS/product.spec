@@ -77,6 +77,14 @@ mv -f %{_builddir}/dictionaries-master/*  %{_builddir}/%{sourcename}/common/Test
 getent group onlyoffice >/dev/null || groupadd -r onlyoffice
 getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -s /sbin/nologin onlyoffice
 
+%pre proxy
+
+# (DS v1.1.3) Removing old nginx configs to prevent conflicts before upgrading on OpenResty.
+if [ -f /etc/nginx/conf.d/onlyoffice.conf ]; then
+    rm -rf /etc/nginx/conf.d/onlyoffice*
+    systemctl reload nginx
+fi
+
 %post 
 
 %preun

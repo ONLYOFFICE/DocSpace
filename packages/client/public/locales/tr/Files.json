@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "Kopyala {{element}}",
   "TooltipElementsCopyMessage": "{{element}} öğelerini kopyala",
   "TooltipElementsMoveMessage": "{{element}} öğelerini taşı",
-  "TrashEmptyDescription": "'Çöp Kutusu' bölümü silinen dosyalarınızın taşındığı bölümdür. Yanlışlıkla sildiyseniz geri alabilir yada kalıcı olarak silebilirsiniz. Lütfen unutmayın, 'Çöp kutusundan' dosyaları sildiğiniz zaman artık bir daha geri alamazsınız.",
+  "TrashEmptyDescription": "'Çöp Kutusu' bölümü silinen dosyalarınızın taşındığı bölümdür. Yanlışlıkla sildiyseniz geri alabilir yada kalıcı olarak silebilirsiniz. 'Çöp Kutusu'ndaki dosyalar 30 gün sonra otomatik olarak silinir. Lütfen unutmayın, 'Çöp kutusundan' dosyaları sildiğiniz zaman artık bir daha geri alamazsınız.",
   "TrashErasureWarning": "Çöp Kutusundaki öğeler 30 gün sonra otomatik olarak silinir.",
   "UnarchivedRoomAction": "'{{name}}' odası arşivden çıkarıldı.",
   "UnarchivedRoomsAction": "Odalar arşivden çıkarıldı.",

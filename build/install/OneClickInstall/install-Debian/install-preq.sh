@@ -32,7 +32,7 @@ fi
 locale-gen en_US.UTF-8
 
 # add elasticsearch repo
-ELASTIC_VERSION="7.10.0"
+ELASTIC_VERSION="7.16.3"
 ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg --import
 echo "deb [signed-by=/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg] https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-${ELASTIC_DIST}.x.list
@@ -99,13 +99,19 @@ if [ "$DIST" = "ubuntu" ]; then
 	chmod 644 /usr/share/keyrings/redis.gpg
 fi
 
+#add nginx repo
+curl -s http://nginx.org/keys/nginx_signing.key | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nginx.gpg --import
+echo "deb [signed-by=/usr/share/keyrings/nginx.gpg] http://nginx.org/packages/$DIST/ $DISTRIB_CODENAME nginx" | tee /etc/apt/sources.list.d/nginx.list
+chmod 644 /usr/share/keyrings/nginx.gpg
+#Temporary fix for missing nginx repository for debian bookworm
+[ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DISTRIB_CODENAME/buster/g" /etc/apt/sources.list.d/nginx.list
+
 #add openresty repo
 curl -fsSL https://openresty.org/package/pubkey.gpg | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/openresty.gpg --import
 echo "deb [signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/$DIST $DISTRIB_CODENAME $([ "$DIST" = "ubuntu" ] && echo "main" || echo "openresty" )" | tee /etc/apt/sources.list.d/openresty.list
 chmod 644 /usr/share/keyrings/openresty.gpg
 #Temporary fix for missing openresty repository for debian bookworm
 [ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DISTRIB_CODENAME/bullseye/g" /etc/apt/sources.list.d/openresty.list
-systemctl list-units --type=service | grep -q nginx && systemctl stop nginx && systemctl disable nginx
 
 # setup msttcorefonts
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
@@ -124,7 +130,6 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				postgresql \
 				redis-server \
 				rabbitmq-server \
-				openresty \
 				ffmpeg 
 
 if ! dpkg -l | grep -q "elasticsearch"; then

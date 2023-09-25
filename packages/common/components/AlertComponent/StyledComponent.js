@@ -12,6 +12,14 @@ const StyledAlertComponent = styled.div`
   grid-template-columns: ${(props) =>
     props.needArrowIcon ? "1fr 16px" : "1fr"};
 
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 4px;
+  }
+
   .alert-component_title {
     color: ${(props) => props.titleColor};
   }

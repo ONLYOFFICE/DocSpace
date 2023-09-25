@@ -127,27 +127,69 @@ const DeleteDialogComponent = (props) => {
     }
 
     if (isRecycleBinFolder) {
-      return isSingle
-        ? isFolder
-          ? t("DeleteFolder")
-          : t("DeleteFile")
-        : t("DeleteItems");
+      return isSingle ? (
+        isFolder ? (
+          t("DeleteFolder")
+        ) : (
+          <>
+            <>{t("DeleteFile")} </>
+            <>{t("FilePermanentlyDeleted")} </>
+            <>{t("WantToContinue")}</>
+          </>
+        )
+      ) : (
+        <>
+          <>{t("DeleteItems")} </>
+          <>{t("ItemsPermanentlyDeleted")} </>
+          <>{t("WantToContinue")}</>
+        </>
+      );
     }
 
     if (isPersonalRoom) {
-      return isSingle
-        ? isFolder
-          ? t("MoveToTrashFolderFromPersonal")
-          : t("DeleteFile")
-        : t("DeleteItems");
+      return isSingle ? (
+        isFolder ? (
+          <>
+            <>{t("DeleteFolder")} </>
+            <>{t("FolderPermanentlyDeleted")} </>
+            <>{t("WantToContinue")}</>
+          </>
+        ) : (
+          <>
+            <>{t("DeleteFile")} </>
+            <>{t("FilePermanentlyDeleted")} </>
+            <>{t("WantToContinue")}</>
+          </>
+        )
+      ) : (
+        <>
+          <>{t("DeleteItems")} </>
+          <>{t("ItemsPermanentlyDeleted")} </>
+          <>{t("WantToContinue")}</>
+        </>
+      );
     }
 
     if (isRoom) {
-      return isSingle
-        ? isFolder
-          ? t("MoveToTrashFolder")
-          : t("MoveToTrashFile")
-        : t("MoveToTrashItems");
+      return isSingle ? (
+        isFolder ? (
+          <>
+            <>{t("DeleteFolder")} </>
+            <>{t("DeleteSharedNote")} </>
+            <>{t("FolderPermanentlyDeleted")} </>
+            <>{t("WantToContinue")}</>
+          </>
+        ) : (
+          t("MoveToTrashFile")
+        )
+      ) : (
+        <>
+          <>{t("DeleteItems")} </>
+          <>{t("DeleteItemsSharedNote")} </>
+          <>{t("ItemsPermanentlyDeleted")} </>
+          <>{t("WantToContinue")}</>
+        </>
+      );
     }
   };
 

@@ -50,7 +50,7 @@ case "$1" in
 		db_get {{product}}/redis-port || true
 		REDIS_PORT="$RET"
 
-		args+=(-rdh "$REDIS_HOST" -rdp "$REDIS_PORT" );
+		[ -n "$REDIS_HOST" ] && args+=(-rdh "$REDIS_HOST" -rdp "$REDIS_PORT" );
 
 		db_get {{product}}/rabbitmq-host || true
 		RABBITMQ_HOST="$RET"
@@ -61,8 +61,8 @@ case "$1" in
 		db_get {{product}}/rabbitmq-password || true
 		RABBITMQ_PASSWORD="$RET"
 
-		args+=(-rbh "$RABBITMQ_HOST" -rbp "$RABBITMQ_PORT" -rbu "$RABBITMQ_USER" -rbpw "$RABBITMQ_PASSWORD" );
-
+		[ -n "$RABBITMQ_HOST" ] && args+=(-rbh "$RABBITMQ_HOST" -rbp "$RABBITMQ_PORT" -rbu "$RABBITMQ_USER" -rbpw "$RABBITMQ_PASSWORD" );
+		
 		db_get {{product}}/elasticsearch-sheme || true
 		ELK_SHEME="$RET"
 		db_get {{product}}/elasticsearch-host || true
@@ -70,14 +70,22 @@ case "$1" in
 		db_get {{product}}/elasticsearch-port || true
 		ELK_PORT="$RET"
 
-		args+=(-ess "$ELK_SHEME" -esh "$ELK_HOST" -esp "$ELK_PORT" );
+		[ -n "$ELK_HOST" ] && args+=(-ess "$ELK_SHEME" -esh "$ELK_HOST" -esp "$ELK_PORT" );
 
-		db_get {{product}}/ds-host || true
-		DOCUMENT_SERVER_HOST="$RET"
-		db_get {{product}}/ds-port || true
-		DOCUMENT_SERVER_PORT="$RET"
+		db_get {{product}}/ds-url || true
+		DOCUMENT_SERVER_URL_EXTERNAL="$RET"
+		db_get {{product}}/jwt-secret || true
+		DOCUMENT_SERVER_JWT_SECRET="$RET"
+		db_get {{product}}/jwt-header || true
+		DOCUMENT_SERVER_JWT_HEADER="$RET"
 
-		args+=(-dsh "$DOCUMENT_SERVER_HOST" -dsp "$DOCUMENT_SERVER_PORT" );
+		if [ -n "$DOCUMENT_SERVER_URL_EXTERNAL" ]; then
+			if [ -n "$DOCUMENT_SERVER_JWT_SECRET" ] && [ -n "$DOCUMENT_SERVER_JWT_HEADER" ]; then
+				args+=(-docsurl "$DOCUMENT_SERVER_URL_EXTERNAL" -js "$DOCUMENT_SERVER_JWT_SECRET" -jh "$DOCUMENT_SERVER_JWT_HEADER")
+			else
+				echo "You should provide JWT-secret and JWT-header along with ONLYOFFICE Docs URL. "
+			fi
+		fi
 
 		bash /usr/bin/{{product}}-configuration "${args[@]}"
 

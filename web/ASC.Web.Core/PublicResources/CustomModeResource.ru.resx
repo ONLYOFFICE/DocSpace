@@ -124,12 +124,7 @@ $GreenButton
 
 Процесс удаления данных пользователя "$FromUserName":"$FromUserLink" успешно завершен.
 
-Удаление персональных данных позволило освободить:
-
-# Документы - $DocsSpace
-# CRM - $CrmSpace
-# Почта - $MailSpace
-# Чат - $TalkSpace</value>
+Удаление персональных данных позволило освободить $DocsSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.Зарегистрирован новый портал

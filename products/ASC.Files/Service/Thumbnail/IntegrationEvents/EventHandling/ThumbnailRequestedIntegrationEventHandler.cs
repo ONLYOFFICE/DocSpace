@@ -67,6 +67,7 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
             f.ThumbnailStatus = Files.Core.Thumbnail.Waiting;
         }
 
+        filesDbContext.UpdateRange(files);
         await filesDbContext.SaveChangesAsync();
 
         return await files.ToAsyncEnumerable().SelectAwait(async r =>

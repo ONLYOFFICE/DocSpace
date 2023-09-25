@@ -1086,26 +1086,28 @@ public class PluginsConfig
     {
         get
         {
-            var plugins = new List<string>();
+            //var plugins = new List<string>();
 
-            if (_coreBaseSettings.Standalone || !_tenantManager.GetCurrentTenantQuotaAsync().Result.Free)
-            {
-                var easyBibHelper = _consumerFactory.Get<EasyBibHelper>();
-                if (!string.IsNullOrEmpty(easyBibHelper.AppKey))
-                {
-                    plugins.Add(_baseCommonLinkUtility.GetFullAbsolutePath("ThirdParty/plugin/easybib/config.json"));
-                }
+            //if (_coreBaseSettings.Standalone || !_tenantManager.GetCurrentTenantQuota().Free)
+            //{
+            //    var easyBibHelper = _consumerFactory.Get<EasyBibHelper>();
+            //    if (!string.IsNullOrEmpty(easyBibHelper.AppKey))
+            //    {
+            //        plugins.Add(_baseCommonLinkUtility.GetFullAbsolutePath("ThirdParty/plugin/easybib/config.json"));
+            //    }
 
-                var wordpressLoginProvider = _consumerFactory.Get<WordpressLoginProvider>();
-                if (!string.IsNullOrEmpty(wordpressLoginProvider.ClientID) &&
-                    !string.IsNullOrEmpty(wordpressLoginProvider.ClientSecret) &&
-                    !string.IsNullOrEmpty(wordpressLoginProvider.RedirectUri))
-                {
-                    plugins.Add(_baseCommonLinkUtility.GetFullAbsolutePath("ThirdParty/plugin/wordpress/config.json"));
-                }
-            }
+            //    var wordpressLoginProvider = _consumerFactory.Get<WordpressLoginProvider>();
+            //    if (!string.IsNullOrEmpty(wordpressLoginProvider.ClientID) &&
+            //        !string.IsNullOrEmpty(wordpressLoginProvider.ClientSecret) &&
+            //        !string.IsNullOrEmpty(wordpressLoginProvider.RedirectUri))
+            //    {
+            //        plugins.Add(_baseCommonLinkUtility.GetFullAbsolutePath("ThirdParty/plugin/wordpress/config.json"));
+            //    }
+            //}
 
-            return plugins.ToArray();
+            //return plugins.ToArray();
+
+            return Array.Empty<string>();
         }
     }
 

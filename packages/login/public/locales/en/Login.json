@@ -2,7 +2,6 @@
   "CodeSubtitle": "We sent a 6-digit code to {{email}}. The code has a limited validity period, so enter it as soon as possible.",
   "CodeTitle": "The code was emailed to you",
   "CookieSettingsTitle": "Session lifetime",
-  "ErrorInvalidHeader": "Expired link",
   "ErrorInvalidText": "In 10 seconds you will be redirected to the <1>DocSpace</1>",
   "ExpiredCode": "This code is no longer valid. Request a new code and try again.",
   "ForgotPassword": "Forgot your password?",

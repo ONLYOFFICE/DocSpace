@@ -102,6 +102,7 @@ export const GreetingContainer = styled.div`
   }
 
   .tooltip .tooltiptext {
+    margin: 0;
     width: 100%;
     white-space: pre-line;
   }

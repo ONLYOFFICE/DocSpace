@@ -393,17 +393,23 @@ public class UserManager
         return findUsers.ToArray();
     }
 
-    public async Task<UserInfo> UpdateUserInfoAsync(UserInfo u)
+    public async Task<UserInfo> UpdateUserInfoAsync(UserInfo u, bool afterInvite = false)
     {
         if (IsSystemUser(u.Id))
         {
             return SystemUsers[u.Id];
         }
 
-        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+        if (afterInvite)
+        {
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(u.Id, await this.GetUserTypeAsync(u.Id)), Constants.Action_AddRemoveUser);
+        }
+        else
+        {
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+        }
 
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-
         if (u.Status == EmployeeStatus.Terminated && u.Id == tenant.OwnerId)
         {
             throw new InvalidOperationException("Can not disable tenant owner.");

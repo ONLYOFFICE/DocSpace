@@ -190,7 +190,7 @@ public class StudioNotifyService
 
         var displayUserName = userInfo.DisplayUserName(false, _displayUserSettingsHelper);
 
-        await _messageService.SendAsync(auditEventDate, MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(userInfo.Id), displayUserName);
+        await _messageService.SendAsync(MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(userInfo.Id), auditEventDate, displayUserName);
     }
 
     #endregion

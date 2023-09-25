@@ -186,11 +186,15 @@ class PeopleStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
+      hasOnlyOneUserToRemove,
       hasFreeUsers,
       userSelectionRole,
+      selection,
     } = this.selectionStore;
-    const { setSendInviteDialogVisible, setDeleteDialogVisible } =
+
+    const { setSendInviteDialogVisible, setDeleteProfileDialogVisible } =
       this.dialogStore;
+    const { toggleDeleteProfileEverDialog } = this.contextOptionsStore;
 
     const { isOwner } = this.authStore.userStore.user;
 
@@ -283,8 +287,8 @@ class PeopleStore {
         id: "menu-delete",
         key: "delete",
         label: t("Common:Delete"),
-        disabled: !hasUsersToRemove,
-        onClick: () => setDeleteDialogVisible(true),
+        disabled: !hasOnlyOneUserToRemove,
+        onClick: () => toggleDeleteProfileEverDialog(selection[0]),
         iconUrl: DeleteReactSvgUrl,
       },
     ];

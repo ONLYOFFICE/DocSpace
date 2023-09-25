@@ -393,12 +393,13 @@ public class EditorController : ApiControllerBase
     public async Task<object> GetDocServiceUrlAsync(bool version)
     {
         var url = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.DocServiceApiUrl);
-        if (!version)
-        {
-            return url;
-        }
 
-        var dsVersion = await _documentServiceConnector.GetVersionAsync();
+        var dsVersion = "";
+
+        if (version)
+        {
+            dsVersion = await _documentServiceConnector.GetVersionAsync();
+        }
 
         return new
         {
@@ -406,7 +407,8 @@ public class EditorController : ApiControllerBase
             docServiceUrlApi = url,
             _filesLinkUtility.DocServiceUrl,
             _filesLinkUtility.DocServiceUrlInternal,
-            _filesLinkUtility.DocServicePortalUrl
+            _filesLinkUtility.DocServicePortalUrl,
+            _filesLinkUtility.IsDefault
         };
     }
 }

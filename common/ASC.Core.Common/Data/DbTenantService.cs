@@ -32,6 +32,7 @@ public class DbTenantService : ITenantService
     private readonly TenantDomainValidator _tenantDomainValidator;
     private readonly IDbContextFactory<TenantDbContext> _dbContextFactory;
     private readonly IDbContextFactory<UserDbContext> _userDbContextFactory;
+    private readonly IDbContextFactory<WebstudioDbContext> _webstudioDbContext;
     private readonly IMapper _mapper;
     private readonly MachinePseudoKeys _machinePseudoKeys;
     private List<string> _forbiddenDomains;
@@ -41,13 +42,15 @@ public class DbTenantService : ITenantService
         IDbContextFactory<UserDbContext> userDbContextFactory,
         TenantDomainValidator tenantDomainValidator,
         MachinePseudoKeys machinePseudoKeys,
-        IMapper mapper)
+        IMapper mapper,
+        IDbContextFactory<WebstudioDbContext> webstudioDbContext)
     {
         _dbContextFactory = dbContextFactory;
         _userDbContextFactory = userDbContextFactory;
         _tenantDomainValidator = tenantDomainValidator;
         _machinePseudoKeys = machinePseudoKeys;
         _mapper = mapper;
+        _webstudioDbContext = webstudioDbContext;
     }
 
     public async Task ValidateDomainAsync(string domain)
@@ -75,6 +78,18 @@ public class DbTenantService : ITenantService
         return await q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToListAsync();
     }
 
+    public IEnumerable<Tenant> GetTenantsWithCsp()
+    {
+        var cspSettingsId = new CspSettings().ID;
+        using var webstudioDbContext = _webstudioDbContext.CreateDbContext();
+        var q = webstudioDbContext.Tenants
+            .Join(webstudioDbContext.WebstudioSettings.DefaultIfEmpty(), r => r.Id, r => r.TenantId, (tenant, settings) => new { settings, tenant })
+            .Where(r => r.settings.Id == cspSettingsId)
+            .Select(r => r.tenant);
+
+        return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
+    }
+
     public async Task<IEnumerable<Tenant>> GetTenantsAsync(List<int> ids)
     {
         await using var tenantDbContext = _dbContextFactory.CreateDbContext();
@@ -92,6 +107,7 @@ public class DbTenantService : ITenantService
         await using var tenantDbContext = _dbContextFactory.CreateDbContext();
         await using var userDbContext = _userDbContextFactory.CreateDbContext();//TODO: remove
         IQueryable<TenantUserSecurity> query() => tenantDbContext.Tenants
+                
                 .Where(r => r.Status == TenantStatus.Active)
                 .Join(userDbContext.Users, r => r.Id, r => r.TenantId, (tenant, user) => new
                 {
@@ -277,6 +293,7 @@ public class DbTenantService : ITenantService
                 dbTenant.Calls = tenant.Calls;
                 dbTenant.OwnerId = tenant.OwnerId;
 
+                tenantDbContext.Update(dbTenant);
                 await tenantDbContext.SaveChangesAsync();
             }
         }
@@ -304,6 +321,7 @@ public class DbTenantService : ITenantService
             tenant.StatusChanged = DateTime.UtcNow;
             tenant.LastModified = DateTime.UtcNow;
 
+            tenantDbContext.Update(tenant);
             await tenantDbContext.SaveChangesAsync();
         }
     }
@@ -461,7 +479,7 @@ static file class Queries
         EF.CompileAsyncQuery(
             (TenantDbContext ctx) =>
                 ctx.TenantVersion
-                    .AsNoTracking()
+                    
                     .Where(r => r.DefaultVersion == 1 || r.Id == 0)
                     .OrderByDescending(r => r.Id)
                     .Select(r => r.Id)
