@@ -47,7 +47,6 @@ public class RoomLogoManager
     private readonly TenantManager _tenantManager;
     private IDataStore _dataStore;
     private readonly FilesMessageService _filesMessageService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly SecurityContext _securityContext;
     private readonly FileUtilityConfiguration _fileUtilityConfiguration;
@@ -59,7 +58,6 @@ public class RoomLogoManager
         FileSecurity fileSecurity,
         ILogger<RoomLogoManager> logger,
         FilesMessageService filesMessageService,
-        IHttpContextAccessor httpContextAccessor,
         EmailValidationKeyProvider emailValidationKeyProvider,
         SecurityContext securityContext,
         FileUtilityConfiguration fileUtilityConfiguration)
@@ -70,7 +68,6 @@ public class RoomLogoManager
         _fileSecurity = fileSecurity;
         _logger = logger;
         _filesMessageService = filesMessageService;
-        _httpContextAccessor = httpContextAccessor;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _securityContext = securityContext;
         _fileUtilityConfiguration = fileUtilityConfiguration;
@@ -78,7 +75,6 @@ public class RoomLogoManager
 
     public bool EnableAudit { get; set; } = true;
     private int TenantId => _tenantManager.GetCurrentTenant().Id;
-    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request.Headers;
 
     private async ValueTask<IDataStore> GetDataStoreAsync()
     {
@@ -126,7 +122,7 @@ public class RoomLogoManager
 
         if (EnableAudit)
         {
-            _ = _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoCreated, room.Title);
+            _ = _filesMessageService.SendAsync(MessageAction.RoomLogoCreated, room, room.Title);
         }
 
         return room;
@@ -160,7 +156,7 @@ public class RoomLogoManager
 
             if (EnableAudit)
             {
-                _ = _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
+                _ = _filesMessageService.SendAsync(MessageAction.RoomLogoDeleted, room, room.Title);
             }
         }
         catch (Exception e)
