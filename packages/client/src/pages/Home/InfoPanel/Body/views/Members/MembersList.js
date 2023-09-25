@@ -1,10 +1,11 @@
-import React, { useState, useCallback, memo } from "react";
+import React, { useState, useCallback, useEffect, memo } from "react";
 import styled from "styled-components";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-scrollbars-virtual-list";
 import InfiniteLoader from "react-window-infinite-loader";
 import User from "./User";
+import { tablet, mobile, isMobile } from "@docspace/components/utils/device";
 
 const StyledMembersList = styled.div`
   height: ${({ withBanner, isPublicRoomType }) =>
@@ -13,6 +14,24 @@ const StyledMembersList = styled.div`
         ? "calc(100vh - 442px)"
         : "calc(100vh - 286px)"
       : "calc(100vh - 266px)"};
+
+  @media ${tablet} {
+    height: ${({ withBanner, isPublicRoomType }) =>
+      isPublicRoomType
+        ? withBanner
+          ? "calc(100vh - 362px)"
+          : "calc(100vh - 206px)"
+        : "calc(100vh - 186px)"};
+  }
+
+  @media ${mobile} {
+    height: ${({ withBanner, isPublicRoomType }) =>
+      isPublicRoomType
+        ? withBanner
+          ? "calc(100vh - 426px)"
+          : "calc(100vh - 270px)"
+        : "calc(100vh - 250px)"};
+  }
 `;
 
 const Item = memo(({ data, index, style }) => {
@@ -81,6 +100,20 @@ const MembersList = (props) => {
   const itemsCount = members.length;
   const canInviteUserInRoomAbility = security?.EditAccess;
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(isMobile());
+
+  const onResize = () => {
+    const isMobileView = isMobile();
+    setIsMobileView(isMobileView);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  });
 
   const isItemLoaded = useCallback(
     (index) => {
@@ -112,33 +145,37 @@ const MembersList = (props) => {
             itemCount={itemCount}
             loadMoreItems={loadMoreItems}
           >
-            {({ onItemsRendered, ref }) => (
-              <List
-                ref={ref}
-                width={width + 20}
-                height={height}
-                itemCount={itemsCount}
-                itemSize={48}
-                itemData={{
-                  t,
-                  security,
-                  membersHelper,
-                  currentMember,
-                  updateRoomMemberRole,
-                  selectionParentRoom,
-                  setSelectionParentRoom,
-                  changeUserType,
-                  setIsScrollLocked,
-                  members,
-                  canInviteUserInRoomAbility,
-                  onRepeatInvitation,
-                }}
-                outerElementType={CustomScrollbarsVirtualList}
-                onItemsRendered={onItemsRendered}
-              >
-                {Item}
-              </List>
-            )}
+            {({ onItemsRendered, ref }) => {
+              const listWidth = isMobileView ? width + 16 : width + 20; // for scroll
+
+              return (
+                <List
+                  ref={ref}
+                  width={listWidth}
+                  height={height}
+                  itemCount={itemsCount}
+                  itemSize={48}
+                  itemData={{
+                    t,
+                    security,
+                    membersHelper,
+                    currentMember,
+                    updateRoomMemberRole,
+                    selectionParentRoom,
+                    setSelectionParentRoom,
+                    changeUserType,
+                    setIsScrollLocked,
+                    members,
+                    canInviteUserInRoomAbility,
+                    onRepeatInvitation,
+                  }}
+                  outerElementType={CustomScrollbarsVirtualList}
+                  onItemsRendered={onItemsRendered}
+                >
+                  {Item}
+                </List>
+              );
+            }}
           </InfiniteLoader>
         )}
       </AutoSizer>
