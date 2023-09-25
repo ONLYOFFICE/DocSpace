@@ -1007,11 +1007,17 @@ export function sendEditorNotify(fileId, actionLink, emails, message) {
   });
 }
 
-export function getDocumentServiceLocation(version = true) {
+export function getDocumentServiceLocation(version) {
+  const params = {};
+
+  if (version !== undefined) {
+    params.version = version;
+  }
+
   return request({
     method: "get",
     url: `/files/docservice`,
-    params: { version },
+    params,
   });
 }
 
