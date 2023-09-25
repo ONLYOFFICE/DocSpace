@@ -300,7 +300,7 @@ public class DocumentServiceTrackerHelper
                 try
                 {
                     var doc = await _fileShareLink.CreateKeyAsync(fileId);
-                    await _entryManager.TrackEditingAsync(fileId, userId, userId, doc);
+                    await _entryManager.TrackEditingAsync(fileId, userId, userId, doc, await _tenantManager.GetCurrentTenantIdAsync());
                 }
                 catch (Exception e)
                 {

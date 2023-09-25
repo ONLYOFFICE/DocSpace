@@ -1010,7 +1010,7 @@ public class FileStorageService //: IFileStorageService
             }
             else
             {
-                await _entryManager.TrackEditingAsync(id, tabId, _authContext.CurrentAccount.ID, doc);
+                await _entryManager.TrackEditingAsync(id, tabId, _authContext.CurrentAccount.ID, doc, await _tenantManager.GetCurrentTenantIdAsync());
             }
 
             return new KeyValuePair<bool, string>(true, string.Empty);
@@ -1118,7 +1118,7 @@ public class FileStorageService //: IFileStorageService
                 app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
                 if (app == null)
                 {
-                    await _entryManager.TrackEditingAsync(fileId, Guid.Empty, _authContext.CurrentAccount.ID, doc, true);
+                    await _entryManager.TrackEditingAsync(fileId, Guid.Empty, _authContext.CurrentAccount.ID, doc, await _tenantManager.GetCurrentTenantIdAsync(), true);
                 }
 
                 //without StartTrack, track via old scheme

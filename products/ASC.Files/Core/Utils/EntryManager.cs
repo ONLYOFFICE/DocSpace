@@ -1544,12 +1544,12 @@ public class EntryManager
         return file;
     }
 
-    public async Task TrackEditingAsync<T>(T fileId, Guid tabId, Guid userId, string doc, bool editingAlone = false)
+    public async Task TrackEditingAsync<T>(T fileId, Guid tabId, Guid userId, string doc, int tenantId, bool editingAlone = false)
     {
         bool checkRight;
         if (_fileTracker.GetEditingBy(fileId).Contains(userId))
         {
-            checkRight = _fileTracker.ProlongEditing(fileId, tabId, userId, editingAlone);
+            checkRight = _fileTracker.ProlongEditing(fileId, tabId, userId, tenantId, editingAlone);
             if (!checkRight)
             {
                 return;
@@ -1588,7 +1588,7 @@ public class EntryManager
             throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
         }
 
-        checkRight = _fileTracker.ProlongEditing(fileId, tabId, userId, editingAlone);
+        checkRight = _fileTracker.ProlongEditing(fileId, tabId, userId, tenantId, editingAlone);
         if (checkRight)
         {
             _fileTracker.ChangeRight(fileId, userId, false);
