@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "Sao chép {{element}}",
   "TooltipElementsCopyMessage": "Sao chép {{element}} thành phần",
   "TooltipElementsMoveMessage": "Di chuyển {{element}} thành phần",
-  "TrashEmptyDescription": "Phần 'Thùng rác' là nơi chứa tất cả các file đã xoá. Bạn có thể khôi phục chúng nếu là do xóa nhầm hoặc xóa bỏ chúng vĩnh viễn. Lưu ý rằng khi bạn xóa các file từ 'Thùng rác' chúng sẽ không thể được khôi phục lại.",
+  "TrashEmptyDescription": "Phần 'Thùng rác' là nơi chứa tất cả các file đã xoá. Bạn có thể khôi phục chúng nếu là do xóa nhầm hoặc xóa bỏ chúng vĩnh viễn. Các tệp trong 'Thùng rác' sẽ tự động bị xóa sau 30 ngày. Lưu ý rằng khi bạn xóa các file từ 'Thùng rác' chúng sẽ không thể được khôi phục lại.",
   "TrashErasureWarning": "Các mục trong Thùng rác sẽ tự động bị xóa sau 30 ngày.",
   "UnarchivedRoomAction": "Phòng '{{name}}' chưa được sao lưu.",
   "UnarchivedRoomsAction": "Các phòng chưa được sao lưu.",

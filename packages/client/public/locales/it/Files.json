@@ -143,7 +143,7 @@
   "TooltipElementCopyMessage": "Copia {{element}}",
   "TooltipElementsCopyMessage": "Copia {{element}} elementi",
   "TooltipElementsMoveMessage": "Sposta {{element}} elementi",
-  "TrashEmptyDescription": "Tutti i file eliminati vengono spostati nel 'Cestino'. Ripristina i file cancellati per errore o cancellali definitivamente. Tieni presente che i file eliminati dal 'Cestino' non possono più essere ripristinati.",
+  "TrashEmptyDescription": "Tutti i file eliminati vengono spostati nel 'Cestino'. Ripristina i file cancellati per errore o cancellali definitivamente. I file nel \"Cestino\" verranno automaticamente eliminati dopo 30 giorni. Tieni presente che i file eliminati dal 'Cestino' non possono più essere ripristinati.",
   "TrashErasureWarning": "Gli elementi nel Cestino vengono automaticamente eliminati dopo 30 giorni.",
   "UnarchivedRoomAction": "La stanza '{{name}}' è stata rimossa dall'archivio.",
   "UnarchivedRoomsAction": "Le stanze non sono state archiviate.",

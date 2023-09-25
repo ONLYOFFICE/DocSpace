@@ -180,7 +180,7 @@ public class UserManager
 
         return await users.ToArrayAsync();
     }
-    
+
     public Task<int> GetUsersCountAsync(
         bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
@@ -360,17 +360,23 @@ public class UserManager
         return findUsers.ToArray();
     }
 
-    public async Task<UserInfo> UpdateUserInfoAsync(UserInfo u)
+    public async Task<UserInfo> UpdateUserInfoAsync(UserInfo u, bool afterInvite = false)
     {
         if (IsSystemUser(u.Id))
         {
             return SystemUsers[u.Id];
         }
 
-        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+        if (afterInvite)
+        {
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(u.Id, await this.GetUserTypeAsync(u.Id)), Constants.Action_AddRemoveUser);
+        }
+        else
+        {
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+        }
 
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-
         if (u.Status == EmployeeStatus.Terminated && u.Id == tenant.OwnerId)
         {
             throw new InvalidOperationException("Can not disable tenant owner.");
@@ -559,8 +565,8 @@ public class UserManager
                 new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
             var davUsersEmails = await GetDavUserEmailsAsync();
             var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, delUser.Email.ToLower(), true, true);
-            
-            if(rootAuthorization != null)
+
+            if (rootAuthorization != null)
             {
                 var addBookCollection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
                 if (addBookCollection.Completed && addBookCollection.StatusCode != 404)

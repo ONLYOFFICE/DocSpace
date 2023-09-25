@@ -220,6 +220,8 @@ const CreateUserForm = (props) => {
 
     const signupAccount = {
       EmployeeType: linkData.emplType || null,
+      Email: linkData.email,
+      Key: linkData.key,
       SerializedProfile: profile,
     };
 
@@ -341,7 +343,7 @@ const CreateUserForm = (props) => {
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
             <SocialButton
               iconName={icon}
-              label={getProviderTranslation(label, t)}
+              label={getProviderTranslation(label, t, false, true)}
               className={`socialButton ${className ? className : ""}`}
               $iconOptions={iconOptions}
               data-url={item.url}
@@ -361,7 +363,7 @@ const CreateUserForm = (props) => {
         <SocialButton
           iconName={SsoReactSvgUrl}
           className="socialButton"
-          label={capabilities?.ssoLabel || getProviderTranslation("sso", t)}
+          label={capabilities?.ssoLabel || getProviderTranslation("sso", t, false, true)}
           onClick={() => (window.location.href = capabilities?.ssoUrl)}
         />
       </div>
@@ -445,7 +447,7 @@ const CreateUserForm = (props) => {
                     {roomName ? (
                       <Trans
                         t={t}
-                        i18nKey="WelcomeToRoomName"
+                        i18nKey="WelcomeToRoom"
                         ns="Confirm"
                         key={roomName}
                       >
@@ -682,6 +684,7 @@ const CreateUserForm = (props) => {
                 onSocialLoginClick={onSocialButtonClick}
                 ssoLabel={capabilities?.ssoLabel}
                 ssoUrl={capabilities?.ssoUrl}
+                isSignUp
               />
             </RegisterContainer>
           </FormWrapper>

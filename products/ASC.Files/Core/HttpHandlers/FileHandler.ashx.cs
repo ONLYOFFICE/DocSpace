@@ -116,7 +116,7 @@ public class FileHandlerService
         InstanceCrypto instanceCrypto,
         IHttpClientFactory clientFactory,
         ThumbnailSettings thumbnailSettings,
-        ExternalLinkHelper externalLinkHelper, 
+        ExternalLinkHelper externalLinkHelper,
         ExternalShare externalShare)
     {
         _filesLinkUtility = filesLinkUtility;
@@ -255,7 +255,7 @@ public class FileHandlerService
         {
             path = string.Format(@"{0}\{1}", _securityContext.CurrentAccount.ID, filename);
         }
-        
+
         var store = await _globalStore.GetStoreAsync();
 
         if (!await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
@@ -349,7 +349,7 @@ public class FileHandlerService
             {
                 var linkId = await _externalShare.GetLinkIdAsync();
 
-                if (!(_fileUtility.CanImageView(file.Title) || _fileUtility.CanMediaView(file.Title) || FileUtility.GetFileExtension(file.Title) == ".pdf") || 
+                if (!(_fileUtility.CanImageView(file.Title) || _fileUtility.CanMediaView(file.Title) || FileUtility.GetFileExtension(file.Title) == ".pdf") ||
                     linkId == default || !await _fileSecurity.CanReadAsync(file, linkId))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -390,17 +390,17 @@ public class FileHandlerService
             {
                 if (forView)
                 {
-                    _ = _filesMessageService.SendAsync(file, MessageAction.FileReaded, file.Title);
+                    _ = _filesMessageService.SendAsync(MessageAction.FileReaded, file, file.Title);
                 }
                 else
                 {
                     if (version == 0)
                     {
-                        _ = _filesMessageService.SendAsync(file, MessageAction.FileDownloaded, file.Title);
+                        _ = _filesMessageService.SendAsync(MessageAction.FileDownloaded, file, file.Title);
                     }
                     else
                     {
-                        await _filesMessageService.SendAsync(file, MessageAction.FileRevisionDownloaded, file.Title, file.Version.ToString());
+                        await _filesMessageService.SendAsync(MessageAction.FileRevisionDownloaded, file, file.Title, file.Version.ToString());
                     }
                 }
             }
@@ -685,7 +685,7 @@ public class FileHandlerService
             {
                 (linkRight, file) = await _fileShareLink.CheckAsync(doc, fileDao);
             }
-            
+
             if (linkRight == FileShare.Restrict && !_securityContext.IsAuthenticated)
             {
                 var auth = context.Request.Query[FilesLinkUtility.AuthKey];

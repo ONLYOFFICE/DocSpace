@@ -1315,7 +1315,7 @@ public class EntryManager
 
                     await _socketManager.CreateFolderAsync(folder);
 
-                    _ = _filesMessageService.SendAsync(folder, MessageInitiator.DocsService, MessageAction.FolderCreated, folder.Title);
+                    _ = _filesMessageService.SendAsync(MessageAction.FolderCreated, folder, MessageInitiator.DocsService, folder.Title);
                 }
 
                 folderId = folder.Id;
@@ -1340,7 +1340,7 @@ public class EntryManager
                 submitFile = await fileSourceDao.SaveFileAsync(submitFile, stream);
             }
 
-            _ = _filesMessageService.SendAsync(submitFile, MessageInitiator.DocsService, MessageAction.FileCreated, submitFile.Title);
+            _ = _filesMessageService.SendAsync(MessageAction.FileCreated, submitFile, MessageInitiator.DocsService, submitFile.Title);
 
             await _fileMarker.MarkAsNewAsync(submitFile);
 
@@ -1544,12 +1544,12 @@ public class EntryManager
         return file;
     }
 
-    public async Task TrackEditingAsync<T>(T fileId, Guid tabId, Guid userId, string doc, bool editingAlone = false)
+    public async Task TrackEditingAsync<T>(T fileId, Guid tabId, Guid userId, string doc, int tenantId, bool editingAlone = false)
     {
         bool checkRight;
         if (_fileTracker.GetEditingBy(fileId).Contains(userId))
         {
-            checkRight = _fileTracker.ProlongEditing(fileId, tabId, userId, editingAlone);
+            checkRight = _fileTracker.ProlongEditing(fileId, tabId, userId, tenantId, editingAlone);
             if (!checkRight)
             {
                 return;
@@ -1588,7 +1588,7 @@ public class EntryManager
             throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
         }
 
-        checkRight = _fileTracker.ProlongEditing(fileId, tabId, userId, editingAlone);
+        checkRight = _fileTracker.ProlongEditing(fileId, tabId, userId, tenantId, editingAlone);
         if (checkRight)
         {
             _fileTracker.ChangeRight(fileId, userId, false);

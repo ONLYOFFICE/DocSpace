@@ -8,6 +8,7 @@ import PinReactSvgUrl from "PUBLIC_DIR/images/pin.react.svg?url";
 import UnpinReactSvgUrl from "PUBLIC_DIR/images/unpin.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
+import CatalogRoomsReactSvgUrl from "PUBLIC_DIR/images/catalog.rooms.react.svg?url";
 import {
   checkFileConflicts,
   deleteFile,
@@ -43,7 +44,7 @@ import RoomsFilter from "@docspace/common/api/rooms/filter";
 import AccountsFilter from "@docspace/common/api/people/filter";
 import { RoomSearchArea } from "@docspace/common/constants";
 import { getObjectByLocation } from "@docspace/common/utils";
-
+import { Events } from "@docspace/common/constants";
 import uniqueid from "lodash/uniqueId";
 import FilesFilter from "@docspace/common/api/files/filter";
 import {
@@ -68,6 +69,7 @@ class FilesActionStore {
   isLoadedSearchFiles = false;
   isGroupMenuBlocked = false;
   emptyTrashInProgress = false;
+  processCreatingRoomFromData = false;
 
   constructor(
     authStore,
@@ -1579,6 +1581,10 @@ class FilesActionStore {
         const canDelete = selection.every((s) => s.security?.Delete);
 
         return !allFilesIsEditing && canDelete && hasSelection;
+      case "create-room":
+        const canCreateRoom = rootFolderType === FolderType.USER;
+
+        return canCreateRoom;
     }
   };
 
@@ -1710,6 +1716,16 @@ class FilesActionStore {
     setIsVisible(true);
   };
 
+  setProcessCreatingRoomFromData = (processCreatingRoomFromData) => {
+    this.processCreatingRoomFromData = processCreatingRoomFromData;
+  };
+
+  onClickCreateRoom = () => {
+    this.setProcessCreatingRoomFromData(true);
+    const event = new Event(Events.ROOM_CREATE);
+    window.dispatchEvent(event);
+  };
+
   getOption = (option, t) => {
     const {
       setSharingPanelVisible,
@@ -1738,6 +1754,16 @@ class FilesActionStore {
             label: t("Common:Copy"),
             onClick: () => setCopyPanelVisible(true),
             iconUrl: CopyToReactSvgUrl,
+          };
+
+      case "create-room":
+        if (!this.isAvailableOption("create-room")) return null;
+        else
+          return {
+            id: "menu-create-room",
+            label: t("Files:CreateRoom"),
+            onClick: this.onClickCreateRoom,
+            iconUrl: CatalogRoomsReactSvgUrl,
           };
 
       case "download":
@@ -1879,6 +1905,7 @@ class FilesActionStore {
   };
 
   getAnotherFolderOptions = (itemsCollection, t) => {
+    const createRoom = this.getOption("create-room", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const moveTo = this.getOption("moveTo", t);
@@ -1887,6 +1914,7 @@ class FilesActionStore {
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
+      .set("createRoom", createRoom)
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("moveTo", moveTo)
