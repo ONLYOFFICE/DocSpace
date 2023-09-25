@@ -34,23 +34,17 @@ public class FilesMessageService
     private readonly MessageService _messageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDaoFactory _daoFactory;
-    private readonly NotifyClient _notifyClient;
-    private readonly AuthContext _authContext;
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
         MessageService messageService,
-        IDaoFactory daoFactory,
-        NotifyClient notifyClient,
-        AuthContext authContext)
+        IDaoFactory daoFactory)
     {
         _logger = options.CreateLogger("ASC.Messaging");
         _messageTarget = messageTarget;
         _messageService = messageService;
         _daoFactory = daoFactory;
-        _notifyClient = notifyClient;
-        _authContext = authContext;
     }
 
     public FilesMessageService(
@@ -58,10 +52,8 @@ public class FilesMessageService
         MessageTarget messageTarget,
         MessageService messageService,
         IHttpContextAccessor httpContextAccessor,
-        IDaoFactory daoFactory,
-        NotifyClient notifyClient,
-        AuthContext authContext)
-        : this(options, messageTarget, messageService, daoFactory, notifyClient, authContext)
+        IDaoFactory daoFactory)
+        : this(options, messageTarget, messageService, daoFactory)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -78,34 +70,23 @@ public class FilesMessageService
 
     public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, params string[] description)
     {
-        await SendAsync(action, entry, GetHttpHeaders(), null, Guid.Empty, FileShare.None, description);
-    }
-
-    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, IDictionary<string, StringValues> headers, List<AceWrapper> aces, params string[] description)
-    {
-        if (action == MessageAction.RoomDeleted)
-        {
-            var userId = _authContext.CurrentAccount.ID;
-            await _notifyClient.SendRoomRemovedAsync(entry, aces, userId);
-        }
-
-        await SendAsync(action, entry, headers, null, Guid.Empty, FileShare.None, description);
+        await SendAsync(action, entry, null, Guid.Empty, FileShare.None, description);
     }
 
     public async Task SendAsync<T>(MessageAction action, string oldTitle, FileEntry<T> entry, params string[] description)
     {
-        await SendAsync(action, entry, GetHttpHeaders(), oldTitle, description: description);
+        await SendAsync(action, entry, oldTitle, description: description);
     }
 
     public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, Guid userId, params string[] description)
     {
-        await SendAsync(action, entry, GetHttpHeaders(), userId: userId, description: description);
+        await SendAsync(action, entry, null, userId, FileShare.None, description);
     }
 
     public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, Guid userId, FileShare userRole, params string[] description)
     {
         description = description.Append(FileStorageService.GetAccessString(userRole)).ToArray();
-        await SendAsync(action, entry, GetHttpHeaders(), null, userId, userRole, description);
+        await SendAsync(action, entry, null, userId, userRole, description);
     }
 
     private async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, IDictionary<string, StringValues> headers, string oldTitle = null, Guid userId = default(Guid), FileShare userRole = FileShare.None, params string[] description)
@@ -122,7 +103,31 @@ public class FilesMessageService
             description = description.Append(additionalParam).ToArray();
         }
 
-        await SendHeadersMessageAsync(headers, action, _messageTarget.Create(entry.Id), description);
+        if (headers == null)//todo check need if
+        {
+            _logger.DebugEmptyRequestHeaders(action);
+
+            return;
+        }
+
+        await _messageService.SendHeadersMessageAsync(action, _messageTarget.Create(entry.Id), headers, description);
+    }
+
+    private async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, string oldTitle = null, Guid userId = default(Guid), FileShare userRole = FileShare.None, params string[] description)
+    {
+        if (entry == null)
+        {
+            return;
+        }
+
+        var additionalParam = await GetAdditionalNotificationParamAsync(entry, action, oldTitle, userId, userRole);
+
+        if (additionalParam != "")
+        {
+            description = description.Append(additionalParam).ToArray();
+        }
+
+        await _messageService.SendAsync(action, _messageTarget.Create(entry.Id), description);
     }
 
     public async Task SendAsync<T1, T2>(MessageAction action, FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, params string[] description)
@@ -139,11 +144,6 @@ public class FilesMessageService
             description = description.Append(additionalParams).ToArray();
         }
 
-        await SendHeadersMessageAsync(headers, action, _messageTarget.CreateFromGroupValues(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
-    }
-
-    private async Task SendHeadersMessageAsync(IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
-    {
         if (headers == null)//todo check need if
         {
             _logger.DebugEmptyRequestHeaders(action);
@@ -151,7 +151,7 @@ public class FilesMessageService
             return;
         }
 
-        await _messageService.SendHeadersMessageAsync(action, target, headers, description);
+        await _messageService.SendHeadersMessageAsync(action, _messageTarget.CreateFromGroupValues(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), headers, description);
     }
 
     public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, string description)
@@ -253,10 +253,5 @@ public class FilesMessageService
         var serializedParam = JsonSerializer.Serialize(info);
 
         return serializedParam;
-    }
-
-    private IDictionary<string, StringValues> GetHttpHeaders()
-    {
-        return _httpContextAccessor?.HttpContext?.Request?.Headers?.ToDictionary(k => k.Key, v => v.Value);
     }
 }

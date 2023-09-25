@@ -120,7 +120,11 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
         var socketManager = scope.ServiceProvider.GetService<SocketManager>();
         var fileSharing = scope.ServiceProvider.GetService<FileSharing>();
+        var authContext = scope.ServiceProvider.GetService<AuthContext>();
+        var notifyClient = scope.ServiceProvider.GetService<NotifyClient>();
+
         var (fileMarker, filesMessageService, roomLogoManager) = scopeClass;
+
         foreach (var folderId in folderIds)
         {
             CancellationToken.ThrowIfCancellationRequested();
@@ -209,7 +213,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
                             if (isRoom)
                             {
-                                _ = filesMessageService.SendAsync(MessageAction.RoomDeleted, folder, _headers, aces, folder.Title);
+                                await notifyClient.SendRoomRemovedAsync(folder, aces, authContext.CurrentAccount.ID);
+                                _ = filesMessageService.SendAsync(MessageAction.RoomDeleted, folder, _headers, folder.Title);
                             }
                             else
                             {
@@ -253,7 +258,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                                 {
                                     if (isRoom)
                                     {
-                                        _ = filesMessageService.SendAsync(MessageAction.RoomDeleted, folder, _headers, aces, folder.Title);
+                                        await notifyClient.SendRoomRemovedAsync(folder, aces, authContext.CurrentAccount.ID);
+                                        _ = filesMessageService.SendAsync(MessageAction.RoomDeleted, folder, _headers, folder.Title);
                                     }
                                     else
                                     {

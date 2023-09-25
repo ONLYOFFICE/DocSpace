@@ -47,7 +47,6 @@ public class RoomLogoManager
     private readonly TenantManager _tenantManager;
     private IDataStore _dataStore;
     private readonly FilesMessageService _filesMessageService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly SecurityContext _securityContext;
     private readonly FileUtilityConfiguration _fileUtilityConfiguration;
@@ -59,7 +58,6 @@ public class RoomLogoManager
         FileSecurity fileSecurity,
         ILogger<RoomLogoManager> logger,
         FilesMessageService filesMessageService,
-        IHttpContextAccessor httpContextAccessor,
         EmailValidationKeyProvider emailValidationKeyProvider,
         SecurityContext securityContext,
         FileUtilityConfiguration fileUtilityConfiguration)
@@ -70,7 +68,6 @@ public class RoomLogoManager
         _fileSecurity = fileSecurity;
         _logger = logger;
         _filesMessageService = filesMessageService;
-        _httpContextAccessor = httpContextAccessor;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _securityContext = securityContext;
         _fileUtilityConfiguration = fileUtilityConfiguration;
