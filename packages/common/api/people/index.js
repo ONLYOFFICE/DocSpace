@@ -369,11 +369,6 @@ export function getMembersList(roomId, filter = Filter.getDefault()) {
       "id,email,avatar,icon,displayName,hasAvatar,isOwner,isAdmin,isVisitor,isCollaborator,"
     )}`;
   }
-  if (params) {
-    params += `&excludeShared=${filter.excludeShared}`;
-  } else {
-    params = `excludeShared=${filter.excludeShared}`;
-  }
 
   return request({
     method: "get",

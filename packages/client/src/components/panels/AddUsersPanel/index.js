@@ -202,7 +202,6 @@ const AddUsersPanel = ({
 
     currentFilter.page = startIndex / pageCount;
     currentFilter.pageCount = pageCount;
-    currentFilter.excludeShared = true;
 
     if (!!search.length) {
       currentFilter.search = search;
@@ -210,8 +209,6 @@ const AddUsersPanel = ({
 
     getMembersList(roomId, currentFilter)
       .then((response) => {
-        console.log("res", response);
-
         let newItems = startIndex ? itemsList : [];
         let totalDifferent = startIndex ? response.total - total : 0;
 

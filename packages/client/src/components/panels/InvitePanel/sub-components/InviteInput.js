@@ -24,9 +24,11 @@ import {
   StyledDescription,
 } from "../StyledInvitePanel";
 
+import Filter from "@docspace/common/api/people/filter";
+import { getMembersList } from "@docspace/common/api/people";
+
 const InviteInput = ({
   defaultAccess,
-  getUsersByQuery,
   hideSelector,
   inviteItems,
   onClose,
@@ -82,8 +84,14 @@ const InviteInput = ({
     const query = value.trim();
 
     if (!!query.length) {
-      const users = await getUsersByQuery(query);
-      setUsersList(users);
+      const filter = Filter.getFilterWithOutDisabledUser();
+      filter.search = query;
+
+      const users = await getMembersList(roomId, filter);
+
+      console.log("users", users.items);
+
+      setUsersList(users.items);
     } else {
       closeInviteInputPanel();
       setInputValue("");
@@ -124,9 +132,7 @@ const InviteInput = ({
   };
 
   const getItemContent = (item) => {
-    const { avatar, displayName, email, id } = item;
-
-    const invited = inRoom(id);
+    const { avatar, displayName, email, id, shared } = item;
 
     item.access = selectedAccess;
 
@@ -146,18 +152,18 @@ const InviteInput = ({
       <DropDownItem
         key={id}
         onClick={addUser}
-        disabled={invited}
+        disabled={shared}
         height={48}
         className="list-item"
       >
         <Avatar size="min" role="user" source={avatar} />
         <div>
-          <SearchItemText primary disabled={invited}>
+          <SearchItemText primary disabled={shared}>
             {displayName}
           </SearchItemText>
           <SearchItemText>{email}</SearchItemText>
         </div>
-        {invited && <SearchItemText info>{t("Invited")}</SearchItemText>}
+        {shared && <SearchItemText info>{t("Invited")}</SearchItemText>}
       </DropDownItem>
     );
   };
@@ -337,16 +343,14 @@ const InviteInput = ({
   );
 };
 
-export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
+export default inject(({ auth, dialogsStore }) => {
   const { theme } = auth.settingsStore;
   const { isOwner } = auth.userStore.user;
-  const { getUsersByQuery } = peopleStore.usersStore;
   const { invitePanelOptions, setInviteItems, inviteItems } = dialogsStore;
 
   return {
     setInviteItems,
     inviteItems,
-    getUsersByQuery,
     roomId: invitePanelOptions.roomId,
     hideSelector: invitePanelOptions.hideSelector,
     defaultAccess: invitePanelOptions.defaultAccess,
