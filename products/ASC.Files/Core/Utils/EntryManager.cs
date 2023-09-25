@@ -1544,7 +1544,7 @@ public class EntryManager
         return file;
     }
 
-    public async Task TrackEditingAsync<T>(T fileId, Guid tabId, Guid userId, string doc, int tenantId, bool editingAlone = false)
+    public async Task<File<T>> TrackEditingAsync<T>(T fileId, Guid tabId, Guid userId, string doc, int tenantId, bool editingAlone = false)
     {
         bool checkRight;
         if (_fileTracker.GetEditingBy(fileId).Contains(userId))
@@ -1552,7 +1552,7 @@ public class EntryManager
             checkRight = _fileTracker.ProlongEditing(fileId, tabId, userId, tenantId, editingAlone);
             if (!checkRight)
             {
-                return;
+                return null;
             }
         }
 
@@ -1593,6 +1593,8 @@ public class EntryManager
         {
             _fileTracker.ChangeRight(fileId, userId, false);
         }
+
+        return file;
     }
 
     public async Task<File<T>> UpdateToVersionFileAsync<T>(T fileId, int version, string doc = null, bool checkRight = true, bool finalize = false)

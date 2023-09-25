@@ -259,6 +259,7 @@ public class DocumentServiceTrackerHelper
 
         var users = _fileTracker.GetEditingBy(fileId);
         var usersDrop = new List<string>();
+        File<T> file = null;
 
         string docKey;
         var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
@@ -300,7 +301,7 @@ public class DocumentServiceTrackerHelper
                 try
                 {
                     var doc = await _fileShareLink.CreateKeyAsync(fileId);
-                    await _entryManager.TrackEditingAsync(fileId, userId, userId, doc, await _tenantManager.GetCurrentTenantIdAsync());
+                    file = await _entryManager.TrackEditingAsync(fileId, userId, userId, doc, await _tenantManager.GetCurrentTenantIdAsync());
                 }
                 catch (Exception e)
                 {
@@ -324,6 +325,11 @@ public class DocumentServiceTrackerHelper
         }
 
         await _socketManager.StartEditAsync(fileId);
+
+        if (file != null && fileData.Actions != null && fileData.Actions.Count > 0)
+        {
+            _ = _filesMessageService.SendAsync(MessageAction.FileOpenedForChange, file, file.Title);
+        }
     }
 
     private async Task<TrackResponse> ProcessSaveAsync<T>(T fileId, TrackerData fileData)
