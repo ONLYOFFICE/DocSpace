@@ -14,6 +14,7 @@ import {
   copyToFolder,
   moveToFolder,
   fileCopyAs,
+  getFolder,
 } from "@docspace/common/api/files";
 import toastr from "@docspace/components/toast/toastr";
 import { isMobile } from "react-device-detect";
@@ -1485,7 +1486,7 @@ class UploadDataStore {
         );
   };
 
-  preparingDataForCopyingToRoom = (destFolderId, t) => {
+  preparingDataForCopyingToRoom = async (destFolderId, t) => {
     const { selection, bufferSelection } = this.filesStore;
     let fileIds = [];
     let folderIds = [];
@@ -1499,16 +1500,30 @@ class UploadDataStore {
 
     if (!selections.length) return;
 
-    for (let item of selections) {
-      if (item.fileExst || item.contentLength) {
-        fileIds.push(item.id);
-      } else {
-        folderIds.push(item.id);
+    const oneFolder = selections.length === 1 && selections[0].isFolder;
+
+    if (oneFolder) {
+      try {
+        const selectedFolder = await getFolder(selections[0].id);
+        const { folders, files } = selectedFolder;
+
+        if (!!files.length) files.map((item) => fileIds.push(item.id));
+        if (!!folders.length) folders.map((item) => folderIds.push(item.id));
+      } catch (err) {
+        toastr.error(err);
       }
     }
 
+    !oneFolder &&
+      selections.map((item) => {
+        if (item.fileExst || item.contentLength) fileIds.push(item.id);
+        else folderIds.push(item.id);
+      });
+
     this.filesStore.setSelection([]);
     this.filesStore.setBufferSelection(null);
+
+    if (!folderIds.length && !fileIds.length) return;
 
     const operationData = {
       destFolderId,
