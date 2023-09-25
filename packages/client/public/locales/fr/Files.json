@@ -143,7 +143,7 @@
   "TooltipElementCopyMessage": "Copier {{element}}",
   "TooltipElementsCopyMessage": "Copier {{element}} des éléments",
   "TooltipElementsMoveMessage": "Déplacer les éléments {{element}}",
-  "TrashEmptyDescription": "La section 'Corbeille' contient les fichiers supprimés. Vous pouvez les restaurer s'ils ont été supprimés par erreur ou les éliminer de manière permanente. Il est à noter que quand vous supprimez les fichiers de la 'Corbeille' ils ne peuvent pas être restaurés.",
+  "TrashEmptyDescription": "La section 'Corbeille' contient les fichiers supprimés. Vous pouvez les restaurer s'ils ont été supprimés par erreur ou les éliminer de manière permanente. Les fichiers dans la 'Corbeille' sont automatiquement supprimés après 30 jours. Il est à noter que quand vous supprimez les fichiers de la 'Corbeille' ils ne peuvent pas être restaurés.",
   "TrashErasureWarning": "Les éléments placés dans la corbeille sont automatiquement supprimés dans les 30 jours.",
   "UnarchivedRoomAction": "La salle '{{name}}' n'est plus archivée.",
   "UnarchivedRoomsAction": "Les salles ne sont plus archivées.",

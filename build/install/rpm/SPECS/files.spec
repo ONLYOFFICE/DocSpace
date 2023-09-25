@@ -31,6 +31,7 @@
 %files common
 %defattr(-, onlyoffice, onlyoffice, -)
 %config %attr(640, onlyoffice, onlyoffice) %{_sysconfdir}/onlyoffice/%{product}/*
+%exclude %{_sysconfdir}/onlyoffice/%{product}/openresty
 %exclude %{_sysconfdir}/onlyoffice/%{product}/nginx
 %{_docdir}/%{name}-%{version}-%{release}/
 %config %{_sysconfdir}/logrotate.d/%{product}-common
@@ -73,13 +74,13 @@
 
 %files proxy
 %defattr(-, onlyoffice, onlyoffice, -)
-%config %{_sysconfdir}/nginx/includes/*
-%config %{_sysconfdir}/nginx/conf.d/*
+%config %{_sysconfdir}/openresty/includes/*
+%config %{_sysconfdir}/openresty/conf.d/*
 %attr(744, root, root) %{_bindir}/%{product}-ssl-setup
-%config %{_sysconfdir}/onlyoffice/%{product}/nginx/nginx.conf.template
+%config %{_sysconfdir}/onlyoffice/%{product}/openresty/nginx.conf.template
 %dir %{_sysconfdir}/onlyoffice/
 %dir %{_sysconfdir}/onlyoffice/%{product}/
-%dir %{_sysconfdir}/onlyoffice/%{product}/nginx/
+%dir %{_sysconfdir}/onlyoffice/%{product}/openresty/
 %{buildpath}/public/
 %{buildpath}/client/
 

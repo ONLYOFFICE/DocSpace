@@ -39,5 +39,5 @@ volumes:
     
 networks:
   default:
-    external:
-      name: "onlyoffice"
+    name: ${NETWORK_NAME}
+    external: true

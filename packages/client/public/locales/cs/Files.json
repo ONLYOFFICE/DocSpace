@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "Zkopírovat {{element}}",
   "TooltipElementsCopyMessage": "Zkopírovat prvky {{element}}",
   "TooltipElementsMoveMessage": "Přesunout prvky {{element}}",
-  "TrashEmptyDescription": "Sekce 'Koš' je místo, kam jsou všechny smazané soubory přemístěny. Můžete je obnovit v případě, že byly smazány nedopatřením nebo je odstraňte trvale. Prosím berte v úvahu, že pokud vymažete Vaše soubory z 'Koše', již je nemůžete znovu obnovit.",
+  "TrashEmptyDescription": "Sekce 'Koš' je místo, kam jsou všechny smazané soubory přemístěny. Můžete je obnovit v případě, že byly smazány nedopatřením nebo je odstraňte trvale. Soubory v 'Koši' se automaticky smažou po 30 dnech. Prosím berte v úvahu, že pokud vymažete Vaše soubory z 'Koše', již je nemůžete znovu obnovit.",
   "TrashErasureWarning": "Položky v koši se automaticky odstraní po 30 dnech.",
   "UnarchivedRoomAction": "Místnost '{{name}}' není archivována.",
   "UnarchivedRoomsAction": "Místnosti nejsou archivovány.",

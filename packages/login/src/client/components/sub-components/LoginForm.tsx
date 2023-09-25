@@ -25,7 +25,7 @@ interface ILoginFormProps {
   hashSettings: PasswordHashType;
   isDesktop: boolean;
   match: MatchType;
-  onRecoverDialogVisible: () => void;
+  openRecoverDialog: () => void;
   enableAdmMess: boolean;
   recaptchaPublicKey: CaptchaPublicKeyType;
   isBaseTheme: boolean;
@@ -44,7 +44,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   isDesktop,
   match,
   setIsLoading,
-  onRecoverDialogVisible,
+  openRecoverDialog,
   enableAdmMess,
   cookieSettingsEnabled,
   recaptchaPublicKey,
@@ -445,7 +445,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                 type="action"
                 isHovered={true}
                 className="login-link recover-link"
-                onClick={onRecoverDialogVisible}
+                onClick={openRecoverDialog}
               >
                 {t("RecoverAccess")}
               </Link>

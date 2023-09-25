@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Constants = ASC.Feed.Constants;
+
 namespace ASC.Web.Api.Controllers;
 
 /// <summary>
@@ -118,11 +120,11 @@ public class FeedController : ControllerBase
         {
             if (int.TryParse(id, out var intId))
             {
-                await CheckAccessAsync(intId);
+                await CheckAccessAsync(intId, module);
             }
             else
             {
-                await CheckAccessAsync(id);
+                await CheckAccessAsync(id, module);
             }
         }
         
@@ -188,16 +190,31 @@ public class FeedController : ControllerBase
 
         return new { feeds, readedDate };
 
-        async Task CheckAccessAsync<T>(T roomId)
+        async Task CheckAccessAsync<T>(T id, string module)
         {
-            var room = await _daoFactory.GetFolderDao<T>().GetFolderAsync(roomId);
+            FileEntry<T> entry = null;
 
-            if (room == null)
+            switch (module)
+            {
+                case Constants.RoomsModule:
+                case Constants.FoldersModule:
+                    {
+                        entry = await _daoFactory.GetFolderDao<T>().GetFolderAsync(id);
+                        break;
+                    }
+                case Constants.FilesModule:
+                    {
+                        entry = await _daoFactory.GetFileDao<T>().GetFileAsync(id);
+                        break;
+                    }
+            }
+
+            if (entry == null)
             {
                 throw new ItemNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
     }
 
-            if (!await _fileSecurity.CanReadAsync(room))
+            if (!await _fileSecurity.CanReadAsync(entry))
             {
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
             }

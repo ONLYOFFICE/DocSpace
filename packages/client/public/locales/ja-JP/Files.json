@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "{{element}}をコピー",
   "TooltipElementsCopyMessage": " {{element}} 要素をコピー",
   "TooltipElementsMoveMessage": " {{element}} 要素を移動",
-  "TrashEmptyDescription": "すべての削除されたファイルは「ごみ箱」に移動されます。間違って削除されたファイルをを復元するか、完全に削除することができます。「ごみ箱」から削除されたファイルは、もう復元できないことにご注意ください。",
+  "TrashEmptyDescription": "すべての削除されたファイルは「ごみ箱」に移動されます。間違って削除されたファイルをを復元するか、完全に削除することができます。「ゴミ箱」にあるファイルは30日後に自動的に削除されます。「ごみ箱」から削除されたファイルは、もう復元できないことにご注意ください。",
   "TrashErasureWarning": "ゴミ箱にあるアイテムは、30日後に自動的に削除されます。",
   "UnarchivedRoomAction": "ルーム '{{name}}' はアーカイブが解除されました。",
   "UnarchivedRoomsAction": "ルームはアーカイブが解除されました。",

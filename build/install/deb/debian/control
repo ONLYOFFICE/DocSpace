@@ -56,7 +56,7 @@ Package: {{product}}-files
 Architecture: all
 Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
-Recommends: elasticsearch (= 7.10.0)
+Recommends: elasticsearch (= 7.16.3)
 Description: {{product}}-files
 	The service which handles API requests related to 
 	documents and launches the OFormService service
@@ -65,7 +65,7 @@ Package: {{product}}-files-services
 Architecture: all
 Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
-Recommends: ffmpeg, elasticsearch (= 7.10.0)
+Recommends: ffmpeg, elasticsearch (= 7.16.3)
 Description: {{product}}-files-services
 	The service which launches additional services related to file management:
 	 - ElasticSearchIndexService - indexes documents using elasticsearch;
@@ -79,7 +79,7 @@ Package: {{product}}-notify
 Architecture: all
 Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
-Recommends: ffmpeg, elasticsearch (= 7.10.0)
+Recommends: ffmpeg, elasticsearch (= 7.16.3)
 Description: {{product}}-notify
 	The service which launches additional services
 	related to notifications about DocSpace events:

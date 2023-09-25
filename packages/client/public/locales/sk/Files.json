@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "Kopírovať {{element}}",
   "TooltipElementsCopyMessage": "Kopírovať prvky {{element}}",
   "TooltipElementsMoveMessage": "Presunúť prvky {{element}}",
-  "TrashEmptyDescription": "Do sekcie 'Kôš' sa presúvajú všetky zmazané súbory. V prípade chyby ich môžete obnoviť. Ak zmažete súbory zo sekcie 'Kôš', tak ich nebudete vedieť obnoviť.",
+  "TrashEmptyDescription": "Do sekcie 'Kôš' sa presúvajú všetky zmazané súbory. V prípade chyby ich môžete obnoviť. Súbory v 'Koši' sa automaticky vymažú po 30 dňoch. Ak zmažete súbory zo sekcie 'Kôš', tak ich nebudete vedieť obnoviť.",
   "TrashErasureWarning": "Položky v smetnom koši sa automaticky vymažú po 30 dňoch.",
   "UnarchivedRoomAction": "Miestnosť '{{name}}' bola rozbalená z archívu.",
   "UnarchivedRoomsAction": "Miestnosti nie sú archivované.",
