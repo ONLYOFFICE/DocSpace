@@ -37,6 +37,7 @@ const Members = ({
 
   setExternalLinks,
   membersFilter,
+  externalLinks,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -83,11 +84,10 @@ const Members = ({
       }
     });
 
-    let hasPrevAdminsTitle = false;
-    if (members && members.administrators.length) {
-      hasPrevAdminsTitle =
-        members.administrators.findIndex((x) => x.id === "administration") > -1;
-    }
+    let hasPrevAdminsTitle =
+      members?.roomId === roomId
+        ? getHasPrevTitle(members?.administrators, "administration")
+        : false;
 
     if (administrators.length && !hasPrevAdminsTitle) {
       administrators.unshift({
@@ -97,20 +97,19 @@ const Members = ({
       });
     }
 
-    let hasPrevUsersTitle = false;
-    if (members && members.users.length) {
-      hasPrevUsersTitle = members.users.findIndex((x) => x.id === "user") > -1;
-    }
+    let hasPrevUsersTitle =
+      members?.roomId === roomId
+        ? getHasPrevTitle(members?.users, "user")
+        : false;
 
     if (users.length && !hasPrevUsersTitle) {
       users.unshift({ id: "user", displayName: t("Users"), isTitle: true });
     }
 
-    let hasPrevExpectedTitle = false;
-    if (members && members.expected.length) {
-      hasPrevExpectedTitle =
-        members.expected.findIndex((x) => x.id === "expected") > -1;
-    }
+    let hasPrevExpectedTitle =
+      members?.roomId === roomId
+        ? getHasPrevTitle(members?.expected, "expected")
+        : false;
 
     if (expectedMembers.length && !hasPrevExpectedTitle) {
       expectedMembers.unshift({
@@ -123,11 +122,17 @@ const Members = ({
 
     setShowLoader(false);
     setUpdateRoomMembers(false);
+
     return {
       users,
       administrators,
       expected: expectedMembers,
+      roomId,
     };
+  };
+
+  const getHasPrevTitle = (array, type) => {
+    return array.findIndex((x) => x.id === type) > -1;
   };
 
   const updateSelectionParentRoomAction = useCallback(async () => {
@@ -237,6 +242,7 @@ const Members = ({
         hasNextPage={membersList.length < membersFilter.total}
         itemCount={membersFilter.total}
         onRepeatInvitation={onRepeatInvitation}
+        withBanner={isPublicRoomType && externalLinks.length > 0}
       />
     </>
   );
@@ -246,7 +252,7 @@ export default inject(
   ({ auth, filesStore, peopleStore, selectedFolderStore, publicRoomStore }) => {
     const {
       selectionParentRoom,
-
+      selection,
       setSelectionParentRoom,
       setView,
       roomsView,
@@ -266,7 +272,7 @@ export default inject(
     const { id: selfId } = auth.userStore.user;
 
     const { changeType: changeUserType } = peopleStore;
-    const { setExternalLinks } = publicRoomStore;
+    const { roomLinks, setExternalLinks } = publicRoomStore;
 
     const roomType =
       selectedFolderStore.roomType ?? selectionParentRoom?.roomType;
@@ -296,6 +302,7 @@ export default inject(
       isPublicRoomType,
       setExternalLinks,
       membersFilter,
+      externalLinks: roomLinks,
     };
   }
 )(
