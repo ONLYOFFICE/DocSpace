@@ -193,8 +193,7 @@ const Members = ({
   ]);
 
   const onRepeatInvitation = async () => {
-    const userIds = members.expected.map((user) => user.id);
-    resendEmailInvitations(selectionParentRoom.id, userIds)
+    resendEmailInvitations(selectionParentRoom.id, true)
       .then(() =>
         toastr.success(t("PeopleTranslations:SuccessSentMultipleInvitatios"))
       )

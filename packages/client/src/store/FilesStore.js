@@ -3663,8 +3663,8 @@ class FilesStore {
     return await api.rooms.setInvitationLinks(roomId, linkId, title, access);
   };
 
-  resendEmailInvitations = async (id, usersIds) => {
-    return await api.rooms.resendEmailInvitations(id, usersIds);
+  resendEmailInvitations = async (id, resendAll) => {
+    return await api.rooms.resendEmailInvitations(id, resendAll);
   };
 
   getRoomSecurityInfo = async (id) => {

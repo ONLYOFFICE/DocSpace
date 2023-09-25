@@ -299,12 +299,12 @@ export const setInvitationLinks = async (roomId, linkId, title, access) => {
   return res;
 };
 
-export const resendEmailInvitations = async (id, usersIds) => {
+export const resendEmailInvitations = async (id, resendAll = true) => {
   const options = {
     method: "post",
     url: `/files/rooms/${id}/resend`,
     data: {
-      usersIds,
+      resendAll,
     },
   };
 
