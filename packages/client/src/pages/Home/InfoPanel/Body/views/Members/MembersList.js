@@ -7,8 +7,12 @@ import InfiniteLoader from "react-window-infinite-loader";
 import User from "./User";
 
 const StyledMembersList = styled.div`
-  height: ${({ withBanner }) =>
-    withBanner ? "calc(100vh - 442px)" : "calc(100vh - 266px)"};
+  height: ${({ withBanner, isPublicRoomType }) =>
+    isPublicRoomType
+      ? withBanner
+        ? "calc(100vh - 442px)"
+        : "calc(100vh - 286px)"
+      : "calc(100vh - 266px)"};
 `;
 
 const Item = memo(({ data, index, style }) => {
@@ -70,6 +74,7 @@ const MembersList = (props) => {
     itemCount,
     onRepeatInvitation,
     loadNextPage,
+    isPublicRoomType,
     withBanner,
   } = props;
 
@@ -96,7 +101,10 @@ const MembersList = (props) => {
   );
 
   return (
-    <StyledMembersList withBanner={withBanner}>
+    <StyledMembersList
+      withBanner={withBanner}
+      isPublicRoomType={isPublicRoomType}
+    >
       <AutoSizer>
         {({ height, width }) => (
           <InfiniteLoader

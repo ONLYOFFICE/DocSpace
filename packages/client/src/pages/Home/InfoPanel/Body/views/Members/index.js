@@ -59,7 +59,7 @@ const Members = ({
 
     const [data, links] = await Promise.all(requests);
 
-    links && links.length && setExternalLinks(links);
+    links && setExternalLinks(links);
     // clearTimeout(timerId);
 
     const users = [];
@@ -242,6 +242,7 @@ const Members = ({
         hasNextPage={membersList.length < membersFilter.total}
         itemCount={membersFilter.total}
         onRepeatInvitation={onRepeatInvitation}
+        isPublicRoomType={isPublicRoomType}
         withBanner={isPublicRoomType && externalLinks.length > 0}
       />
     </>
