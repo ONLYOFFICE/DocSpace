@@ -300,7 +300,7 @@ public class DocumentServiceTrackerHelper
                 try
                 {
                     var doc = await _fileShareLink.CreateKeyAsync(fileId);
-                    await _entryManager.TrackEditingAsync(fileId, userId, userId, doc);
+                    await _entryManager.TrackEditingAsync(fileId, userId, userId, doc, await _tenantManager.GetCurrentTenantIdAsync());
                 }
                 catch (Exception e)
                 {
@@ -454,7 +454,7 @@ public class DocumentServiceTrackerHelper
         {
             if (user != null)
             {
-                _ = _filesMessageService.SendAsync(file, MessageInitiator.DocsService, MessageAction.UserFileUpdated, user.DisplayUserName(false, _displayUserSettingsHelper), file.Title);
+                _ = _filesMessageService.SendAsync(MessageAction.UserFileUpdated, file, MessageInitiator.DocsService, user.DisplayUserName(false, _displayUserSettingsHelper), file.Title);
             }
 
             if (!forcesave)

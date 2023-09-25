@@ -190,6 +190,15 @@ class SettingsStore {
   setForceSave = (data) =>
     api.files.forceSave(data).then((res) => this.setForcesave(res));
 
+  getDocumentServiceLocation = () => api.files.getDocumentServiceLocation();
+
+  changeDocumentServiceLocation = (docServiceUrl, internalUrl, portalUrl) =>
+    api.files.changeDocumentServiceLocation(
+      docServiceUrl,
+      internalUrl,
+      portalUrl
+    );
+
   setForcesave = (val) => (this.forcesave = val);
 
   updateRootTreeFolders = () => {

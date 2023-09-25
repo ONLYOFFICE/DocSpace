@@ -866,9 +866,9 @@ public class FileSecurity : IFileSecurity
                 }
 
                 var mytrashId = await _globalFolder.GetFolderTrashAsync(_daoFactory);
-                if (!Equals(mytrashId, 0) && Equals(e.RootId, mytrashId))
+                if (!Equals(mytrashId, 0))
                 {
-                    return folder == null || action != FilesSecurityActions.Delete || !Equals(e.Id, mytrashId);
+                    return Equals(e.RootId, mytrashId) && (folder == null || action != FilesSecurityActions.Delete || !Equals(e.Id, mytrashId));
                 }
                 break;
             case FolderType.USER:

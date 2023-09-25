@@ -123,6 +123,7 @@ const PortalRenaming = (props) => {
 
         setPortalName(portalName);
         setPortalNameDefault(portalName);
+        sessionStorage.clear();
 
         navigate(res);
       })

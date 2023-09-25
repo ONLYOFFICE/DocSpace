@@ -75,15 +75,34 @@ public class CspSettingsHelper
 
         if (domain == Tenant.LocalHost && tenant.Alias == Tenant.LocalHost)
         {
-            headerKeys.Add(GetKey(Tenant.HostName));
-            var ips = Dns.GetHostAddresses(Dns.GetHostName(), AddressFamily.InterNetwork);
-
-            foreach (var ip in ips)
+            var domainsKey = $"{GetKey(domain)}:keys";
+            if (_httpContextAccessor.HttpContext != null)
             {
-                headerKeys.Add(GetKey(ip.ToString()));
-            }
+                var keys = new List<string>()
+                {
+                    GetKey(Tenant.HostName)
+                };
 
-            headerKeys.Add(GetKey(_httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()));
+                var ips = Dns.GetHostAddresses(Dns.GetHostName(), AddressFamily.InterNetwork);
+
+                foreach (var ip in ips)
+                {
+                    keys.Add(GetKey(ip.ToString()));
+                }
+
+                keys.Add(GetKey(_httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()));
+                await _distributedCache.SetStringAsync(domainsKey, string.Join(';', keys));
+                headerKeys.AddRange(keys);
+            }
+            else
+            {
+                var domainsValue = await _distributedCache.GetStringAsync(domainsKey);
+
+                if (!string.IsNullOrEmpty(domainsValue))
+                {
+                    headerKeys.AddRange(domainsValue.Split(';'));
+                }
+            }
         }
 
         var headerValue = await CreateHeaderAsync(domains, setDefaultIfEmpty);
@@ -121,7 +140,7 @@ public class CspSettingsHelper
         }
     }
 
-    public async Task<string> CreateHeaderAsync(IEnumerable<string> domains, bool setDefaultIfEmpty = false)
+    public async Task<string> CreateHeaderAsync(IEnumerable<string> domains, bool setDefaultIfEmpty = false, bool currentTenant = true)
     {
         if (domains == null || !domains.Any())
         {
@@ -135,72 +154,84 @@ public class CspSettingsHelper
             }
         }
 
-        var csp = new CspBuilder();
+        var options = domains.Select(r => new CspOptions(r)).ToList();
 
-        var def = csp.ByDefaultAllow
-            .FromSelf()
-            .From("data:")
-            .From(_filesLinkUtility.DocServiceUrl);
+        var defaultOptions = _configuration.GetSection("csp:default").Get<CspOptions>();
+        if (!_coreBaseSettings.Standalone && !string.IsNullOrEmpty(_coreBaseSettings.Basedomain))
+        {
+            defaultOptions.Def.Add($"*.{_coreBaseSettings.Basedomain}");
+        }
 
-        var scriptBuilder = csp.AllowScripts
-            .FromSelf()
-            .From(_filesLinkUtility.DocServiceUrl)
-            .AllowUnsafeInline();
+        if (await _globalStore.GetStoreAsync(currentTenant) is S3Storage s3Storage && !string.IsNullOrEmpty(s3Storage.CdnDistributionDomain))
+        {
+            defaultOptions.Img.Add(s3Storage.CdnDistributionDomain);
+        }
+
+        options.Add(defaultOptions);
+
+        if (Uri.IsWellFormedUriString(_filesLinkUtility.DocServiceUrl, UriKind.Absolute))
+        {
+            options.Add(new CspOptions()
+            {
+                Def = new List<string> { _filesLinkUtility.DocServiceUrl },
+                Script = new List<string> { _filesLinkUtility.DocServiceUrl },
+            });
+        }
 
         var firebaseDomain = _configuration["firebase:authDomain"];
         if (!string.IsNullOrEmpty(firebaseDomain))
         {
-            def.From(firebaseDomain);
-
-            var googleapi = "*.googleapis.com";
-            def.From(googleapi);
-            scriptBuilder.From(googleapi);
-        }
-
-        var styleBuilder = csp.AllowStyles
-            .FromSelf()
-            .AllowUnsafeInline();
-
-        var imageBuilder = csp.AllowImages
-            .FromSelf()
-            .From("data:")
-            .From("blob:");
-
-        var frameBuilder = csp.AllowFraming
-            .FromSelf();
-
-        if (!_coreBaseSettings.Standalone && !string.IsNullOrEmpty(_coreBaseSettings.Basedomain))
-        {
-            def.From($"*.{_coreBaseSettings.Basedomain}");
+            var firebaseOptions = _configuration.GetSection("csp:firebase").Get<CspOptions>();
+            if (firebaseOptions != null)
+            {
+                firebaseOptions.Def.Add(firebaseDomain);
+                options.Add(firebaseOptions);
+            }
         }
 
         if (!string.IsNullOrEmpty(_configuration["web:zendesk-key"]))
         {
-            def.From("*.zdassets.com");
-            scriptBuilder.From("*.zdassets.com");
-
-            def.From("*.zendesk.com");
-            def.From("*.zopim.com");
-            def.From("wss:");
-
-            scriptBuilder
-                .From("*.zopim.com")
-                .AllowUnsafeEval();//zendesk;
-
-            imageBuilder.From("*.zopim.io");
+            var zenDeskOptions = _configuration.GetSection("csp:zendesk").Get<CspOptions>();
+            if (zenDeskOptions != null)
+            {
+                options.Add(zenDeskOptions);
+            }
         }
 
-        foreach (var domain in domains)
+        if (!string.IsNullOrEmpty(_configuration["files:oform:url"]))
         {
-            scriptBuilder.From(domain);
-            styleBuilder.From(domain);
-            imageBuilder.From(domain);
-            frameBuilder.From(domain);
+            var oformOptions = _configuration.GetSection("csp:oform").Get<CspOptions>();
+            if (oformOptions != null)
+            {
+                options.Add(oformOptions);
+            }
         }
 
-        if (await _globalStore.GetStoreAsync() is S3Storage s3Storage && !string.IsNullOrEmpty(s3Storage.CdnDistributionDomain))
+        var csp = new CspBuilder();
+
+        foreach (var domain in options.SelectMany(r => r.Def).Distinct())
         {
-            imageBuilder.From(s3Storage.CdnDistributionDomain);
+            csp.ByDefaultAllow.From(domain);
+        }
+
+        foreach (var domain in options.SelectMany(r => r.Script).Distinct())
+        {
+            csp.AllowScripts.From(domain);
+        }
+
+        foreach (var domain in options.SelectMany(r => r.Style).Distinct())
+        {
+            csp.AllowStyles.From(domain);
+        }
+
+        foreach (var domain in options.SelectMany(r => r.Img).Distinct())
+        {
+            csp.AllowImages.From(domain);
+        }
+
+        foreach (var domain in options.SelectMany(r => r.Frame).Distinct())
+        {
+            csp.AllowFraming.From(domain);
         }
 
         var (_, headerValue) = csp.BuildCspOptions().ToString(null);
@@ -210,5 +241,28 @@ public class CspSettingsHelper
     private string GetKey(string domain)
     {
         return $"csp:{domain}";
+    }
+}
+
+public class CspOptions
+{
+    public List<string> Script { get; set; } = new List<string>();
+    public List<string> Style { get; set; } = new List<string>();
+    public List<string> Img { get; set; } = new List<string>();
+    public List<string> Frame { get; set; } = new List<string>();
+    public List<string> Def { get; set; } = new List<string>();
+
+    public CspOptions()
+    {
+
+    }
+
+    public CspOptions(string domain)
+    {
+        Def = new List<string>() { };
+        Script = new List<string>() { domain };
+        Style = new List<string>() { domain };
+        Img = new List<string>() { domain };
+        Frame = new List<string>() { domain };
     }
 }

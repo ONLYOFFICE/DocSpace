@@ -8,6 +8,7 @@ md build\install\win\OpenResty\tools
 md build\install\win\Files\tools
 md build\install\win\Files\Logs
 md build\install\win\Files\Data
+md build\install\win\Files\sbin
 md build\install\win\Files\products\ASC.Files\server\temp
 md build\install\win\Files\products\ASC.People\server\temp
 md build\install\win\Files\services\ASC.Data.Backup\service\temp
@@ -30,7 +31,17 @@ copy build\install\win\tools\DocEditor.xml "build\install\win\Files\tools\DocEdi
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Login.exe" /y
 copy build\install\win\tools\Login.xml "build\install\win\Files\tools\Login.xml" /y
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
+copy "build\install\docker\config\nginx\onlyoffice-proxy.conf" "build\install\win\Files\nginx\conf\onlyoffice-proxy.conf" /y
+copy "build\install\docker\config\nginx\onlyoffice-proxy-ssl.conf" "build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl" /y
+copy "build\install\docker\config\nginx\letsencrypt.conf" "build\install\win\Files\nginx\conf\includes\letsencrypt.conf" /y
+copy "build\install\win\sbin\docspace-ssl-setup.ps1" "build\install\win\Files\sbin\docspace-ssl-setup.ps1" /y
 rmdir build\install\win\publish /s /q
+
+REM echo ######## SSL configs ########
+%sed% -i "s/the_host/host/g" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
+%sed% -i "s/the_scheme/scheme/g" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
+%sed% -i "s/ssl_dhparam \/etc\/ssl\/certs\/dhparam.pem;/#ssl_dhparam \/etc\/ssl\/certs\/dhparam.pem;/" build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
+%sed% -i "s_\(.*root\).*;_\1 \"{APPDIR}letsencrypt\";_g" -i build\install\win\Files\nginx\conf\includes\letsencrypt.conf
 
 REM echo ######## Delete test and dev configs ########
 del /f /q build\install\win\Files\config\*.test.json
@@ -40,6 +51,8 @@ del /f /q build\install\win\Files\config\*.dev.json
 %sed% "s_\(\"Default\":\).*,_\1 \"Warning\",_g" -i build\install\win\Files\config\appsettings.json
 %sed% "s_\(\"logLevel\":\).*_\1 \"warning\"_g" -i build\install\win\Files\config\appsettings.services.json
 %sed% "/\"debug-info\": {/,/}/ s/\(\"enabled\": \)\".*\"/\1\"false\"/" -i build\install\win\Files\config\appsettings.json
+
+%sed% "s_\(\"samesite\":\).*,_\1 \"None\",_g" -i build\install\win\Files\config\appsettings.json
 
 ::redirectUrl value replacement
 %sed% "s/teamlab.info/onlyoffice.com/g" -i build\install\win\Files\config/autofac.consumers.json

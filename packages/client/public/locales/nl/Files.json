@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "Kopieer {{element}}",
   "TooltipElementsCopyMessage": "Kopieer {{element}} elementen",
   "TooltipElementsMoveMessage": "Kopieer {{element}} elementen",
-  "TrashEmptyDescription": "Alle verwijderde bestanden worden verplaatst naar de 'Prullenbak'. Je kan deze terugzetten als ze per ongeluk verwijderd zijn of je kan ze permanent verwijderen. Wees ervan bewust dat als de bestanden eenmaal uit de Prullenbak zijn verwijderd deze niet meer terug te krijgen zijn.",
+  "TrashEmptyDescription": "Alle verwijderde bestanden worden verplaatst naar de 'Prullenbak'. Je kan deze terugzetten als ze per ongeluk verwijderd zijn of je kan ze permanent verwijderen. Bestanden in de 'Prullenbak' worden na 30 dagen automatisch verwijderd. Wees ervan bewust dat als de bestanden eenmaal uit de Prullenbak zijn verwijderd deze niet meer terug te krijgen zijn.",
   "TrashErasureWarning": "Items in de Prullenbak worden na 30 dagen automatisch verwijderd.",
   "UnarchivedRoomAction": "De kamer '{{name}}' is niet meer gearchiveerd.",
   "UnarchivedRoomsAction": "De kamers zijn niet meer gearchiveerd.",

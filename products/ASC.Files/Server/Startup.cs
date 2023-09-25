@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Data.Storage;
+
 namespace ASC.Files;
 
 public class Startup : BaseStartup
@@ -99,5 +101,10 @@ public class Startup : BaseStartup
             {
                 appBranch.UseDocuSignHandler();
             });
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.InitializeHttpHandlers("files_template");
+        });
     }
 }

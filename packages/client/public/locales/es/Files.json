@@ -143,7 +143,7 @@
   "TooltipElementCopyMessage": "Copiar {{element}}",
   "TooltipElementsCopyMessage": "Copiar {{element}} elementos",
   "TooltipElementsMoveMessage": "Mover {{element}} elementos",
-  "TrashEmptyDescription": "La sección 'Papelera de reciclaje' es a donde se mueven todos los archivos borrados. Usted puede restaurarlos en el caso si ellos fueron eliminados por error o eliminarlos de forma permanente. Tenga en cuenta, que cuando usted elimina los archivos de la 'Papelera de reciclaje' ellos no pueden ser recuperados.",
+  "TrashEmptyDescription": "La sección 'Papelera de reciclaje' es a donde se mueven todos los archivos borrados. Usted puede restaurarlos en el caso si ellos fueron eliminados por error o eliminarlos de forma permanente. Los archivos en la 'Papelera de reciclaje' se eliminan automáticamente después de 30 días. Tenga en cuenta, que cuando usted elimina los archivos de la 'Papelera de reciclaje' ellos no pueden ser recuperados.",
   "TrashErasureWarning": "Los elementos de la papelera se eliminan automáticamente después de 30 días.",
   "UnarchivedRoomAction": "La sala '{{name}}' está desarchivada.",
   "UnarchivedRoomsAction": "Las salas están desarchivadas.",

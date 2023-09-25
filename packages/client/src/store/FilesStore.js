@@ -1070,7 +1070,6 @@ class FilesStore {
   };
 
   setSelection = (selection) => {
-    // console.log("setSelection", selection);
     this.selection = selection;
   };
 
@@ -1870,6 +1869,7 @@ class FilesStore {
         "mark-read",
         // "mark-as-favorite",
         // "remove-from-favorites",
+        "create-room",
         "download",
         "download-as",
         "convert",
@@ -2209,6 +2209,7 @@ class FilesStore {
         // "link-for-portal-users",
         "separator1",
         "open-location",
+        "create-room",
         "download",
         "move", //category
         "move-to",
@@ -3056,12 +3057,8 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
@@ -3467,13 +3464,14 @@ class FilesStore {
     preview = false
   ) => {
     const foundIndex = this.files.findIndex((x) => x.id === id);
+    const file = foundIndex !== -1 ? this.files[foundIndex] : undefined;
     if (
-      foundIndex !== -1 &&
+      file &&
       !preview &&
-      this.files[foundIndex].rootFolderType !== FolderType.Archive
+      file.rootFolderType !== FolderType.Archive &&
+      file.fileExst !== ".oform"
     ) {
-      const newStatus =
-        this.files[foundIndex].fileStatus | FileStatus.IsEditing;
+      const newStatus = file.fileStatus | FileStatus.IsEditing;
 
       this.updateSelectionStatus(id, newStatus, true);
       this.updateFileStatus(foundIndex, newStatus);
