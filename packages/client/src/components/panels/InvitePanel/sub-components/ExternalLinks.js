@@ -22,6 +22,7 @@ import {
   StyledToggleButton,
   StyledDescription,
 } from "../StyledInvitePanel";
+import { RoomsType, ShareAccessRights } from "@docspace/common/constants";
 
 const ExternalLinks = ({
   t,
@@ -53,7 +54,12 @@ const ExternalLinks = ({
   };
 
   const editLink = async () => {
-    const link = await setInvitationLinks(roomId, "Invite", 2);
+    const type =
+      roomType === RoomsType.PublicRoom
+        ? ShareAccessRights.RoomManager
+        : ShareAccessRights.ReadOnly;
+
+    const link = await setInvitationLinks(roomId, "Invite", type);
 
     const { shareLink, id, title, expirationDate } = link.sharedTo;
 
