@@ -33,14 +33,13 @@ public abstract class NotifySource : INotifySource
 
     protected ISubscriptionProvider _subscriprionProvider;
     protected IRecipientProvider _recipientsProvider;
-    protected IActionProvider ActionProvider => GetActionProvider();
-    protected IPatternProvider PatternProvider => GetPatternProvider();
     public string Id { get; private set; }
 
     private readonly UserManager _userManager;
     private readonly SubscriptionManager _subscriptionManager;
+    private readonly TenantManager _tenantManager;
 
-    protected NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+    protected NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager, TenantManager tenantManager)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(id);
 
@@ -48,18 +47,22 @@ public abstract class NotifySource : INotifySource
         _userManager = userManager;
         _recipientsProvider = recipientsProvider;
         _subscriptionManager = subscriptionManager;
+        _tenantManager = tenantManager;
     }
 
-    protected NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
-        : this(id.ToString(), userManager, recipientsProvider, subscriptionManager)
+    protected NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager, TenantManager tenantManager)
+        : this(id.ToString(), userManager, recipientsProvider, subscriptionManager, tenantManager)
     {
     }
 
-    public IActionProvider GetActionProvider()
+    public async Task<IActionProvider> GetActionProvider(NotifyRequest r)
     {
+        var culture = await r.GetCulture(_tenantManager, _userManager);
+        CultureInfo.CurrentCulture = culture;
+        CultureInfo.CurrentUICulture = culture;
+
         lock (_actions)
         {
-            var culture = CultureInfo.CurrentCulture;
             if (!_actions.ContainsKey(culture))
             {
                 _actions[culture] = CreateActionProvider();
@@ -69,15 +72,14 @@ public abstract class NotifySource : INotifySource
         }
     }
 
-    public IPatternProvider GetPatternProvider()
+    public async Task<IPatternProvider> GetPatternProvider(NotifyRequest r)
     {
+        var culture = await r.GetCulture(_tenantManager, _userManager);
+        CultureInfo.CurrentCulture = culture;
+        CultureInfo.CurrentUICulture = culture;
+
         lock (_patterns)
         {
-            var culture = CultureInfo.CurrentCulture;
-            if (CultureInfo.CurrentUICulture != culture)
-            {
-                CultureInfo.CurrentUICulture = culture;
-            }
             if (!_patterns.ContainsKey(culture))
             {
                 _patterns[culture] = CreatePatternsProvider();

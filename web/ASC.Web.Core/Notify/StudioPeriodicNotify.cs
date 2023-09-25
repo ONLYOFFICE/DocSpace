@@ -29,7 +29,6 @@ namespace ASC.Web.Studio.Core.Notify;
 [Scope]
 public class StudioPeriodicNotify
 {
-    private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly WorkContext _workContext;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
@@ -45,11 +44,11 @@ public class StudioPeriodicNotify
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly AuthManager _authManager;
     private readonly SecurityContext _securityContext;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger _log;
 
     public StudioPeriodicNotify(
         ILoggerProvider log,
-        NotifyEngineQueue notifyEngineQueue,
         WorkContext workContext,
         TenantManager tenantManager,
         UserManager userManager,
@@ -64,9 +63,9 @@ public class StudioPeriodicNotify
         CoreBaseSettings coreBaseSettings,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         AuthManager authManager,
-        SecurityContext securityContext)
+        SecurityContext securityContext,
+        IServiceProvider serviceProvider)
     {
-        _notifyEngineQueue = notifyEngineQueue;
         _workContext = workContext;
         _tenantManager = tenantManager;
         _userManager = userManager;
@@ -82,6 +81,7 @@ public class StudioPeriodicNotify
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _authManager = authManager;
         _securityContext = securityContext;
+        _serviceProvider = serviceProvider;
         _log = log.CreateLogger("ASC.Notify");
     }
 
@@ -103,7 +103,7 @@ public class StudioPeriodicNotify
             try
             {
                 await _tenantManager.SetCurrentTenantAsync(tenant.Id);
-                var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+                var client = _workContext.RegisterClient(_serviceProvider, _studioNotifyHelper.NotifySource);
 
                 var tariff = await _tariffService.GetTariffAsync(tenant.Id);
                 var quota = await _tenantManager.GetTenantQuotaAsync(tenant.Id);
@@ -364,7 +364,7 @@ public class StudioPeriodicNotify
             {
                 var defaultRebranding = await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager);
                 await _tenantManager.SetCurrentTenantAsync(tenant.Id);
-                var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+                var client = _workContext.RegisterClient(_serviceProvider, _studioNotifyHelper.NotifySource);
 
                 var tariff = await _tariffService.GetTariffAsync(tenant.Id);
                 var quota = await _tenantManager.GetTenantQuotaAsync(tenant.Id);
@@ -477,7 +477,7 @@ public class StudioPeriodicNotify
             try
             {
                 await _tenantManager.SetCurrentTenantAsync(tenant.Id);
-                var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+                var client = _workContext.RegisterClient(_serviceProvider, _studioNotifyHelper.NotifySource);
 
                 var createdDate = tenant.CreationDateTime.Date;
 
@@ -535,7 +535,7 @@ public class StudioPeriodicNotify
                 var sendCount = 0;
 
                 await _tenantManager.SetCurrentTenantAsync(tenant.Id);
-                var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+                var client = _workContext.RegisterClient(_serviceProvider, _studioNotifyHelper.NotifySource);
 
                 _log.InformationCurrentTenant(tenant.Id);
 

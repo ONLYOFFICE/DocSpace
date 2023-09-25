@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,30 +24,48 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Web.Studio.IntegrationEvents;
+using System.Threading.Channels;
 
-namespace ASC.Studio.Notify;
+namespace ASC.Core.Common.Notify.Engine;
 
-public class Startup : BaseWorkerStartup
+[Singletone]
+public class NotifySenderService : BackgroundService
 {
-    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
-        : base(configuration, hostEnvironment)
-    {
+    private readonly NotifyEngine _notifyEngine;
+    private readonly ChannelReader<NotifyRequest> _channelReader;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ILogger<NotifySenderService> _logger;
 
+    public NotifySenderService(
+        NotifyEngine notifyEngine,
+        ChannelReader<NotifyRequest> channelReader,
+        IServiceScopeFactory serviceScopeFactory,
+        ILogger<NotifySenderService> logger)
+    {
+        _notifyEngine = notifyEngine;
+        _channelReader = channelReader;
+        _serviceScopeFactory = serviceScopeFactory;
+        _logger = logger;
     }
 
-    public override void ConfigureServices(IServiceCollection services)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        base.ConfigureServices(services);
+        await foreach (var request in _channelReader.ReadAllAsync(stoppingToken))
+        {
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
+            foreach (var action in _notifyEngine.Actions)
+            {
+                ((INotifyEngineAction)scope.ServiceProvider.GetRequiredService(action)).AfterTransferRequest(request);
+            }
 
-        services.AddHttpClient();
-
-        DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
-        services.AddAutoMapper(GetAutoMapperProfileAssemblies());//toDo
-        services.AddHostedService<ServiceLauncher>();
-        DIHelper.TryAdd<ServiceLauncher>();
-        NotifyConfigurationExtension.Register(DIHelper);
-        DIHelper.TryAdd<EmailSenderSink>();
-        DIHelper.TryAdd<NotifyItemIntegrationEventHandler>();
+            try
+            {
+                await _notifyEngine.SendNotify(request, scope);
+            }
+            catch (Exception e)
+            {
+                _logger.ErrorSendNotify(e);
+            }
+        }
     }
 }

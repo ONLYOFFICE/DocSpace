@@ -79,9 +79,8 @@ public class LdapNotifyService : BackgroundService
         {
             var scope = _serviceScopeFactory.CreateScope();
             var source = scope.ServiceProvider.GetRequiredService<LdapNotifySource>();
-            var notifyEngineQueue = scope.ServiceProvider.GetRequiredService<NotifyEngineQueue>();
             source.Init(tenant);
-            var client = _workContext.NotifyContext.RegisterClient(notifyEngineQueue, source);
+            var client = _workContext.RegisterClient(scope.ServiceProvider, source);
             _workContext.RegisterSendMethod(source.AutoSyncAsync, cron);
             _clients.TryAdd(tenant.Id, new Tuple<INotifyClient, LdapNotifySource>(client, source));
         }
@@ -122,6 +121,5 @@ public static class LdapNotifyHelperExtension
     {
         services.TryAdd<DbHelper>();
         services.TryAdd<LdapNotifySource>();
-        services.TryAdd<NotifyEngineQueue>();
     }
 }
