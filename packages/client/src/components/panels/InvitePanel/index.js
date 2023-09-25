@@ -457,5 +457,6 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     "Translations",
     "Common",
     "InfoPanel",
+    "PeopleSelector",
   ])(observer(InvitePanel))
 );

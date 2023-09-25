@@ -329,6 +329,7 @@ const InviteInput = ({
             defaultAccess={selectedAccess}
             withoutBackground={isMobileView}
             withBlur={!isMobileView}
+            roomId={roomId}
           />
         )}
       </StyledInviteInputContainer>
