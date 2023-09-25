@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "Copiere {{element}}",
   "TooltipElementsCopyMessage": "Copiere elemente {{element}}",
   "TooltipElementsMoveMessage": "Mutare elemente {{element}}",
-  "TrashEmptyDescription": "Toate fișierele eliminate sunt mutate în 'Coșul' de gunoi. Puteți să restabiliți fișierele pe care le-ați mutat din greșeală sau să le ștergeți definitiv. Vă rugăm să rețineți că nu puteți recupera fișierele șterse din 'Coșul' de gunoi.",
+  "TrashEmptyDescription": "Toate fișierele eliminate sunt mutate în 'Coșul' de gunoi. Puteți să restabiliți fișierele pe care le-ați mutat din greșeală sau să le ștergeți definitiv. Fișierele din coșul de gunoi sunt șterse automat după 30 de zile. Vă rugăm să rețineți că nu puteți recupera fișierele șterse din 'Coșul' de gunoi.",
   "TrashErasureWarning": "Elementele din Coșul de gunoi sunt șterse automat după 30 zile.",
   "UnarchivedRoomAction": "Sala '{{name}}' este dezarhivată.",
   "UnarchivedRoomsAction": "Sălile sunt dezarhivate.",

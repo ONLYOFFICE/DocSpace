@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "Skopiuj {{element}}",
   "TooltipElementsCopyMessage": "Skopiuj elementy {{element}}",
   "TooltipElementsMoveMessage": "Przenieś elementy {{element}}",
-  "TrashEmptyDescription": "Dział 'Kosz' zawiera wszystkie usunięte pliki. Możesz przywrócić pliki jeśli zostały one usunięte przez pomyłkę lub usunąć ostatecznie. Po usunięciu ostatecznym przywrócenie już nie będzie możliwe.",
+  "TrashEmptyDescription": "Dział 'Kosz' zawiera wszystkie usunięte pliki. Możesz przywrócić pliki jeśli zostały one usunięte przez pomyłkę lub usunąć ostatecznie. Pliki w 'Koszu' są automatycznie usuwane po 30 dniach. Po usunięciu ostatecznym przywrócenie już nie będzie możliwe.",
   "TrashErasureWarning": "Pliki w Koszu zostaną usunięte automatycznie po 30 dniach.",
   "UnarchivedRoomAction": "Pokój '{{name}}' został przywrócony z archiwum.",
   "UnarchivedRoomsAction": "Pokoje zostały przywrócone z archiwum.",

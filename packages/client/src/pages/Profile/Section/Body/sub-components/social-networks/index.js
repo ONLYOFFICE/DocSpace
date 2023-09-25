@@ -34,6 +34,11 @@ const SocialNetworks = (props) => {
     e.preventDefault();
 
     try {
+      //Lifehack for Twitter
+      if (providerName == "twitter") {
+        link += "loginCallback";
+      }
+
       const tokenGetterWin = window.open(
         link,
         "login",
@@ -48,8 +53,6 @@ const SocialNetworks = (props) => {
           callback: "loginCallback",
         })
       );
-
-      console.log(getLoginLink(token, code));
 
       tokenGetterWin.location.href = getLoginLink(token, code);
     } catch (err) {
@@ -105,7 +108,7 @@ const SocialNetworks = (props) => {
             iconName={icon}
             label={getProviderTranslation(label, t, item.linked)}
             $iconOptions={iconOptions}
-            onClick={(e) => onClick(e)}
+            onClick={onClick}
             size="small"
             isConnect={item.linked}
           />

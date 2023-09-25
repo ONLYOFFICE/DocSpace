@@ -11,8 +11,8 @@ PRODUCT_DIR="/var/www/${PRODUCT}"
 LOG_DIR="/var/log/${PACKAGE_SYSNAME}/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 
-NGINX_CONF="/usr/local/openresty/nginx/conf/nginx.conf"
-NGINX_DIR="/etc/nginx"
+OPENRESTY_CONF="/usr/local/openresty/nginx/conf/nginx.conf"
+OPENRESTY_DIR="/etc/openresty"
 
 DB_HOST="localhost"
 DB_PORT="3306"
@@ -32,12 +32,13 @@ RABBITMQ_USER="guest"
 RABBITMQ_PASSWORD="guest"
 RABBITMQ_PORT="5672"
 	
-REDIS_HOST="localhost"
+REDIS_HOST="127.0.0.1"
 REDIS_PORT="6379"
 
 JSON="json -I -f"
 
 [ $(id -u) -ne 0 ] && { echo "Root privileges required"; exit 1; }
+check_localhost() { [ "$1" = "localhost" ] || [ "$1" = "127.0.0.1" ] && return 1 || return 0; }
 
 while [ "$1" != "" ]; do
 	case $1 in
@@ -66,6 +67,7 @@ while [ "$1" != "" ]; do
 		-esh | --elastichost )
 			if [ "$2" != "" ]; then
 				ELK_HOST=$2
+				check_localhost "$ELK_HOST" && EXTERNAL_ELK_FLAG="true"
 				shift
 			fi
 		;;
@@ -115,6 +117,7 @@ while [ "$1" != "" ]; do
 		-rdh | --redishost )
 			if [ "$2" != "" ]; then
 				REDIS_HOST=$2
+				check_localhost "$REDIS_HOST" && EXTERNAL_REDIS_FLAG="true"
 				shift
 			fi
 		;;
@@ -129,6 +132,7 @@ while [ "$1" != "" ]; do
 		-rbh | --rabbitmqhost )
 			if [ "$2" != "" ]; then
 				RABBITMQ_HOST=$2
+				check_localhost "$REDIS_HOST" && EXTERNAL_RABBITMQ_FLAG="true"
 				shift
 			fi
 		;;
@@ -264,12 +268,14 @@ save_undefined_param() {
 restart_services() {
 	chown -R ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $APP_DIR $PRODUCT_DIR $LOG_DIR /var/www/$PACKAGE_SYSNAME/Data
 
-	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i /usr/lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
+	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i ${SYSTEMD_DIR}/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
 	echo -n "Updating database... "
 	systemctl start ${PRODUCT}-migration-runner >/dev/null 2>&1 || true
-	sleep 15
+	while systemctl is-active ${PRODUCT}-migration-runner &>/dev/null; do
+		sleep 5
+	done
 	echo "OK"
 
 	echo -n "Restarting services... "
@@ -458,25 +464,19 @@ change_mysql_config(){
 
 setup_openresty(){
 	echo -n "Configuring openresty... "
-	
-	if systemctl list-units --type=service | grep -q nginx; then
-		systemctl stop nginx && systemctl disable nginx 
-	fi
 
-	cp -rf ${APP_DIR}/nginx/nginx.conf.template /usr/local/openresty/nginx/conf/nginx.conf
+	cp -rf ${APP_DIR}/openresty/nginx.conf.template ${OPENRESTY_CONF}
+	[ ! -f "${OPENRESTY_DIR}/mime.types" ] && cp -rf "$(dirname ${OPENRESTY_CONF})/mime.types" ${OPENRESTY_DIR}
 
-	# Remove default nginx website
-	rm -f ${NGINX_DIR}/conf.d/default.conf ${NGINX_DIR}/sites-enabled/default 
-
-	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${APP_PORT}'\3\4/' -i ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}-proxy.conf
-	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_CONF}
-	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i ${NGINX_CONF}
+	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${APP_PORT}'\3\4/' -i ${OPENRESTY_DIR}/conf.d/${PACKAGE_SYSNAME}-proxy.conf
+	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i "${OPENRESTY_CONF}"
+	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i "${OPENRESTY_CONF}"
 
 	# Check for old configuration files
-	if [ -f "${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.dpkg-old" ]; then
-		PROXY_CONF="${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.dpkg-old"
-	elif [ -f "${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.rpmsave" ]; then
-		PROXY_CONF="${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.rpmsave"
+	if [ -f "${OPENRESTY_DIR}/conf.d/${PACKAGE_SYSNAME}-proxy.conf.dpkg-old" ]; then
+		PROXY_CONF="${OPENRESTY_DIR}/conf.d/${PACKAGE_SYSNAME}-proxy.conf.dpkg-old"
+	elif [ -f "${OPENRESTY_DIR}/conf.d/${PACKAGE_SYSNAME}-proxy.conf.rpmsave" ]; then
+		PROXY_CONF="${OPENRESTY_DIR}/conf.d/${PACKAGE_SYSNAME}-proxy.conf.rpmsave"
 	fi
 
 	# If the configuration file is found, extract the paths to the certificate and key
@@ -542,7 +542,7 @@ setup_openresty(){
 		fi
 	fi
 
-    chown nginx:nginx /etc/nginx/* -R
+	chown nginx:nginx ${OPENRESTY_DIR}* -R
 	systemctl enable openresty >/dev/null 2>&1
 	systemctl restart openresty
 	echo "OK"
@@ -570,17 +570,19 @@ setup_docs() {
 		$JSON ${DS_CONF_DIR}/local.json -e "this.rabbitmq = { 'url': 'amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}' }" >/dev/null 2>&1
 		$JSON ${DS_CONF_DIR}/local.json -e "this.services.CoAuthoring.redis = { 'host': '$REDIS_HOST' }" >/dev/null 2>&1
 		sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${DOCUMENT_SERVER_PORT}'\3\4/' -i ${DS_CONF_DIR}/nginx/ds.conf 
+		
+		chown ds:ds ${DS_CONF_DIR}/local.json
 	elif [ $1 == "EXTERNAL_DOCS_SERVER" ]; then
 		local APP_HOST=$(curl -s ifconfig.me)
 		local EXTERNAL_DOCS_FLAG="rewrite"
 	fi
 	
 	#Changing the Docs port in nginx conf
-	sed "0,/proxy_pass .*;/{s#proxy_pass .*;#proxy_pass ${DOCUMENT_SERVER_URL_EXTERNAL:-http://$APP_HOST:$DOCUMENT_SERVER_PORT};#}" -i ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf
+	sed "0,/proxy_pass .*;/{s#proxy_pass .*;#proxy_pass ${DOCUMENT_SERVER_URL_EXTERNAL:-http://$APP_HOST:$DOCUMENT_SERVER_PORT};#}" -i ${OPENRESTY_DIR}/conf.d/${PACKAGE_SYSNAME}.conf
 
 	#Save Docs address and JWT in .json
-	save_undefined_param "${USER_CONF}" "files.docservice.secret.value" "${DOCUMENT_SERVER_JWT_SECRET}" "$EXTERNAL_DOCS_FLAG"
-	save_undefined_param "${USER_CONF}" "files.docservice.secret.header" "${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}" "$EXTERNAL_DOCS_FLAG"
+	save_undefined_param "${USER_CONF}" "files.docservice.secret.value" "${DOCUMENT_SERVER_JWT_SECRET}" "rewrite"
+	save_undefined_param "${USER_CONF}" "files.docservice.secret.header" "${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}" "rewrite"
 	save_undefined_param "${USER_CONF}" "files.docservice.url.public" "${DOCUMENT_SERVER_URL_EXTERNAL:-"/ds-vpath/"}" "$EXTERNAL_DOCS_FLAG"
 	save_undefined_param "${USER_CONF}" "files.docservice.url.internal" "${DOCUMENT_SERVER_URL_EXTERNAL:-"http://$APP_HOST:$DOCUMENT_SERVER_PORT"}" "$EXTERNAL_DOCS_FLAG"
 	save_undefined_param "${USER_CONF}" "files.docservice.url.portal" "http://${APP_HOST}:${APP_PORT}" "$EXTERNAL_DOCS_FLAG"
@@ -593,7 +595,7 @@ setup_enterprise() {
 		LICENCE_PATH="/var/www/$PACKAGE_SYSNAME/Data/license.lic"
 	fi
 
-	save_undefined_param "${USER_CONF}" "license.file.path" ${LICENCE_PATH} "rewrite"
+	save_undefined_param "${USER_CONF}" "license.file.path" "${LICENCE_PATH}" "rewrite"
 }
 
 change_elasticsearch_config(){
@@ -632,6 +634,18 @@ change_elasticsearch_config(){
 		sed "/-XX:+HeapDumpOnOutOfMemoryError/d" -i ${ELASTIC_SEARCH_JAVA_CONF_PATH}
 	fi
 
+	if ! grep -q "Dlog4j2.formatMsgNoLookups" ${ELASTIC_SEARCH_JAVA_CONF_PATH}; then
+		echo "-Dlog4j2.formatMsgNoLookups=true" >> ${ELASTIC_SEARCH_JAVA_CONF_PATH} 
+	else
+		sed -i "s/Dlog4j2.formatMsgNoLookups.*/Dlog4j2.formatMsgNoLookups=true/" ${ELASTIC_SEARCH_JAVA_CONF_PATH} 
+	fi
+
+	if ! grep -q "ingest.geoip.downloader.enabled" ${ELASTIC_SEARCH_CONF_PATH}; then
+		echo "ingest.geoip.downloader.enabled: false" >> ${ELASTIC_SEARCH_CONF_PATH}
+	else
+		sed -i "s/ingest.geoip.downloader.enabled.*/ingest.geoip.downloader.enabled: false/" ${ELASTIC_SEARCH_CONF_PATH}
+	fi
+
 	local TOTAL_MEMORY=$(free -m | grep -oP '\d+' | head -n 1);
 	local MEMORY_REQUIREMENTS=12228; #RAM ~4*3Gb
 
@@ -658,10 +672,11 @@ setup_elasticsearch() {
 	echo -n "Configuring elasticsearch... "
 
 	#Save elasticsearch parameters in .json
-	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Scheme" "${ELK_SHEME}"
-	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Host" "${ELK_HOST}"
-	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Port" "${ELK_PORT}"
-	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Threads" "1"
+	[[ $1 == "EXTERNAL_ELASTIC_SERVER" ]] && local EXTERNAL_ELASTIC_FLAG="rewrite"
+	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Scheme" "${ELK_SHEME}" "$EXTERNAL_ELASTIC_FLAG"
+	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Host" "${ELK_HOST}" "$EXTERNAL_ELASTIC_FLAG"
+	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Port" "${ELK_PORT}" "$EXTERNAL_ELASTIC_FLAG"
+	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Threads" "1" "$EXTERNAL_ELASTIC_FLAG"
 
 	if [ $1 == "LOCAL_ELASTIC_SERVER" ]; then
 		change_elasticsearch_config
@@ -677,8 +692,8 @@ setup_redis() {
 
 	$JSON $APP_DIR/redis.$ENVIRONMENT.json -e "this.Redis={'Hosts': [ { Host: \"${REDIS_HOST}\", Port: \"${REDIS_PORT}\" } ] }" >/dev/null 2>&1
 
-	sed -i "s~\(redis_host =\).*~\1 \"$REDIS_HOST\"~" "${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf"
-	sed -i "s~\(redis_port =\).*~\1 $REDIS_PORT~" "${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf"
+	sed -i "s~\(redis_host =\).*~\1 \"$REDIS_HOST\"~" "${OPENRESTY_DIR}/conf.d/${PACKAGE_SYSNAME}.conf"
+	sed -i "s~\(redis_port =\).*~\1 $REDIS_PORT~" "${OPENRESTY_DIR}/conf.d/${PACKAGE_SYSNAME}.conf"
 
 	if [ $1 == "LOCAL_REDIS_SERVER" ]; then
 		if [ -f "/etc/redis/redis.conf" ]; then
@@ -700,10 +715,11 @@ setup_redis() {
 setup_rabbitmq() {
 	echo -n "Configuring rabbitmq... "
 
-	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Hostname" "${RABBITMQ_HOST}"
-	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.UserName" "${RABBITMQ_USER}"
-	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Password" "${RABBITMQ_PASSWORD}"
-	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Port" "${RABBITMQ_PORT}"
+	[[ $1 == "EXTERNAL_RABBITMQ_SERVER" ]] && local EXTERNAL_RABBITMQ_FLAG="rewrite"
+	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Hostname" "${RABBITMQ_HOST}" "$EXTERNAL_RABBITMQ_FLAG"
+	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.UserName" "${RABBITMQ_USER}" "$EXTERNAL_RABBITMQ_FLAG"
+	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Password" "${RABBITMQ_PASSWORD}" "$EXTERNAL_RABBITMQ_FLAG"
+	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Port" "${RABBITMQ_PORT}" "$EXTERNAL_RABBITMQ_FLAG"
 	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.VirtualHost" "/"
 
 	if [ $1 == "LOCAL_RABBITMQ_SERVER" ]; then
@@ -738,7 +754,7 @@ check_connection_external_services() {
 	HOST_RESPONCE=$?
 
 	if [[ $HOST_RESPONCE -ne 0 ]]; then
-		echo -e "Host is not responding: $1:$2"
+		echo -e "$3 external server is not responding: $1:$2"
 		return $HOST_RESPONCE
 	fi
 
@@ -750,11 +766,13 @@ if command -v yum >/dev/null 2>&1; then
 	PACKAGE_MANAGER="rpm -q"
 	MYSQL_PACKAGE="mysqld"
 	REDIS_PACKAGE="redis"
+	SYSTEMD_DIR="/usr/lib/systemd/system"
 elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
 	PACKAGE_MANAGER="dpkg -s"
 	MYSQL_PACKAGE="mysql"
 	REDIS_PACKAGE="redis-server"
+	SYSTEMD_DIR="$(dirname $(dpkg-query -L ${PRODUCT}-api | grep systemd/system/))"
 fi
 
 install_json
@@ -765,41 +783,38 @@ if $PACKAGE_MANAGER mysql-client >/dev/null 2>&1 || $PACKAGE_MANAGER mysql-commu
     establish_mysql_conn || exit $?
 fi 
 
-if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
+if [[ ! -z $DOCUMENT_SERVER_URL_EXTERNAL ]]; then
+    parse_external_docs_url "$DOCUMENT_SERVER_URL_EXTERNAL"
+    check_connection_external_services "$DOCUMENT_SERVER_HOST" "$DOCUMENT_SERVER_PORT" "${PACKAGE_SYSNAME^^} Docs"
+    setup_docs "EXTERNAL_DOCS_SERVER"
+elif $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
     setup_docs "LOCAL_DOCS_SERVER"
     setup_enterprise
-elif [[ ! -z $DOCUMENT_SERVER_URL_EXTERNAL ]]; then
-    parse_external_docs_url "$DOCUMENT_SERVER_URL_EXTERNAL"
-    check_connection_external_services "$DOCUMENT_SERVER_HOST" "$DOCUMENT_SERVER_PORT" || { echo "ONLYOFFICE Docs host is not responding"; }
-    setup_docs "EXTERNAL_DOCS_SERVER"
 fi
 
 if $PACKAGE_MANAGER openresty >/dev/null 2>&1; then
     setup_openresty
 fi
 
-if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
+if [[ ! -z $EXTERNAL_ELK_FLAG ]]; then
+	check_connection_external_services "$ELK_HOST" "$ELK_PORT" "Elasticsearch"
+	setup_elasticsearch "EXTERNAL_ELASTIC_SERVER" 
+elif $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
     setup_elasticsearch "LOCAL_ELASTIC_SERVER"
-elif check_connection_external_services "$ELK_HOST" "$ELK_PORT"; then
-    setup_elasticsearch "EXTERNAL_ELASTIC_SERVER"
-else 
-    echo "Elasticsearch host is not responding" 
 fi
 
-if $PACKAGE_MANAGER $REDIS_PACKAGE >/dev/null 2>&1 >/dev/null 2>&1; then
+if [[ ! -z $EXTERNAL_REDIS_FLAG ]]; then
+	check_connection_external_services "$REDIS_HOST" "$REDIS_PORT" "Redis"
+	setup_redis "EXTERNAL_REDIS_SERVER"
+elif $PACKAGE_MANAGER $REDIS_PACKAGE >/dev/null 2>&1; then
     setup_redis "LOCAL_REDIS_SERVER"
-elif check_connection_external_services "$REDIS_HOST" "$REDIS_PORT"; then
-    setup_redis "EXTERNAL_REDIS_SERVER"
-else 
-    echo "Redis host is not responding" 
 fi
 
-if $PACKAGE_MANAGER rabbitmq-server >/dev/null 2>&1; then
-    setup_rabbitmq "LOCAL_RABBITMQ_SERVER"
-elif check_connection_external_services "$RABBITMQ_HOST" "$RABBITMQ_PORT"; then
+if [[ ! -z $EXTERNAL_RABBITMQ_FLAG ]]; then
+	check_connection_external_services "$RABBITMQ_HOST" "$RABBITMQ_PORT" "RabbitMQ"
     setup_rabbitmq "EXTERNAL_RABBITMQ_SERVER"
-else 
-    echo "Rabbitmq host is not responding"
+elif $PACKAGE_MANAGER rabbitmq-server >/dev/null 2>&1; then
+    setup_rabbitmq "LOCAL_RABBITMQ_SERVER"
 fi
 
 restart_services

@@ -42,16 +42,12 @@ public class ProviderManager
     public static readonly List<string> AuthProviders = new List<string>
         {
             ProviderConstants.Google,
-            ProviderConstants.Facebook,
-            ProviderConstants.Twitter,
+            ProviderConstants.Zoom,
             ProviderConstants.LinkedIn,
-            ProviderConstants.MailRu,
-            ProviderConstants.VK,
-            ProviderConstants.Yandex,
-            ProviderConstants.GosUslugi,
-            ProviderConstants.AppleId,
+            ProviderConstants.Facebook ,
+            ProviderConstants.Twitter,
             ProviderConstants.Microsoft,
-            ProviderConstants.Zoom
+            ProviderConstants.AppleId
         };
 
     public static List<string> InviteExceptProviders = new List<string>
