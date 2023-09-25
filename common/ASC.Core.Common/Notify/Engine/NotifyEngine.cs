@@ -330,6 +330,12 @@ public class NotifyEngine
             //Do styling here
             if (!string.IsNullOrEmpty(pattern.Styler))
             {
+                var tenantManager = serviceScope.ServiceProvider.GetService<TenantManager>();
+                var userManager = serviceScope.ServiceProvider.GetService<UserManager>();
+
+                var culture = await request.GetCulture(tenantManager, userManager);
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
                 //We need to run through styler before templating
                 StyleMessage(serviceScope, noticeMessage);
             }

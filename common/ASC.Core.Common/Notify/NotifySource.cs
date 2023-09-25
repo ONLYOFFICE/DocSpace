@@ -57,7 +57,7 @@ public abstract class NotifySource : INotifySource
 
     public async Task<IActionProvider> GetActionProvider(NotifyRequest r)
     {
-        var culture = await GetCulture(r);
+        var culture = await r.GetCulture(_tenantManager, _userManager);
         CultureInfo.CurrentCulture = culture;
         CultureInfo.CurrentUICulture = culture;
 
@@ -74,7 +74,7 @@ public abstract class NotifySource : INotifySource
 
     public async Task<IPatternProvider> GetPatternProvider(NotifyRequest r)
     {
-        var culture = await GetCulture(r);
+        var culture = await r.GetCulture(_tenantManager, _userManager);
         CultureInfo.CurrentCulture = culture;
         CultureInfo.CurrentUICulture = culture;
 
@@ -116,32 +116,5 @@ public abstract class NotifySource : INotifySource
     {
         return new RecipientProviderImpl(_userManager)
             ?? throw new NotifyException("Provider IRecipientsProvider not instanced.");
-    }
-
-    private async Task<CultureInfo> GetCulture(NotifyRequest r)
-    {
-        var tagCulture = r.Arguments.FirstOrDefault(a => a.Tag == "Culture");
-        if (tagCulture != null)
-        {
-            return CultureInfo.GetCultureInfo((string)tagCulture.Value);
-        }
-
-        CultureInfo culture = null;
-
-        var tenant = await _tenantManager.GetCurrentTenantAsync(false);
-
-        if (tenant != null)
-        {
-            culture = tenant.GetCulture();
-        }
-
-        var user = await _userManager.SearchUserAsync(r.Recipient.ID);
-
-        if (!Users.Constants.LostUser.Equals(user) && !string.IsNullOrEmpty(user.CultureName))
-        {
-            culture = user.GetCulture();
-        }
-
-        return culture;
     }
 }

@@ -139,4 +139,31 @@ public class NotifyRequest
     {
         return ((INotifySource)scope.ServiceProvider.GetService(_notifySource.GetType())).GetSubscriptionProvider();
     }
+
+    public async Task<CultureInfo> GetCulture(TenantManager tenantManager, UserManager userManager)
+    {
+        var tagCulture = Arguments.FirstOrDefault(a => a.Tag == "Culture");
+        if (tagCulture != null)
+        {
+            return CultureInfo.GetCultureInfo((string)tagCulture.Value);
+        }
+
+        CultureInfo culture = null;
+
+        var tenant = await tenantManager.GetCurrentTenantAsync(false);
+
+        if (tenant != null)
+        {
+            culture = tenant.GetCulture();
+        }
+
+        var user = await userManager.SearchUserAsync(Recipient.ID);
+
+        if (!Core.Users.Constants.LostUser.Equals(user) && !string.IsNullOrEmpty(user.CultureName))
+        {
+            culture = user.GetCulture();
+        }
+
+        return culture;
+    }
 }
