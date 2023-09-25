@@ -35,6 +35,7 @@ import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import PluginActionsSvgUrl from "PUBLIC_DIR/images/plugin.actions.react.svg?url";
 import LeaveRoomSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
+import CatalogRoomsReactSvgUrl from "PUBLIC_DIR/images/catalog.rooms.react.svg?url";
 
 import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
@@ -53,6 +54,7 @@ import { Events } from "@docspace/common/constants";
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { getOAuthToken } from "@docspace/common/utils";
 import api from "@docspace/common/api";
+import { FolderType } from "@docspace/common/constants";
 
 const LOADER_TIMER = 500;
 let loadingTime;
@@ -407,6 +409,12 @@ class ContextOptionsStore {
 
   onClickDownloadAs = () => {
     this.dialogsStore.setDownloadDialogVisible(true);
+  };
+
+  onClickCreateRoom = () => {
+    this.filesActionsStore.setProcessCreatingRoomFromData(true);
+    const event = new Event(Events.ROOM_CREATE);
+    window.dispatchEvent(event);
   };
 
   onDuplicate = (item, t) => {
@@ -1236,6 +1244,14 @@ class ContextOptionsStore {
         action: "remove",
       },
       {
+        id: "option_create_room",
+        key: "create-room",
+        label: t("Files:CreateRoom"),
+        icon: CatalogRoomsReactSvgUrl,
+        onClick: this.onClickCreateRoom,
+        disabled: this.selectedFolderStore.rootFolderType !== FolderType.USER,
+      },
+      {
         id: "option_download",
         key: "download",
         label: t("Common:Download"),
@@ -1511,6 +1527,14 @@ class ContextOptionsStore {
         disabled: favoriteItems.length || !removeFromFavoriteItems.length,
         "data-action": "remove",
         action: "remove",
+      },
+      {
+        id: "create_room",
+        key: "create-room",
+        label: t("Files:CreateRoom"),
+        icon: CatalogRoomsReactSvgUrl,
+        onClick: this.onClickCreateRoom,
+        disabled: this.selectedFolderStore.rootFolderType !== FolderType.USER,
       },
       {
         key: "download",

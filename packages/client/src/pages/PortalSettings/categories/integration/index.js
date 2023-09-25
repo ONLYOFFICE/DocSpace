@@ -10,9 +10,11 @@ import SSO from "./SingleSignOn";
 import ThirdParty from "./ThirdPartyServicesSettings";
 
 import SMTPSettings from "./SMTPSettings";
+import DocumentService from "./DocumentService";
 
 const IntegrationWrapper = (props) => {
-  const { t, tReady, enablePlugins, toDefault, isSSOAvailable } = props;
+  const { t, tReady, enablePlugins, toDefault, isSSOAvailable, standalone } =
+    props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +43,16 @@ const IntegrationWrapper = (props) => {
     },
   ];
 
+  if (standalone) {
+    const documentServiceData = {
+      id: "document-service",
+      name: t("DocumentService"),
+      content: <DocumentService />,
+    };
+
+    data.push(documentServiceData);
+  }
+
   const getCurrentTab = () => {
     const path = location.pathname;
     const currentTab = data.findIndex((item) => path.includes(item.id));
@@ -63,6 +75,7 @@ const IntegrationWrapper = (props) => {
 };
 
 export default inject(({ auth, ssoStore }) => {
+  const { standalone } = auth.settingsStore;
   const { load: toDefault } = ssoStore;
   const { enablePlugins } = auth.settingsStore;
   const { isSSOAvailable } = auth.currentQuotaStore;
@@ -71,6 +84,7 @@ export default inject(({ auth, ssoStore }) => {
     enablePlugins,
     toDefault,
     isSSOAvailable,
+    standalone,
   };
 })(
   withTranslation(["Settings", "SingleSignOn", "Translations"])(

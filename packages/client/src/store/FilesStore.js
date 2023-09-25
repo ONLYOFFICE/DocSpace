@@ -1074,7 +1074,6 @@ class FilesStore {
   };
 
   setSelection = (selection) => {
-    // console.log("setSelection", selection);
     this.selection = selection;
   };
 
@@ -1874,6 +1873,7 @@ class FilesStore {
         "mark-read",
         // "mark-as-favorite",
         // "remove-from-favorites",
+        "create-room",
         "download",
         "download-as",
         "convert",
@@ -2251,6 +2251,7 @@ class FilesStore {
         // "link-for-portal-users",
         "separator1",
         "open-location",
+        "create-room",
         "download",
         "move", //category
         "move-to",
