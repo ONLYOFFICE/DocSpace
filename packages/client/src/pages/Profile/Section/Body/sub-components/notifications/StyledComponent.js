@@ -2,6 +2,8 @@ import styled, { css } from "styled-components";
 import { mobile } from "@docspace/components/utils/device";
 
 const StyledSectionBodyContent = styled.div`
+  width: 100%;
+  max-width: 660px;
   .notification-container {
     display: grid;
     max-width: 660px;
@@ -9,7 +11,7 @@ const StyledSectionBodyContent = styled.div`
     margin-bottom: 21px;
 
     .toggle-btn {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               padding-right: 44px;
@@ -19,7 +21,8 @@ const StyledSectionBodyContent = styled.div`
             `}
     }
     .notification-container_description {
-      color: ${props => props.theme.profile.notifications.textDescriptionColor};
+      color: ${(props) =>
+        props.theme.profile.notifications.textDescriptionColor};
     }
   }
   .badges-container {
@@ -34,7 +37,7 @@ const StyledSectionBodyContent = styled.div`
 const StyledTextContent = styled.div`
   margin-bottom: 23px;
   height: 40px;
-  border-bottom: ${props => props.theme.filesPanels.sharing.borderBottom};
+  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
   max-width: 700px;
   p {
     padding-top: 8px;
@@ -45,7 +48,7 @@ const StyledSectionHeader = styled.div`
   display: flex;
   align-items: center;
   .arrow-button {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 16px;

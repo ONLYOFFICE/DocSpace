@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Text from "@docspace/components/text";
 import { NotificationsType } from "@docspace/common/constants";
@@ -11,15 +12,14 @@ import UsefulTipsContainer from "./sub-components/UsefulTipsContainer";
 import RoomsActionsContainer from "./sub-components/RoomsActionsContainer";
 import DailyFeedContainer from "./sub-components/DailyFeedContainer";
 import RoomsActivityContainer from "./sub-components/RoomsActivityContainer";
-import {
-  StyledSectionBodyContent,
-  StyledTextContent,
-} from "../../StyledComponent";
+import { StyledSectionBodyContent, StyledTextContent } from "./StyledComponent";
 
 let timerId = null;
 const { Badges, RoomsActivity, DailyFeed, UsefulTips } = NotificationsType;
 
-const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
+const Notifications = ({ setSubscriptions }) => {
+  const { t, ready } = useTranslation("Notifications");
+
   const [isLoading, setIsLoading] = useState(false);
   const [isContentLoaded, setIsContentLoaded] = useState(false);
 
@@ -151,4 +151,4 @@ export default inject(({ peopleStore }) => {
   return {
     setSubscriptions,
   };
-})(observer(SectionBodyContent));
+})(observer(Notifications));
