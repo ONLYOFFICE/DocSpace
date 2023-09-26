@@ -54,7 +54,7 @@ const ActiveSessions = ({
   const { interfaceDirection } = useTheme();
 
   useEffect(() => {
-    getAllSessions().then(res => {
+    getAllSessions().then((res) => {
       setSessions(res.items);
       setCurrentSession(res.loginEvent);
     });
@@ -63,7 +63,7 @@ const ActiveSessions = ({
   const onClickRemoveAllSessions = async () => {
     try {
       setLoading(true);
-      await removeAllSessions().then(res => window.location.replace(res));
+      await removeAllSessions().then((res) => window.location.replace(res));
     } catch (error) {
       toastr.error(error);
     } finally {
@@ -76,7 +76,7 @@ const ActiveSessions = ({
     try {
       setLoading(true);
       await removeAllExecptThis().then(() =>
-        getAllSessions().then(res => setSessions(res.items))
+        getAllSessions().then((res) => setSessions(res.items))
       );
     } catch (error) {
       toastr.error(error);
@@ -86,12 +86,12 @@ const ActiveSessions = ({
     }
   };
 
-  const onClickRemoveSession = async id => {
-    const foundSession = sessions.find(s => s.id === id);
+  const onClickRemoveSession = async (id) => {
+    const foundSession = sessions.find((s) => s.id === id);
     try {
       setLoading(true);
       await removeSession(foundSession.id).then(() =>
-        getAllSessions().then(res => setSessions(res.items))
+        getAllSessions().then((res) => setSessions(res.items))
       );
       toastr.success(
         t("Profile:SuccessLogout", {
@@ -107,7 +107,7 @@ const ActiveSessions = ({
     }
   };
 
-  const convertTime = date => {
+  const convertTime = (date) => {
     return new Date(date).toLocaleString(locale);
   };
   const tableCell = (platform, browser) =>
@@ -135,12 +135,14 @@ const ActiveSessions = ({
         displayProp="flex"
         alignItems="center"
         justifyContent="flex-start"
-        marginProp="10px 0 0">
+        marginProp="10px 0 0"
+      >
         <Link
           className="session-logout"
           type="action"
           isHovered
-          onClick={() => setLogoutAllVisible(true)}>
+          onClick={() => setLogoutAllVisible(true)}
+        >
           {t("Profile:LogoutAllActiveSessions")}
         </Link>
         <HelpButton
@@ -156,7 +158,7 @@ const ActiveSessions = ({
       {isMobile ? (
         <Table>
           <TableBody>
-            {sessions.map(session => (
+            {sessions.map((session) => (
               <TableRow key={session.id}>
                 <TableDataCell style={{ borderTop: "0" }}>
                   {tableCell(session.platform, session.browser)}
@@ -179,7 +181,8 @@ const ActiveSessions = ({
                       platform: session.platform,
                       browser: session.browser,
                     });
-                  }}>
+                  }}
+                >
                   {currentSession !== session.id ? removeIcon : null}
                 </TableDataCell>
               </TableRow>
@@ -196,7 +199,7 @@ const ActiveSessions = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {sessions.map(session => (
+            {sessions.map((session) => (
               <TableRow key={session.id}>
                 <TableDataCell>
                   {tableCell(session.platform, session.browser)}
@@ -212,7 +215,8 @@ const ActiveSessions = ({
                       platform: session.platform,
                       browser: session.browser,
                     });
-                  }}>
+                  }}
+                >
                   {currentSession !== session.id ? removeIcon : null}
                 </TableDataCell>
               </TableRow>
