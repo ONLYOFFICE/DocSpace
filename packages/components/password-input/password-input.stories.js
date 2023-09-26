@@ -33,6 +33,9 @@ const Template = ({
   settingsUpperCase,
   settingsDigits,
   settingsSpecSymbols,
+  settingsDigitsRegexStr,
+  settingsUpperCaseRegexStr,
+  settingsSpecSymbolsRegexStr,
   tooltipPasswordLength,
   onChange,
   onValidateInput,
@@ -40,14 +43,17 @@ const Template = ({
   ...args
 }) => {
   const [value, setValue] = useState("");
-  const [fakeSettings, setFakSettings] = useState();
+  const [fakeSettings, setFakeSettings] = useState();
 
   useEffect(() => {
-    setFakSettings({
+    setFakeSettings({
       minLength: settingMinLength,
       upperCase: settingsUpperCase,
       digits: settingsDigits,
       specSymbols: settingsSpecSymbols,
+      digitsRegexStr: settingsDigitsRegexStr,
+      upperCaseRegexStr: settingsUpperCaseRegexStr,
+      specSymbolsRegexStr: settingsSpecSymbolsRegexStr,
     });
     setValue("");
   }, [
@@ -55,6 +61,9 @@ const Template = ({
     settingsUpperCase,
     settingsDigits,
     settingsSpecSymbols,
+    settingsDigitsRegexStr,
+    settingsUpperCaseRegexStr,
+    settingsSpecSymbolsRegexStr,
   ]);
 
   const onChangeHandler = (e) => {
@@ -90,12 +99,13 @@ const Template = ({
 };
 
 export const Default = Template.bind({});
+
 Default.args = {
   isDisabled: false,
   settingMinLength: 6,
-  settingsUpperCase: false,
-  settingsDigits: false,
-  settingsSpecSymbols: false,
+  settingsUpperCase: true,
+  settingsDigits: true,
+  settingsSpecSymbols: true,
   simpleView: false,
   inputName: "demoPasswordInput",
   emailInputName: "demoEmailInput",
@@ -109,4 +119,8 @@ Default.args = {
   generatorSpecial: "!@#$%^&*",
   placeholder: "password",
   maxLength: 30,
+  settingsDigitsRegexStr: "(?=.*\\d)",
+  settingsUpperCaseRegexStr: "(?=.*[A-Z])",
+  settingsSpecSymbolsRegexStr:
+    "(?=.*[\\x21-\\x2F\\x3A-\\x40\\x5B-\\x60\\x7B-\\x7E])",
 };

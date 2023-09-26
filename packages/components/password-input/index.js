@@ -58,21 +58,25 @@ class PasswordInput extends React.Component {
   };
 
   testStrength = (value) => {
-    const { generatorSpecial, passwordSettings } = this.props;
-    const specSymbols = new RegExp(generatorSpecial);
+    const { passwordSettings } = this.props;
+    const capitalRegExp = new RegExp(passwordSettings.upperCaseRegexStr);
+    const digitalRegExp = new RegExp(passwordSettings.digitsRegexStr);
+    const specSymbolsRegExp = new RegExp(passwordSettings.specSymbolsRegexStr);
 
     let capital;
     let digits;
     let special;
 
     passwordSettings.upperCase
-      ? (capital = /[A-Z]/.test(value))
+      ? (capital = capitalRegExp.test(value))
       : (capital = true);
 
-    passwordSettings.digits ? (digits = /\d/.test(value)) : (digits = true);
+    passwordSettings.digits
+      ? (digits = digitalRegExp.test(value))
+      : (digits = true);
 
     passwordSettings.specSymbols
-      ? (special = specSymbols.test(value))
+      ? (special = specSymbolsRegExp.test(value))
       : (special = true);
 
     return {
@@ -550,6 +554,9 @@ PasswordInput.defaultProps = {
     upperCase: false,
     digits: false,
     specSymbols: false,
+    digitsRegexStr: "(?=.*\\d)",
+    upperCaseRegexStr: "(?=.*[A-Z])",
+    specSymbolsRegexStr: "(?=.*[\\x21-\\x2F\\x3A-\\x40\\x5B-\\x60\\x7B-\\x7E])",
   },
   isfullwidth: false,
 };
