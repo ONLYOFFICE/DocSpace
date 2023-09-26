@@ -608,7 +608,6 @@ const CreateUserForm = (props) => {
                         hideNewPasswordButton
                         showCopyLink={false}
                         passwordSettings={settings}
-                        generatorSpecial={settings.specSymbolsRegexStr}
                         id="password"
                         inputName="password"
                         placeholder={t("Common:Password")}
