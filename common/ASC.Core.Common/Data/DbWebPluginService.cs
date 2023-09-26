@@ -91,14 +91,14 @@ static file class Queries
             (WebPluginDbContext ctx, int tenantId) =>
                 ctx.WebPlugins
                     .AsNoTracking()
-                    .Where(r => r.TenantId == Tenant.DefaultTenant || r.TenantId == tenantId));
+                    .Where(r => r.TenantId == tenantId));
 
     public static readonly Func<WebPluginDbContext, int, int, Task<DbWebPlugin>>
         WebPluginByIdAsync = EF.CompileAsyncQuery(
             (WebPluginDbContext ctx, int tenantId, int id) =>
                 ctx.WebPlugins
                     .AsNoTracking()
-                    .Where(r => r.TenantId == Tenant.DefaultTenant || r.TenantId == tenantId)
+                    .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Id == id)
                     .FirstOrDefault());
 

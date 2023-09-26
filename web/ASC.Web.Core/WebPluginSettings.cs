@@ -69,10 +69,20 @@ public class WebPluginSettings
         get => _assetExtensions ?? Array.Empty<string>();
         set => _assetExtensions = value;
     }
+}
 
-    public string SystemUrl
+public class SystemWebPluginSettings : ISettings<SystemWebPluginSettings>
+{
+    public List<string> DisabledPlugins { get; set; }
+
+    [JsonIgnore]
+    public Guid ID
     {
-        get => _systemUrl;
-        set => _systemUrl = value;
+        get { return new Guid("{33039FD8-CF74-46B5-9AF2-2B3D4B651F31}"); }
+    }
+
+    public SystemWebPluginSettings GetDefault()
+    {
+        return new SystemWebPluginSettings();
     }
 }

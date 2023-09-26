@@ -41,9 +41,9 @@ public class WebPluginCache
         _notify.Subscribe((i) => _сache.Remove(i.Key), CacheNotifyAction.Remove);
     }
 
-    public T Get<T>(string key) where T : class
+    public List<DbWebPlugin> Get(string key)
     {
-        return _сache.Get<T>(key);
+        return _сache.Get<List<DbWebPlugin>>(key);
     }
 
     public void Insert(string key, object value)
@@ -71,7 +71,7 @@ public class WebPluginManager
     private const string AssetsFolderName = "assets";
 
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly IHttpClientFactory _clientFactory;
+    private readonly SettingsManager _settingsManager;
     private readonly DbWebPluginService _webPluginService;
     private readonly WebPluginSettings _webPluginSettings;
     private readonly WebPluginCache _webPluginCache;
@@ -81,7 +81,7 @@ public class WebPluginManager
 
     public WebPluginManager(
         CoreBaseSettings coreBaseSettings,
-        IHttpClientFactory clientFactory,
+        SettingsManager settingsManager,
         DbWebPluginService webPluginService,
         WebPluginSettings webPluginSettings,
         WebPluginCache webPluginCache,
@@ -90,7 +90,7 @@ public class WebPluginManager
         ILogger<WebPluginManager> log)
     {
         _coreBaseSettings = coreBaseSettings;
-        _clientFactory = clientFactory;
+        _settingsManager = settingsManager;
         _webPluginService = webPluginService;
         _webPluginSettings = webPluginSettings;
         _webPluginCache = webPluginCache;
@@ -114,7 +114,9 @@ public class WebPluginManager
 
     private async Task<IDataStore> GetPluginStorageAsync(int tenantId)
     {
-        var storage = await _storageFactory.GetStorageAsync(tenantId, tenantId == Tenant.DefaultTenant ? StorageSystemModuleName : StorageModuleName);
+        var module = tenantId == Tenant.DefaultTenant ? StorageSystemModuleName : StorageModuleName;
+
+        var storage = await _storageFactory.GetStorageAsync(tenantId, module);
 
         return storage;
     }
@@ -122,11 +124,6 @@ public class WebPluginManager
     private static string GetCacheKey(int tenantId)
     {
         return $"{StorageModuleName}:{tenantId}";
-    }
-
-    private static string GetSystemCacheKey()
-    {
-        return StorageSystemModuleName;
     }
 
     public async Task<string> GetPluginUrlTemplateAsync(int tenantId)
@@ -140,15 +137,45 @@ public class WebPluginManager
 
     public async Task<DbWebPlugin> AddWebPluginFromFileAsync(int tenantId, IFormFile file)
     {
-        var system = tenantId == Tenant.DefaultTenant;
-
         DemandWebPlugins("upload");
+
+        var system = tenantId == Tenant.DefaultTenant;
 
         if (system && !_coreBaseSettings.Standalone)
         {
             throw new SecurityException("System plugin");
         }
 
+        var webPlugin = await SaveWebPluginToStorageAsync(tenantId, file);
+
+        webPlugin.TenantId = tenantId;
+        webPlugin.Enabled = true;
+        webPlugin.System = system;
+
+        if (!system)
+        {
+            var existingPlugin = await _webPluginService.GetByNameAsync(tenantId, webPlugin.Name);
+
+            if (existingPlugin != null)
+            {
+                webPlugin.Id = existingPlugin.Id;
+            }
+
+            webPlugin.CreateBy = _authContext.CurrentAccount.ID;
+            webPlugin.CreateOn = DateTime.UtcNow;
+
+            webPlugin = await _webPluginService.SaveAsync(webPlugin);
+        }
+
+        var key = GetCacheKey(tenantId);
+
+        _webPluginCache.Remove(key);
+
+        return webPlugin;
+    }
+
+    private async Task<DbWebPlugin> SaveWebPluginToStorageAsync(int tenantId, IFormFile file)
+    {
         if (Path.GetExtension(file.FileName)?.ToLowerInvariant() != _webPluginSettings.Extension)
         {
             throw new ArgumentException("Wrong file extension");
@@ -198,26 +225,12 @@ public class WebPluginManager
                     throw new ArgumentException("Wrong plugin name");
                 }
 
-                var existingPlugin = await _webPluginService.GetByNameAsync(tenantId, webPlugin.Name);
-                if (existingPlugin != null)
+                if (await storage.IsDirectoryAsync(webPlugin.Name))
                 {
-                    if (webPlugin.Version == existingPlugin.Version)
-                    {
-                        throw new ArgumentException("Plugin already exist");
-                    }
-
-                    webPlugin.Id = existingPlugin.Id;
-
-                    await storage.DeleteDirectoryAsync(string.Empty, webPlugin.Name);
+                    await storage.DeleteDirectoryAsync(webPlugin.Name);
                 }
 
-                webPlugin.TenantId = tenantId;
-                webPlugin.CreateBy = _authContext.CurrentAccount.ID;
-                webPlugin.CreateOn = DateTime.UtcNow;
-                webPlugin.Enabled = true;
-                webPlugin.System = system;
-
-                webPlugin = await _webPluginService.SaveAsync(webPlugin);
+                uri = await storage.SaveAsync(Path.Combine(webPlugin.Name, ConfigFileName), stream);
             }
 
             using (var stream = zipFile.GetInputStream(pluginFile))
@@ -244,10 +257,6 @@ public class WebPluginManager
             }
         }
 
-        var key = GetCacheKey(tenantId);
-
-        _webPluginCache.Remove(key);
-
         return webPlugin;
     }
 
@@ -257,11 +266,11 @@ public class WebPluginManager
 
         var key = GetCacheKey(tenantId);
 
-        var plugins = _webPluginCache.Get<List<DbWebPlugin>>(key);
+        var plugins = _webPluginCache.Get(key);
 
         if (plugins == null)
         {
-            plugins = await _webPluginService.GetAsync(tenantId) ?? new List<DbWebPlugin>();
+            plugins = await _webPluginService.GetAsync(tenantId);
 
             _webPluginCache.Insert(key, plugins);
         }
@@ -284,11 +293,6 @@ public class WebPluginManager
 
         var plugin = await _webPluginService.GetByIdAsync(tenantId, id) ?? throw new ItemNotFoundException("Plugin not found");
 
-        if (plugin.System && !_coreBaseSettings.Standalone)
-        {
-            throw new SecurityException("System plugin");
-        }
-
         await _webPluginService.UpdateAsync(tenantId, plugin.Id, enabled);
 
         var key = GetCacheKey(tenantId);
@@ -302,16 +306,11 @@ public class WebPluginManager
 
         var plugin = await _webPluginService.GetByIdAsync(tenantId, id) ?? throw new ItemNotFoundException("Plugin not found");
 
-        if (plugin.System && !_coreBaseSettings.Standalone)
-        {
-            throw new SecurityException("System plugin");
-        }
-
         await _webPluginService.DeleteAsync(tenantId, plugin.Id);
 
         var storage = await GetPluginStorageAsync(tenantId);
 
-        await storage.DeleteDirectoryAsync(string.Empty, plugin.Name);
+        await storage.DeleteDirectoryAsync(plugin.Name);
 
         var key = GetCacheKey(tenantId);
 
@@ -319,15 +318,16 @@ public class WebPluginManager
     }
 
 
-    public async Task<List<T>> GetSystemWebPluginsAsync<T>()
-    {
-        var key = GetSystemCacheKey();
 
-        var systemPlugins = _webPluginCache.Get<List<T>>(key);
+    public async Task<List<DbWebPlugin>> GetSystemWebPluginsAsync()
+    {
+        var key = GetCacheKey(Tenant.DefaultTenant);
+
+        var systemPlugins = _webPluginCache.Get(key);
 
         if (systemPlugins == null)
         {
-            systemPlugins = await GetSystemWebPluginsFromUrlAsync<T>() ?? new List<T>();
+            systemPlugins = await GetSystemWebPluginsFromStorageAsync();
 
             _webPluginCache.Insert(key, systemPlugins);
         }
@@ -335,36 +335,129 @@ public class WebPluginManager
         return systemPlugins;
     }
 
-    private async Task<List<T>> GetSystemWebPluginsFromUrlAsync<T>()
+    private async Task<List<DbWebPlugin>> GetSystemWebPluginsFromStorageAsync()
     {
-        if (string.IsNullOrEmpty(_webPluginSettings.SystemUrl))
-        {
-            return null;
-        }
+        var systemPlugins = new List<DbWebPlugin>();
 
-        try
+        var systemWebPluginSettings = await _settingsManager.LoadForDefaultTenantAsync<SystemWebPluginSettings>();
+
+        var disabledPlugins = systemWebPluginSettings?.DisabledPlugins ?? new List<string>();
+
+        var storage = await GetPluginStorageAsync(Tenant.DefaultTenant);
+
+        var configFiles = await storage.ListFilesRelativeAsync(string.Empty, string.Empty, ConfigFileName, true).ToArrayAsync();
+
+        foreach (var path in configFiles)
         {
-            var request = new HttpRequestMessage
+            try
             {
-                RequestUri = new Uri(_webPluginSettings.SystemUrl)
-            };
+                using var readStream = await storage.GetReadStreamAsync(path);
 
-            var httpClient = _clientFactory.CreateClient();
+                using var reader = new StreamReader(readStream);
 
-            using var response = await httpClient.SendAsync(request);
-            using var responseStream = await response.Content.ReadAsStreamAsync();
-            using var reader = new StreamReader(responseStream);
+                var configContent = reader.ReadToEnd();
 
-            var json = await reader.ReadToEndAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
 
-            var systemPlugins = JsonConvert.DeserializeObject<List<T>>(json);
+                var webPlugin = System.Text.Json.JsonSerializer.Deserialize<DbWebPlugin>(configContent, options);
 
-            return systemPlugins;
+                webPlugin.TenantId = Tenant.DefaultTenant;
+                webPlugin.System = true;
+                webPlugin.Enabled = !disabledPlugins.Contains(webPlugin.Name);
+
+                systemPlugins.Add(webPlugin);
+            }
+            catch (Exception e)
+            {
+                _log.ErrorWithException(e);
+            }
         }
-        catch (Exception e)
+
+        return systemPlugins;
+    }
+
+    public async Task<DbWebPlugin> GetSystemWebPluginAsync(string name)
+    {
+        var systemWebPluginSettings = await _settingsManager.LoadForDefaultTenantAsync<SystemWebPluginSettings>();
+
+        var disabledPlugins = systemWebPluginSettings?.DisabledPlugins ?? new List<string>();
+
+        var storage = await GetPluginStorageAsync(Tenant.DefaultTenant);
+
+        var path = Path.Combine(name, ConfigFileName);
+
+        if (!await storage.IsFileAsync(path))
         {
-            _log.ErrorWithException(e);
-            return null;
+            throw new ItemNotFoundException("Plugin not found");
         }
+
+        using var readStream = await storage.GetReadStreamAsync(path);
+
+        using var reader = new StreamReader(readStream);
+
+        var configContent = reader.ReadToEnd();
+
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        var webPlugin = System.Text.Json.JsonSerializer.Deserialize<DbWebPlugin>(configContent, options);
+
+        webPlugin.TenantId = Tenant.DefaultTenant;
+        webPlugin.System = true;
+        webPlugin.Enabled = !disabledPlugins.Contains(webPlugin.Name);
+
+        return webPlugin;
+    }
+
+    public async Task UpdateSystemWebPluginAsync(string name, bool enabled)
+    {
+        DemandWebPlugins();
+
+        var systemWebPluginSettings = await _settingsManager.LoadForDefaultTenantAsync<SystemWebPluginSettings>();
+
+        var disabledPlugins = systemWebPluginSettings?.DisabledPlugins ?? new List<string>();
+
+        if (enabled)
+        {
+            disabledPlugins.Remove(name);
+        }
+        else
+        {
+            disabledPlugins.Add(name);
+        }
+
+        systemWebPluginSettings.DisabledPlugins = disabledPlugins.Any() ? disabledPlugins : null;
+
+        await _settingsManager.SaveForDefaultTenantAsync(systemWebPluginSettings);
+
+        var key = GetCacheKey(Tenant.DefaultTenant);
+
+        _webPluginCache.Remove(key);
+    }
+
+    public async Task DeleteSystemWebPluginAsync(string name)
+    {
+        DemandWebPlugins("delete");
+
+        if (!_coreBaseSettings.Standalone)
+        {
+            throw new SecurityException("System plugin");
+        }
+
+        var storage = await GetPluginStorageAsync(Tenant.DefaultTenant);
+
+        if (!await storage.IsDirectoryAsync(name))
+        {
+            throw new ItemNotFoundException("Plugin not found");
+        }
+
+        await UpdateSystemWebPluginAsync(name, true);
+
+        await storage.DeleteDirectoryAsync(name);
     }
 }
