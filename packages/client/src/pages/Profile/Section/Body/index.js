@@ -7,8 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 import Loaders from "@docspace/common/components/Loaders";
 import Submenu from "@docspace/components/submenu";
-import { combineUrl } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
 
 import MainProfile from "./sub-components/main-profile";
 import LoginContent from "./sub-components/LoginContent";
@@ -36,8 +34,6 @@ const Wrapper = styled.div`
 const SectionBodyContent = (props) => {
   const { isProfileLoaded, profile, t } = props;
   const navigate = useNavigate();
-
-  console.log("profile", profile);
 
   const data = [
     {
@@ -73,13 +69,10 @@ const SectionBodyContent = (props) => {
   const currentTab = getCurrentTab();
 
   const onSelect = (e) => {
-    navigate(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        `/profile/${e.id}`
-      )
-    );
+    const arrayPaths = location.pathname.split("/");
+    arrayPaths.splice(arrayPaths.length - 1);
+    const path = arrayPaths.join("/");
+    navigate(`${path}/${e.id}`);
   };
 
   if (!isProfileLoaded) return <Loaders.ProfileView />;
