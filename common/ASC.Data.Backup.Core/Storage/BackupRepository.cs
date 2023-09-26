@@ -97,10 +97,10 @@ public class BackupRepository : IBackupRepository
         await using var backupContext = _dbContextFactory.CreateDbContext();
 
         var backup = await backupContext.Backups.FindAsync(id);
-
         if (backup != null)
         {
             backup.Removed = true;
+            backupContext.Update(backup);
             await backupContext.SaveChangesAsync();
         }
     }
@@ -138,14 +138,14 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (BackupsContext ctx, int tenantId, string hash) =>
                 ctx.Backups
-                    .AsNoTracking()
+                    
                     .SingleOrDefault(b => b.Hash == hash && b.TenantId == tenantId));
 
     public static readonly Func<BackupsContext, IAsyncEnumerable<BackupRecord>> ExpiredBackupsAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (BackupsContext ctx) =>
                 ctx.Backups
-                    .AsNoTracking()
+                    
                     .Where(b => b.ExpiresOn != DateTime.MinValue
                                 && b.ExpiresOn <= DateTime.UtcNow
                                 && b.Removed == false));
@@ -154,21 +154,21 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (BackupsContext ctx) =>
                 ctx.Backups
-                    .AsNoTracking()
+                    
                     .Where(b => b.IsScheduled == true && b.Removed == false));
 
     public static readonly Func<BackupsContext, int, IAsyncEnumerable<BackupRecord>> BackupsAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (BackupsContext ctx, int tenantId) =>
                 ctx.Backups
-                    .AsNoTracking()
+                    
                     .Where(b => b.TenantId == tenantId && b.Removed == false));
 
     public static readonly Func<BackupsContext, int, IAsyncEnumerable<BackupRecord>> BackupsForMigrationAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (BackupsContext ctx, int tenantId) =>
                 ctx.Backups
-                    .AsNoTracking()
+                    
                     .Where(b => b.TenantId == tenantId));
 
     public static readonly Func<BackupsContext, int, Task<int>> DeleteSchedulesAsync =
@@ -192,6 +192,6 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (BackupsContext ctx, int tenantId) =>
                 ctx.Schedules
-                    .AsNoTracking()
+                    
                     .SingleOrDefault(s => s.TenantId == tenantId));
 }

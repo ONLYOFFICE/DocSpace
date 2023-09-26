@@ -51,6 +51,7 @@ const ArticleBodyContent = (props) => {
     selectedFolderId,
     showArticleLoader,
     setIsBurgerLoading,
+    setSelection,
   } = props;
 
   const navigate = useNavigate();
@@ -79,6 +80,8 @@ const ArticleBodyContent = (props) => {
       };
 
       let withTimer = !!selectedFolderId;
+
+      setSelection && setSelection([]);
 
       switch (folderId) {
         case myFolderId:
@@ -158,6 +161,7 @@ const ArticleBodyContent = (props) => {
       activeItemId,
       selectedFolderId,
       isAccounts,
+      setSelection,
     ]
   );
 
@@ -263,7 +267,7 @@ export default inject(
     selectedFolderStore,
     clientLoadingStore,
   }) => {
-    const { clearFiles } = filesStore;
+    const { clearFiles, setSelection } = filesStore;
     const {
       showArticleLoader,
 
@@ -319,6 +323,7 @@ export default inject(
       clearFiles,
       selectedFolderId,
       setIsBurgerLoading,
+      setSelection,
     };
   }
 )(withTranslation([])(observer(ArticleBodyContent)));

@@ -26,7 +26,7 @@ export const HistoryBlockItemList = ({
     const splitTitleLength = splitTitle.length;
 
     const fileExst =
-      splitTitleLength != 1 ? `.${splitTitle[splitTitleLength - 1]}` : null;
+      splitTitleLength !== 1 ? `.${splitTitle[splitTitleLength - 1]}` : null;
 
     const title =
       splitTitleLength <= 2 ? splitTitle[0] : item.Title.slice(0, indexPoint);

@@ -2,7 +2,6 @@
   "CodeSubtitle": "{{email}}に6桁のコードを送りました。コードは有効期限がありますので、お早めにご入力ください。",
   "CodeTitle": "コードを送りました",
   "CookieSettingsTitle": "セッション期間",
-  "ErrorInvalidHeader": "期限切れリンク",
   "ErrorInvalidText": "10秒後、<1>DocSpace</1>にリダイレクトされます。",
   "ExpiredCode": "このコードは有効期限が切られています。新しいコードをリクエストして、もう一度ご入力ください。",
   "ForgotPassword": "パスワードをお忘れですか？",

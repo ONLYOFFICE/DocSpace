@@ -6,7 +6,7 @@ import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
 import ConsumerToggle from "./consumerToggle";
 import { Base } from "@docspace/components/themes";
-import { thirdpartiesLogo } from "@docspace/common/utils/image-helpers";
+import { thirdpartiesLogo } from "@docspace/common/utils/image-thirdparties";
 
 const StyledItem = styled.div`
   .consumer-description {
@@ -65,7 +65,7 @@ class ConsumerItem extends React.Component {
       isThirdPartyAvailable,
     } = this.props;
 
-    const logo = thirdpartiesLogo.get(`${consumer.name.toLowerCase()}.svg`);
+    const logo = thirdpartiesLogo?.get(`${consumer.name.toLowerCase()}.svg`);
 
     return (
       <StyledItem isThirdPartyAvailable={isThirdPartyAvailable}>
@@ -84,11 +84,13 @@ class ConsumerItem extends React.Component {
             isLinkedIn={consumer.name === "linkedin"}
             isThirdPartyAvailable={isThirdPartyAvailable}
           >
-            <ReactSVG
-              src={logo}
-              className={"consumer-icon"}
-              alt={consumer.name}
-            />
+            {logo && (
+              <ReactSVG
+                src={logo}
+                className={"consumer-icon"}
+                alt={consumer.name}
+              />
+            )}
           </StyledBox>
           <Box onClick={setConsumer} data-consumer={consumer.name}>
             <ConsumerToggle

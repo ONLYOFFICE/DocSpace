@@ -38,7 +38,7 @@ export const MonthsHeader = ({
         onClick={onTitleClick}
         isMobile={isMobile}
       >
-        {observedDate.year()}
+        {observedDate.format("YYYY")}
         <HeaderActionIcon isMobile={isMobile} />
       </Title>
       <HeaderButtons

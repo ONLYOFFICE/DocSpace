@@ -49,6 +49,7 @@ const Section = (props) => {
     isInfoPanelVisible,
     isInfoPanelScrollLocked,
     isEmptyPage,
+    isTrashFolder,
   } = props;
 
   const [sectionSize, setSectionSize] = React.useState({
@@ -169,6 +170,7 @@ const Section = (props) => {
                 viewAs={viewAs}
                 showText={showText}
                 isEmptyPage={isEmptyPage}
+                isTrashFolder={isTrashFolder}
               >
                 {sectionHeaderContent
                   ? sectionHeaderContent.props.children
@@ -206,6 +208,7 @@ const Section = (props) => {
                       showText={showText}
                       settingsStudio={settingsStudio}
                       isEmptyPage={isEmptyPage}
+                      isTrashFolder={isTrashFolder}
                     >
                       {sectionHeaderContent
                         ? sectionHeaderContent.props.children

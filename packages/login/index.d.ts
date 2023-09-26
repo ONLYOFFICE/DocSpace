@@ -108,6 +108,10 @@ declare global {
     message: string | undefined;
   }
 
+  interface ISSOSettings {
+    hideAuthPage: boolean;
+  }
+
   interface IInitialState {
     portalSettings?: IPortalSettings;
     buildInfo?: IBuildInfo;
@@ -116,6 +120,7 @@ declare global {
     match?: MatchType;
     currentColorScheme?: ITheme;
     isAuth?: boolean;
+    ssoSettings?: ISSOSettings;
     logoUrls: ILogoUrl[];
     error?: IError;
   }

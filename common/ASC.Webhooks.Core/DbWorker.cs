@@ -290,10 +290,10 @@ public class DbWorker
         var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         var q = webhooksDbContext.WebhooksLogs
-            .AsNoTracking()
+            
             .OrderByDescending(t => t.Id)
             .Where(r => r.TenantId == Tenant)
-            .Join(webhooksDbContext.WebhooksConfigs.AsNoTracking(), r => r.ConfigId, r => r.Id, (log, config) => new DbWebhooks { Log = log, Config = config });
+            .Join(webhooksDbContext.WebhooksConfigs, r => r.ConfigId, r => r.Id, (log, config) => new DbWebhooks { Log = log, Config = config });
 
         if (deliveryFrom.HasValue)
         {
@@ -383,7 +383,7 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (WebhooksDbContext ctx, int tenantId) =>
                 ctx.WebhooksConfigs
-                    .AsNoTracking()
+                    
                     .Where(it => it.TenantId == tenantId)
              .GroupJoin(ctx.WebhooksLogs, c => c.Id, l => l.ConfigId, (configs, logs) => new { configs, logs })
             .Select(it =>
@@ -397,7 +397,7 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (WebhooksDbContext ctx, int tenantId) =>
                 ctx.WebhooksConfigs
-                    .AsNoTracking()
+                    
                     .Where(it => it.TenantId == tenantId));
 
     public static readonly Func<WebhooksDbContext, int, int, Task<WebhooksConfig>> WebhooksConfigAsync =
@@ -410,7 +410,7 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (WebhooksDbContext ctx, int id) =>
                 ctx.WebhooksLogs
-                    .AsNoTracking()
+                    
                     .Where(it => it.Id == id)
                     .Join(ctx.WebhooksConfigs, r => r.ConfigId, r => r.Id, (log, config) => new DbWebhooks { Log = log, Config = config })
                     .FirstOrDefault());
@@ -418,19 +418,19 @@ static file class Queries
     public static readonly Func<WebhooksDbContext, IAsyncEnumerable<DbWebhook>> DbWebhooksAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (WebhooksDbContext ctx) =>
-                ctx.Webhooks.AsNoTracking());
+                ctx.Webhooks);
 
     public static readonly Func<WebhooksDbContext, int, Task<DbWebhook>> DbWebhookAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (WebhooksDbContext ctx, int id) =>
                 ctx.Webhooks
-                    .AsNoTracking()
+                    
                     .FirstOrDefault(r => r.Id == id));
 
     public static readonly Func<WebhooksDbContext, string, string, Task<DbWebhook>> DbWebhookByMethodAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (WebhooksDbContext ctx, string method, string routePattern) =>
                 ctx.Webhooks
-                    .AsNoTracking()
+                    
                     .FirstOrDefault(r => r.Method == method && r.Route == routePattern));
 }

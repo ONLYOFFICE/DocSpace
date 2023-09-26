@@ -31,10 +31,11 @@ const DropDownItem = (props) => {
     isActiveDescendant,
   } = props;
 
-  const { withToggle, checked, onClick, ...rest } = props;
+  const { withToggle, checked, onClick, onClickSelectedItem, ...rest } = props;
 
   const onClickAction = (e) => {
     onClick && !disabled && onClick(e);
+    onClickSelectedItem && isSelected && onClickSelectedItem();
   };
 
   const stopPropagation = (event) => {

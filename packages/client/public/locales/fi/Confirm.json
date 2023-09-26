@@ -28,6 +28,5 @@
   "SetAppTitle": "Määritä todennussovelluksesi",
   "SuccessDeactivate": "Tilisi on onnistuneesti deaktivoitu. Sinut ohjataan <1>sivustolle</1> 10 sekunnissa.",
   "SuccessReactivate": "Tilisi on onnistuneesti aktivoitu uudelleen. Sinut ohjataan <1>portaaliin</1> 10 sekunnissa.",
-  "SuccessRemoved": "Tilisi on onnistuneesti poistettu. 10 sekunnin päästä sinut ohjataan <1>sivusto</1>.",
-  "WelcomeUser": "Tervetuloa meidän DocSpaceen!\nAloita rekisteröityminen tai kirjautuminen sosiaalisen verkostoitumisen kautta."
+  "SuccessRemoved": "Tilisi on onnistuneesti poistettu. 10 sekunnin päästä sinut ohjataan <1>sivusto</1>."
 }

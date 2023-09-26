@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 const locales = [
   "az",
+  "ar-SA",
   "zh-cn",
   "cs",
   "nl",
