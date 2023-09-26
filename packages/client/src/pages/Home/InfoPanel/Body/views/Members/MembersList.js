@@ -38,6 +38,7 @@ const Item = memo(({ data, index, style }) => {
   const {
     t,
     members,
+    setMembers,
     security,
     membersHelper,
     currentMember,
@@ -72,6 +73,7 @@ const Item = memo(({ data, index, style }) => {
         isExpect={user.isExpect}
         showInviteIcon={canInviteUserInRoomAbility && user.isExpect}
         onRepeatInvitation={onRepeatInvitation}
+        setMembers={setMembers}
       />
     </div>
   );
@@ -89,6 +91,7 @@ const MembersList = (props) => {
     changeUserType,
     setIsScrollLocked,
     members,
+    setMembers,
     hasNextPage,
     itemCount,
     onRepeatInvitation,
@@ -168,6 +171,7 @@ const MembersList = (props) => {
                     changeUserType,
                     setIsScrollLocked,
                     members,
+                    setMembers,
                     canInviteUserInRoomAbility,
                     onRepeatInvitation,
                   }}

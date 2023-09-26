@@ -17,6 +17,7 @@ import IconButton from "@docspace/components/icon-button";
 const User = ({
   t,
   user,
+  setMembers,
   isExpect,
   membersHelper,
   currentMember,
@@ -55,22 +56,45 @@ const User = ({
     })
       .then(() => {
         setIsLoading(false);
-        const inRoomMembers = selectionParentRoom.members.inRoom;
+        const users = selectionParentRoom.members.users;
+        const administrators = selectionParentRoom.members.administrators;
         const expectedMembers = selectionParentRoom.members.expected;
         if (option.key === "remove") {
+          setMembers({
+            users: users?.filter((m) => m.id !== user.id),
+            administrators: administrators?.filter((m) => m.id !== user.id),
+            expected: expectedMembers?.filter((m) => m.id !== user.id),
+          });
+
           setSelectionParentRoom({
             ...selectionParentRoom,
             members: {
-              inRoom: inRoomMembers?.filter((m) => m.id !== user.id),
+              users: users?.filter((m) => m.id !== user.id),
+              administrators: administrators?.filter((m) => m.id !== user.id),
               expected: expectedMembers?.filter((m) => m.id !== user.id),
             },
           });
           //setUserIsRemoved(true);
         } else {
+          setMembers({
+            users: users?.map((m) =>
+              m.id === user.id ? { ...m, access: option.access } : m
+            ),
+            administrators: administrators?.map((m) =>
+              m.id === user.id ? { ...m, access: option.access } : m
+            ),
+            expected: expectedMembers?.map((m) =>
+              m.id === user.id ? { ...m, access: option.access } : m
+            ),
+          });
+
           setSelectionParentRoom({
             ...selectionParentRoom,
             members: {
-              inRoom: inRoomMembers?.map((m) =>
+              users: users?.map((m) =>
+                m.id === user.id ? { ...m, access: option.access } : m
+              ),
+              administrators: administrators?.map((m) =>
                 m.id === user.id ? { ...m, access: option.access } : m
               ),
               expected: expectedMembers?.map((m) =>
