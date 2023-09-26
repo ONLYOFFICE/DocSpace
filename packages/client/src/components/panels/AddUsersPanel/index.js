@@ -202,6 +202,7 @@ const AddUsersPanel = ({
 
     currentFilter.page = startIndex / pageCount;
     currentFilter.pageCount = pageCount;
+    currentFilter.excludeShared = true;
 
     if (!!search.length) {
       currentFilter.search = search;
@@ -269,8 +270,8 @@ const AddUsersPanel = ({
           cancelButtonLabel={t("Common:CancelButton")}
           onCancel={onClosePanels}
           emptyScreenImage={emptyScreenImage}
-          emptyScreenHeader={t("EmptyHeader")}
-          emptyScreenDescription={t("EmptyDescription")}
+          emptyScreenHeader={t("PeopleSelector:EmptyHeader")}
+          emptyScreenDescription={t("PeopleSelector:EmptyDescription")}
           searchEmptyScreenImage={emptyScreenImage}
           searchEmptyScreenHeader={t("People:NotFoundUsers")}
           searchEmptyScreenDescription={t("SearchEmptyDescription")}

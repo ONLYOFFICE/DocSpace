@@ -370,6 +370,14 @@ export function getMembersList(roomId, filter = Filter.getDefault()) {
     )}`;
   }
 
+  const excludeShared = filter.excludeShared ? filter.excludeShared : false;
+
+  if (params) {
+    params += `&excludeShared=${excludeShared}`;
+  } else {
+    params = `excludeShared=${excludeShared}`;
+  }
+
   return request({
     method: "get",
     url: `people/room/${roomId}${params}`,

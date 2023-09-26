@@ -89,8 +89,6 @@ const InviteInput = ({
 
       const users = await getMembersList(roomId, filter);
 
-      console.log("users", users.items);
-
       setUsersList(users.items);
     } else {
       closeInviteInputPanel();
