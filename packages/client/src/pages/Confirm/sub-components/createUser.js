@@ -218,6 +218,8 @@ const CreateUserForm = (props) => {
 
     const signupAccount = {
       EmployeeType: linkData.emplType || null,
+      Email: linkData.email,
+      Key: linkData.key,
       SerializedProfile: profile,
     };
 
@@ -329,15 +331,14 @@ const CreateUserForm = (props) => {
         if (!providersData[item.provider]) return;
         if (index > 1) return;
 
-        const { icon, label, iconOptions, className } = providersData[
-          item.provider
-        ];
+        const { icon, label, iconOptions, className } =
+          providersData[item.provider];
 
         return (
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
             <SocialButton
               iconName={icon}
-              label={getProviderTranslation(label, t)}
+              label={getProviderTranslation(label, t, false, true)}
               className={`socialButton ${className ? className : ""}`}
               $iconOptions={iconOptions}
               data-url={item.url}
@@ -357,7 +358,7 @@ const CreateUserForm = (props) => {
         <SocialButton
           iconName={SsoReactSvgUrl}
           className="socialButton"
-          label={ssoLabel || getProviderTranslation("sso", t)}
+          label={ssoLabel || getProviderTranslation("sso", t, false, true)}
           onClick={() => (window.location.href = ssoUrl)}
         />
       </div>
@@ -445,35 +446,40 @@ const CreateUserForm = (props) => {
 
           <FormWrapper>
             <RegisterContainer>
-              {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
-
-              {oauthDataExists() && (
+              {!emailFromLink && (
                 <>
-                  <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-                  {providers && providers.length > 2 && (
-                    <Link
-                      isHovered
-                      type="action"
-                      fontSize="13px"
-                      fontWeight="600"
-                      color={currentColorScheme?.main?.accent}
-                      className="more-label"
-                      onClick={moreAuthOpen}
-                    >
-                      {t("Common:ShowMore")}
-                    </Link>
+                  {ssoExists() && (
+                    <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>
+                  )}
+
+                  {oauthDataExists() && (
+                    <>
+                      <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+                      {providers && providers.length > 2 && (
+                        <Link
+                          isHovered
+                          type="action"
+                          fontSize="13px"
+                          fontWeight="600"
+                          color={currentColorScheme?.main?.accent}
+                          className="more-label"
+                          onClick={moreAuthOpen}
+                        >
+                          {t("Common:ShowMore")}
+                        </Link>
+                      )}
+                    </>
+                  )}
+
+                  {(oauthDataExists() || ssoExists()) && (
+                    <div className="line">
+                      <Text color="#A3A9AE" className="or-label">
+                        {t("Common:Or")}
+                      </Text>
+                    </div>
                   )}
                 </>
               )}
-
-              {(oauthDataExists() || ssoExists()) && (
-                <div className="line">
-                  <Text color="#A3A9AE" className="or-label">
-                    {t("Common:Or")}
-                  </Text>
-                </div>
-              )}
-
               {showForm && (
                 <form className="auth-form-container">
                   <div className="auth-form-fields">
@@ -652,6 +658,7 @@ const CreateUserForm = (props) => {
                 onSocialLoginClick={onSocialButtonClick}
                 ssoLabel={ssoLabel}
                 ssoUrl={ssoUrl}
+                isSignUp
               />
             </RegisterContainer>
           </FormWrapper>

@@ -99,6 +99,10 @@ class SettingsSetupStore {
     this.isLoadingDownloadReport = state;
   };
 
+  resetIsInit = () => {
+    this.isInit = false;
+  };
+
   setIsInit = (isInit) => {
     this.isInit = isInit;
   };

@@ -7,7 +7,7 @@ import { decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
-export function openEdit(fileId, version, doc, view) {
+export function openEdit(fileId, version, doc, view, headers = null) {
   const params = []; // doc ? `?doc=${doc}` : "";
 
   if (view) {
@@ -28,6 +28,8 @@ export function openEdit(fileId, version, doc, view) {
     method: "get",
     url: `/files/file/${fileId}/openedit${paramsString}`,
   };
+
+  if (headers) options.headers = headers;
 
   return request(options);
 }
@@ -558,6 +560,10 @@ export function uploadFile(url, data) {
   return axios.post(url, data);
 }
 
+export function uploadBackup(url, data) {
+  return axios.post(url, data);
+}
+
 export function downloadFiles(fileIds, folderIds) {
   const data = { fileIds, folderIds };
   return request({ method: "put", url: "/files/fileops/bulkdownload", data });
@@ -781,8 +787,12 @@ export function openConnectWindow(service) {
   return request({ method: "get", url: `thirdparty/${service}` });
 }
 
-export function getSettingsFiles() {
-  return request({ method: "get", url: `/files/settings` });
+export function getSettingsFiles(headers = null) {
+  const options = { method: "get", url: `/files/settings` };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function markAsFavorite(ids) {

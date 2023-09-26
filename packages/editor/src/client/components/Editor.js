@@ -20,7 +20,7 @@ import {
 import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
-import { assign } from "@docspace/common/utils";
+import { assign, frameCallEvent } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
@@ -295,7 +295,10 @@ function Editor({
           config.homepage,
           `/doceditor?fileId=${encodeURIComponent(newFile.id)}`
         );
-        window.open(newUrl, "_blank");
+        window.open(
+          newUrl,
+          window.DocSpaceConfig?.editor?.openOnNewPage ? "_blank" : "_self"
+        );
       })
       .catch((e) => {
         toastr.error(e);
@@ -591,6 +594,35 @@ function Editor({
     }
   };
 
+  const onSDKRequestClose = () => {
+    const search = window.location.search;
+    const editorGoBack = new URLSearchParams(search).get("editorGoBack");
+
+    if (editorGoBack === "event") {
+      frameCallEvent({ event: "onEditorCloseCallback" });
+    } else {
+      const backUrl = getBackUrl();
+      window.location.replace(backUrl);
+    }
+  };
+
+  const getBackUrl = () => {
+    if (!fileInfo) return;
+
+    let backUrl = "";
+
+    if (fileInfo.rootFolderType === FolderType.Rooms) {
+      backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+    } else {
+      backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
+    }
+
+    const url = window.location.href;
+    const origin = url.substring(0, url.indexOf("/doceditor"));
+
+    return `${combineUrl(origin, backUrl)}`;
+  };
+
   const init = () => {
     try {
       if (isMobile) {
@@ -598,31 +630,28 @@ function Editor({
       }
 
       let goBack;
-      const url = window.location.href;
-      const search = window.location.search;
 
       if (fileInfo) {
-        let backUrl = "";
-
-        if (fileInfo.rootFolderType === FolderType.Rooms) {
-          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
-        } else {
-          backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
-        }
-
-        const origin = url.substring(0, url.indexOf("/doceditor"));
-
+        const search = window.location.search;
         const editorGoBack = new URLSearchParams(search).get("editorGoBack");
 
-        goBack =
-          editorGoBack === "false"
-            ? {}
-            : {
-                blank: true,
-                requestClose: false,
-                text: t("FileLocation"),
-                url: `${combineUrl(origin, backUrl)}`,
-              };
+        if (editorGoBack === "false") {
+          goBack = {};
+        } else if (editorGoBack === "event") {
+          goBack = {
+            requestClose: true,
+            text: t("FileLocation"),
+          };
+        } else {
+          goBack = {
+            requestClose: window.DocSpaceConfig?.editor?.requestClose ?? false,
+            text: t("FileLocation"),
+          };
+          if (!window.DocSpaceConfig?.editor?.requestClose) {
+            goBack.blank = window.DocSpaceConfig?.editor?.openOnNewPage ?? true;
+            goBack.url = getBackUrl();
+          }
+        }
       }
 
       config.editorConfig.customization = {
@@ -638,6 +667,8 @@ function Editor({
       //   //TODO: add conditions for SaaS
       //   config.document.info.favorite = null;
       // }
+
+      const url = window.location.href;
 
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");
@@ -660,10 +691,14 @@ function Editor({
         onRequestReferenceData,
         onRequestUsers,
         onRequestSendNotify,
-        onRequestCreateNew;
+        onRequestCreateNew,
+        onRequestClose;
 
       if (successAuth && !user.isVisitor) {
-        if (isDesktopEditor) {
+        if (
+          isDesktopEditor ||
+          window.DocSpaceConfig?.editor?.openOnNewPage === false
+        ) {
           onRequestCreateNew = onSDKRequestCreateNew;
         } else {
           //FireFox security issue fix (onRequestCreateNew will be blocked)
@@ -720,6 +755,10 @@ function Editor({
         onRequestSendNotify = onSDKRequestSendNotify;
       }
 
+      if (window.DocSpaceConfig?.editor?.requestClose) {
+        onRequestClose = onSDKRequestClose;
+      }
+
       const events = {
         events: {
           onRequestReferenceData,
@@ -745,6 +784,7 @@ function Editor({
           onRequestUsers,
           onRequestSendNotify,
           onRequestCreateNew,
+          onRequestClose,
         },
       };
 

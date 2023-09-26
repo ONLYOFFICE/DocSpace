@@ -26,13 +26,24 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class InviteUsersRequestDto
 {
+    /// <summary>List of user invitations</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.People.ApiModels.RequestDto.UserInvitation}, System.Collections.Generic</type>
     public IEnumerable<UserInvitation> Invitations { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class UserInvitation
 {
+    /// <summary>Email address</summary>
+    /// <type>System.String, System</type>
     public string Email { get; set; }
+
+    /// <summary>Employee type</summary>
+    /// <type>ASC.Core.Users.EmployeeType, ASC.Core.Common</type>
     public EmployeeType Type { get; set; }
 }

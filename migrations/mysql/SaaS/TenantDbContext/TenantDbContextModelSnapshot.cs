@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbCoreSettings", b =>
@@ -246,6 +246,38 @@ namespace ASC.Migrations.MySql.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantPartner", b =>
+                {
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<string>("AffiliateId")
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("affiliate_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<string>("Campaign")
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("campaign")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<string>("PartnerId")
+                        .HasColumnType("varchar(36)")
+                        .HasColumnName("partner_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.HasKey("TenantId")
+                        .HasName("PRIMARY");
+
+                    b.ToTable("tenants_partners", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+                });
+
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantVersion", b =>
                 {
                     b.Property<int>("Id")
@@ -315,6 +347,22 @@ namespace ASC.Migrations.MySql.Migrations
                     b.ToTable("tenants_iprestrictions", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantPartner", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithOne("Partner")
+                        .HasForeignKey("ASC.Core.Common.EF.Model.DbTenantPartner", "TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
+                {
+                    b.Navigation("Partner");
                 });
 #pragma warning restore 612, 618
         }

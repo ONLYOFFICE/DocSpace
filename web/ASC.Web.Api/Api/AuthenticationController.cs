@@ -29,6 +29,10 @@ using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Api.Controllers;
 
+/// <summary>
+/// Authorization API.
+/// </summary>
+/// <name>authentication</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -71,6 +75,7 @@ public class AuthenticationController : ControllerBase
     private readonly BruteForceLoginManager _bruteForceLoginManager;
     private readonly ILogger<AuthenticationController> _logger;
     private readonly InvitationLinkService _invitationLinkService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public AuthenticationController(
         UserManager userManager,
@@ -108,7 +113,8 @@ public class AuthenticationController : ControllerBase
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         EmailValidationKeyProvider emailValidationKeyProvider,
         ILogger<AuthenticationController> logger,
-        InvitationLinkService invitationLinkService)
+        InvitationLinkService invitationLinkService,
+        IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -146,8 +152,16 @@ public class AuthenticationController : ControllerBase
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _logger = logger;
         _invitationLinkService = invitationLinkService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
+    /// <summary>
+    /// Checks if the current user is authenticated or not.
+    /// </summary>
+    /// <short>Check authentication</short>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/authentication</path>
+    /// <returns type="System.Boolean, System">Boolean value: true if the current user is authenticated</returns>
     [AllowNotPayment]
     [HttpGet]
     public bool GetIsAuthentificated()
@@ -155,6 +169,16 @@ public class AuthenticationController : ControllerBase
         return _securityContext.IsAuthenticated;
     }
 
+    /// <summary>
+    /// Authenticates the current user by SMS or two-factor authentication code.
+    /// </summary>
+    /// <short>
+    /// Authenticate a user by code
+    /// </short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api" name="inDto">Authentication request parameters</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication/{code}</path>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api">Authentication data</returns>
     [AllowNotPayment]
     [HttpPost("{code}", Order = 1)]
     public async Task<AuthenticationTokenDto> AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
@@ -182,7 +206,7 @@ public class AuthenticationController : ControllerBase
                 throw new SecurityException("Auth code is not available");
             }
 
-            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
+            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id);
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
 
             var result = new AuthenticationTokenDto
@@ -218,6 +242,16 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Authenticates the current user by SMS, authenticator app, or without two-factor authentication.
+    /// </summary>
+    /// <short>
+    /// Authenticate a user
+    /// </short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api" name="inDto">Authentication request parameters</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication</path>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api">Authentication data</returns>
     [AllowNotPayment]
     [HttpPost]
     public async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto inDto)
@@ -305,10 +339,19 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Logs out of the current user account.
+    /// </summary>
+    /// <short>
+    /// Log out
+    /// </short>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication/logout</path>
+    /// <returns></returns>
     [AllowNotPayment]
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
-    public async Task Logout()
+    public async Task<object> Logout()
     {
         var cookie = _cookiesManager.GetCookies(CookiesType.AuthKey);
         var loginEventId = _cookieStorage.GetLoginEventIdFromCookie(cookie);
@@ -322,8 +365,37 @@ public class AuthenticationController : ControllerBase
         _cookiesManager.ClearCookies(CookiesType.SocketIO);
 
         _securityContext.Logout();
+
+
+        if (!string.IsNullOrEmpty(user.SsoNameId))
+        {
+            var settings = _settingsManager.Load<SsoSettingsV2>();
+
+            if (settings.EnableSso && !string.IsNullOrEmpty(settings.IdpSettings.SloUrl))
+            {
+                var logoutSsoUserData = _signature.Create(new LogoutSsoUserData
+                {
+                    NameId = user.SsoNameId,
+                    SessionId = user.SsoSessionId
+                });
+
+                return _setupInfo.SsoSamlLogoutUrl + "?data=" + HttpUtility.UrlEncode(logoutSsoUserData);
+            }
+        }
+
+        return null;
     }
 
+    /// <summary>
+    /// Opens a confirmation email URL to validate a certain action (employee invitation, portal removal, phone activation, etc.).
+    /// </summary>
+    /// <short>
+    /// Open confirmation email URL
+    /// </short>
+    /// <param type="ASC.Security.Cryptography.EmailValidationKeyModel, ASC.Core.Common" name="inDto">Confirmation email parameters</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication/confirm</path>
+    /// <returns type="ASC.Security.Cryptography.EmailValidationKeyProvider.ValidationResult, ASC.Security.Cryptography">Validation result: Ok, Invalid, or Expired</returns>
     [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
     public async Task<ValidationResult> CheckConfirm(EmailValidationKeyModel inDto)
@@ -338,6 +410,16 @@ public class AuthenticationController : ControllerBase
         return linkData.Result;
     }
 
+    /// <summary>
+    /// Sets a mobile phone for the current user.
+    /// </summary>
+    /// <short>
+    /// Set a mobile phone
+    /// </short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MobileRequestsDto, ASC.Web.Api" name="inDto">Mobile phone request parameters</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication/setphone</path>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api">Authentication data</returns>
     [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
     [HttpPost("setphone")]
@@ -356,6 +438,16 @@ public class AuthenticationController : ControllerBase
         };
     }
 
+    /// <summary>
+    /// Sends SMS with an authentication code.
+    /// </summary>
+    /// <short>
+    /// Send SMS code
+    /// </short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api" name="inDto">Authentication request parameters</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication/sendsms</path>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api">Authentication data</returns>
     [AllowNotPayment]
     [HttpPost("sendsms")]
     public async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto inDto)

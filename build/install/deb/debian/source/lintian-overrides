@@ -53,3 +53,17 @@ library-not-linked-against-libc
 
 # Some file triggers a privacy concern, specifically references an image files .png 
 privacy-breach-generic
+
+# Building a cross-platform project, so those files are arch-independent
+arch-independent-package-contains-binary-or-object
+ 
+# Specifying a dependency on glibc would be redundant and could create unnecessary dependencies.
+# We tested the application in different environments and made sure that it works stably without explicit dependence on glibc.
+missing-dependency-on-libc
+
+# Some binary files are executable, but are not intended for debugging.
+# Including debug symbols in these files makes no sense and increases the size of the package.
+unstripped-binary-or-object
+
+# The systemctl call is used to manage MySQL and ensure that it is configured correctly
+maintainer-script-calls-systemctl

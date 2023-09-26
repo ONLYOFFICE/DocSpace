@@ -26,9 +26,19 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class CheckDocServiceUrlRequestDto
 {
+    /// <summary>The Document Server address</summary>
+    /// <type>System.String, System</type>
     public string DocServiceUrl { get; set; }
+
+    /// <summary>The Document Server address in the local private network</summary>
+    /// <type>System.String, System</type>
     public string DocServiceUrlInternal { get; set; }
+
+    /// <summary>The Community Server address</summary>
+    /// <type>System.String, System</type>
     public string DocServiceUrlPortal { get; set; }
 }

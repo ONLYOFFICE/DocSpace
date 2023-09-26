@@ -108,28 +108,17 @@ public class InvitationLinkService
         {
             return new InvitationLinkData { Result = EmailValidationKeyProvider.ValidationResult.Invalid };
         }
-        
-        if (userId != default)
-        {
-            var account = _authManager.GetAccountByID(tenant.Id, userId);
-
-            if (!_permissionContext.CheckPermissions(account, new UserSecurityProvider(employeeType), Constants.Action_AddRemoveUser))
-            {
-                return linkData;
-            }
-        }
 
         var validationResult = await _invitationLinkHelper.ValidateAsync(key, email, employeeType);
         linkData.Result = validationResult.Result;
         linkData.LinkType = validationResult.LinkType;
         linkData.EmployeeType = employeeType;
 
-
         if (validationResult.LinkId == default)
         {
             if (!await CheckQuota(linkData.LinkType, employeeType))
             {
-                linkData.Result = EmailValidationKeyProvider.ValidationResult.Invalid;
+                linkData.Result = EmailValidationKeyProvider.ValidationResult.TariffLimit;
             }
             
             return linkData;
@@ -151,7 +140,7 @@ public class InvitationLinkService
 
         if (!await CheckQuota(linkData.LinkType, linkData.EmployeeType))
         {
-            linkData.Result = EmailValidationKeyProvider.ValidationResult.Invalid;
+            linkData.Result = EmailValidationKeyProvider.ValidationResult.TariffLimit;
         }
 
         return linkData;

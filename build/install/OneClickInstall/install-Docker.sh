@@ -32,8 +32,10 @@
  #
 
 PACKAGE_SYSNAME="onlyoffice"
-PRODUCT="docspace"
+PRODUCT_NAME="DocSpace"
+PRODUCT=$(tr '[:upper:]' '[:lower:]' <<< ${PRODUCT_NAME})
 BASE_DIR="/app/$PACKAGE_SYSNAME";
+PROXY_YML="${BASE_DIR}/proxy.yml"
 STATUS=""
 DOCKER_TAG=""
 GIT_BRANCH="master"
@@ -47,8 +49,8 @@ SWAPFILE="/${PRODUCT}_swapfile";
 MAKESWAP="true";
 
 DISK_REQUIREMENTS=40960;
-MEMORY_REQUIREMENTS=5500;
-CORE_REQUIREMENTS=2;
+MEMORY_REQUIREMENTS=8192;
+CORE_REQUIREMENTS=4;
 
 DIST="";
 REV="";
@@ -58,6 +60,7 @@ INSTALL_REDIS="true";
 INSTALL_RABBITMQ="true";
 INSTALL_MYSQL_SERVER="true";
 INSTALL_DOCUMENT_SERVER="true";
+INSTALL_ELASTICSEARCH="true";
 INSTALL_PRODUCT="true";
 UPDATE="false";
 
@@ -71,20 +74,35 @@ MYSQL_USER=""
 MYSQL_PASSWORD=""
 MYSQL_ROOT_PASSWORD=""
 MYSQL_HOST=""
+MYSQL_PORT=""
 DATABASE_MIGRATION="true"
 
 ELK_VERSION=""
+ELK_SHEME=""
 ELK_HOST=""
+ELK_PORT=""
+
+REDIS_HOST=""
+REDIS_PORT=""
+REDIS_USER_NAME=""
+REDIS_PASSWORD=""
+
+RABBIT_HOST=""
+RABBIT_PORT=""
+RABBIT_USER_NAME=""
+RABBIT_PASSWORD=""
 
 DOCUMENT_SERVER_IMAGE_NAME=""
 DOCUMENT_SERVER_VERSION=""
 DOCUMENT_SERVER_JWT_SECRET=""
 DOCUMENT_SERVER_JWT_HEADER=""
-DOCUMENT_SERVER_HOST=""
+DOCUMENT_SERVER_URL_EXTERNAL=""
 
 APP_CORE_BASE_DOMAIN=""
 APP_CORE_MACHINEKEY=""
 ENV_EXTENSION=""
+LETS_ENCRYPT_DOMAIN=""
+LETS_ENCRYPT_MAIL=""
 
 HELP_TARGET="install-Docker.sh";
 
@@ -193,6 +211,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-mysqlport | --mysqlport )
+			if [ "$2" != "" ]; then
+				MYSQL_PORT=$2
+				shift
+			fi
+		;;
+
 		-mysqlp | --mysqlpassword )
 			if [ "$2" != "" ]; then
 				MYSQL_PASSWORD=$2
@@ -200,9 +225,23 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-espr | --elasticprotocol )
+			if [ "$2" != "" ]; then
+				ELK_SHEME=$2
+				shift
+			fi
+		;;
+
 		-esh | --elastichost )
 			if [ "$2" != "" ]; then
 				ELK_HOST=$2
+				shift
+			fi
+		;;
+
+		-esp | --elasticport )
+			if [ "$2" != "" ]; then
+				ELK_PORT=$2
 				shift
 			fi
 		;;
@@ -285,6 +324,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
+		-docsurl | --docsurl )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_URL_EXTERNAL=$2
+				shift
+			fi
+		;;
+		
 		-dbm | --databasemigration )
 			if [ "$2" != "" ]; then
 				DATABASE_MIGRATION=$2
@@ -320,6 +366,104 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-ies | --installelastic )
+			if [ "$2" != "" ]; then
+				INSTALL_ELASTICSEARCH=$2
+				shift
+			fi
+		;;
+
+		-rdsh | --redishost )
+			if [ "$2" != "" ]; then
+				REDIS_HOST=$2
+				shift
+			fi
+		;;
+
+		-rdsp | --redisport )
+			if [ "$2" != "" ]; then
+				REDIS_PORT=$2
+				shift
+			fi
+		;;
+
+		-rdsu | --redisusername )
+			if [ "$2" != "" ]; then
+				REDIS_USER_NAME=$2
+				shift
+			fi
+		;;
+
+		-rdspass | --redispassword )
+			if [ "$2" != "" ]; then
+				REDIS_PASSWORD=$2
+				shift
+			fi
+		;;
+
+		-rbth | --rabbitmqhost )
+			if [ "$2" != "" ]; then
+				RABBIT_HOST=$2
+				shift
+			fi
+		;;
+
+		-rbtp | --rabbitmqport )
+			if [ "$2" != "" ]; then
+				RABBIT_PORT=$2
+				shift
+			fi
+		;;
+
+		-rbtu | --rabbitmqusername )
+			if [ "$2" != "" ]; then
+				RABBIT_USER_NAME=$2
+				shift
+			fi
+		;;
+
+		-rbtpass | --rabbitmqpassword )
+			if [ "$2" != "" ]; then
+				RABBIT_PASSWORD=$2
+				shift
+			fi
+		;;
+
+		-rbtvh | --rabbitmqvirtualhost )
+			if [ "$2" != "" ]; then
+				RABBIT_VIRTUAL_HOST=$2
+				shift
+			fi
+		;;
+
+		-led | --letsencryptdomain )
+			if [ "$2" != "" ]; then
+				LETS_ENCRYPT_DOMAIN=$2
+				shift
+			fi
+		;;
+
+		-lem | --letsencryptmail )
+			if [ "$2" != "" ]; then
+				LETS_ENCRYPT_MAIL=$2
+				shift
+			fi
+		;;
+
+		-cf | --certfile )
+			if [ "$2" != "" ]; then
+				CERTIFICATE_PATH=$2
+				shift
+			fi
+		;;
+
+		-ckf | --certkeyfile )
+			if [ "$2" != "" ]; then
+				CERTIFICATE_KEY_PATH=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -339,17 +483,35 @@ while [ "$1" != "" ]; do
 			echo "      -idocs, --installdocs             install or update document server (true|false)"
 			echo "      -docsi, --docsimage               document server image name"
 			echo "      -docsv, --docsversion             document server version"
+			echo "      -docsurl, --docsurl               $PACKAGE_SYSNAME docs server address (example http://$PACKAGE_SYSNAME-docs-address:8083)"
 			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
 			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"	
 			echo "      -irbt, --installrabbitmq          install or update rabbitmq (true|false)"	
 			echo "      -irds, --installredis             install or update redis (true|false)"
-			echo "      -esh, --elastichost               elasticsearch host"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"		
+			echo "      -ies, --installelastic            install or update elasticsearch (true|false)"
+			echo "      -espr, --elasticprotocol          the protocol for the connection to elasticsearch (default value http)"
+			echo "      -esh, --elastichost               the IP address or hostname of the elasticsearch"
+			echo "      -esp, --elasticport               elasticsearch port number (default value 6379)"
+			echo "      -rdsh, --redishost                the IP address or hostname of the redis server"
+			echo "      -rdsp, --redisport                redis server port number (default value 9200)"
+			echo "      -rdsu, --redisusername            redis user name"
+			echo "      -rdspass, --redispassword         password set for redis account"
+			echo "      -rbth, --rabbitmqhost             the IP address or hostname of the rabbitmq server"
+			echo "      -rbtp, --rabbitmqport             rabbitmq server port number (default value 5672)"
+			echo "      -rbtu, --rabbitmqusername         username for rabbitmq server account"
+			echo "      -rbtpass, --rabbitmqpassword      password set for rabbitmq server account"
+			echo "      -rbtvh, --rabbitmqvirtualhost     rabbitmq virtual host (default value \"/\")"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
 			echo "      -mysqld, --mysqldatabase          $PRODUCT database name"
 			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
+			echo "      -mysqlport, --mysqlport           mysql server port number (default value 3306)"
+			echo "      -led, --letsencryptdomain         defines the domain for Let's Encrypt certificate"
+			echo "      -lem, --letsencryptmail           defines the domain administator mail address for Let's Encrypt certificate"
+			echo "      -cf, --certfile                   path to the certificate file for the domain"
+			echo "      -ckf, --certkeyfile               path to the private key file for the certificate"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
@@ -382,6 +544,7 @@ while [ "$1" != "" ]; do
 done
 
 root_checking () {
+	PID=$$
 	if [ ! $( id -u ) -eq 0 ]; then
 		echo "To perform this action you must be logged in with root rights"
 		exit 1;
@@ -557,7 +720,7 @@ install_service () {
 	fi
 
 	if ! command_exists $COMMAND_NAME; then
-		echo "command $COMMAND_NAME not found"
+		echo "Command $COMMAND_NAME not found"
 		exit 1;
 	fi
 }
@@ -568,7 +731,7 @@ install_docker_compose () {
 }
 
 check_ports () {
-	RESERVED_PORTS=(3306);
+	RESERVED_PORTS=();
 	ARRAY_PORTS=();
 	USED_PORTS="";
 
@@ -713,6 +876,14 @@ docker_login () {
 	fi
 }
 
+create_network () {
+	NETWORT_EXIST=$(docker network ls | awk '{print $2;}' | { grep -x ${NETWORK_NAME} || true; });
+
+	if [[ -z ${NETWORT_EXIST} ]]; then
+		docker network create --driver bridge ${NETWORK_NAME}
+	fi
+}
+
 read_continue_installation () {
 	read -p "Continue installation [Y/N]? " CHOICE_INSTALLATION
 	case "$CHOICE_INSTALLATION" in
@@ -732,6 +903,30 @@ read_continue_installation () {
 }
 
 domain_check () {
+	if ! command_exists dig; then
+		if command_exists apt-get; then
+			install_service dig dnsutils
+		elif command_exists yum; then
+			install_service dig bind-utils
+		fi
+	fi
+
+	if ! command_exists ping; then
+		if command_exists apt-get; then
+			install_service ping iputils-ping
+		elif command_exists yum; then
+			install_service ping iputils
+		fi
+	fi
+
+	if ! command_exists ip; then
+		if command_exists apt-get; then
+			install_service ip iproute2
+		elif command_exists yum; then
+			install_service ip iproute
+		fi
+	fi
+
 	DOMAINS=$(dig +short -x $(curl -s ifconfig.me) | sed 's/\.$//')
 
 	if [[ -n "$DOMAINS" ]]; then
@@ -740,7 +935,7 @@ domain_check () {
 			if [[ -n "$IP_ADDRESS" && "$IP_ADDRESS" =~ ^(10\.|127\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.) ]]; then
 				LOCAL_RESOLVED_DOMAINS+="$DOMAIN"
 			elif [[ -n "$IP_ADDRESS" ]]; then
-				APP_URL_PORTAL=${APP_URL_PORTAL-:"http://${DOMAIN}:${EXTERNAL_PORT}"}
+				APP_URL_PORTAL=${APP_URL_PORTAL:-"http://${DOMAIN}:${EXTERNAL_PORT}"}
 			fi
 		done <<< "$DOMAINS"
 	fi
@@ -750,7 +945,7 @@ domain_check () {
 		if ! grep -q '"dns"' "$DOCKER_DAEMON_FILE" 2>/dev/null; then
 			echo "A problem was detected for ${LOCAL_RESOLVED_DOMAINS[@]} domains when using a loopback IP address or when using NAT."
 			echo "Select 'Y' to continue installing with configuring the use of external IP in Docker via Google Public DNS."
-			echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT^^} installation."
+			echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT_NAME} installation."
 			if read_continue_installation; then
 				if [[ -f "$DOCKER_DAEMON_FILE" ]]; then	
 					sed -i '/{/a\    "dns": ["8.8.8.8", "8.8.4.4"],' "$DOCKER_DAEMON_FILE"
@@ -763,14 +958,22 @@ domain_check () {
 	fi
 }
 
-get_container_env_parameter () {
-	local CONTAINER_NAME=$1;
-	local PARAMETER_NAME=$2;
+establish_conn() {
+	echo -n "Trying to establish $3 connection... "
+  
+	exec {FD}<> /dev/tcp/$1/$2 && exec {FD}>&-
 
-	if [[ -z ${CONTAINER_NAME} ]]; then
-		echo "Empty container name"
+	if [ "$?" != 0 ]; then
+		echo "FAILURE";
 		exit 1;
 	fi
+
+	echo "OK"
+}
+
+get_env_parameter () {
+	local PARAMETER_NAME=$1;
+	local CONTAINER_NAME=$2;
 
 	if [[ -z ${PARAMETER_NAME} ]]; then
 		echo "Empty parameter name"
@@ -778,18 +981,18 @@ get_container_env_parameter () {
 	fi
 
 	if command_exists docker ; then
-		CONTAINER_EXIST=$(docker ps -aqf "name=$CONTAINER_NAME");
+		[ -n "$CONTAINER_NAME" ] && CONTAINER_EXIST=$(docker ps -aqf "name=$CONTAINER_NAME");
 
 		if [[ -n ${CONTAINER_EXIST} ]]; then
 			VALUE=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' ${CONTAINER_NAME} | grep "${PARAMETER_NAME}=" | sed 's/^.*=//');
 		fi
-
-		if [ -z $VALUE ] && [ -f $BASE_DIR/.env ]; then
-			VALUE=$(sed -n "/.*${PARAMETER_NAME}=/s///p" $BASE_DIR/.env)
-		fi
 	fi
 
-	echo "$VALUE"
+	if [ -z ${VALUE} ] && [ -f ${BASE_DIR}/.env ]; then
+		VALUE=$(awk -F= "/${PARAMETER_NAME}/ {print \$2}" ${BASE_DIR}/.env | tr -d '\r')
+	fi
+
+	echo ${VALUE//\"}
 }
 
 get_available_version () {
@@ -856,109 +1059,78 @@ get_available_version () {
 
 	LATEST_TAG=$(echo $TAG_LIST | tr ',' '\n' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | awk '/./{line=$0} END{print line}');
 
-	echo "$LATEST_TAG" | sed "s/\"//g"
+	if [ ! -z "${LATEST_TAG}" ]; then
+		echo "${LATEST_TAG}" | sed "s/\"//g"
+	else
+		echo "Unable to retrieve tag from ${1} repository" >&2
+		kill -s TERM $PID
+	fi
+}
+
+set_docs_url_external () {
+	DOCUMENT_SERVER_URL_EXTERNAL=${DOCUMENT_SERVER_URL_EXTERNAL:-$(get_env_parameter "DOCUMENT_SERVER_URL_EXTERNAL" "${CONTAINER_NAME}")};
+
+	if [[ ! -z ${DOCUMENT_SERVER_URL_EXTERNAL} ]] && [[ $DOCUMENT_SERVER_URL_EXTERNAL =~ ^(https?://)?([^:/]+)(:([0-9]+))?(/.*)?$ ]]; then
+		[[ -z ${BASH_REMATCH[1]} ]] && DOCUMENT_SERVER_URL_EXTERNAL="http://$DOCUMENT_SERVER_URL_EXTERNAL"
+		DOCUMENT_SERVER_HOST="${BASH_REMATCH[2]}"
+		DOCUMENT_SERVER_PORT="${BASH_REMATCH[4]:-"80"}"
+	fi
 }
 
 set_jwt_secret () {
-	CURRENT_JWT_SECRET="";
-
-	if [[ -z ${JWT_SECRET} ]]; then
-		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PACKAGE_SYSNAME}-document-server" "JWT_SECRET");
-
-		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
-			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
-		fi
-	fi
-
-	if [[ -z ${JWT_SECRET} ]]; then
-		CURRENT_JWT_SECRET=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_JWT_SECRET");
-
-		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
-			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
-		fi
-	fi
-
-	if [[ -z ${JWT_SECRET} ]]; then
-		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 32);
-	fi
+	DOCUMENT_SERVER_JWT_SECRET="${DOCUMENT_SERVER_JWT_SECRET:-$(get_env_parameter "JWT_SECRET" "${PACKAGE_SYSNAME}-document-server")}"
+	DOCUMENT_SERVER_JWT_SECRET="${DOCUMENT_SERVER_JWT_SECRET:-$(get_env_parameter "DOCUMENT_SERVER_JWT_SECRET" "${CONTAINER_NAME}")}"
+	DOCUMENT_SERVER_JWT_SECRET="${DOCUMENT_SERVER_JWT_SECRET:-$(get_random_str 32)}"
 }
 
 set_jwt_header () {
-	CURRENT_JWT_HEADER="";
-
-	if [[ -z ${JWT_HEADER} ]]; then
-		CURRENT_JWT_HEADER=$(get_container_env_parameter  "${PACKAGE_SYSNAME}-document-server" "JWT_HEADER");
-
-		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
-			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
-		fi
-	fi	
-	
-	if [[ -z ${JWT_HEADER} ]]; then
-		CURRENT_JWT_HEADER=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_JWT_HEADER");
-
-		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
-			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
-		fi
-	fi
-
-	if [[ -z ${JWT_HEADER} ]]; then
-		DOCUMENT_SERVER_JWT_HEADER="AuthorizationJwt"
-	fi
+	DOCUMENT_SERVER_JWT_HEADER="${DOCUMENT_SERVER_JWT_HEADER:-$(get_env_parameter "JWT_HEADER" "${PACKAGE_SYSNAME}-document-server")}"
+	DOCUMENT_SERVER_JWT_HEADER="${DOCUMENT_SERVER_JWT_HEADER:-$(get_env_parameter "DOCUMENT_SERVER_JWT_HEADER" "${CONTAINER_NAME}")}"
+	DOCUMENT_SERVER_JWT_HEADER="${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}"
 }
 
 set_core_machinekey () {
-	if [[ -z ${APP_CORE_MACHINEKEY} ]]; then
-		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_MACHINEKEY");
-
-		if [[ -n ${CURRENT_CORE_MACHINEKEY} ]]; then
-			APP_CORE_MACHINEKEY="$CURRENT_CORE_MACHINEKEY";
-		fi
-	fi
-
-	if [[ -z ${APP_CORE_MACHINEKEY} ]] && [[ "$UPDATE" != "true" ]]; then
-		APP_CORE_MACHINEKEY=$(get_random_str 12);
-	fi
+	APP_CORE_MACHINEKEY="${APP_CORE_MACHINEKEY:-$(get_env_parameter "APP_CORE_MACHINEKEY" "${CONTAINER_NAME}")}"
+	[[ "$UPDATE" != "true" ]] && APP_CORE_MACHINEKEY="${APP_CORE_MACHINEKEY:-$(get_random_str 12))}"
 }
 
 set_mysql_params () {
-	if [[ -z ${MYSQL_PASSWORD} ]]; then
-		MYSQL_PASSWORD=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_PASSWORD");
+	MYSQL_PASSWORD="${MYSQL_PASSWORD:-$(get_env_parameter "MYSQL_PASSWORD" "${CONTAINER_NAME}")}"
+	MYSQL_PASSWORD="${MYSQL_PASSWORD:-$(get_random_str 20)}"
 
-		if [[ -z ${MYSQL_PASSWORD} ]]; then
-			MYSQL_PASSWORD=$(get_random_str 20);
-		fi
-	fi
-	
-	if [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-		MYSQL_ROOT_PASSWORD=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_ROOT_PASSWORD");
+	MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-$(get_env_parameter "MYSQL_ROOT_PASSWORD" "${CONTAINER_NAME}")}"
+	MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-$(get_random_str 20)}"
 
-		if [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-			MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD:-$(get_random_str 20)};
-		fi
-	fi
-	
-	if [[ -z ${MYSQL_DATABASE} ]]; then
-		MYSQL_DATABASE=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_DATABASE");
-	fi
-
-	if [[ -z ${MYSQL_USER} ]]; then
-		MYSQL_USER=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_USER");
-	fi
-
-	if [[ -z ${MYSQL_HOST} ]]; then
-		MYSQL_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_HOST");
-	fi
+	MYSQL_DATABASE="${MYSQL_DATABASE:-$(get_env_parameter "MYSQL_DATABASE" "${CONTAINER_NAME}")}"
+	MYSQL_USER="${MYSQL_USER:-$(get_env_parameter "MYSQL_USER" "${CONTAINER_NAME}")}"
+	MYSQL_HOST="${MYSQL_HOST:-$(get_env_parameter "MYSQL_HOST" "${CONTAINER_NAME}")}"
+	MYSQL_PORT="${MYSQL_PORT:-$(get_env_parameter "MYSQL_PORT" "${CONTAINER_NAME}")}"
 }
 
 set_docspace_params() {
-	ENV_EXTENSION=${ENV_EXTENSION:-$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION")};
-	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
-	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
-	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
-	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
+	ENV_EXTENSION=${ENV_EXTENSION:-$(get_env_parameter "ENV_EXTENSION" "${CONTAINER_NAME}")};
+	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_env_parameter "APP_CORE_BASE_DOMAIN" "${CONTAINER_NAME}")};
+	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_env_parameter "APP_URL_PORTAL" "${CONTAINER_NAME}")};
+	EXTERNAL_PORT=${EXTERNAL_PORT:-$(get_env_parameter "EXTERNAL_PORT" "${CONTAINER_NAME}")};
+
+	ELK_SHEME=${ELK_SHEME:-$(get_env_parameter "ELK_SHEME" "${CONTAINER_NAME}")};
+	ELK_HOST=${ELK_HOST:-$(get_env_parameter "ELK_HOST" "${CONTAINER_NAME}")};
+	ELK_PORT=${ELK_PORT:-$(get_env_parameter "ELK_PORT" "${CONTAINER_NAME}")};
+
+	REDIS_HOST=${REDIS_HOST:-$(get_env_parameter "REDIS_HOST" "${CONTAINER_NAME}")};
+	REDIS_PORT=${REDIS_PORT:-$(get_env_parameter "REDIS_PORT" "${CONTAINER_NAME}")};
+	REDIS_USER_NAME=${REDIS_USER_NAME:-$(get_env_parameter "REDIS_USER_NAME" "${CONTAINER_NAME}")};
+	REDIS_PASSWORD=${REDIS_PASSWORD:-$(get_env_parameter "REDIS_PASSWORD" "${CONTAINER_NAME}")};
+
+	RABBIT_HOST=${RABBIT_HOST:-$(get_env_parameter "RABBIT_HOST" "${CONTAINER_NAME}")};
+	RABBIT_PORT=${RABBIT_PORT:-$(get_env_parameter "RABBIT_PORT" "${CONTAINER_NAME}")};
+	RABBIT_USER_NAME=${RABBIT_USER_NAME:-$(get_env_parameter "RABBIT_USER_NAME" "${CONTAINER_NAME}")};
+	RABBIT_PASSWORD=${RABBIT_PASSWORD:-$(get_env_parameter "RABBIT_PASSWORD" "${CONTAINER_NAME}")};
+	RABBIT_VIRTUAL_HOST=${RABBIT_VIRTUAL_HOST:-$(get_env_parameter "RABBIT_VIRTUAL_HOST" "${CONTAINER_NAME}")};
 	
-	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
+	CERTIFICATE_PATH=${CERTIFICATE_PATH:-$(get_env_parameter "CERTIFICATE_PATH")};
+	CERTIFICATE_KEY_PATH=${CERTIFICATE_KEY_PATH:-$(get_env_parameter "CERTIFICATE_KEY_PATH")};
+	DHPARAM_PATH=${DHPARAM_PATH:-$(get_env_parameter "DHPARAM_PATH")};
 }
 
 set_installation_type_data () {
@@ -985,16 +1157,18 @@ download_files () {
 		install_docker_compose
 	fi
 
-	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
+	# Fixes issues with variables when upgrading to v1.1.3
+	HOSTS=("ELK_HOST" "REDIS_HOST" "RABBIT_HOST" "MYSQL_HOST"); 
+	for HOST in "${HOSTS[@]}"; do [[ "${!HOST}" == *CONTAINER_PREFIX* || "${!HOST}" == *$PACKAGE_SYSNAME* ]] && export "$HOST="; done
+	[[ "${APP_URL_PORTAL}" == *${PACKAGE_SYSNAME}-proxy* ]] && APP_URL_PORTAL=""
+
+	echo -n "Downloading configuration files to the ${BASE_DIR} directory..."
+	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR} >/dev/null
+	echo "OK"
 
 	reconfigure STATUS ${STATUS}
 	reconfigure INSTALLATION_TYPE ${INSTALLATION_TYPE}
 	reconfigure NETWORK_NAME ${NETWORK_NAME}
-	
-	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
-	reconfigure MYSQL_USER ${MYSQL_USER}
-	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
-	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
 }
 
 reconfigure () {
@@ -1007,60 +1181,107 @@ reconfigure () {
 }
 
 install_mysql_server () {
-	reconfigure MYSQL_VERSION ${MYSQL_VERSION}
-	reconfigure DATABASE_MIGRATION ${DATABASE_MIGRATION}
+	reconfigure DATABASE_MIGRATION ${DATABASE_MIGRATION}	
+	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
+	reconfigure MYSQL_USER ${MYSQL_USER}
+	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
+	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
 
-	docker-compose -f $BASE_DIR/db.yml up -d
+	if [[ -z ${MYSQL_HOST} ]] && [ "$INSTALL_MYSQL_SERVER" == "true" ]; then	
+		reconfigure MYSQL_VERSION ${MYSQL_VERSION}
+		docker-compose -f $BASE_DIR/db.yml up -d
+	elif [ ! -z "$MYSQL_HOST" ]; then
+		establish_conn ${MYSQL_HOST} "${MYSQL_PORT:-"3306"}" "MySQL"
+		reconfigure MYSQL_HOST ${MYSQL_HOST}
+		reconfigure MYSQL_PORT "${MYSQL_PORT:-"3306"}"
+	fi
 }
 
 install_document_server () {
-	reconfigure DOCUMENT_SERVER_IMAGE_NAME "${DOCUMENT_SERVER_IMAGE_NAME}:${DOCUMENT_SERVER_VERSION:-$(get_available_version "$DOCUMENT_SERVER_IMAGE_NAME")}"
 	reconfigure DOCUMENT_SERVER_JWT_HEADER ${DOCUMENT_SERVER_JWT_HEADER}
 	reconfigure DOCUMENT_SERVER_JWT_SECRET ${DOCUMENT_SERVER_JWT_SECRET}
-
-	docker-compose -f $BASE_DIR/ds.yml up -d
+	if [[ -z ${DOCUMENT_SERVER_HOST} ]] && [ "$INSTALL_DOCUMENT_SERVER" == "true" ]; then
+		reconfigure DOCUMENT_SERVER_IMAGE_NAME "${DOCUMENT_SERVER_IMAGE_NAME}:${DOCUMENT_SERVER_VERSION:-$(get_available_version "$DOCUMENT_SERVER_IMAGE_NAME")}"
+		docker-compose -f $BASE_DIR/ds.yml up -d
+	elif [ ! -z "$DOCUMENT_SERVER_HOST" ]; then
+		APP_URL_PORTAL=${APP_URL_PORTAL:-"http://$(curl -s ifconfig.me):${EXTERNAL_PORT}"}  
+		establish_conn ${DOCUMENT_SERVER_HOST} ${DOCUMENT_SERVER_PORT} "${PACKAGE_SYSNAME^^} Docs"
+		reconfigure DOCUMENT_SERVER_URL_EXTERNAL ${DOCUMENT_SERVER_URL_EXTERNAL}
+		reconfigure DOCUMENT_SERVER_URL_PUBLIC ${DOCUMENT_SERVER_URL_EXTERNAL}
+	fi
 }
 
 install_rabbitmq () {
-	docker-compose -f $BASE_DIR/rabbitmq.yml up -d
+	if [[ -z ${RABBIT_HOST} ]] && [ "$INSTALL_RABBITMQ" == "true" ]; then
+		docker-compose -f $BASE_DIR/rabbitmq.yml up -d
+	elif [ ! -z "$RABBIT_HOST" ]; then
+		establish_conn ${RABBIT_HOST} "${RABBIT_PORT:-"5672"}" "RabbitMQ"
+		reconfigure RABBIT_HOST ${RABBIT_HOST}
+		reconfigure RABBIT_PORT "${RABBIT_PORT:-"5672"}"
+		reconfigure RABBIT_USER_NAME ${RABBIT_USER_NAME}
+		reconfigure RABBIT_PASSWORD ${RABBIT_PASSWORD}
+		reconfigure RABBIT_VIRTUAL_HOST "${RABBIT_VIRTUAL_HOST:-"/"}"
+	fi
 }
 
 install_redis () {
-	docker-compose -f $BASE_DIR/redis.yml up -d
+	if [[ -z ${REDIS_HOST} ]] && [ "$INSTALL_REDIS" == "true" ]; then
+		docker-compose -f $BASE_DIR/redis.yml up -d
+	elif [ ! -z "$REDIS_HOST" ]; then
+		establish_conn ${REDIS_HOST} "${REDIS_PORT:-"6379"}" "Redis"
+		reconfigure REDIS_HOST ${REDIS_HOST}
+		reconfigure REDIS_PORT "${REDIS_PORT:-"6379"}"
+		reconfigure REDIS_USER_NAME ${REDIS_USER_NAME}
+		reconfigure REDIS_PASSWORD ${REDIS_PASSWORD}
+	fi
+}
+
+install_elasticsearch () {
+	if [[ -z ${ELK_HOST} ]] && [ "$INSTALL_ELASTICSEARCH" == "true" ]; then
+		if [ $(free -m | grep -oP '\d+' | head -n 1) -gt "12228" ]; then #RAM ~12Gb
+			sed -i 's/Xms[0-9]g/Xms4g/g; s/Xmx[0-9]g/Xmx4g/g' $BASE_DIR/elasticsearch.yml
+		else
+			sed -i 's/Xms[0-9]g/Xms1g/g; s/Xmx[0-9]g/Xmx1g/g' $BASE_DIR/elasticsearch.yml
+		fi
+		reconfigure ELK_VERSION ${ELK_VERSION}
+		docker-compose -f $BASE_DIR/elasticsearch.yml up -d
+	elif [ ! -z "$ELK_HOST" ]; then
+		establish_conn ${ELK_HOST} "${ELK_PORT:-"9200"}" "Elasticsearch"
+		reconfigure ELK_SHEME "${ELK_SHEME:-"http"}"	
+		reconfigure ELK_HOST ${ELK_HOST}
+		reconfigure ELK_PORT "${ELK_PORT:-"9200"}"	
+	fi
 }
 
 install_product () {
 	DOCKER_TAG="${DOCKER_TAG:-$(get_available_version ${IMAGE_NAME})}"
+	reconfigure DOCKER_TAG ${DOCKER_TAG}
+
 	[ "${UPDATE}" = "true" ] && LOCAL_CONTAINER_TAG="$(docker inspect --format='{{index .Config.Image}}' ${CONTAINER_NAME} | awk -F':' '{print $2}')"
 
 	if [ "${UPDATE}" = "true" ] && [ "${LOCAL_CONTAINER_TAG}" != "${DOCKER_TAG}" ]; then
 		docker-compose -f $BASE_DIR/build.yml pull
-		docker-compose -f $BASE_DIR/migration-runner.yml -f $BASE_DIR/notify.yml -f $BASE_DIR/healthchecks.yml down
+		docker-compose -f $BASE_DIR/migration-runner.yml -f $BASE_DIR/notify.yml -f $BASE_DIR/healthchecks.yml -f ${PROXY_YML} down
 		docker-compose -f $BASE_DIR/${PRODUCT}.yml down --volumes
 	fi
 
 	reconfigure ENV_EXTENSION ${ENV_EXTENSION}
-	reconfigure ELK_HOST ${ELK_HOST}
-	reconfigure ELK_VERSION ${ELK_VERSION}
-	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
-	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
-	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:8092"}"
-	reconfigure DOCKER_TAG ${DOCKER_TAG}
-
-	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
-	
-	if [ $(free -m | grep -oP '\d+' | head -n 1) -gt "12228" ]; then #RAM ~12Gb
-		sed -i 's/Xms[0-9]g/Xms4g/g; s/Xmx[0-9]g/Xmx4g/g' $BASE_DIR/${PRODUCT}.yml
-	else
-		sed -i 's/Xms[0-9]g/Xms1g/g; s/Xmx[0-9]g/Xmx1g/g' $BASE_DIR/${PRODUCT}.yml
-	fi
+	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-router:8092"}"
+	reconfigure EXTERNAL_PORT ${EXTERNAL_PORT}
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
+	docker-compose -f ${PROXY_YML} up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
 	docker-compose -f $BASE_DIR/healthchecks.yml up -d
+
+	if [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
+		bash $BASE_DIR/config/${PRODUCT}-ssl-setup -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
+	elif [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
+		bash $BASE_DIR/config/${PRODUCT}-ssl-setup "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
+	fi
 }
 
 make_swap () {
@@ -1117,12 +1338,15 @@ start_installation () {
 
 	docker_login
 
+	create_network
+
 	domain_check
 
 	if [ "$UPDATE" = "true" ]; then
 		set_docspace_params
 	fi
 
+	set_docs_url_external
 	set_jwt_secret
 	set_jwt_header
 
@@ -1132,29 +1356,23 @@ start_installation () {
 
 	download_files
 
-	if [ "$INSTALL_MYSQL_SERVER" == "true" ]; then
-		install_mysql_server
-	fi
+	install_mysql_server
 	
-	if [ "$INSTALL_DOCUMENT_SERVER" == "true" ]; then
-		install_document_server
-	fi
+	install_document_server
 
-	if [ "$INSTALL_RABBITMQ" == "true" ]; then
-		install_rabbitmq
-	fi
+	install_rabbitmq
 
-	if [ "$INSTALL_REDIS" == "true" ]; then
-		install_redis
-	fi
+	install_redis
+
+	install_elasticsearch
 
 	if [ "$INSTALL_PRODUCT" == "true" ]; then
 		install_product
 	fi
 
 	echo ""
-	echo "Thank you for installing ${PACKAGE_SYSNAME^^} ${PRODUCT^^}."
-	echo "In case you have any questions contact us via http://support.${PACKAGE_SYSNAME}.com or visit our forum at http://dev.${PACKAGE_SYSNAME}.org"
+	echo "Thank you for installing ${PACKAGE_SYSNAME^^} ${PRODUCT_NAME}."
+	echo "In case you have any questions contact us via http://support.${PACKAGE_SYSNAME}.com or visit our forum at http://forum.${PACKAGE_SYSNAME}.com"
 	echo ""
 
 	exit 0;

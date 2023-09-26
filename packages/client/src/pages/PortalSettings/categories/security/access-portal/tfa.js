@@ -154,11 +154,12 @@ const TwoFactorAuth = (props) => {
             label: t("Disabled"),
             value: "none",
           },
-          {
+          //TODO: hide while 2fa by sms is not working
+          /*{
             label: t("BySms"),
             value: "sms",
             disabled: !smsDisabled,
-          },
+          },*/
           {
             label: t("ByApp"),
             value: "app",

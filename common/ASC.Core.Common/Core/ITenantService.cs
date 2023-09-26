@@ -30,6 +30,7 @@ namespace ASC.Core;
 public interface ITenantService
 {
     byte[] GetTenantSettings(int tenant, string key);
+    IEnumerable<Tenant> GetTenantsWithCsp();
     IEnumerable<Tenant> GetTenants(DateTime from, bool active = true);
     IEnumerable<Tenant> GetTenants(List<int> ids);
     IEnumerable<Tenant> GetTenants(string login, string passwordHash);

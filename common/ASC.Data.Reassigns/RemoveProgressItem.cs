@@ -26,10 +26,17 @@
 
 namespace ASC.Data.Reassigns;
 
+/// <summary>
+/// </summary>
 [Transient]
 public class RemoveProgressItem : DistributedTaskProgress
 {
+    /// <summary>ID of the user whose data is deleted</summary>
+    /// <type>System.Guid, System</type>
     public Guid FromUser { get; private set; }
+
+    /// <summary>The user whose data is deleted</summary>
+    /// <type>ASC.Core.Users.UserInfo, ASC.Core.Common</type>
     public UserInfo User { get; private set; }
 
     private readonly IDictionary<string, StringValues> _httpHeaders;

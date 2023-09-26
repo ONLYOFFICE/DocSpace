@@ -112,7 +112,7 @@ export async function oAuthLogin(profile: string) {
 
 export const getMessageFromKey = (messageKey: number) => {
   return MessageKey[messageKey];
-}
+};
 
 export const getMessageKeyTranslate = (t: TFuncType, message: string) => {
   switch (message) {
@@ -156,7 +156,9 @@ export const getMessageKeyTranslate = (t: TFuncType, message: string) => {
       return t("Errors:SsoAuthFailed");
     case "SsoAttributesNotFound":
       return t("Errors:SsoAttributesNotFound");
+    case "QuotaPaidUserLimitError":
+      return t("Common:QuotaPaidUserLimitError");
     default:
       return t("Common:Error");
   }
-}
+};

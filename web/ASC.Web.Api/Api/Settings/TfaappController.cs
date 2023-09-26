@@ -90,6 +90,15 @@ public class TfaappController : BaseSettingsController
         _securityContext = securityContext;
     }
 
+    /// <summary>
+    /// Returns the current two-factor authentication settings.
+    /// </summary>
+    /// <short>Get the TFA settings</short>
+    /// <category>TFA settings</category>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.TfaSettingsDto, ASC.Web.Api">TFA settings</returns>
+    ///<path>api/2.0/settings/tfaapp</path>
+    ///<httpMethod>GET</httpMethod>
+    ///<collection>list</collection>
     [HttpGet("tfaapp")]
     public IEnumerable<TfaSettingsDto> GetTfaSettings()
     {
@@ -133,6 +142,15 @@ public class TfaappController : BaseSettingsController
         return result;
     }
 
+    /// <summary>
+    /// Validates the two-factor authentication code specified in the request.
+    /// </summary>
+    /// <short>Validate the TFA code</short>
+    /// <category>TFA settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaValidateRequestsDto, ASC.Web.Api" name="inDto">TFA validation request parameters</param>
+    /// <returns type="System.Boolean, System">True if the code is valid</returns>
+    ///<path>api/2.0/settings/tfaapp/validate</path>
+    ///<httpMethod>POST</httpMethod>
     [HttpPost("tfaapp/validate")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,TfaAuth,Everyone")]
     public bool TfaValidateAuthCode(TfaValidateRequestsDto inDto)
@@ -143,6 +161,14 @@ public class TfaappController : BaseSettingsController
         return _tfaManager.ValidateAuthCode(user, inDto.Code);
     }
 
+    /// <summary>
+    /// Returns the confirmation email URL for authorization via SMS or TFA application.
+    /// </summary>
+    /// <short>Get confirmation email</short>
+    /// <category>TFA settings</category>
+    /// <returns type="System.Object, System">Confirmation email URL</returns>
+    ///<path>api/2.0/settings/tfaapp/confirm</path>
+    ///<httpMethod>GET</httpMethod>
     [HttpGet("tfaapp/confirm")]
     public object TfaConfirmUrl()
     {
@@ -170,6 +196,15 @@ public class TfaappController : BaseSettingsController
         return string.Empty;
     }
 
+    /// <summary>
+    /// Updates the two-factor authentication settings with the parameters specified in the request.
+    /// </summary>
+    /// <short>Update the TFA settings</short>
+    /// <category>TFA settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api" name="inDto">TFA settings request parameters</param>
+    /// <returns type="System.Boolean, System">True if the operation is successful</returns>
+    ///<path>api/2.0/settings/tfaapp</path>
+    ///<httpMethod>PUT</httpMethod>
     [HttpPut("tfaapp")]
     public async Task<bool> TfaSettings(TfaRequestsDto inDto)
     {
@@ -262,6 +297,15 @@ public class TfaappController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns the confirmation email URL for updating TFA settings.
+    /// </summary>
+    /// <short>Get confirmation email for updating TFA settings</short>
+    /// <category>TFA settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api" name="inDto">TFA settings request parameters</param>
+    /// <returns type="System.Object, System">Confirmation email URL</returns>
+    /// <path>api/2.0/settings/tfaappwithlink</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("tfaappwithlink")]
     public async Task<object> TfaSettingsLink(TfaRequestsDto inDto)
     {
@@ -273,6 +317,14 @@ public class TfaappController : BaseSettingsController
         return string.Empty;
     }
 
+    /// <summary>
+    /// Generates the setup TFA code for the current user.
+    /// </summary>
+    /// <short>Generate setup code</short>
+    /// <category>TFA settings</category>
+    /// <returns type="Google.Authenticator.SetupCode, Google.Authenticator">Setup code</returns>
+    /// <path>api/2.0/settings/tfaapp/setup</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("tfaapp/setup")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation")]
     public SetupCode TfaAppGenerateSetupCode()
@@ -295,6 +347,15 @@ public class TfaappController : BaseSettingsController
         return _tfaManager.GenerateSetupCode(currentUser);
     }
 
+    /// <summary>
+    /// Returns the two-factor authentication application codes.
+    /// </summary>
+    /// <short>Get the TFA codes</short>
+    /// <category>TFA settings</category>
+    /// <returns type="System.Object, System">List of TFA application codes</returns>
+    /// <path>api/2.0/settings/tfaappcodes</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("tfaappcodes")]
     public IEnumerable<object> TfaAppGetCodes()
     {
@@ -313,6 +374,15 @@ public class TfaappController : BaseSettingsController
         return _settingsManager.LoadForCurrentUser<TfaAppUserSettings>().CodesSetting.Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(_instanceCrypto, _signature) }).ToList();
     }
 
+    /// <summary>
+    /// Requests the new backup codes for the two-factor authentication application.
+    /// </summary>
+    /// <short>Update the TFA codes</short>
+    /// <category>TFA settings</category>
+    /// <returns type="System.Object, System">New backup codes</returns>
+    /// <path>api/2.0/settings/tfaappnewcodes</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("tfaappnewcodes")]
     public IEnumerable<object> TfaAppRequestNewCodes()
     {
@@ -333,6 +403,15 @@ public class TfaappController : BaseSettingsController
         return codes;
     }
 
+    /// <summary>
+    /// Unlinks the current two-factor authentication application from the user account specified in the request.
+    /// </summary>
+    /// <short>Unlink the TFA application</short>
+    /// <category>TFA settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api" name="inDto">TFA settings request parameters</param>
+    /// <returns type="System.Object, System">Login URL</returns>
+    /// <path>api/2.0/settings/tfaappnewapp</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("tfaappnewapp")]
     public async Task<object> TfaAppNewApp(TfaRequestsDto inDto)
     {

@@ -94,7 +94,14 @@ const ArticleBodyContent = (props) => {
             ? RoomSearchArea.Archive
             : RoomSearchArea.Active;
 
-        fetchRooms(folderId, filter).finally(() => {
+        fetchRooms(
+          folderId,
+          filter,
+          undefined,
+          undefined,
+          undefined,
+          true
+        ).finally(() => {
           if (filesSection) {
             cleanTimer();
             setIsLoading(false);

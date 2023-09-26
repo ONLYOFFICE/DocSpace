@@ -14,10 +14,10 @@ const { desktop } = utils.device;
 class SelectFileDialog extends React.Component {
   constructor(props) {
     super(props);
-    const { filter, folderId, fileInfo } = props;
+    const { filter, folderId, fileInfo, isPanelOpen } = props;
 
     this.state = {
-      isVisible: false,
+      isVisible: isPanelOpen,
       selectedFileInfo: {},
       displayType: this.getDisplayType(),
       isAvailableFolderList: true,
@@ -306,6 +306,7 @@ class SelectFileDialog extends React.Component {
 SelectFileDialog.propTypes = {
   onClose: PropTypes.func,
   isPanelVisible: PropTypes.bool.isRequired,
+  isPanelOpen: PropTypes.bool,
   onSelectFile: PropTypes.func.isRequired,
   filteredType: PropTypes.oneOf([
     "exceptSortedByTags",
@@ -323,6 +324,7 @@ SelectFileDialog.defaultProps = {
   id: "",
   filesListTitle: "",
   withoutProvider: false,
+  isPanelOpen: false,
 };
 
 export default inject(

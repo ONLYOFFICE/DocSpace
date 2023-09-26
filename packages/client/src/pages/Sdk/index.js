@@ -157,6 +157,7 @@ const Sdk = ({
       component = (
         <SelectFileDialog
           isPanelVisible={true}
+          isPanelOpen={true}
           onSelectFile={onSelectFile}
           filteredType={selectorType}
           withSubfolders={false}

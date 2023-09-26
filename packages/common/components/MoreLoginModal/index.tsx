@@ -61,6 +61,7 @@ interface IMoreLoginNodalProps {
   ssoLabel: string;
   ssoUrl: string;
   t: TFuncType;
+  isSignUp: boolean;
 }
 
 const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
@@ -72,6 +73,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
     onSocialLoginClick,
     ssoLabel,
     ssoUrl,
+    isSignUp,
   } = props;
 
   console.log("more login render", props);
@@ -94,7 +96,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
               className="provider-name"
               noSelect
             >
-              {ssoLabel || getProviderTranslation("sso", t)}
+              {ssoLabel || getProviderTranslation("sso", t, false, isSignUp)}
             </Text>
             <Button
               label={t("Common:LoginButton")}
@@ -118,7 +120,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
                 className="provider-name"
                 noSelect
               >
-                {getProviderTranslation(label, t)}
+                {getProviderTranslation(label, t, false, isSignUp)}
               </Text>
               <Button
                 label={t("Common:LoginButton")}

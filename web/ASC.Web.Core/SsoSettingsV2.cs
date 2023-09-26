@@ -26,6 +26,8 @@
 
 namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 
+/// <summary>
+/// </summary>
 [Serializable]
 public class SsoSettingsV2 : ISettings<SsoSettingsV2>
 {
@@ -90,41 +92,73 @@ public class SsoSettingsV2 : ISettings<SsoSettingsV2>
         };
     }
 
+    /// <summary>Specifies if SSO is enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool EnableSso { get; set; }
 
+    /// <summary>IDP settings</summary>
+    /// <type>ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoIdpSettings, ASC.Web.Core</type>
     public SsoIdpSettings IdpSettings { get; set; }
 
+    /// <summary>List of IDP certificates</summary>
+    /// <type>System.Collections.Generic.List{ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoCertificate}, System.Collections.Generic</type>
     public List<SsoCertificate> IdpCertificates { get; set; }
 
+    /// <summary>IDP advanced certificate</summary>
+    /// <type>ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoIdpCertificateAdvanced, ASC.Web.Core</type>
     public SsoIdpCertificateAdvanced IdpCertificateAdvanced { get; set; }
 
+    /// <summary>SP login label</summary>
+    /// <type>System.String, System</type>
     public string SpLoginLabel { get; set; }
 
+    /// <summary>List of SP certificates</summary>
+    /// <type>System.Collections.Generic.List{ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoCertificate}, System.Collections.Generic</type>
     public List<SsoCertificate> SpCertificates { get; set; }
 
+    /// <summary>SP advanced certificate</summary>
+    /// <type>ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSpCertificateAdvanced, ASC.Web.Core</type>
     public SsoSpCertificateAdvanced SpCertificateAdvanced { get; set; }
 
+    /// <summary>Field mapping</summary>
+    /// <type>ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoFieldMapping, ASC.Web.Core</type>
     public SsoFieldMapping FieldMapping { get; set; }
 
+    /// <summary>Specifies if the authentication page will be hidden or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool HideAuthPage { get; set; }
 }
 
 
 #region SpSettings
 
+/// <summary>
+/// </summary>
 [Serializable]
 public class SsoIdpSettings
 {
+    /// <summary>Entity ID</summary>
+    /// <type>System.String, System</type>
     public string EntityId { get; set; }
 
+    /// <summary>SSO URL</summary>
+    /// <type>System.String, System</type>
     public string SsoUrl { get; set; }
 
+    /// <summary>SSO binding</summary>
+    /// <type>System.String, System</type>
     public string SsoBinding { get; set; }
 
+    /// <summary>SLO URL</summary>
+    /// <type>System.String, System</type>
     public string SloUrl { get; set; }
 
+    /// <summary>SLO binding</summary>
+    /// <type>System.String, System</type>
     public string SloBinding { get; set; }
 
+    /// <summary>Name ID format</summary>
+    /// <type>System.String, System</type>
     public string NameIdFormat { get; set; }
 }
 
@@ -154,55 +188,101 @@ public class SsoFieldMapping
 
 #region Certificates
 
+/// <summary>
+/// </summary>
 [Serializable]
 public class SsoCertificate
 {
+    /// <summary>Specifies if a certificate is self-signed or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool SelfSigned { get; set; }
 
+    /// <summary>Certificate</summary>
+    /// <type>System.String, System</type>
     public string Crt { get; set; }
 
+    /// <summary>Key</summary>
+    /// <type>System.String, System</type>
     public string Key { get; set; }
 
+    /// <summary>Action</summary>
+    /// <type>System.String, System</type>
     public string Action { get; set; }
 
+    /// <summary>Domain name</summary>
+    /// <type>System.String, System</type>
     public string DomainName { get; set; }
 
+    /// <summary>Start date</summary>
+    /// <type>System.DateTime, System</type>
     public DateTime StartDate { get; set; }
 
+    /// <summary>Expiration date</summary>
+    /// <type>System.DateTime, System</type>
     public DateTime ExpiredDate { get; set; }
 }
 
+/// <summary>
+/// </summary>
 [Serializable]
 public class SsoIdpCertificateAdvanced
 {
+    /// <summary>Verification algorithm</summary>
+    /// <type>System.String, System</type>
     public string VerifyAlgorithm { get; set; }
 
+    /// <summary>Specifies if the signatures of the SAML authentication responses sent to SP will be verified or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool VerifyAuthResponsesSign { get; set; }
 
+    /// <summary>Specifies if the signatures of the SAML logout requests sent to SP will be verified or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool VerifyLogoutRequestsSign { get; set; }
 
+    /// <summary>Specifies if the signatures of the SAML logout responses sent to SP will be verified or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool VerifyLogoutResponsesSign { get; set; }
 
+    /// <summary>Decryption algorithm</summary>
+    /// <type>System.String, System</type>
     public string DecryptAlgorithm { get; set; }
 
+    /// <summary>Specifies if the assertions will be decrypted or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool DecryptAssertions { get; set; }
 }
 
+/// <summary>
+/// </summary>
 [Serializable]
 public class SsoSpCertificateAdvanced
 {
+    /// <summary>Signing algorithm</summary>
+    /// <type>System.String, System</type>
     public string SigningAlgorithm { get; set; }
 
+    /// <summary>Specifies if SP will sign the SAML authentication requests sent to IdP or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool SignAuthRequests { get; set; }
 
+    /// <summary>Specifies if SP will sign the SAML logout requests sent to IdP or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool SignLogoutRequests { get; set; }
 
+    /// <summary>Specifies if sign the SAML logout responses sent to IdP or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool SignLogoutResponses { get; set; }
 
+    /// <summary>Encryption algorithm</summary>
+    /// <type>System.String, System</type>
     public string EncryptAlgorithm { get; set; }
 
+    /// <summary>Decryption algorithm</summary>
+    /// <type>System.String, System</type>
     public string DecryptAlgorithm { get; set; }
 
+    /// <summary>Specifies if the assertions will be encrypted or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool EncryptAssertions { get; set; }
 }
 

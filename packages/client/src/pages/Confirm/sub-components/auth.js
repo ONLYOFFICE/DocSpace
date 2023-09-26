@@ -4,11 +4,11 @@ import Loader from "@docspace/components/loader";
 import Section from "@docspace/common/components/Section";
 import { loginWithConfirmKey } from "@docspace/common/api/user";
 import toastr from "@docspace/components/toast/toastr";
+import { frameCallEvent } from "@docspace/common/utils";
 
 const Auth = (props) => {
-  console.log("Auth render");
+  //console.log("Auth render");
   const { linkData } = props;
-
   useEffect(() => {
     loginWithConfirmKey({
       ConfirmData: {
@@ -17,11 +17,15 @@ const Auth = (props) => {
       },
     })
       .then((res) => {
-        console.log("Login with confirm key success", res);
+        //console.log("Login with confirm key success", res);
+        frameCallEvent({ event: "onAuthSuccess" });
         if (typeof res === "string") window.location.replace(res);
         else window.location.replace("/");
       })
-      .catch((error) => toastr.error(error));
+      .catch((error) => {
+        frameCallEvent({ event: "onAppError", data: error });
+        toastr.error(error);
+      });
   });
 
   return <Loader className="pageLoader" type="rombs" size="40px" />;

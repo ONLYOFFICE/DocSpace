@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "复制{{element}}",
   "TooltipElementsCopyMessage": "复制{{element}}元素",
   "TooltipElementsMoveMessage": "移动{{element}}元素",
-  "TrashEmptyDescription": "回收站\"存放的是被删除的文档。您可以选择“还原”或“永久删除”回收站中的文件。请注意：被永久删除的文档将无法再恢复。",
+  "TrashEmptyDescription": "回收站\"存放的是被删除的文档。您可以选择“还原”或“永久删除”回收站中的文件。\"垃圾桶\"中的文件将在 30 天后自动删除。请注意：被永久删除的文档将无法再恢复。",
   "TrashErasureWarning": "垃圾箱中的文件在30天后会自动删除。",
   "UnarchivedRoomAction": "房间 '{{name}}' 已取消归档。",
   "UnarchivedRoomsAction": "房间已取消归档。",

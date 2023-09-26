@@ -26,6 +26,8 @@
 
 namespace ASC.Core;
 
+/// <summary>
+/// </summary>
 public enum AccountLoginType
 {
     SSO,

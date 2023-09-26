@@ -23,7 +23,7 @@ interface ILoginFormProps {
   hashSettings: PasswordHashType;
   isDesktop: boolean;
   match: MatchType;
-  onRecoverDialogVisible: () => void;
+  openRecoverDialog: () => void;
   enableAdmMess: boolean;
 }
 
@@ -40,7 +40,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   isDesktop,
   match,
   setIsLoading,
-  onRecoverDialogVisible,
+  openRecoverDialog,
   enableAdmMess,
   cookieSettingsEnabled,
 }) => {
@@ -53,9 +53,8 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   const [isDisabled, setIsDisabled] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] = useState(
-    IS_ROOMS_MODE
-  );
+  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] =
+    useState(IS_ROOMS_MODE);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -73,9 +72,15 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
     thirdPartyLogin(profile)
       .then((response) => {
-        if (!response || !response.token) throw new Error("Empty API response");
+        if (!(response || response.token || response.confirmUrl))
+          throw new Error("Empty API response");
 
         setWithCredentialsStatus(true);
+
+        if (response.confirmUrl) {
+          return window.location.replace(response.confirmUrl);
+        }
+
         const redirectPath = sessionStorage.getItem("referenceUrl");
 
         if (redirectPath) {
@@ -389,7 +394,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                 type="action"
                 isHovered={true}
                 className="login-link recover-link"
-                onClick={onRecoverDialogVisible}
+                onClick={openRecoverDialog}
               >
                 {t("RecoverAccess")}
               </Link>

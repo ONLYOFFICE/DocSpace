@@ -26,10 +26,23 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class RegisterPersonalUserRequestDto
 {
+    /// <summary>Email address</summary>
+    /// <type>System.String, System</type>
     public string Email { get; set; }
+
+    /// <summary>Language</summary>
+    /// <type>System.String, System</type>
     public string Lang { get; set; }
+
+    /// <summary>Specifies if the user wants to subscribe to the ONLYOFFICE newsletter or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Spam { get; set; }
+
+    /// <summary>ReCAPTCHA response</summary>
+    /// <type>System.String, System</type>
     public string RecaptchaResponse { get; set; }
 }

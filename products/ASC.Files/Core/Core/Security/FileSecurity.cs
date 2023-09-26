@@ -54,6 +54,7 @@ public class FileSecurity : IFileSecurity
     public readonly FileShare DefaultMyShare = FileShare.Restrict;
     public readonly FileShare DefaultCommonShare = FileShare.Read;
     public readonly FileShare DefaultPrivacyShare = FileShare.Restrict;
+    public readonly FileShare DefaultArchiveShare = FileShare.Restrict;
     public readonly FileShare DefaultVirtualRoomsShare = FileShare.Restrict;
 
     public static readonly Dictionary<FolderType, HashSet<FileShare>> AvailableRoomRights = new()
@@ -776,10 +777,11 @@ public class FileSecurity : IFileSecurity
                 {
                     if (folder.FolderType == FolderType.USER)
                     {
-                        return action == FilesSecurityActions.Create ||
+                        return folder.CreateBy == userId && (
+                            action == FilesSecurityActions.Create ||
                             action == FilesSecurityActions.CopyTo ||
                             action == FilesSecurityActions.MoveTo ||
-                            action == FilesSecurityActions.FillForms;
+                            action == FilesSecurityActions.FillForms);
                     }
 
                     if (folder.FolderType == FolderType.Archive)
@@ -830,9 +832,9 @@ public class FileSecurity : IFileSecurity
                 }
 
                 var mytrashId = await _globalFolder.GetFolderTrashAsync(_daoFactory);
-                if (!Equals(mytrashId, 0) && Equals(e.RootId, mytrashId))
+                if (!Equals(mytrashId, 0))
                 {
-                    return folder == null || action != FilesSecurityActions.Delete || !Equals(e.Id, mytrashId);
+                    return Equals(e.RootId, mytrashId) && (folder == null || action != FilesSecurityActions.Delete || !Equals(e.Id, mytrashId));
                 }
                 break;
             case FolderType.USER:
@@ -934,18 +936,16 @@ public class FileSecurity : IFileSecurity
             }
         }
 
-        var defaultShare = userId == FileConstant.ShareLinkId
-                ? FileShare.Restrict
-                : e.RootFolderType == FolderType.VirtualRooms
-                ? DefaultVirtualRoomsShare
-                : e.RootFolderType == FolderType.USER
-                ? DefaultMyShare
-            : e.RootFolderType == FolderType.Privacy
-                ? DefaultPrivacyShare
-                : DefaultCommonShare;
+        var defaultShare =
+            userId == FileConstant.ShareLinkId ? FileShare.Restrict :
+            e.RootFolderType == FolderType.VirtualRooms ? DefaultVirtualRoomsShare :
+            e.RootFolderType == FolderType.USER ? DefaultMyShare :
+            e.RootFolderType == FolderType.Privacy ? DefaultPrivacyShare :
+            e.RootFolderType == FolderType.Archive ? DefaultArchiveShare :
+            DefaultCommonShare;
 
         e.Access = ace?.Share ?? defaultShare;
-        e.Access = e.RootFolderType == FolderType.ThirdpartyBackup ? FileShare.Restrict : e.Access;
+        e.Access = e.RootFolderType is FolderType.ThirdpartyBackup ? FileShare.Restrict : e.Access;
 
         if (ace is { IsLink: false } && !isRoom && e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive && e.Access != FileShare.None)
         {

@@ -130,6 +130,7 @@ const PortalRenaming = (props) => {
 
         setPortalName(portalName);
         setPortalNameDefault(portalName);
+        sessionStorage.clear();
 
         window.location.href = res;
       })

@@ -80,15 +80,50 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                             Tenant = -2,
                             Features = "audit,ldap,sso,whitelabel,thirdparty,restore,oauth,contentsearch,total_size:107374182400,file_size:1024,manager:1",
                             Name = "admin",
-                            Price = 30m,
+                            Price = 15m,
                             ProductId = "1002",
                             Visible = true
                         },
                         new
                         {
                             Tenant = -3,
-                            Features = "free,total_size:2147483648,manager:3,room:12",
+                            Features = "free,oauth,total_size:2147483648,manager:3,room:12",
                             Name = "startup",
+                            Price = 0m,
+                            Visible = false
+                        },
+                        new
+                        {
+                            Tenant = -4,
+                            Features = "total_size:1073741824",
+                            Name = "disk",
+                            Price = 0m,
+                            ProductId = "1004",
+                            Visible = false
+                        },
+                        new
+                        {
+                            Tenant = -5,
+                            Features = "manager:1",
+                            Name = "admin1",
+                            Price = 0m,
+                            ProductId = "1005",
+                            Visible = false
+                        },
+                        new
+                        {
+                            Tenant = -6,
+                            Features = "audit,ldap,sso,whitelabel,thirdparty,restore,oauth,contentsearch,file_size:1024",
+                            Name = "subscription",
+                            Price = 0m,
+                            ProductId = "1001",
+                            Visible = false
+                        },
+                        new
+                        {
+                            Tenant = -7,
+                            Features = "non-profit,audit,ldap,sso,thirdparty,restore,oauth,contentsearch,total_size:2147483648,file_size:1024,manager:20",
+                            Name = "nonprofit",
                             Price = 0m,
                             Visible = false
                         });

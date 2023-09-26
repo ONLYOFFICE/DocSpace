@@ -175,7 +175,6 @@ class FilesContent extends React.Component {
 
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
-    this.isDesktopInit = false;
   }
 
   componentDidMount() {
@@ -205,10 +204,13 @@ class FilesContent extends React.Component {
       setEncryptionKeys,
       isLoaded,
       isDesktop,
+      isDesktopClientInit,
+      setIsDesktopClientInit,
     } = this.props;
     // console.log("componentDidUpdate: ", this.props);
-    if (isAuthenticated && !this.isDesktopInit && isDesktop && isLoaded) {
-      this.isDesktopInit = true;
+    if (isAuthenticated && !isDesktopClientInit && isDesktop && isLoaded) {
+      setIsDesktopClientInit(true);
+
       regDesktop(
         user,
         isEncryption,
@@ -255,6 +257,8 @@ const Files = inject(({ auth, filesStore }) => {
     encryptionKeys,
     setEncryptionKeys,
     isEncryptionSupport,
+    isDesktopClientInit,
+    setIsDesktopClientInit,
   } = auth.settingsStore;
 
   const { isVisitor } = auth.userStore.user;
@@ -263,6 +267,8 @@ const Files = inject(({ auth, filesStore }) => {
 
   return {
     isDesktop: isDesktopClient,
+    isDesktopClientInit,
+    setIsDesktopClientInit,
     isFrame,
     showMenu: frameConfig?.showMenu,
     user: auth.userStore.user,

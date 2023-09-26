@@ -11,56 +11,69 @@ jsonValue = None
 PRODUCT = os.environ["PRODUCT"] if environ.get("PRODUCT") else "onlyoffice"
 BASE_DIR =  os.environ["BASE_DIR"] if environ.get("BASE_DIR") else  "/app/" + PRODUCT
 ENV_EXTENSION = os.environ["ENV_EXTENSION"] if environ.get("ENV_EXTENSION") else "none"
-PROXY_HOST = os.environ["PROXY_HOST"] if environ.get("PROXY_HOST") else "proxy"
+PROXY_HOST = os.environ["PROXY_HOST"] if environ.get("PROXY_HOST") else "onlyoffice-proxy"
 SERVICE_PORT = os.environ["SERVICE_PORT"] if environ.get("SERVICE_PORT") else "5050"
 URLS = os.environ["URLS"] if environ.get("URLS") else "http://0.0.0.0:"
 PATH_TO_CONF = os.environ["PATH_TO_CONF"] if environ.get("PATH_TO_CONF") else "/app/" + PRODUCT + "/config"
 LOG_DIR = os.environ["LOG_DIR"] if environ.get("LOG_DIR") else "/var/log/" + PRODUCT
-ROUTER_HOST = os.environ["ROUTER_HOST"] if environ.get("ROUTER_HOST") else "localhost"
+ROUTER_HOST = os.environ["ROUTER_HOST"] if environ.get("ROUTER_HOST") else "onlyoffice-router"
 SOCKET_HOST = os.environ["SOCKET_HOST"] if environ.get("SOCKET_HOST") else "onlyoffice-socket"
 
-MYSQL_HOST = os.environ["MYSQL_HOST"] if environ.get("MYSQL_HOST") else "localhost"
+MYSQL_CONTAINER_NAME = os.environ["MYSQL_CONTAINER_NAME"] if environ.get("MYSQL_CONTAINER_NAME") else "onlyoffice-mysql-server"
+MYSQL_HOST = os.environ["MYSQL_HOST"] if environ.get("MYSQL_HOST") else None
+MYSQL_PORT = os.environ["MYSQL_PORT"] if environ.get("MYSQL_PORT") else "3306"
 MYSQL_DATABASE = os.environ["MYSQL_DATABASE"] if environ.get("MYSQL_DATABASE") else "onlyoffice"
 MYSQL_USER = os.environ["MYSQL_USER"] if environ.get("MYSQL_USER") else "onlyoffice_user"
 MYSQL_PASSWORD = os.environ["MYSQL_PASSWORD"] if environ.get("MYSQL_PASSWORD") else "onlyoffice_pass"
+MYSQL_CONNECTION_HOST = MYSQL_HOST if MYSQL_HOST else MYSQL_CONTAINER_NAME
 
 APP_CORE_BASE_DOMAIN = os.environ["APP_CORE_BASE_DOMAIN"] if environ.get("APP_CORE_BASE_DOMAIN") is not None else "localhost"
 APP_CORE_MACHINEKEY = os.environ["APP_CORE_MACHINEKEY"] if environ.get("APP_CORE_MACHINEKEY") else "your_core_machinekey"
-INSTALLATION_TYPE = os.environ["INSTALLATION_TYPE"].upper() if environ.get("INSTALLATION_TYPE") else "ENTERPRISE"
+INSTALLATION_TYPE = os.environ["INSTALLATION_TYPE"].upper() if environ.get("INSTALLATION_TYPE") else "COMMUNITY"
 APP_URL_PORTAL = os.environ["APP_URL_PORTAL"] if environ.get("APP_URL_PORTAL") else "http://" + ROUTER_HOST + ":8092"
-OAUTH_REDIRECT_URL = os.environ["OAUTH_REDIRECT_URL"] if environ.get("OAUTH_REDIRECT_URL") else "https://service.onlyoffice.com/oauth2.aspx"
+OAUTH_REDIRECT_URL = os.environ["OAUTH_REDIRECT_URL"] if environ.get("OAUTH_REDIRECT_URL") else None
 APP_STORAGE_ROOT = os.environ["APP_STORAGE_ROOT"] if environ.get("APP_STORAGE_ROOT") else BASE_DIR + "/data/"
 APP_KNOWN_PROXIES = os.environ["APP_KNOWN_PROXIES"]
 APP_KNOWN_NETWORKS = os.environ["APP_KNOWN_NETWORKS"]
-LOG_LEVEL = os.environ["LOG_LEVEL"] if environ.get("LOG_LEVEL") else "Warning"
+LOG_LEVEL = os.environ["LOG_LEVEL"] if environ.get("LOG_LEVEL") else None
 DEBUG_INFO = os.environ["DEBUG_INFO"] if environ.get("DEBUG_INFO") else "false"
+SAMESITE = os.environ["SAMESITE"] if environ.get("SAMESITE") else "None"
 
+DOCUMENT_CONTAINER_NAME = os.environ["DOCUMENT_CONTAINER_NAME"] if environ.get("DOCUMENT_CONTAINER_NAME") else "onlyoffice-document-server"
 DOCUMENT_SERVER_JWT_SECRET = os.environ["DOCUMENT_SERVER_JWT_SECRET"] if environ.get("DOCUMENT_SERVER_JWT_SECRET") else "your_jwt_secret"
 DOCUMENT_SERVER_JWT_HEADER = os.environ["DOCUMENT_SERVER_JWT_HEADER"] if environ.get("DOCUMENT_SERVER_JWT_HEADER") else "AuthorizationJwt"
-DOCUMENT_SERVER_URL_PUBLIC = os.environ["DOCUMENT_SERVER_URL_PUBLIC"] if environ.get("DOCUMENT_SERVER_URL_PUBLIC") else "/ds-vpath/"
-DOCUMENT_SERVER_URL_INTERNAL = os.environ["DOCUMENT_SERVER_URL_INTERNAL"] if environ.get("DOCUMENT_SERVER_URL_INTERNAL") else "http://onlyoffice-document-server/"
+DOCUMENT_SERVER_URL_INTERNAL = os.environ["DOCUMENT_SERVER_URL_INTERNAL"] if environ.get("DOCUMENT_SERVER_URL_INTERNAL") else "http://" + DOCUMENT_CONTAINER_NAME + "/"
+DOCUMENT_SERVER_URL_EXTERNAL = os.environ["DOCUMENT_SERVER_URL_EXTERNAL"] if environ.get("DOCUMENT_SERVER_URL_EXTERNAL") else None
+DOCUMENT_SERVER_URL_PUBLIC = DOCUMENT_SERVER_URL_EXTERNAL if DOCUMENT_SERVER_URL_EXTERNAL else os.environ["DOCUMENT_SERVER_URL_PUBLIC"] if environ.get("DOCUMENT_SERVER_URL_PUBLIC") else "/ds-vpath/"
+DOCUMENT_SERVER_CONNECTION_HOST = DOCUMENT_SERVER_URL_EXTERNAL if DOCUMENT_SERVER_URL_EXTERNAL else DOCUMENT_SERVER_URL_INTERNAL
 
+ELK_CONTAINER_NAME = os.environ["ELK_CONTAINER_NAME"] if environ.get("ELK_CONTAINER_NAME") else "onlyoffice-elasticsearch"
 ELK_SHEME = os.environ["ELK_SHEME"] if environ.get("ELK_SHEME") else "http"
-ELK_HOST = os.environ["ELK_HOST"] if environ.get("ELK_HOST") else "onlyoffice-elasticsearch"
+ELK_HOST = os.environ["ELK_HOST"] if environ.get("ELK_HOST") else None
 ELK_PORT = os.environ["ELK_PORT"] if environ.get("ELK_PORT") else "9200"
 ELK_THREADS = os.environ["ELK_THREADS"] if environ.get("ELK_THREADS") else "1"
+ELK_CONNECTION_HOST = ELK_HOST if ELK_HOST else ELK_CONTAINER_NAME
 
 KAFKA_HOST = os.environ["KAFKA_HOST"] if environ.get("KAFKA_HOST") else "kafka:9092"
 RUN_FILE = sys.argv[1] if (len(sys.argv) > 1) else "none"
 LOG_FILE = sys.argv[2] if (len(sys.argv) > 2) else "none"
 CORE_EVENT_BUS = sys.argv[3] if (len(sys.argv) > 3) else ""
 
-REDIS_HOST = os.environ["REDIS_HOST"] if environ.get("REDIS_HOST") else "onlyoffice-redis"
+REDIS_CONTAINER_NAME = os.environ["REDIS_CONTAINER_NAME"] if environ.get("REDIS_CONTAINER_NAME") else "onlyoffice-redis"
+REDIS_HOST = os.environ["REDIS_HOST"] if environ.get("REDIS_HOST") else None
 REDIS_PORT = os.environ["REDIS_PORT"] if environ.get("REDIS_PORT") else "6379"
 REDIS_USER_NAME = {"User": os.environ["REDIS_USER_NAME"]} if environ.get("REDIS_USER_NAME") else None
 REDIS_PASSWORD = {"Password": os.environ["REDIS_PASSWORD"]} if environ.get("REDIS_PASSWORD") else None
+REDIS_CONNECTION_HOST = REDIS_HOST if REDIS_HOST else REDIS_CONTAINER_NAME
 
-RABBIT_HOST = os.environ["RABBIT_HOST"] if environ.get("RABBIT_HOST") else "onlyoffice-rabbitmq"
+RABBIT_CONTAINER_NAME = os.environ["RABBIT_CONTAINER_NAME"] if environ.get("RABBIT_CONTAINER_NAME") else "onlyoffice-rabbitmq"
+RABBIT_HOST = os.environ["RABBIT_HOST"] if environ.get("RABBIT_HOST") else None
 RABBIT_USER_NAME = os.environ["RABBIT_USER_NAME"] if environ.get("RABBIT_USER_NAME") else "guest"
 RABBIT_PASSWORD = os.environ["RABBIT_PASSWORD"] if environ.get("RABBIT_PASSWORD") else "guest"
 RABBIT_PORT =  os.environ["RABBIT_PORT"] if environ.get("RABBIT_PORT") else "5672"
 RABBIT_VIRTUAL_HOST = os.environ["RABBIT_VIRTUAL_HOST"] if environ.get("RABBIT_VIRTUAL_HOST") else "/"
 RABBIT_URI = {"Uri": os.environ["RABBIT_URI"]} if environ.get("RABBIT_URI") else None
+RABBIT_CONNECTION_HOST = RABBIT_HOST if RABBIT_HOST else RABBIT_CONTAINER_NAME
 
 class RunServices:
     def __init__(self, SERVICE_PORT, PATH_TO_CONF):
@@ -142,7 +155,7 @@ saveFilePath = filePath
 filePath = "/app/onlyoffice/config/appsettings.json"
 jsonData = openJsonFile(filePath)
 #jsonUpdateValue = parseJsonValue(jsonValue)
-updateJsonData(jsonData,"$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +";Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false;AllowPublicKeyRetrieval=true",)
+updateJsonData(jsonData,"$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_CONNECTION_HOST +";Port="+ MYSQL_PORT +";;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +";Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false;AllowPublicKeyRetrieval=true",)
 updateJsonData(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
 updateJsonData(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
 updateJsonData(jsonData,"$.core.products.subfolder", "server")
@@ -150,11 +163,12 @@ updateJsonData(jsonData,"$.core.notify.postman", "services")
 updateJsonData(jsonData,"$.web.hub.internal", "http://" + SOCKET_HOST + ":" + SERVICE_PORT + "/")
 updateJsonData(jsonData,"$.files.docservice.url.portal", APP_URL_PORTAL)
 updateJsonData(jsonData,"$.files.docservice.url.public", DOCUMENT_SERVER_URL_PUBLIC)
-updateJsonData(jsonData,"$.files.docservice.url.internal", DOCUMENT_SERVER_URL_INTERNAL)
+updateJsonData(jsonData,"$.files.docservice.url.internal", DOCUMENT_SERVER_CONNECTION_HOST)
 updateJsonData(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_SECRET)
 updateJsonData(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
 updateJsonData(jsonData,"$.Logging.LogLevel.Default", LOG_LEVEL)
 updateJsonData(jsonData,"$.debug-info.enabled", DEBUG_INFO)
+updateJsonData(jsonData,"$.web.samesite", SAMESITE)
 if INSTALLATION_TYPE == "ENTERPRISE":
     updateJsonData(jsonData, "$.license.file.path", "/app/onlyoffice/data/license.lic")
 
@@ -178,7 +192,7 @@ writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/apisystem.json"
 jsonData = openJsonFile(filePath)
-updateJsonData(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +";Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false;AllowPublicKeyRetrieval=true",)
+updateJsonData(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_CONNECTION_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +";Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false;AllowPublicKeyRetrieval=true",)
 updateJsonData(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
 updateJsonData(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
 writeJsonFile(filePath, jsonData)
@@ -188,21 +202,22 @@ jsonData = openJsonFile(filePath)
 updateJsonData(jsonData,"$.logLevel", LOG_LEVEL)
 writeJsonFile(filePath, jsonData)
 
-filePath = "/app/onlyoffice/config/autofac.consumers.json"
-jsonData = openJsonFile(filePath)
-
-for component in jsonData['components']:
-  if 'parameters' in component and 'additional' in component['parameters']:
-    for key, value in component['parameters']['additional'].items():
-      if re.search(r'.*RedirectUrl$', key) and value:
-        component['parameters']['additional'][key] = OAUTH_REDIRECT_URL
-
-writeJsonFile(filePath, jsonData)
+if OAUTH_REDIRECT_URL:
+    filePath = "/app/onlyoffice/config/autofac.consumers.json"
+    jsonData = openJsonFile(filePath)
+    
+    for component in jsonData['components']:
+        if 'parameters' in component and 'additional' in component['parameters']:
+            for key, value in component['parameters']['additional'].items():
+                if re.search(r'.*RedirectUrl$', key) and value:
+                    component['parameters']['additional'][key] = OAUTH_REDIRECT_URL
+                    
+    writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/elastic.json"
 jsonData = openJsonFile(filePath)
 jsonData["elastic"]["Scheme"] = ELK_SHEME
-jsonData["elastic"]["Host"] = ELK_HOST
+jsonData["elastic"]["Host"] = ELK_CONNECTION_HOST
 jsonData["elastic"]["Port"] = ELK_PORT
 jsonData["elastic"]["Threads"] = ELK_THREADS
 writeJsonFile(filePath, jsonData)
@@ -224,7 +239,7 @@ writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/rabbitmq.json"
 jsonData = openJsonFile(filePath)
-updateJsonData(jsonData,"$.RabbitMQ.Hostname", RABBIT_HOST)
+updateJsonData(jsonData,"$.RabbitMQ.Hostname", RABBIT_CONNECTION_HOST)
 updateJsonData(jsonData,"$.RabbitMQ.UserName", RABBIT_USER_NAME)
 updateJsonData(jsonData, "$.RabbitMQ.Password", RABBIT_PASSWORD)
 updateJsonData(jsonData, "$.RabbitMQ.Port", RABBIT_PORT)
@@ -234,18 +249,19 @@ writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/redis.json"
 jsonData = openJsonFile(filePath)
-updateJsonData(jsonData,"$.Redis.Hosts.[0].Host", REDIS_HOST)
+updateJsonData(jsonData,"$.Redis.Hosts.[0].Host", REDIS_CONNECTION_HOST)
 updateJsonData(jsonData,"$.Redis.Hosts.[0].Port", REDIS_PORT)
 jsonData["Redis"].update(REDIS_USER_NAME) if REDIS_USER_NAME is not None else None
 jsonData["Redis"].update(REDIS_PASSWORD) if REDIS_PASSWORD is not None else None
 writeJsonFile(filePath, jsonData)
 
-filePath = "/app/onlyoffice/config/nlog.config"
-with open(filePath, 'r') as f:
-  configData = f.read()
-configData = re.sub(r'(minlevel=")(\w+)(")', '\\1' + LOG_LEVEL + '\\3', configData)
-with open(filePath, 'w') as f:
-  f.write(configData)
+if LOG_LEVEL:
+    filePath = "/app/onlyoffice/config/nlog.config"
+    with open(filePath, 'r') as f:
+        configData = f.read()
+    configData = re.sub(r'(minlevel=")(\w+)(")', '\\1' + LOG_LEVEL + '\\3', configData)
+    with open(filePath, 'w') as f:
+        f.write(configData)
 
 run = RunServices(SERVICE_PORT, PATH_TO_CONF)
 run.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE)

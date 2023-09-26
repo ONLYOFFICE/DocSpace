@@ -147,8 +147,6 @@ public class Expression : ICloneable
     /// Escapes the LDAP search filter to prevent LDAP injection attacks.
     /// </summary>
     /// <param name="searchFilter">The search filter.</param>
-    /// <see cref="https://blogs.oracle.com/shankar/entry/what_is_ldap_injection" />
-    /// <see cref="http://msdn.microsoft.com/en-us/library/aa746475.aspx" />
     /// <returns>The escaped search filter.</returns>
     private static string EscapeLdapSearchFilter(string searchFilter)
     {

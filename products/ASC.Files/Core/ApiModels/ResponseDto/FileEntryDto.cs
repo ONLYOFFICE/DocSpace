@@ -28,26 +28,64 @@ using static ASC.Files.Core.Security.FileSecurity;
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public abstract class FileEntryDto
 {
     protected internal abstract FileEntryType EntryType { get; }
+   
+    /// <summary>Title</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
+
+    /// <summary>Access rights</summary>
+    /// <type>ASC.Files.Core.Security.FileShare, ASC.Files.Core</type>
     public FileShare Access { get; set; }
+
+    /// <summary>Specifies if the file is shared or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Shared { get; set; }
+
+    /// <summary>Creation time</summary>
+    /// <type>ASC.Api.Core.ApiDateTime, ASC.Api.Core</type>
     public ApiDateTime Created { get; set; }
+
+    /// <summary>Author</summary>
+    /// <type>ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core</type>
     public EmployeeDto CreatedBy { get; set; }
 
     private ApiDateTime _updated;
+
+    /// <summary>Time of the last file update</summary>
+    /// <type>ASC.Api.Core.ApiDateTime, ASC.Api.Core</type>
     public ApiDateTime Updated
     {
         get => _updated < Created ? Created : _updated;
         set => _updated = value;
     }
+
+    /// <summary>Time when the file will be automatically deleted</summary>
+    /// <type>ASC.Api.Core.ApiDateTime, ASC.Api.Core</type>
     public ApiDateTime AutoDelete { get; set; }
+
+    /// <summary>Root folder type</summary>
+    /// <type>ASC.Files.Core.FolderType, ASC.Files.Core</type>
     public FolderType RootFolderType { get; set; }
+
+    /// <summary>A user who updated a file</summary>
+    /// <type>ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core</type>
     public EmployeeDto UpdatedBy { get; set; }
+
+    /// <summary>Provider is specified or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? ProviderItem { get; set; }
+
+    /// <summary>Provider key</summary>
+    /// <type>System.String, System</type>
     public string ProviderKey { get; set; }
+
+    /// <summary>Provider ID</summary>
+    /// <type>System.Nullable{System.Int32}, System</type>
     public int? ProviderId { get; set; }
 
     protected FileEntryDto(FileEntry entry)

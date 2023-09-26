@@ -26,6 +26,8 @@
 
 namespace ASC.Common.Threading;
 
+/// <summary>
+/// </summary>
 [Transient]
 [ProtoContract(IgnoreUnknownSubTypes = true)]
 public class DistributedTaskProgress : DistributedTask
@@ -33,15 +35,21 @@ public class DistributedTaskProgress : DistributedTask
     [ProtoMember(1)]
     private double _percentage;
 
+    /// <summary>Progress percentage</summary>
+    /// <type>System.Double, System</type>
     public double Percentage
     {
         get => Math.Min(100.0, Math.Max(0, _percentage));
         set => _percentage = value;
     }
 
+    /// <summary>Specifies if the process is completed or not</summary>
+    /// <type>System.Boolean, System</type>
     [ProtoMember(2)]
     public bool IsCompleted { get; set; }
 
+    /// <summary>Number of steps</summary>
+    /// <type>System.Int32, System</type>
     [ProtoMember(3)]
     protected int StepCount { get; set; }
 

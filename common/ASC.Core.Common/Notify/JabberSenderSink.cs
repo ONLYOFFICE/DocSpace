@@ -31,20 +31,16 @@ class JabberSenderSink : Sink
     private static readonly string _senderName = Configuration.Constants.NotifyMessengerSenderSysName;
     private readonly INotifySender _sender;
 
-    public JabberSenderSink(INotifySender sender, IServiceProvider serviceProvider)
+    public JabberSenderSink(INotifySender sender)
     {
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
-        _serviceProvider = serviceProvider;
     }
 
-    private readonly IServiceProvider _serviceProvider;
-
-    public override async Task<SendResponse> ProcessMessage(INoticeMessage message)
+    public override async Task<SendResponse> ProcessMessage(INoticeMessage message, IServiceScope scope)
     {
         try
         {
             var result = SendResult.OK;
-            await using var scope = _serviceProvider.CreateAsyncScope();
             var m = scope.ServiceProvider.GetRequiredService<JabberSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
 
             if (string.IsNullOrEmpty(m.Reciever))

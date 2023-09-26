@@ -48,6 +48,9 @@ public class ThirdpartyController : ApiControllerBase
     private readonly MessageTarget _messageTarget;
     private readonly StudioNotifyService _studioNotifyService;
     private readonly TenantManager _tenantManager;
+    private readonly InvitationLinkService _invitationLinkService;
+    private readonly FileSecurity _fileSecurity;
+    private readonly UsersInRoomChecker _usersInRoomChecker;
 
     public ThirdpartyController(
         AccountLinker accountLinker,
@@ -69,7 +72,10 @@ public class ThirdpartyController : ApiControllerBase
         UserManager userManager,
         MessageTarget messageTarget,
         StudioNotifyService studioNotifyService,
-        TenantManager tenantManager)
+        TenantManager tenantManager, 
+        InvitationLinkService invitationLinkService, 
+        FileSecurity fileSecurity, 
+        UsersInRoomChecker usersInRoomChecker)
     {
         _accountLinker = accountLinker;
         _cookiesManager = cookiesManager;
@@ -91,8 +97,25 @@ public class ThirdpartyController : ApiControllerBase
         _messageTarget = messageTarget;
         _studioNotifyService = studioNotifyService;
         _tenantManager = tenantManager;
+        _invitationLinkService = invitationLinkService;
+        _fileSecurity = fileSecurity;
+        _usersInRoomChecker = usersInRoomChecker;
     }
 
+    /// <summary>
+    /// Returns a list of the available third-party accounts.
+    /// </summary>
+    /// <short>Get third-party accounts</short>
+    /// <category>Third-party accounts</category>
+    /// <param type="System.Boolean, System" name="inviteView">Specifies whether to return providers that are available for invitation links, i.e. the user can login or register through these providers</param>
+    /// <param type="System.Boolean, System" name="settingsView">Specifies whether to return URLs in the format that is used on the Settings page</param>
+    /// <param type="System.String, System" name="clientCallback">Method that is called after authorization</param>
+    /// <param type="System.String, System" name="fromOnly">Provider name if the response only from this provider is needed</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.AccountInfoDto, ASC.People">List of third-party accounts</returns>
+    /// <path>api/2.0/people/thirdparty/providers</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
+    /// <collection>list</collection>
     [AllowAnonymous, AllowNotPayment]
     [HttpGet("thirdparty/providers")]
     public ICollection<AccountInfoDto> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
@@ -134,6 +157,17 @@ public class ThirdpartyController : ApiControllerBase
         return infos;
     }
 
+    /// <summary>
+    /// Links a third-party account specified in the request to the user profile.
+    /// </summary>
+    /// <short>
+    /// Link a third-pary account
+    /// </short>
+    /// <category>Third-party accounts</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.LinkAccountRequestDto, ASC.People" name="inDto">Request parameters for linking accounts</param>
+    /// <path>api/2.0/people/thirdparty/linkaccount</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("thirdparty/linkaccount")]
     public void LinkAccount(LinkAccountRequestDto inDto)
     {
@@ -159,11 +193,22 @@ public class ThirdpartyController : ApiControllerBase
         }
     }
 
+    /// <summary>
+    /// Creates a third-party account with the parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Create a third-pary account
+    /// </short>
+    /// <category>Third-party accounts</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.SignupAccountRequestDto, ASC.People" name="inDto">Request parameters for creating a third-party account</param>
+    /// <path>api/2.0/people/thirdparty/signup</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <returns></returns>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [HttpPost("thirdparty/signup")]
     public async Task SignupAccount(SignupAccountRequestDto inDto)
     {
-        var employeeType = inDto.EmployeeType ?? EmployeeType.RoomAdmin;
         var passwordHash = inDto.PasswordHash;
         var mustChangePassword = false;
         if (string.IsNullOrEmpty(passwordHash))
@@ -188,12 +233,24 @@ public class ThirdpartyController : ApiControllerBase
         {
             throw new Exception(Resource.ErrorNotCorrectEmail);
         }
+        
+        var linkData = await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, inDto.Email, inDto.EmployeeType ?? EmployeeType.RoomAdmin);
+
+        if (!linkData.IsCorrect)
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
+        }
+        
+        var employeeType = linkData.EmployeeType;
 
         var userID = Guid.Empty;
         try
         {
             _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
-            var newUser = await CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, false);
+            
+            var invitedByEmail = linkData.LinkType == InvitationLinkType.Individual;
+            
+            var newUser = await CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, true, invitedByEmail);
             var messageAction = employeeType == EmployeeType.RoomAdmin ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
             _messageService.Send(MessageInitiator.System, messageAction, _messageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
             userID = newUser.Id;
@@ -211,7 +268,7 @@ public class ThirdpartyController : ApiControllerBase
 
         var user = _userManager.GetUsers(userID);
 
-        _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
+        _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id);
 
         _studioNotifyService.UserHasJoin();
 
@@ -225,8 +282,35 @@ public class ThirdpartyController : ApiControllerBase
         {
             _personalSettingsHelper.IsNewUser = true;
         }
+        
+        if (linkData is { LinkType: InvitationLinkType.CommonWithRoom })
+        {
+            var success = int.TryParse(linkData.RoomId, out var id);
+
+            if (success)
+            {
+                await _usersInRoomChecker.CheckAppend();
+                await _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, linkData.Share);
+            }
+            else
+            {
+                await _usersInRoomChecker.CheckAppend();
+                await _fileSecurity.ShareAsync(linkData.RoomId, FileEntryType.Folder, user.Id, linkData.Share);
+            }
+        }
     }
 
+    /// <summary>
+    /// Unlinks a third-party account specified in the request from the user profile.
+    /// </summary>
+    /// <short>
+    /// Unlink a third-pary account
+    /// </short>
+    /// <category>Third-party accounts</category>
+    /// <param type="System.String, System" name="provider">Provider name</param>
+    /// <path>api/2.0/people/thirdparty/unlinkaccount</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns></returns>
     [HttpDelete("thirdparty/unlinkaccount")]
     public void UnlinkAccount(string provider)
     {
@@ -235,27 +319,36 @@ public class ThirdpartyController : ApiControllerBase
         _messageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
     }
 
-    private async Task<UserInfo> CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)
+    private async Task<UserInfo> CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink, bool inviteByEmail)
     {
         if (SetupInfo.IsSecretEmail(email))
         {
             fromInviteLink = false;
         }
 
-        var userInfo = new UserInfo
+        var user = new UserInfo();
+
+        if (inviteByEmail)
         {
-            FirstName = string.IsNullOrEmpty(firstName) ? UserControlsCommonResource.UnknownFirstName : firstName,
-            LastName = string.IsNullOrEmpty(lastName) ? UserControlsCommonResource.UnknownLastName : lastName,
-            Email = email,
-        };
+            user = _userManager.GetUserByEmail(email);
+
+            if (user.Equals(Constants.LostUser) || user.ActivationStatus != EmployeeActivationStatus.Pending)
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
+            }
+        }
+
+        user.FirstName = string.IsNullOrEmpty(firstName) ? UserControlsCommonResource.UnknownFirstName : firstName;
+        user.LastName = string.IsNullOrEmpty(lastName) ? UserControlsCommonResource.UnknownLastName : lastName;
+        user.Email = email;
 
         if (_coreBaseSettings.Personal)
         {
-            userInfo.ActivationStatus = EmployeeActivationStatus.Activated;
-            userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
+            user.ActivationStatus = EmployeeActivationStatus.Activated;
+            user.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
         }
 
-        return await _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, employeeType, fromInviteLink);
+        return await _userManagerWrapper.AddUser(user, passwordHash, true, true, employeeType, fromInviteLink, updateExising: inviteByEmail);
     }
 
     private async Task SaveContactImage(Guid userID, string url)
