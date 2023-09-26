@@ -44,15 +44,8 @@ public class FileTrackerHelper
         _logger = logger;
     }
 
-    public Guid Add<T>(Guid userId, T fileId)
-    {
-        var tabId = Guid.NewGuid();
-        ProlongEditing(fileId, tabId, userId);
 
-        return tabId;
-    }
-
-    public bool ProlongEditing<T>(T fileId, Guid tabId, Guid userId, bool editingAlone = false)
+    public bool ProlongEditing<T>(T fileId, Guid tabId, Guid userId, int tenantId, bool editingAlone = false)
     {
         var checkRight = true;
         var tracker = GetTracker(fileId);
@@ -65,12 +58,12 @@ public class FileTrackerHelper
             }
             else
             {
-                tracker.EditingBy.Add(tabId, new TrackInfo(userId, tabId == userId, editingAlone));
+                tracker.EditingBy.Add(tabId, new TrackInfo(userId, tabId == userId, editingAlone, tenantId));
             }
         }
         else
         {
-            tracker = new FileTracker(tabId, userId, tabId == userId, editingAlone);
+            tracker = new FileTracker(tabId, userId, tabId == userId, editingAlone, tenantId);
         }
 
         SetTracker(fileId, tracker);
@@ -233,7 +226,15 @@ public class FileTrackerHelper
 
             try
             {
+                if (fileTracker.EditingBy == null || !fileTracker.EditingBy.Any())
+                {
+                    return;
+                }
+
+                var editedBy = fileTracker.EditingBy.FirstOrDefault();
                 await using var scope = _serviceScopeFactory.CreateAsyncScope();
+                var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
+                await tenantManager.SetCurrentTenantAsync(editedBy.Value.TenantId);
 
                 var helper = scope.ServiceProvider.GetRequiredService<DocumentServiceHelper>();
                 var tracker = scope.ServiceProvider.GetRequiredService<DocumentServiceTrackerHelper>();
@@ -245,7 +246,6 @@ public class FileTrackerHelper
                 if (await tracker.StartTrackAsync(fileId.ToString(), docKey))
                 {
                     _cache.Insert(Tracker + fileId, fileTracker, CacheTimeout, EvictionCallback(fileId, fileTracker));
-                    await socketManager.StartEditAsync(fileId);
                 }
             }
             catch (Exception e)
@@ -261,9 +261,9 @@ public class FileTracker
 
     internal Dictionary<Guid, TrackInfo> EditingBy { get; private set; }
 
-    internal FileTracker(Guid tabId, Guid userId, bool newScheme, bool editingAlone)
+    internal FileTracker(Guid tabId, Guid userId, bool newScheme, bool editingAlone, int tenantId)
     {
-        EditingBy = new Dictionary<Guid, TrackInfo> { { tabId, new TrackInfo(userId, newScheme, editingAlone) } };
+        EditingBy = new Dictionary<Guid, TrackInfo> { { tabId, new TrackInfo(userId, newScheme, editingAlone, tenantId) } };
     }
 
 
@@ -272,18 +272,20 @@ public class FileTracker
         public DateTime CheckRightTime { get; set; }
         public DateTime TrackTime { get; set; }
         public Guid UserId { get; set; }
+        public int TenantId { get; set; }
         public bool NewScheme { get; set; }
         public bool EditingAlone { get; set; }
 
         public TrackInfo() { }
 
-        public TrackInfo(Guid userId, bool newScheme, bool editingAlone)
+        public TrackInfo(Guid userId, bool newScheme, bool editingAlone, int tenantId)
         {
             CheckRightTime = DateTime.UtcNow;
             TrackTime = DateTime.UtcNow;
             NewScheme = newScheme;
             UserId = userId;
             EditingAlone = editingAlone;
+            TenantId = tenantId;
         }
     }
 }
