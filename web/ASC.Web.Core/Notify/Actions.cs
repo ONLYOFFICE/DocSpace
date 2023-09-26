@@ -152,4 +152,6 @@ public static class Actions
     public static readonly INotifyAction SaasOwnerPaymentWarningGracePeriodActivation = new NotifyAction("saas_owner_payment_warning_grace_period_activation");
     public static readonly INotifyAction SaasOwnerPaymentWarningGracePeriodLastDay = new NotifyAction("saas_owner_payment_warning_grace_period_last_day");
     public static readonly INotifyAction SaasOwnerPaymentWarningGracePeriodExpired = new NotifyAction("saas_owner_payment_warning_grace_period_expired");
+
+    public static readonly INotifyAction SaasAdminVideoGuides = new NotifyAction("saas_video_guides_v1");
 } 

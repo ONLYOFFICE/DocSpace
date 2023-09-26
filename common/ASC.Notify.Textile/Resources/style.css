@@ -100,3 +100,6 @@ a:-webkit-any-link {
     color: #0078BD;
     word-wrap: break-word !important;
 }
+a {
+    color: #FF6F3D !important;
+}

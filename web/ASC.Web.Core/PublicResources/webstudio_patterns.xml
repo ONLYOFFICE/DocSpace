@@ -305,6 +305,12 @@ $activity.Key
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_request_license|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
+	<!-- saas admin video guides v1-->
+	<pattern id="saas_video_guides_v1">
+		<subject resource="|subject_saas_video_guides_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+		<body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_saas_video_guides_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+	</pattern>
+	
   <!-- saas admin activation v1 for docspace-->
   <pattern id="saas_admin_activation_v1">
     <subject resource="|subject_saas_admin_activation_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />

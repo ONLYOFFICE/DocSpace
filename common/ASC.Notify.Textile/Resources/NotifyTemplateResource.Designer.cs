@@ -85,20 +85,6 @@ namespace ASC.Notify.Textile.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;tr border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
-        ///          &lt;td colspan=&quot;3&quot; style=&quot;margin: 0; padding: 0; background-color: #fff; &quot;&gt;
-        ///            &lt;div style=&quot;text-align: left; width: 600px; margin: 0; padding: 0;&quot;&gt;
-        ///                &lt;a href=&quot;%SITEURL%&quot; style=&quot;text-decoration: none; display: inline-block; width: 386px; height: 44px; margin: 0; padding: 0;&quot; target=&quot;_blank&quot;&gt;
-        ///                    &lt;img src=&quot;%LOGO%&quot; style=&quot;border: 0px none; width: 600px; margin: 0; padding: 0;&quot; alt=&quot;ONLYOFFICE&quot; /&gt;
-        ///                 [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string GifFooterV11 {
-            get {
-                return ResourceManager.GetString("GifFooterV11", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;body style=&quot;margin: 0; padding: 0; text-align: center; width: 100%; font-family: Arial, sans-serif; font-size: 14px; color: #333;&quot;&gt;
         ///&lt;div style=&quot;background-color: #fff; width: 600px; margin: 0 auto; text-align: left;&quot;&gt;
         ///    &lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; style=&quot;font-family: Arial; font-size: 14px; color: #333; background: #fff; text-align: center; width: 600px; margin: 0; padding: 0; border: 0 none; border-collapse: collapse; empty-cells: show; border-spacing: 0;&quot;&gt;
@@ -112,14 +98,13 @@ namespace ASC.Notify.Textile.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;body style=&quot;margin: 0; padding: 0; text-align: center; width: 100%; font-family: Helvetica, Arial, Tahoma, sans-serif; color: #333; font-size: 18px;&quot;&gt;
+        ///   Looks up a localized string similar to &lt;body style=&quot;margin: 0; padding: 0; text-align: center; width: 100%; font-family: &apos;Open Sans&apos;, Helvetica, Arial, Tahoma, sans-serif; color: #333; font-size: 18px;&quot;&gt;
         ///&lt;div style=&quot;background-color: #fff; width: 600px; margin: 0 auto; text-align: center;&quot;&gt;
-        ///    &lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; style=&quot;font-family: Arial; font-size: 14px; color: #333; background: #fff; text-align: center; width: 600px; margin: 0; padding: 0; border: 0 none; border-collapse: collapse; empty-cells: show; border-spacing: 0;&quot;&gt;
-        ///      &lt;tbod [rest of string was truncated]&quot;;.
+        ///    &lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; style=&quot;font-family: Arial; font-size: 14px; color: #333; background: #fff; text-align: center; width: 600px; margin: 0; padding: 0; border: 0 none; border-collapse: collapse; empty-cells: show; border-spacing: 0;&quot;&gt; [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string HtmlMasterV11 {
+        public static string HtmlMasterV2 {
             get {
-                return ResourceManager.GetString("HtmlMasterV11", resourceCulture);
+                return ResourceManager.GetString("HtmlMasterV2", resourceCulture);
             }
         }
         
@@ -140,16 +125,16 @@ namespace ASC.Notify.Textile.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;tr border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
-        ///          &lt;td style=&quot;width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 155px;&quot;&gt;
+        ///          &lt;td style=&quot;width: 24px; vertical-align: top; margin: 0; padding: 32px 0 0 208px;&quot;&gt;
         ///              &lt;a href=&quot;https://www.facebook.com/pages/OnlyOffice/833032526736775&quot; style=&quot;width: 24px; height: 24px; display: block; margin: 0; padding: 0;&quot; target=&quot;_blank&quot;&gt;
         ///                  &lt;img src=&quot;%IMAGEPATH%/social-facebook-24.png&quot; alt=&quot;Facebook&quot; style=&quot;width: 24px; height: 24px;&quot; /&gt;
         ///              &lt;/a&gt;
         ///          &lt;/td&gt;
-        ///          &lt;td style=&quot;width: 40px; vert [rest of string was truncated]&quot;;.
+        ///          &lt;td style=&quot;width: 24px; vertic [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string SocialNetworksFooterV11 {
+        public static string SocialNetworksFooterV2 {
             get {
-                return ResourceManager.GetString("SocialNetworksFooterV11", resourceCulture);
+                return ResourceManager.GetString("SocialNetworksFooterV2", resourceCulture);
             }
         }
         
@@ -167,9 +152,23 @@ namespace ASC.Notify.Textile.Resources {
         /// <summary>
         ///   Looks up a localized string similar to For any purchase questions, email us at &lt;a style=&quot;color: #FF6F3D; text-decoration: underline;&quot; target=&quot;_blank&quot; href=&quot;mailto:sales@onlyoffice.com&quot;&gt;sales@onlyoffice.com&lt;/a&gt;.&lt;br /&gt; In case of technical problems please contact our &lt;a style=&quot;color: #FF6F3D; text-decoration: underline;&quot; target=&quot;_blank&quot; href=&quot;https://www.onlyoffice.com/support-contact-form.aspx&quot;&gt;support team&lt;/a&gt;.&lt;br /&gt; &lt;a href=&quot;{1}&quot; style=&quot;color: #FF6F3D; text-decoration: underline; white-space: nowrap;&quot; target=&quot;_blank&quot;&gt;Click here to unsubscribe&lt;/ [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string TextForFooterUnsubsribeDocSpaceV11 {
+        public static string TextForFooterUnsubsribeDocSpaceV2 {
             get {
-                return ResourceManager.GetString("TextForFooterUnsubsribeDocSpaceV11", resourceCulture);
+                return ResourceManager.GetString("TextForFooterUnsubsribeDocSpaceV2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;tr border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+        ///          &lt;td colspan=&quot;3&quot; style=&quot;margin: 0; padding: 0; background-color: #fff; &quot;&gt;
+        ///            &lt;div style=&quot;text-align: left; width: 600px; margin: 0; padding: 0;&quot;&gt;
+        ///                &lt;a href=&quot;%SITEURL%&quot; style=&quot;text-decoration: none; display: inline-block; width: 386px; height: 44px; margin: 0; padding: 0;&quot; target=&quot;_blank&quot;&gt;
+        ///                    &lt;img src=&quot;%LOGO%&quot; style=&quot;border: 0px none; width: 600px; margin: 0; padding: 0;&quot; alt=&quot;ONLYOFFICE&quot; /&gt;
+        ///                 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string TopGifV2 {
+            get {
+                return ResourceManager.GetString("TopGifV2", resourceCulture);
             }
         }
         
@@ -180,9 +179,9 @@ namespace ASC.Notify.Textile.Resources {
         ///                &lt;a href=&quot;%SITEURL%&quot; style=&quot;text-decoration: none; display: inline-block; width: 386px; height: 44px; margin: 0; padding: 0;&quot; target=&quot;_blank&quot;&gt;
         ///                    &lt;img src=&quot;%LOGO%&quot; style=&quot;border: 0px none; width: 386px; height: [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string TopFooterV11 {
+        public static string TopLogoV2 {
             get {
-                return ResourceManager.GetString("TopFooterV11", resourceCulture);
+                return ResourceManager.GetString("TopLogoV2", resourceCulture);
             }
         }
     }
