@@ -18,11 +18,11 @@ export class AppService {
       str.slice(i * size, i * size + size),
     );
 
-  async sendMessage(appDto): Promise<string> {
+  async sendMessage(report): Promise<string> {
     if (!botKey) throw new Error("Empty bot key");
     if (!chatId) throw new Error("Empty chat ID");
 
-    const message = "New bug report:\n" + JSON.stringify(appDto);
+    const message = "New bug report:\n" + JSON.stringify(report);
 
     try {
       if (message.length > MAX_LENGTH) {
