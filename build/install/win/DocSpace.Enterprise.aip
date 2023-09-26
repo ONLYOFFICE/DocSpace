@@ -43,6 +43,7 @@
     <ROW Property="MsiLogging" MultiBuildValue="DefaultBuild:vp"/>
     <ROW Property="MySQLConnector" Value="MySQL Connector/ODBC 8.0.21 x86"/>
     <ROW Property="NEED_REINDEX_ELASTICSEARCH" Value="FALSE"/>
+    <ROW Property="OPEN_INSTALL_CANCEL_URL" Value="1"/>
     <ROW Property="PACKAGE_NAME" Value="ONLYOFFICE_DocSpace_Enterprise_Win-install.v[|ProductVersion]"/>
     <ROW Property="PRODUCT_NAME" Value="ONLYOFFICE DocSpace Enterprise"/>
     <ROW Property="PS_DB_HOST" Value="localhost"/>
@@ -70,8 +71,8 @@
     <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT5X" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT64" MultiBuildValue="DefaultBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows 8.1 x64, Windows 10 x64, Windows 11 x64" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT64Display" MultiBuildValue="DefaultBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows 8.1 x64, Windows 10 x64, Windows 11 x64" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT64" MultiBuildValue="DefaultBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 8.1 x64, Windows Server 2012 R2 x64, Windows 10 x64, Windows 11 x64" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT64Display" MultiBuildValue="DefaultBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 8.1 x64, Windows Server 2012 R2 x64, Windows 10 x64, Windows 11 x64" ValueLocId="-"/>
     <ROW Property="WindowsTypeNTDisplay" MultiBuildValue="DefaultBuild:32-bit Windows versions" ValueLocId="-"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
@@ -200,6 +201,7 @@
     <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
     <ROW Name="msichainer.exe" SourcePath="&lt;AI_CUSTACTS&gt;msichainer.exe"/>
     <ROW Name="utils.vbs" SourcePath="utils.vbs"/>
+    <ROW Name="viewer.exe" SourcePath="&lt;AI_CUSTACTS&gt;viewer.exe" DigSign="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
     <ROW Dialog_="AdminBrowseDlg" Control="OK" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_OK]" Order="300" TextLocId="-" MsiKey="AdminBrowseDlg#OK"/>
@@ -368,7 +370,7 @@
     <ROW Dialog_="ProgressPrereqDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="banner.bmp" Order="400" MsiKey="ProgressPrereqDlg#BannerBitmap"/>
     <ROW Dialog_="ProgressPrereqDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" Attributes="1" Order="600" MsiKey="ProgressPrereqDlg#BannerLine"/>
     <ROW Dialog_="ProgressPrereqDlg" Control="ActionText" Type="Text" X="80" Y="100" Width="255" Height="10" Attributes="3" Order="700" MsiKey="ProgressPrereqDlg#ActionText"/>
-    <ROW Dialog_="ProgressPrereqDlg" Control="Title" Type="Text" X="20" Y="15" Width="250" Height="15" Attributes="196611" Text="[Progress1] prerequisites for [ProductName]" TextStyle="[DlgTitleFont]" Order="800" TextLocId="Control.Text.ProgressPrereqDlg#Title" MsiKey="ProgressPrereqDlg#Title"/>
+    <ROW Dialog_="ProgressPrereqDlg" Control="Title" Type="Text" X="20" Y="15" Width="250" Height="20" Attributes="196611" Text="[Progress1] prerequisites for [ProductName]" TextStyle="[DlgTitleFont]" Order="800" TextLocId="Control.Text.ProgressPrereqDlg#Title" MsiKey="ProgressPrereqDlg#Title"/>
     <ROW Dialog_="ProgressPrereqDlg" Control="Text" Type="Text" X="35" Y="65" Width="300" Height="30" Attributes="196611" Text="Please wait while the [Wizard] [Progress2] prerequisites for [ProductName].  This may take several minutes." Order="900" TextLocId="Control.Text.ProgressPrereqDlg#Text" MsiKey="ProgressPrereqDlg#Text"/>
     <ROW Dialog_="ProgressPrereqDlg" Control="StatusLabel" Type="Text" X="35" Y="100" Width="45" Height="10" Attributes="3" Text="Status:" Order="1000" TextLocId="Control.Text.ProgressPrereqDlg#StatusLabel" MsiKey="ProgressPrereqDlg#StatusLabel"/>
     <ROW Dialog_="ProgressPrereqDlg" Control="ProgressBar" Type="ProgressBar" X="35" Y="115" Width="300" Height="10" Attributes="65537" Text="Progress done" Order="1100" TextLocId="Control.Text.ProgressPrereqDlg#ProgressBar" MsiKey="ProgressPrereqDlg#ProgressBar"/>
@@ -495,6 +497,7 @@
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="1"/>
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="20"/>
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="25"/>
+    <ROW Dialog_="CancelDlg" Control_="Yes" Event="DoAction" Argument="OpenCancelUrl" Condition="OPEN_INSTALL_CANCEL_URL = &quot;1&quot;" Ordering="101"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="201"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; )" Ordering="222"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="3"/>
@@ -553,6 +556,8 @@
     <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError = &quot;&quot; AND  ELK_CONNECTION = &quot;False&quot; )" Ordering="9"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="1"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="2"/>
+    <ROW Dialog_="CancelDlg" Control_="No" Event="EndDialog" Argument="Return" Condition="1" Ordering="100" MsiKey="CancelDlg#No#EndDialog#Return#1"/>
+    <ROW Dialog_="CancelDlg" Control_="Yes" Event="EndDialog" Argument="Exit" Condition="1" Ordering="100" MsiKey="CancelDlg#Yes#EndDialog#Exit#1"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestPostgreSqlConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; )" Ordering="210"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="PostgreSQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="217"/>
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="PostgreSQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError &lt;&gt; &quot;&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="21"/>
@@ -584,7 +589,7 @@
     <ROW Action="AI_ConfigureChainer" Type="1" Source="Prereq.dll" Target="ConfigurePrereqLauncher"/>
     <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActionData" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DATA_SETTER_1" Type="51" Source="CustomActionData" Target="HOST=[ELASTICSEARCH_HOST];PORT=[ELASTICSEARCH_PORT];OUTPUT=ELK_CONNECTION"/>
-    <ROW Action="AI_DATA_SETTER_10" Type="51" Source="StartWebApi" Target="ASC.WebApi"/>
+    <ROW Action="AI_DATA_SETTER_10" Type="51" Source="StartWebApi" Target="DocSpace.WebApi"/>
     <ROW Action="AI_DATA_SETTER_2" Type="51" Source="CustomActionData" Target="[ELASTICSEARCH_MSG]&#13;\n[ELASTICSEARCH_SCHEME]://[ELASTICSEARCH_HOST]:[ELASTICSEARCH_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_3" Type="51" Source="CustomActionData" Target="[PostgreSqlConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="[RabbitMQServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
@@ -592,7 +597,7 @@
     <ROW Action="AI_DATA_SETTER_6" Type="51" Source="CustomActionData" Target="[SqlConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_7" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_8" Type="51" Source="CustomActionData" Target="[~]"/>
-    <ROW Action="AI_DATA_SETTER_9" Type="51" Source="StopWebApi" Target="ASC.WebApi"/>
+    <ROW Action="AI_DATA_SETTER_9" Type="51" Source="StopWebApi" Target="DocSpace.WebApi"/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DeleteLzma" Type="1025" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
@@ -628,6 +633,7 @@
     <ROW Action="AI_VerifyPrereq" Type="1" Source="Prereq.dll" Target="VerifyPrereq"/>
     <ROW Action="EnterpriseConfigure" Type="6" Source="utils.vbs" Target="EnterpriseConfigure"/>
     <ROW Action="MySQLConfigure" Type="6" Source="utils.vbs" Target="MySQLConfigure"/>
+    <ROW Action="OpenCancelUrl" Type="194" Source="viewer.exe" Target="http://www.onlyoffice.com/install-canceled.aspx" WithoutSeq="true" Options="1"/>
     <ROW Action="PostgreSqlConfigure" Type="4102" Source="utils.vbs" Target="PostgreSqlConfigure"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]" MultiBuildTarget="DefaultBuild:[ProgramMenuFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
@@ -727,7 +733,7 @@
     <ROW Action="SetDocumentServerJWTSecretProp" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( JWT_ENABLED = &quot;true&quot; AND NOT DOCSPACE_INSTALLED )" Sequence="1103"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
-    <ROW Condition="( Version9X OR ( NOT VersionNT64 ) OR ( VersionNT64 AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 602) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 603) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 1000) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 1100) OR (MsiNTProductType &lt;&gt; 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT64Display]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT64" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="( Version9X OR ( NOT VersionNT64 ) OR ( VersionNT64 AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 602) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 602) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 603) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 603) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 1000) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 1100) OR (MsiNTProductType &lt;&gt; 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT64Display]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT64" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="( Version9X OR VersionNT64 )" Description="[ProductName] cannot be installed on [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="((VersionNT &lt;&gt; 501) AND (VersionNT &lt;&gt; 502))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on [WindowsTypeNT40Display]." DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild"/>
@@ -823,8 +829,9 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqComponent">
     <ROW PrereqKey="CA62D813A4E74FA2AAE86A7D7B7B1493" DisplayName="Visual C++ Redistributable for Visual Studio 2013 Update 5 x64" VersionMin="12.0" SetupFileUrl="redist\vcredist_2013u5_x64.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="xym" TargetName="Visual C++ Redistributable for Visual Studio 2013\vcredist_2013u5_x64.exe"/>
+    <ROW PrereqKey="Certbot" DisplayName="Certbot" VersionMin="2.6.0" SetupFileUrl="redist\certbot-2.6.0.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yx" TargetName="Certbot\certbot-beta-installer-win_amd64_signed.exe"/>
     <ROW PrereqKey="EA5B60A5CAD4115A8386D017CC889B9" DisplayName="ASP.NET Core Runtime 7.0.4 x64" VersionMin="7.0" SetupFileUrl="redist\aspnetcore-runtime-7.0.4-win-x64.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="xym" TargetName="ASP.NET Core 7.0\aspnetcore-runtime-7.0.4-win-x64.exe"/>
-    <ROW PrereqKey="Elasticsearch7.10.0" DisplayName="Elasticsearch v7.10.0 x64" VersionMin="7.10" SetupFileUrl="redist\elasticsearch-7.10.0.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="Elasticsearch 7.10.0 x64\elasticsearch-7.10.0.msi"/>
+    <ROW PrereqKey="Elasticsearch7.16.3" DisplayName="Elasticsearch v7.16.3 x64" VersionMin="7.16.3" SetupFileUrl="redist\elasticsearch-7.16.3.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="Elasticsearch 7.16.3 x64\elasticsearch-7.16.3.msi"/>
     <ROW PrereqKey="F3520F64DA5998338D97129FAD2" DisplayName=".NET Runtime 7.0.4 x64" VersionMin="7.0" SetupFileUrl="redist\dotnet-runtime-7.0.4-win-x64.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="ym" TargetName=".NET 7.0\dotnet-runtime-7.0.4-win-x64.exe"/>
     <ROW PrereqKey="FFmpegEssentials" DisplayName="FFmpeg x64" VersionMin="6.0.0" SetupFileUrl="redist\FFmpeg_Essentials.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="yx" TargetName="FFmpeg x64\FFmpeg_Essentials.msi"/>
     <ROW PrereqKey="Microsoft.NETFrame" DisplayName=".NET Framework 4.8" VersionMin="4.8" SetupFileUrl="redist\.net_framework_4.8.exe" Location="0" ExactSize="0" WinNTVersions="Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 8 x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86, Windows 10 version 1903 x86, Windows 10 version 1909 x86, Windows 10 version 2004 x86, Windows 10 version 20H2 x86, Windows 10 version 21H1 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 8 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64, Windows 10 version 1903 x64, Windows 10 version 1909 x64, Windows 10 version 2004 x64, Windows 10 version 20H2 x64, Windows 10 version 21H1 x64" Operator="1" ComLine="/q /promptrestart" BasicUiComLine="/q /promptrestart" NoUiComLine="/q /promptrestart" Options="yxm" TargetName="Microsoft .NET Framework 4.8\.net_framework_4.8.exe"/>
@@ -841,7 +848,7 @@
     <ROW PrereqKey="RedisonWindows" DisplayName="Redis 5.0.10 x64" VersionMin="5.0" SetupFileUrl="redist\Redis-x64-5.0.10.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" BasicUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" NoUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" Options="yx" TargetName="Redis 5.0.10 x64\Redis-x64-5.0.10.msi"/>
     <ROW PrereqKey="RequiredApplication" DisplayName="Erlang v26.0.2 x64" VersionMin="26.0.2" SetupFileUrl="redist\otp_win64_26.0.2.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yx" TargetName="Erlang v26.0.2 x64\otp_win64_26.0.2.exe"/>
     <ROW PrereqKey="psqlODBC_x64" DisplayName="PostgreSQL ODBC Driver x64" SetupFileUrl="redist\psqlodbc_15_x64.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="myx" TargetName="psqlodbc_x64.msi"/>
-    <ATTRIBUTE name="PrereqsOrder" value="Microsoft.NETFrame F3520F64DA5998338D97129FAD2 EA5B60A5CAD4115A8386D017CC889B9 CA62D813A4E74FA2AAE86A7D7B7B1493 MicrosoftVisualC_2 MicrosoftVisualC_3 MySQLConnectorODBC MySQLInstallerCo MySQLInstallerRunn Node.js Elasticsearch7.10.0 RequiredApplication RabbitMQServer RedisonWindows FFmpegEssentials psqlODBC_x64 PostgreSQL OpenResty ONLYOFFICEDocumentS"/>
+    <ATTRIBUTE name="PrereqsOrder" value="Microsoft.NETFrame F3520F64DA5998338D97129FAD2 EA5B60A5CAD4115A8386D017CC889B9 CA62D813A4E74FA2AAE86A7D7B7B1493 MicrosoftVisualC_2 MicrosoftVisualC_3 MySQLConnectorODBC MySQLInstallerCo MySQLInstallerRunn Node.js Elasticsearch7.16.3 RequiredApplication RabbitMQServer RedisonWindows FFmpegEssentials Certbot psqlODBC_x64 PostgreSQL OpenResty ONLYOFFICEDocumentS"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="CA62D813A4E74FA2AAE86A7D7B7B1493Ver" Prereq="CA62D813A4E74FA2AAE86A7D7B7B1493" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\12.0\RuntimeMinimum\Version" VerMin="12.0.40649" Order="1" Property="PreReqSearch_CA62D813A4E74FA2AAE86A"/>
@@ -853,6 +860,7 @@
     <ROW SearchKey="SystemFolderfile.dll_10" Prereq="RequiredApplication" SearchType="5" SearchString="HKLM\SOFTWARE\Wow6432Node\Ericsson\Erlang\14.0.2" Order="1" Property="PreReqSearch_19"/>
     <ROW SearchKey="SystemFolderfile.dll_11" Prereq="RabbitMQServer" SearchType="2" SearchString="HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\RabbitMQ\DisplayVersion" VerMin="3.12.1" Order="1" Property="PreReqSearch_20"/>
     <ROW SearchKey="SystemFolderfile.dll_12" Prereq="PostgreSQL" SearchType="5" SearchString="HKLM\SOFTWARE\PostgreSQL\Installations\postgresql-x64-14" Order="1" Property="PreReqSearch_24"/>
+    <ROW SearchKey="SystemFolderfile.dll_2" Prereq="Certbot" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Certbot\DisplayVersion" VerMin="2.6.0" Order="1" Property="PreReqSearch_2"/>
     <ROW SearchKey="SystemFolderfile.dll_3" Prereq="OpenResty" SearchType="4" SearchString="{264FA774-91E5-4854-8010-4AB58CA830BD}" VerMin="1.21.4.2" Order="1" Property="PreReqSearch_8"/>
     <ROW SearchKey="SystemFolderfile.dll_7" Prereq="MicrosoftVisualC_2" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\14.0\RuntimeMinimum\Version" VerMin="14.26" Order="1" Property="PreReqSearch_9"/>
     <ROW SearchKey="SystemFolderfile.dll_8" Prereq="MicrosoftVisualC_3" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\14.0\RuntimeMinimum\Version" VerMin="14.26" Order="1" Property="PreReqSearch_11"/>
@@ -861,7 +869,7 @@
     <ROW SearchKey="UpgradeCode" Prereq="MySQLConnectorODBC" SearchType="4" SearchString="{7AEDB3F3-7B9D-4FE2-8D8F-3CE3DE6F5B6B}" VerMin="8.0.33" Order="1" Property="PreReqSearch_12"/>
     <ROW SearchKey="UpgradeCode_1" Prereq="MySQLInstallerCo" SearchType="4" SearchString="{18B94B70-06F1-4AC0-B308-37280DB868C2}" VerMin="1.6.6.0" Order="1" Property="PreReqSearch_13"/>
     <ROW SearchKey="UpgradeCode_2" Prereq="Node.js" SearchType="4" SearchString="{47C07A3A-42EF-4213-A85D-8F5A59077C28}" VerMin="18.16.0" Order="1" Property="PreReqSearch_17"/>
-    <ROW SearchKey="UpgradeCode_3" Prereq="Elasticsearch7.10.0" SearchType="4" SearchString="{DAAA2CBA-A1ED-4F29-AFBF-5478617B00F6}" VerMin="7.10.0" Order="1" Property="PreReqSearch_18"/>
+    <ROW SearchKey="UpgradeCode_3" Prereq="Elasticsearch7.16.3" SearchType="4" SearchString="{DAAA2CBA-A1ED-4F29-AFBF-5478617B00F6}" VerMin="7.16.3" Order="1" Property="PreReqSearch_18"/>
     <ROW SearchKey="UpgradeCode_4" Prereq="RedisonWindows" SearchType="4" SearchString="{05410198-7212-4FC4-B7C8-AFEFC3DA0FBC}" VerMin="5.0.10" Order="1" Property="PreReqSearch_21"/>
     <ROW SearchKey="UpgradeCode_5" Prereq="FFmpegEssentials" SearchType="4" SearchString="{384A74EC-865A-4907-8561-9DE765EE6E14}" VerMin="6.0.0.20230306" Order="1" Property="PreReqSearch_22"/>
     <ROW SearchKey="UpgradeCode_6" Prereq="psqlODBC_x64" SearchType="4" SearchString="{BBD29DF5-89F6-4B8B-BDC9-C3EA3A4AFDBB}" VerMin="15.0" Order="1" Property="PreReqSearch_23"/>

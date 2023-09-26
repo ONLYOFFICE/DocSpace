@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Studio.IntegrationEvents;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -65,6 +67,10 @@ try
     var app = builder.Build();
 
     startup.Configure(app);
+
+    var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+
+    eventBus.Subscribe<NotifyItemIntegrationEvent, NotifyItemIntegrationEventHandler>();
 
     logger.Info("Starting web host ({applicationContext})...", AppName);
     await app.RunWithTasksAsync();

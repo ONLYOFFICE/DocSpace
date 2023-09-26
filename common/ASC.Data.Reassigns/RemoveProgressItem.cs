@@ -214,7 +214,7 @@ public class RemoveProgressItem : DistributedTaskProgress
 
         if (_httpHeaders != null)
         {
-            await messageService.SendAsync(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
+            await messageService.SendHeadersMessageAsync(MessageAction.UserDeleted, messageTarget.Create(FromUser), _httpHeaders, userName);
         }
         else
         {
@@ -231,7 +231,7 @@ public class RemoveProgressItem : DistributedTaskProgress
 
         if (_httpHeaders != null)
         {
-            await messageService.SendAsync(_httpHeaders, MessageAction.UserDataRemoving, messageTarget.Create(FromUser), new[] { userName });
+            await messageService.SendHeadersMessageAsync(MessageAction.UserDataRemoving, messageTarget.Create(FromUser), _httpHeaders, userName);
         }
         else
         {

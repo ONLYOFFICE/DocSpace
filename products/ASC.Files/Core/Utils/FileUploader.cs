@@ -218,7 +218,7 @@ public class FileUploader
                     folderId = await folderDao.SaveFolderAsync(newFolder);
                     folder = await folderDao.GetFolderAsync(folderId);
                     await _socketManager.CreateFolderAsync(folder);
-                    _ = _filesMessageService.SendAsync(folder, MessageAction.FolderCreated, folder.Title);
+                    _ = _filesMessageService.SendAsync(MessageAction.FolderCreated, folder, folder.Title);
                 }
 
                 folderId = folder.Id;

@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "{{element}} köçür",
   "TooltipElementsCopyMessage": "{{element}} elementlərini köçürmək",
   "TooltipElementsMoveMessage": "{{element}} elementinin yerdəyişməsi",
-  "TrashEmptyDescription": "'Səbət' bölməsinə bütün silinmiş fayllar yerləşdirilirlər. Əgər onlar səhvən siliniblərsə, Siz onları bərpa edə bilərsiniz, və ya onları ömürlük silə bilərsiniz. Lütfən, nəzərə alın ki, 'Səbətdən' silinən fayllar bir də bərpa oluna bilməyəcəklər.",
+  "TrashEmptyDescription": "'Səbət' bölməsinə bütün silinmiş fayllar yerləşdirilirlər. Əgər onlar səhvən siliniblərsə, Siz onları bərpa edə bilərsiniz, və ya onları ömürlük silə bilərsiniz. 'Səbətdən' fayllar 30 gündən sonra avtomatik silinir. Lütfən, nəzərə alın ki, 'Səbətdən' silinən fayllar bir də bərpa oluna bilməyəcəklər.",
   "TrashErasureWarning": "Zibil qutusundakı elementlər 30 gündən sonra avtomatik silinir.",
   "UnarchivedRoomAction": "'{{name}}' otağı arxivdən çıxarıldı.",
   "UnarchivedRoomsAction": "Otaqlar arxivdən çıxarıldı.",

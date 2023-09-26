@@ -40,11 +40,10 @@ public class StudioWhatsNewNotify
     private readonly AuthManager _authManager;
     private readonly AuditEventsRepository _auditEventsRepository;
     private readonly CoreSettings _coreSettings;
-    private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly IConfiguration _confuguration;
     private readonly WorkContext _workContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
-
+    private readonly IServiceProvider _serviceProvider;
     public static readonly List<MessageAction?> DailyActions = new List<MessageAction?>()
     {
         MessageAction.FileCreated,
@@ -75,13 +74,13 @@ public class StudioWhatsNewNotify
         SecurityContext securityContext,
         AuthManager authManager,
         CoreSettings coreSettings,
-        NotifyEngineQueue notifyEngineQueue,
         IConfiguration confuguration,
         WorkContext workContext,
         ILoggerProvider optionsMonitor,
         AuditEventsRepository auditEventsRepository,
         WebItemManager webItemManager,
-        DisplayUserSettingsHelper displayUserSettingsHelper)
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        IServiceProvider serviceProvider)
     {
         _webItemManager = webItemManager;
         _tenantManager = tenantManager;
@@ -92,13 +91,12 @@ public class StudioWhatsNewNotify
         _securityContext = securityContext;
         _authManager = authManager;
         _coreSettings = coreSettings;
-        _notifyEngineQueue = notifyEngineQueue;
         _confuguration = confuguration;
         _workContext = workContext;
         _auditEventsRepository = auditEventsRepository;
         _log = optionsMonitor.CreateLogger("ASC.Notify");
         _displayUserSettingsHelper = displayUserSettingsHelper;
-
+        _serviceProvider = serviceProvider;
     }
 
     public async Task SendMsgWhatsNewAsync(DateTime scheduleDate, WhatsNewType whatsNewType)
@@ -148,7 +146,7 @@ public class StudioWhatsNewNotify
             }
 
             _tenantManager.SetCurrentTenant(tenant);
-            var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+            var client = _workContext.RegisterClient(_serviceProvider, _studioNotifyHelper.NotifySource);
 
             _log.InformationStartSendWhatsNewIn(tenant.GetTenantDomain(_coreSettings), tenantid);
             foreach (var user in await _userManager.GetUsersAsync())

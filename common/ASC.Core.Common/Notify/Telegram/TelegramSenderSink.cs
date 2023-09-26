@@ -30,7 +30,6 @@ class TelegramSenderSink : Sink
 {
     private readonly string _senderName = Configuration.Constants.NotifyTelegramSenderSysName;
     private readonly INotifySender _sender;
-    private readonly IServiceProvider _serviceProvider;
 
     public TelegramSenderSink(INotifySender sender)
     {
