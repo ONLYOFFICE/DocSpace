@@ -253,7 +253,6 @@ const Members = ({
         onRepeatInvitation={onRepeatInvitation}
         isPublicRoomType={isPublicRoomType}
         withBanner={isPublicRoomType && externalLinks.length > 0}
-        headersCount={headersCount}
         setMembers={setMembers}
       />
     </>
