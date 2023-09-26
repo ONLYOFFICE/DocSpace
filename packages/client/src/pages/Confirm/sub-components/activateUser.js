@@ -204,6 +204,7 @@ const ActivateUserForm = (props) => {
               className="confirm-input"
               simpleView={false}
               passwordSettings={settings}
+              generatorSpecial={settings.specSymbolsRegexStr}
               id="password"
               inputName="password"
               placeholder={t("Common:Password")}

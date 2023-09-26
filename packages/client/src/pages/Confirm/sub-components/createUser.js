@@ -363,7 +363,10 @@ const CreateUserForm = (props) => {
         <SocialButton
           iconName={SsoReactSvgUrl}
           className="socialButton"
-          label={capabilities?.ssoLabel || getProviderTranslation("sso", t, false, true)}
+          label={
+            capabilities?.ssoLabel ||
+            getProviderTranslation("sso", t, false, true)
+          }
           onClick={() => (window.location.href = capabilities?.ssoUrl)}
         />
       </div>
@@ -605,6 +608,7 @@ const CreateUserForm = (props) => {
                         hideNewPasswordButton
                         showCopyLink={false}
                         passwordSettings={settings}
+                        generatorSpecial={settings.specSymbolsRegexStr}
                         id="password"
                         inputName="password"
                         placeholder={t("Common:Password")}

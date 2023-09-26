@@ -119,6 +119,7 @@ const ChangePasswordForm = (props) => {
                 <PasswordInput
                   simpleView={false}
                   passwordSettings={settings}
+                  generatorSpecial={settings.specSymbolsRegexStr}
                   id="password"
                   inputName="password"
                   placeholder={t("Common:Password")}

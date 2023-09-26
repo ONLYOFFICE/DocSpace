@@ -59,7 +59,7 @@ class PasswordInput extends React.Component {
 
   testStrength = (value) => {
     const { generatorSpecial, passwordSettings } = this.props;
-    const specSymbols = new RegExp("[" + generatorSpecial + "]");
+    const specSymbols = new RegExp(generatorSpecial);
 
     let capital;
     let digits;
