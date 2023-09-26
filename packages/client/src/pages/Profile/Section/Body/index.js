@@ -33,8 +33,10 @@ const Wrapper = styled.div`
 `;
 
 const SectionBodyContent = (props) => {
-  const { isProfileLoaded, t } = props;
+  const { isProfileLoaded, profile, t } = props;
   const navigate = useNavigate();
+
+  console.log("profile", profile);
 
   const data = [
     {
@@ -48,16 +50,18 @@ const SectionBodyContent = (props) => {
       content: <Notifications />,
     },
     {
-      id: "file-management",
-      name: t("FileManagement"),
-      content: <h1>File management</h1>,
-    },
-    {
       id: "interface-theme",
       name: t("InterfaceTheme"),
       content: <InterfaceTheme />,
     },
   ];
+
+  if (!profile?.isVisitor)
+    data.splice(2, 0, {
+      id: "file-management",
+      name: t("FileManagement"),
+      content: <h1>File management</h1>,
+    });
 
   const getCurrentTab = () => {
     const path = location.pathname;
@@ -86,10 +90,13 @@ const SectionBodyContent = (props) => {
   );
 };
 
-export default inject(({ clientLoadingStore }) => {
+export default inject(({ peopleStore, clientLoadingStore }) => {
   const { isProfileLoaded } = clientLoadingStore;
+  const { targetUser: profile } = peopleStore.targetUserStore;
+
   return {
     isProfileLoaded,
+    profile,
   };
 })(
   observer(
