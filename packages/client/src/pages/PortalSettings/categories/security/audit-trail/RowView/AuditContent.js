@@ -10,7 +10,6 @@ const StyledRowContent = styled(RowContent)`
   .row-main-container-wrapper {
     display: flex;
     justify-content: flex-start;
-    width: min-content;
   }
 
   ${(props) => props.isSettingNotPaid && UnavailableStyles}
@@ -27,8 +26,7 @@ export const AuditContent = ({ sectionWidth, item, isSettingNotPaid }) => {
       sideColor="#A3A9AE"
       nameColor="#D0D5DA"
       sectionWidth={sectionWidth}
-      isSettingNotPaid={isSettingNotPaid}
-    >
+      isSettingNotPaid={isSettingNotPaid}>
       <div className="user-container-wrapper">
         <Text fontWeight={600} fontSize="14px" isTextOverflow={true}>
           {item.user}
@@ -40,16 +38,14 @@ export const AuditContent = ({ sectionWidth, item, isSettingNotPaid }) => {
         fontSize="12px"
         fontWeight={600}
         truncate={true}
-        className="settings_unavailable"
-      >
+        className="settings_unavailable">
         {dateStr}
       </Text>
       <Text
         fontSize="12px"
         as="div"
         fontWeight={600}
-        className="settings_unavailable"
-      >
+        className="settings_unavailable">
         {`${item.context ? item.context + " |" : ""} ${item.action}`}
       </Text>
     </StyledRowContent>

@@ -100,4 +100,6 @@ public class BatchRequestDto : BaseBatchRequestDto
     /// <summary>Specifies whether to delete a folder after the editing session is finished or not</summary>
     /// <type>System.Boolean, System</type>
     public bool DeleteAfter { get; set; }
+
+    public bool Content { get; set; }
 }

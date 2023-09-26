@@ -27,6 +27,8 @@ import {
 import Filter from "@docspace/common/api/people/filter";
 import { getMembersList } from "@docspace/common/api/people";
 
+const searchUsersThreshold = 2;
+
 const InviteInput = ({
   defaultAccess,
   hideSelector,
@@ -46,6 +48,7 @@ const InviteInput = ({
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [searchPanelVisible, setSearchPanelVisible] = useState(false);
+  const [isAddEmailPanelBlocked, setIsAddEmailPanelBlocked] = useState(true);
 
   const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
 
@@ -83,14 +86,17 @@ const InviteInput = ({
   const searchByQuery = async (value) => {
     const query = value.trim();
 
-    if (!!query.length) {
+    if (query.length >= searchUsersThreshold) {
       const filter = Filter.getFilterWithOutDisabledUser();
       filter.search = query;
 
       const users = await getMembersList(roomId, filter);
 
       setUsersList(users.items);
-    } else {
+      setIsAddEmailPanelBlocked(false);
+    }
+
+    if (!query) {
       closeInviteInputPanel();
       setInputValue("");
       setUsersList([]);
@@ -106,11 +112,20 @@ const InviteInput = ({
     const value = e.target.value;
     const clearValue = value.trim();
 
-    if ((!!usersList.length || clearValue.length > 2) && !searchPanelVisible) {
-      openInviteInputPanel();
+    setInputValue(value);
+
+    if (clearValue.length < searchUsersThreshold) {
+      setUsersList([]);
+      setIsAddEmailPanelBlocked(true);
+      return;
     }
 
-    setInputValue(value);
+    if (
+      (!!usersList.length || clearValue.length >= searchUsersThreshold) &&
+      !searchPanelVisible
+    ) {
+      openInviteInputPanel();
+    }
 
     if (roomId !== -1) {
       debouncedSearch(clearValue);
@@ -207,12 +222,26 @@ const InviteInput = ({
   };
 
   const closeInviteInputPanel = (e) => {
-    // if (e?.target.tagName.toUpperCase() == "INPUT") return;
+    if (e?.target.tagName.toUpperCase() === "INPUT") return;
 
     setSearchPanelVisible(false);
   };
 
   const foundUsers = usersList.map((user) => getItemContent(user));
+
+  const addEmailPanel = isAddEmailPanelBlocked ? (
+    <></>
+  ) : (
+    <DropDownItem
+      className="add-item"
+      style={{ width: "inherit" }}
+      textOverflow
+      onClick={addEmail}
+      height={48}
+    >
+      {t("Common:AddButton")} «{inputValue}»
+    </DropDownItem>
+  );
 
   const accessOptions = getAccessOptions(t, roomType);
 
@@ -281,7 +310,7 @@ const InviteInput = ({
             onKeyDown={onKeyDown}
           />
         </StyledInviteInput>
-        {inputValue.length > 2 && (
+        {inputValue.length >= searchUsersThreshold && (
           <StyledDropDown
             width={searchRef?.current?.offsetWidth}
             isDefaultMode={false}
@@ -292,19 +321,7 @@ const InviteInput = ({
             eventTypes="click"
             {...dropDownMaxHeight}
           >
-            {!!usersList.length ? (
-              foundUsers
-            ) : (
-              <DropDownItem
-                className="add-item"
-                style={{ width: "inherit" }}
-                textOverflow
-                onClick={addEmail}
-                height={48}
-              >
-                {t("Common:AddButton")} «{inputValue}»
-              </DropDownItem>
-            )}
+            {!!usersList.length ? foundUsers : addEmailPanel}
           </StyledDropDown>
         )}
 
