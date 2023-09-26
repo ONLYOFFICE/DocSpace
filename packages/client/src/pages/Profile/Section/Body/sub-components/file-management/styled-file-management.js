@@ -4,28 +4,6 @@ import { isMobile } from "react-device-detect";
 
 const StyledWrapper = styled.div`
   max-width: 660px;
-  margin-top: ${(props) =>
-    props.hideAdminSettings ? 22 : props.showTitle ? 24 : 34}px;
-
-  ${(props) =>
-    props.hideAdminSettings &&
-    css`
-      padding-top: 2px;
-    `}
-
-  @media ${tablet} {
-    margin-top: ${(props) => (props.hideAdminSettings ? 0 : 8)}px;
-    ${(props) =>
-      props.hideAdminSettings &&
-      css`
-        padding-top: 8px;
-      `}
-  }
-
-  ${isMobile &&
-  css`
-    margin-top: 8px;
-  `}
 
   width: 100%;
 

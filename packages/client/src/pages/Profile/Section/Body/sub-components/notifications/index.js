@@ -81,7 +81,7 @@ const Notifications = ({ setSubscriptions }) => {
         {isLoadingContent ? (
           <Loaders.Rectangle height={"22px"} width={"57px"} />
         ) : (
-          <Text fontSize={"16px"} fontWeight={700}>
+          <Text fontSize={"14px"} fontWeight={600}>
             {t("Badges")}
           </Text>
         )}
@@ -106,7 +106,7 @@ const Notifications = ({ setSubscriptions }) => {
         {isLoadingContent ? (
           <Loaders.Rectangle height={"22px"} width={"57px"} />
         ) : (
-          <Text fontSize={"16px"} fontWeight={700}>
+          <Text fontSize={"14px"} fontWeight={600}>
             {t("Common:Email")}
           </Text>
         )}

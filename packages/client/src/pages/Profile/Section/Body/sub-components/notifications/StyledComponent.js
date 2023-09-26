@@ -1,14 +1,18 @@
 import styled, { css } from "styled-components";
-import { mobile } from "@docspace/components/utils/device";
+import { mobile, tablet } from "@docspace/components/utils/device";
 
 const StyledSectionBodyContent = styled.div`
   width: 100%;
   max-width: 660px;
+
+  @media ${tablet} {
+    max-width: 100%;
+  }
+
   .notification-container {
     display: grid;
-    max-width: 660px;
     grid-template-columns: 1fr 124px;
-    margin-bottom: 21px;
+    margin-bottom: 12px;
 
     .toggle-btn {
       ${(props) =>
@@ -26,21 +30,18 @@ const StyledSectionBodyContent = styled.div`
     }
   }
   .badges-container {
-    margin-bottom: 40px;
-
-    @media ${mobile} {
-      margin-bottom: 29px;
-    }
+    margin-bottom: 24px;
   }
 `;
 
 const StyledTextContent = styled.div`
-  margin-bottom: 23px;
-  height: 40px;
+  margin-bottom: 12px;
+  height: 24px;
   border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
-  max-width: 700px;
+
   p {
-    padding-top: 8px;
+    line-height: 16px;
+    padding-bottom: 8px;
   }
 `;
 
