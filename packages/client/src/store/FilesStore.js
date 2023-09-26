@@ -30,6 +30,7 @@ import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import debounce from "lodash.debounce";
+import clone from "lodash/clone";
 import Queue from "queue-promise";
 
 const { FilesFilter, RoomsFilter } = api;
@@ -2452,7 +2453,7 @@ class FilesStore {
     };
 
     return api.rooms.getRoomMembers(id, membersFilters).then((res) => {
-      const newFilter = this.membersFilter;
+      const newFilter = clone(this.membersFilter);
       newFilter.total = res.total;
       this.setMembersFilter(newFilter);
 

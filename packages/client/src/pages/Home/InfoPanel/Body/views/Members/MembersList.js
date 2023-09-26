@@ -95,9 +95,11 @@ const MembersList = (props) => {
     loadNextPage,
     isPublicRoomType,
     withBanner,
+    headersCount,
   } = props;
 
-  const itemsCount = members.length;
+  const itemsCount = members.length - headersCount;
+
   const canInviteUserInRoomAbility = security?.EditAccess;
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
   const [isMobileView, setIsMobileView] = useState(isMobile());

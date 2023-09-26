@@ -227,6 +227,12 @@ const Members = ({
   const { administrators, users, expected } = members;
   const membersList = [...administrators, ...users, ...expected];
 
+  const adminsTitleCount = administrators.length ? 1 : 0;
+  const usersTitleCount = users.length ? 1 : 0;
+  const expectedTitleCount = expected.length ? 1 : 0;
+
+  const headersCount = adminsTitleCount + usersTitleCount + expectedTitleCount;
+
   return (
     <>
       {isPublicRoomType && <PublicRoomBlock t={t} />}
@@ -242,11 +248,12 @@ const Members = ({
         setSelectionParentRoom={setSelectionParentRoom}
         changeUserType={changeUserType}
         setIsScrollLocked={setIsScrollLocked}
-        hasNextPage={membersList.length < membersFilter.total}
+        hasNextPage={membersList.length - headersCount < membersFilter.total}
         itemCount={membersFilter.total}
         onRepeatInvitation={onRepeatInvitation}
         isPublicRoomType={isPublicRoomType}
         withBanner={isPublicRoomType && externalLinks.length > 0}
+        headersCount={headersCount}
       />
     </>
   );
