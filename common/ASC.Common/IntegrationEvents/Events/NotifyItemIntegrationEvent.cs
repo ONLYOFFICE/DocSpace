@@ -24,51 +24,81 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.ActiveDirectory.Base;
+using ASC.EventBus.Events;
 
-[Scope]
-public class LdapNotifySource : INotifySource
+namespace ASC.Common.IntegrationEvents.Events;
+
+[ProtoContract]
+public record NotifyItemIntegrationEvent : IntegrationEvent
 {
-    private Tenant _tenant;
-    private readonly LdapNotifyService _ldapNotifyHelper;
+    [ProtoMember(1)]
+    public NotifyActionItem Action { get; set; }
 
-    public string Id
+    [ProtoMember(2)]
+    public string ObjectId { get; set; }
+
+    [ProtoMember(3)]
+    public List<Recipient> Recipients { get; set; }
+
+    [ProtoMember(4)]
+    public List<string> SenderNames { get; set; }
+
+    [ProtoMember(5)]
+    public List<Tag> Tags { get; set; }
+
+    [ProtoMember(6)]
+    public bool CheckSubsciption { get; set; }
+
+    [ProtoMember(7)]
+    public string BaseUrl { get; set; }
+
+    private NotifyItemIntegrationEvent() : base()
     {
-        get { return "asc.activedirectory." + _tenant.Id; }
+
     }
 
-    public LdapNotifySource(LdapNotifyService ldapNotifyHelper)
+    public NotifyItemIntegrationEvent(Guid createBy, int tenantId) : base(createBy, tenantId)
     {
-        _ldapNotifyHelper = ldapNotifyHelper;
+        ObjectId = "";
+        Recipients = new List<Recipient>();
+        SenderNames = new List<string>();
+        Tags = new List<Tag>();
+        BaseUrl = "";
     }
+}
 
-    public void Init(Tenant tenant)
-    {
-        _tenant = tenant;
-    }
+[ProtoContract]
+public record NotifyActionItem
+{
+    [ProtoMember(1)]
+    public string Id { get; set; }
+}
 
-    public async Task AutoSyncAsync(DateTime date)
-    {
-        await _ldapNotifyHelper.AutoSyncAsync(_tenant);
-    }
+[ProtoContract]
+public record Recipient
+{
+    [ProtoMember(1)]
+    public string Id { get; set; }
 
-    public Task<IActionProvider> GetActionProvider(NotifyRequest r)
-    {
-        throw new NotImplementedException();
-    }
+    [ProtoMember(2)]
+    public string Name { get; set; }
 
-    public Task<IPatternProvider> GetPatternProvider(NotifyRequest r)
-    {
-        throw new NotImplementedException();
-    }
+    [ProtoMember(3)]
+    public bool CheckActivation { get; set; }
 
-    public IRecipientProvider GetRecipientsProvider()
-    {
-        throw new NotImplementedException();
-    }
+    [ProtoMember(4)]
+    public List<string> Addresses { get; set; }
 
-    public ISubscriptionProvider GetSubscriptionProvider()
-    {
-        throw new NotImplementedException();
-    }
+    [ProtoMember(5)]
+    public bool IsGroup { get; set; }
+}
+
+[ProtoContract]
+public record Tag
+{
+    [ProtoMember(1)]
+    public string Key { get; set; }
+
+    [ProtoMember(2)]
+    public string Value { get; set; }
 }

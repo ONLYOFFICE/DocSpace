@@ -171,12 +171,13 @@ public class DbSubscriptionService : ISubscriptionService
             }
             else
             {
-                if (!common.TryGetValue(key, out var rec))
+                if (!common.TryGetValue(key, out _))
                 {
-                    result.Add(rec);
+                    result.Add(m);
                 }
             }
         }
+
         return result;
     }
 

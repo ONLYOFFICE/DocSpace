@@ -318,6 +318,39 @@ public class UserManager
         return u != null && !u.Removed ? u : Constants.LostUser;
     }
 
+    public async Task<UserInfo> SearchUserAsync(string id)
+    {
+        var result = Constants.LostUser;
+
+        if (32 <= id.Length)
+        {
+            var guid = default(Guid);
+            try
+            {
+                guid = new Guid(id);
+            }
+            catch (FormatException) { }
+            catch (OverflowException) { }
+
+            if (guid != default)
+            {
+                result = await GetUsersAsync(guid);
+            }
+        }
+
+        if (Constants.LostUser.Equals(result))
+        {
+            result = await GetUserByEmailAsync(id);
+        }
+
+        if (Constants.LostUser.Equals(result))
+        {
+            result = await GetUserByUserNameAsync(id);
+        }
+
+        return result;
+    }
+
     public async Task<UserInfo[]> SearchAsync(string text, EmployeeStatus status)
     {
         return await SearchAsync(text, status, Guid.Empty);
