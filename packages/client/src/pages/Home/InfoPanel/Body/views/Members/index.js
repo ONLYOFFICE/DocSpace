@@ -73,6 +73,7 @@ const Members = ({
       };
 
       if (member.activationStatus === EmployeeActivationStatus.Pending) {
+        member.isExpect = true;
         expectedMembers.push(member);
       } else if (
         member.access === ShareAccessRights.FullAccess ||
