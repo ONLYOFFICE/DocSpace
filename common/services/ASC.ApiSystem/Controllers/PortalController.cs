@@ -50,6 +50,7 @@ public class PortalController : ControllerBase
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
     private readonly ILogger<PortalController> _log;
+    private readonly CookieStorage _cookieStorage;
 
     public PortalController(
         IConfiguration configuration,
@@ -70,7 +71,8 @@ public class PortalController : ControllerBase
         PasswordHasher passwordHasher,
         CoreBaseSettings coreBaseSettings,
         AuthContext authContext,
-        UserManager userManager)
+        UserManager userManager,
+        CookieStorage cookieStorage)
     {
         _configuration = configuration;
         _securityContext = securityContext;
@@ -91,6 +93,7 @@ public class PortalController : ControllerBase
         _authContext = authContext;
         _userManager = userManager;
         _log = option;
+        _cookieStorage = cookieStorage;
     }
 
     #region For TEST api
@@ -445,41 +448,7 @@ public class PortalController : ControllerBase
     {
         try
         {
-            var tenants = new List<Tenant>();
-            var empty = true;
-
-            if (!string.IsNullOrWhiteSpace((model.Email ?? "")))
-            {
-                empty = false;
-                tenants.AddRange(await _hostedSolution.FindTenantsAsync((model.Email ?? "").Trim()));
-            }
-
-            if (!string.IsNullOrWhiteSpace((model.PortalName ?? "")))
-            {
-                empty = false;
-                var tenant = (await _hostedSolution.GetTenantAsync((model.PortalName ?? "").Trim()));
-
-                if (tenant != null)
-                {
-                    tenants.Add(tenant);
-                }
-            }
-
-            if (model.TenantId.HasValue)
-            {
-                empty = false;
-                var tenant = await _hostedSolution.GetTenantAsync(model.TenantId.Value);
-
-                if (tenant != null)
-                {
-                    tenants.Add(tenant);
-                }
-            }
-
-            if (empty)
-            {
-                tenants.AddRange((await _hostedSolution.GetTenantsAsync(DateTime.MinValue)).OrderBy(t => t.Id).ToList());
-            }
+            var tenants = await _commonMethods.GetTenantsAsync(model);
 
             var tenantsWrapper = tenants
                 .Distinct()
@@ -491,6 +460,72 @@ public class PortalController : ControllerBase
             return Ok(new
             {
                 tenants = tenantsWrapper
+            });
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "");
+
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                error = "error",
+                message = ex.Message,
+                stacktrace = ex.StackTrace
+            });
+        }
+    }
+
+    [HttpGet("statistics")]
+    [AllowCrossSiteJson]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
+    public async Task<IActionResult> GetPortalsStatAsync([FromQuery] TenantModel model)
+    {
+        try
+        {
+            var tenants = (await _commonMethods.GetTenantsAsync(model))
+                .Distinct()
+                .Where(t => t.Status == TenantStatus.Active);
+
+            var result = new List<object>();
+
+            foreach (var tenant in tenants)
+            {
+                var auth = await _hostedSolution.CreateAuthenticationCookieAsync(_cookieStorage, tenant.Id, tenant.OwnerId);
+
+                var domain = tenant.GetTenantDomain(_coreSettings);
+
+                var url = Request.Scheme + Uri.SchemeDelimiter + domain + "/api/2.0/settings/quota";
+
+                var responseString = await _commonMethods.ExecApiRequest(url, auth);
+
+                if (responseString == null)
+                {
+                    continue;
+                }
+
+                var responseJson = JObject.Parse(responseString);
+
+                var dataObj = responseJson.Value<JObject>("response");
+
+                result.Add(new {
+                    tenantId = tenant.Id,
+                    tenantAlias = tenant.Alias,
+                    tenantDomain = domain,
+
+                    storageSize= dataObj.Value<ulong>("storageSize"),
+                    usedSize = dataObj.Value<ulong>("usedSize"),
+                    maxRoomAdminsCount = dataObj.Value<int>("maxRoomAdminsCount"),
+                    roomAdminCount = dataObj.Value<int>("roomAdminCount"),
+                    maxUsers = dataObj.Value<long>("maxUsers"),
+                    usersCount = dataObj.Value<long>("usersCount"),
+                    maxRoomsCount = dataObj.Value<int>("maxRoomsCount"),
+                    roomsCount = dataObj.Value<int>("roomsCount")
+                });
+            }
+
+            return Ok(new
+            {
+                statistics = result
             });
         }
         catch (Exception ex)

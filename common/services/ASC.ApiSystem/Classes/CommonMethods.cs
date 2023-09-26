@@ -172,6 +172,47 @@ public class CommonMethods
         return (false, tenant);
     }
 
+    public async Task<List<Tenant>> GetTenantsAsync(TenantModel model)
+    {
+        var tenants = new List<Tenant>();
+        var empty = true;
+
+        if (!string.IsNullOrWhiteSpace((model.Email ?? "")))
+        {
+            empty = false;
+            tenants.AddRange(await _hostedSolution.FindTenantsAsync((model.Email ?? "").Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace((model.PortalName ?? "")))
+        {
+            empty = false;
+            var tenant = (await _hostedSolution.GetTenantAsync((model.PortalName ?? "").Trim()));
+
+            if (tenant != null)
+            {
+                tenants.Add(tenant);
+            }
+        }
+
+        if (model.TenantId.HasValue)
+        {
+            empty = false;
+            var tenant = await _hostedSolution.GetTenantAsync(model.TenantId.Value);
+
+            if (tenant != null)
+            {
+                tenants.Add(tenant);
+            }
+        }
+
+        if (empty)
+        {
+            tenants.AddRange((await _hostedSolution.GetTenantsAsync(DateTime.MinValue)).OrderBy(t => t.Id).ToList());
+        }
+
+        return tenants;
+    }
+
     public bool IsTestEmail(string email)
     {
         //the point is not needed in gmail.com
@@ -315,5 +356,37 @@ public class CommonMethods
         }
         return false;
     }
+
+    public async Task<string> ExecApiRequest(string uriString, string authHeader)
+    {
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri(uriString),
+        };
+
+        request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+        try
+        {
+            var httpClient = _clientFactory.CreateClient();
+
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authHeader);
+
+            using var response = await httpClient.SendAsync(request);
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            using var reader = new StreamReader(responseStream);
+
+            var responseString = await reader.ReadToEndAsync();
+
+            return responseString;
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "ExecApiRequest");
+            return null;
+        }
+    }
+
 }
 
