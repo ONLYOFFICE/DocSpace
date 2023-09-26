@@ -37,7 +37,7 @@ public class FileShareRecord
     public FileShare Share { get; set; }
     public FileShareOptions Options { get; set; }
     public int Level { get; set; }
-    public bool IsLink => SubjectType is SubjectType.InvitationLink or SubjectType.ExternalLink;
+    public bool IsLink => SubjectType is SubjectType.InvitationLink or SubjectType.ExternalLink or SubjectType.PrimaryExternalLink;
 
     public class ShareComparer : IComparer<FileShare>
     {

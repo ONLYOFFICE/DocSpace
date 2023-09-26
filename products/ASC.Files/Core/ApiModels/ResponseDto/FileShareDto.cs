@@ -76,6 +76,7 @@ public class FileShareLink
     public bool? DenyDownload { get; set; }
     public bool IsTemplate { get; set; }
     public bool? IsExpired { get; set; }
+    public bool Primary { get; set; }
 }
 
 public enum LinkType
@@ -131,9 +132,11 @@ public class FileShareDtoHelper
                     {
                         SubjectType.InvitationLink => LinkType.Invitation,
                         SubjectType.ExternalLink => LinkType.External,
+                        SubjectType.PrimaryExternalLink => LinkType.External,
                         _ => LinkType.Invitation
                     },
-                    IsExpired = expired
+                    IsExpired = expired,
+                    Primary = aceWrapper.SubjectType == SubjectType.PrimaryExternalLink
                 };
             }
             else

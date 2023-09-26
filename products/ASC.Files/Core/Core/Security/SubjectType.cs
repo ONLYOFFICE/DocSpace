@@ -32,4 +32,5 @@ public enum SubjectType
     ExternalLink = 1,
     Group = 2,
     InvitationLink = 3,
+    PrimaryExternalLink = 4
 }

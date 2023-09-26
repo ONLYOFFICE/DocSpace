@@ -102,7 +102,7 @@ public class FileSharingAceHelper
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
 
-        var handledAces = new List<(EventType, AceWrapper)>(aceWrappers.Count);
+        var handledAces = new List<Tuple<EventType, AceWrapper>>(aceWrappers.Count);
         var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootCreateBy : entry.CreateBy;
         var room = entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) ? folder : null;
         var entryType = entry.FileEntryType;
@@ -120,6 +120,11 @@ public class FileSharingAceHelper
             var existedShare = shares.Get(w.Id);
             var eventType = existedShare != null ? w.Access == FileShare.None ? EventType.Remove : EventType.Update : EventType.Create;
 
+            if (existedShare != null)
+            {
+                w.SubjectType = existedShare.SubjectType;
+            }
+            
             if (room != null)
             {
                 if (!FileSecurity.AvailableRoomAccesses.TryGetValue(room.FolderType, out var subjectAccesses) 
@@ -132,13 +137,25 @@ public class FileSharingAceHelper
                 {
                     var linksCount = shares.Values.Count(s => s.SubjectType == w.SubjectType);
 
-                    var maxCount = w.SubjectType == SubjectType.InvitationLink ? MaxInvitationLinks : MaxExternalLinks;
+                    var maxCount = w.SubjectType switch
+                    {
+                        SubjectType.InvitationLink => MaxInvitationLinks,
+                        SubjectType.ExternalLink => MaxExternalLinks,
+                        SubjectType.PrimaryExternalLink => 1,
+                        _ => 0
+                    };
 
                     if (linksCount >= maxCount)
                     {
                         warning ??= string.Format(FilesCommonResource.ErrorMessage_MaxLinksCount, maxCount);
                         continue;
                     }
+                }
+
+                if (w.SubjectType == SubjectType.PrimaryExternalLink && w.FileShareOptions != null)
+                {
+                    w.FileShareOptions.Disabled = false;
+                    w.FileShareOptions.ExpirationDate = default;
                 }
             }
 
@@ -232,7 +249,7 @@ public class FileSharingAceHelper
 
             await _fileSecurity.ShareAsync(entry.Id, entryType, w.Id, share, w.SubjectType, w.FileShareOptions);
             changed = true;
-            handledAces.Add((eventType, w));
+            handledAces.Add(new Tuple<EventType, AceWrapper>(eventType, w));
 
             if (emailInvite)
             {
@@ -844,9 +861,9 @@ public class AceProcessingResult
 {
     public bool Changed { get; }
     public string Warning { get; }
-    public IReadOnlyList<(EventType Event, AceWrapper Ace)> HandledAces { get; }
+    public IReadOnlyList<Tuple<EventType, AceWrapper>> HandledAces { get; }
     
-    public AceProcessingResult(bool changed, string warning, IReadOnlyList<(EventType Event, AceWrapper Ace)> handledAces)
+    public AceProcessingResult(bool changed, string warning, IReadOnlyList<Tuple<EventType, AceWrapper>> handledAces)
     {
         Changed = changed;
         Warning = warning;

@@ -531,7 +531,7 @@ public class FileStorageService //: IFileStorageService
     {
         var room = await InternalCreateNewFolderAsync(parentId, title, FolderType.PublicRoom, @private);
 
-        _ = await SetExternalLinkAsync(room, Guid.NewGuid(), FileShare.Read, FilesCommonResource.DefaultExternalLinkTitle);
+        _ = await SetExternalLinkAsync(room, Guid.NewGuid(), FileShare.Read, FilesCommonResource.DefaultExternalLinkTitle, primary: true);
 
         return room;
     }
@@ -3298,7 +3298,7 @@ public class FileStorageService //: IFileStorageService
     }
     
     private async Task<List<AceWrapper>> SetExternalLinkAsync<T>(FileEntry<T> entry, Guid linkId, FileShare share, string title, DateTime expirationDate = default,
-        string password = null, bool disabled = false, bool denyDownload = false)
+        string password = null, bool disabled = false, bool denyDownload = false, bool primary = false)
     {
         var options = new FileShareOptions
         {
@@ -3319,14 +3319,20 @@ public class FileStorageService //: IFileStorageService
             options.Password = await _externalShare.CreatePasswordKeyAsync(password);
         }
 
-        _ = await SetAceLinkAsync(entry, SubjectType.ExternalLink, linkId, share, options, _actions[SubjectType.ExternalLink]);
+        var result = await SetAceLinkAsync(entry, primary ? SubjectType.PrimaryExternalLink : SubjectType.ExternalLink, linkId, share, options, _actions[SubjectType.ExternalLink]);
+
+        if (result.Item1 == EventType.Remove && result.Item2.SubjectType == SubjectType.PrimaryExternalLink)
+        {
+            await SetAceLinkAsync(entry, SubjectType.PrimaryExternalLink, Guid.NewGuid(), FileShare.Read, new FileShareOptions { Title = FilesCommonResource.DefaultExternalLinkTitle }, 
+                _actions[SubjectType.ExternalLink]);
+        }
         
         return entry.FileEntryType == FileEntryType.File ?
             await GetSharedInfoAsync(new[] { entry.Id }, Array.Empty<T>()) :
             await GetSharedInfoAsync(Array.Empty<T>(), new[] { entry.Id });
     }
 
-    private async Task<bool> SetAceLinkAsync<T>(FileEntry<T> entry, SubjectType subjectType, Guid linkId, FileShare share, FileShareOptions options,
+    private async Task<Tuple<EventType, AceWrapper>> SetAceLinkAsync<T>(FileEntry<T> entry, SubjectType subjectType, Guid linkId, FileShare share, FileShareOptions options,
         IReadOnlyDictionary<EventType, MessageAction> messageActions)
     {
         if (linkId == default)
@@ -3356,10 +3362,10 @@ public class FileStorageService //: IFileStorageService
 
             if (result.Changed)
             {
-                _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(), messageActions[result.HandledAces[0].Event], entry.Title, GetAccessString(share));
+                _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(), messageActions[result.HandledAces[0].Item1], entry.Title, GetAccessString(share));
             }
 
-            return result.Changed;
+            return result.HandledAces.FirstOrDefault();
         }
         catch (Exception e)
         {

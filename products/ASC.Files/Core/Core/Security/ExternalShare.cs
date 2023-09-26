@@ -69,7 +69,7 @@ public class ExternalShare
     
     public async Task<Status> ValidateRecordAsync(FileShareRecord record, string password)
     {
-        if (record.SubjectType != SubjectType.ExternalLink ||
+        if (record.SubjectType is not (SubjectType.ExternalLink or SubjectType.PrimaryExternalLink) ||
             record.Subject == FileConstant.ShareLinkId ||
             record.Options == null)
         {

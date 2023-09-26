@@ -373,10 +373,10 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
             ? type.Value switch
             {
                 LinkType.Invitation => new[] { SubjectType.InvitationLink },
-                LinkType.External => new[] { SubjectType.ExternalLink },
-                _ => new[] { SubjectType.InvitationLink, SubjectType.ExternalLink }
+                LinkType.External => new[] { SubjectType.ExternalLink, SubjectType.PrimaryExternalLink },
+                _ => new[] { SubjectType.InvitationLink, SubjectType.ExternalLink, SubjectType.PrimaryExternalLink }
             }
-            : new[] { SubjectType.InvitationLink, SubjectType.ExternalLink };
+            : new[] { SubjectType.InvitationLink, SubjectType.ExternalLink, SubjectType.PrimaryExternalLink };
 
         var fileShares = await _fileStorageService.GetSharedInfoAsync(Array.Empty<T>(), new[] { id }, subjectTypes, true);
 

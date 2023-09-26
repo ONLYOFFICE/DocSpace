@@ -79,6 +79,12 @@ public class FileSecurity : IFileSecurity
                     {
                         FileShare.Read, FileShare.None
                     }
+                },
+                {
+                    SubjectType.PrimaryExternalLink, new HashSet<FileShare>
+                    {
+                        FileShare.Read, FileShare.None
+                    }
                 }
             }
         },
@@ -99,6 +105,12 @@ public class FileSecurity : IFileSecurity
                 },
                 {
                     SubjectType.ExternalLink, new HashSet<FileShare>
+                    {
+                        FileShare.Read, FileShare.None
+                    }
+                },
+                {
+                    SubjectType.PrimaryExternalLink, new HashSet<FileShare>
                     {
                         FileShare.Read, FileShare.None
                     }
@@ -1045,7 +1057,7 @@ public class FileSecurity : IFileSecurity
             }
         }
 
-        if (ace is { SubjectType: SubjectType.ExternalLink } && ace.Subject != userId && 
+        if (ace is { SubjectType: SubjectType.ExternalLink or SubjectType.PrimaryExternalLink } && ace.Subject != userId && 
             await _externalShare.ValidateRecordAsync(ace, null) != Status.Ok)
         {
             return false;
