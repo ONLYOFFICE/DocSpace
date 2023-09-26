@@ -9,40 +9,45 @@ const Profile = loadable(() => import("../pages/Profile"));
 
 const generalRoutes = [
   {
-    path: "profile",
-    element: <Navigate to="/profile/login" />,
-  },
-  {
-    path: "profile/login",
-    element: (
-      <PrivateRoute>
-        <Profile />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "profile/notifications",
-    element: (
-      <PrivateRoute>
-        <Profile />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "profile/file-management",
-    element: (
-      <PrivateRoute withCollaborator restricted>
-        <Profile />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "profile/interface-theme",
-    element: (
-      <PrivateRoute>
-        <Profile />
-      </PrivateRoute>
-    ),
+    path: "profile/",
+    children: [
+      {
+        index: true,
+        element: <Navigate to="login" />,
+      },
+      {
+        path: "login",
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "notifications",
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "file-management",
+        element: (
+          <PrivateRoute withCollaborator restricted>
+            <Profile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "interface-theme",
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
+      },
+    ],
   },
 ];
 
