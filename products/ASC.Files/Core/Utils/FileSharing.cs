@@ -49,7 +49,8 @@ public class FileSharingAceHelper
     private readonly IUrlShortener _urlShortener;
     
     private const int MaxInvitationLinks = 1;
-    private const int MaxExternalLinks = 10;
+    private const int MaxAdditionalExternalLinks = 5;
+    private const int MaxPrimaryExternalLinks = 1;
 
     public FileSharingAceHelper(
         FileSecurity fileSecurity,
@@ -140,8 +141,8 @@ public class FileSharingAceHelper
                     var maxCount = w.SubjectType switch
                     {
                         SubjectType.InvitationLink => MaxInvitationLinks,
-                        SubjectType.ExternalLink => MaxExternalLinks,
-                        SubjectType.PrimaryExternalLink => 1,
+                        SubjectType.ExternalLink => MaxAdditionalExternalLinks,
+                        SubjectType.PrimaryExternalLink => MaxPrimaryExternalLinks,
                         _ => 0
                     };
 
