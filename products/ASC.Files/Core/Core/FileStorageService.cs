@@ -3119,10 +3119,13 @@ public class FileStorageService //: IFileStorageService
 
     public async Task<bool> KeepNewFileNameAsync(bool set)
     {
-        _filesSettingsHelper.KeepNewFileName = set;
-        await _messageService.SendHeadersMessageAsync(MessageAction.DocumentsKeepNewFileNameSettingsUpdated);
-
-        return _filesSettingsHelper.KeepNewFileName;
+        var current = _filesSettingsHelper.KeepNewFileName;
+        if (current != set)
+        {
+            _filesSettingsHelper.KeepNewFileName = set;
+            await _messageService.SendHeadersMessageAsync(MessageAction.DocumentsKeepNewFileNameSettingsUpdated);
+        }
+        return set;
     }
 
     public bool HideConfirmConvert(bool isForSave)
