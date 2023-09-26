@@ -2454,10 +2454,14 @@ class FilesStore {
     return api.rooms.getRoomMembers(id, membersFilters).then((res) => {
       const newFilter = this.membersFilter;
       newFilter.total = res.total;
-      this.membersFilter = newFilter;
+      this.setMembersFilter(newFilter);
 
       return res.items;
     });
+  };
+
+  setMembersFilter = (filter) => {
+    this.membersFilter = filter;
   };
 
   getRoomLinks = (id) => {
