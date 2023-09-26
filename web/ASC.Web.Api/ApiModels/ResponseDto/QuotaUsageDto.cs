@@ -37,6 +37,7 @@ public class QuotaUsageManager
     private readonly WebItemManager _webItemManager;
     private readonly CountPaidUserStatistic _countPaidUserStatistic;
     private readonly CountUserStatistic _activeUsersStatistic;
+    private readonly CountRoomCheckerStatistic _countRoomCheckerStatistic;
 
     public QuotaUsageManager(
         TenantManager tenantManager,
@@ -46,7 +47,8 @@ public class QuotaUsageManager
         SettingsManager settingsManager,
         WebItemManager webItemManager,
         CountPaidUserStatistic countPaidUserStatistic,
-        CountUserStatistic activeUsersStatistic)
+        CountUserStatistic activeUsersStatistic,
+        CountRoomCheckerStatistic countRoomCheckerStatistic)
     {
         _tenantManager = tenantManager;
         _coreBaseSettings = coreBaseSettings;
@@ -56,6 +58,7 @@ public class QuotaUsageManager
         _webItemManager = webItemManager;
         _countPaidUserStatistic = countPaidUserStatistic;
         _activeUsersStatistic = activeUsersStatistic;
+        _countRoomCheckerStatistic = countRoomCheckerStatistic;
     }
 
     public async Task<QuotaUsageDto> Get()
@@ -65,6 +68,8 @@ public class QuotaUsageManager
         var quotaRows = (await _tenantManager.FindTenantQuotaRowsAsync(tenant.Id))
             .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty)
             .ToList();
+
+        var roomsCount = await _countRoomCheckerStatistic.GetValueAsync();
 
         var result = new QuotaUsageDto
         {
@@ -77,7 +82,10 @@ public class QuotaUsageManager
 
             StorageUsage = quotaRows
                 .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })
-                .ToList()
+                .ToList(),
+
+            MaxRoomsCount = _coreBaseSettings.Standalone ? -1 : quota.CountRoom,
+            RoomsCount = roomsCount
         };
 
         if (_coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
@@ -164,6 +172,14 @@ public class QuotaUsageDto
     /// <summary>Number of users</summary>
     /// <type>System.Int64, System</type>
     public long UsersCount { get; set; }
+
+    /// <summary>Maximum number of rooms</summary>
+    /// <type>System.Int32, System</type>
+    public int MaxRoomsCount { get; set; }
+
+    /// <summary>Number of rooms</summary>
+    /// <type>System.Int32, System</type>
+    public int RoomsCount { get; set; }
 }
 
 /// <summary>
