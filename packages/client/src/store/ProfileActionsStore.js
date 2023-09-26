@@ -305,18 +305,26 @@ class ProfileActionsStore {
         label: t("Common:AboutCompanyTitle"),
         onClick: this.onAboutClick,
       },
-      {
-        isSeparator: true,
-        key: "separator3",
-      },
-      {
-        key: "user-menu-logout",
-        icon: LogoutReactSvgUrl,
-        label: t("Common:LogoutButton"),
-        onClick: this.onLogoutClick,
-        isButton: true,
-      },
     ];
+
+    if (
+      !window.navigator.userAgent.includes("ZoomWebKit") &&
+      !window.navigator.userAgent.includes("ZoomApps")
+    ) {
+      actions.push(
+        {
+          isSeparator: true,
+          key: "separator3",
+        },
+        {
+          key: "user-menu-logout",
+          icon: LogoutReactSvgUrl,
+          label: t("Common:LogoutButton"),
+          onClick: this.onLogoutClick,
+          isButton: true,
+        }
+      );
+    }
 
     if (debugInfo) {
       actions.splice(4, 0, {

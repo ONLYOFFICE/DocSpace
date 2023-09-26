@@ -57,6 +57,7 @@
     <ROW Property="MsiLogging" MultiBuildValue="DefaultBuild:vp#ExeBuild:vp"/>
     <ROW Property="MySQLConnector" Value="MySQL Connector/ODBC 8.0.21 x86"/>
     <ROW Property="NEED_REINDEX_ELASTICSEARCH" Value="FALSE" ValueLocId="-"/>
+    <ROW Property="OPEN_INSTALL_CANCEL_URL" Value="1"/>
     <ROW Property="PACKAGE_NAME" Value="ONLYOFFICE_DocSpace_Community_Win-install.v[|ProductVersion]" MultiBuildValue="ExeBuild:ONLYOFFICE_DocSpace_Win-install"/>
     <ROW Property="PRODUCT_NAME" Value="ONLYOFFICE DocSpace Community" MultiBuildValue="ExeBuild:ONLYOFFICE DocSpace Enterprise"/>
     <ROW Property="PS_DB_HOST" Value="localhost"/>
@@ -74,23 +75,23 @@
     <ROW Property="REDIS_PWD" Value=" " Options="1" ValueLocId="-"/>
     <ROW Property="SUBFOLDER_SERVER" Value="--core:products:subfolder=server"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
-    <ROW Property="ServiceName_ApiSystemService" Value="ASC.ApiSystemService"/>
-    <ROW Property="ServiceName_BackgroundTasks" Value="ASC.Data.Backup.BackgroundTasks"/>
-    <ROW Property="ServiceName_BackupService" Value="ASC.BackupService"/>
-    <ROW Property="ServiceName_ClearEvents" Value="ASC.ClearEvents"/>
-    <ROW Property="ServiceName_DocEditor" Value="ASC.DocEditor"/>
-    <ROW Property="ServiceName_FileServer" Value="ASC.FileServer"/>
-    <ROW Property="ServiceName_FileService" Value="ASC.FileService"/>
-    <ROW Property="ServiceName_WebHealthChecksUI" Value="ASC.Web.HealthChecks.UI"/>
-    <ROW Property="ServiceName_Login" Value="ASC.Login"/>
-    <ROW Property="ServiceName_MigrationRunner" Value="ASC.MigrationRunner"/>
-    <ROW Property="ServiceName_NotifyService" Value="ASC.NotifyService"/>
-    <ROW Property="ServiceName_PeopleServer" Value="ASC.PeopleServer"/>
-    <ROW Property="ServiceName_Socket.IO" Value="ASC.Socket.IO"/>
-    <ROW Property="ServiceName_SsoAuth" Value="ASC.SsoAuth.Svc"/>
-    <ROW Property="ServiceName_StudioNotifyService" Value="ASC.StudioNotifyService"/>
-    <ROW Property="ServiceName_WebApi" Value="ASC.WebApi"/>
-    <ROW Property="ServiceName_WebStudio" Value="ASC.WebStudio"/>
+    <ROW Property="ServiceName_ApiSystemService" Value="DocSpace.ApiSystemService"/>
+    <ROW Property="ServiceName_BackgroundTasks" Value="DocSpace.Data.Backup.BackgroundTasks"/>
+    <ROW Property="ServiceName_BackupService" Value="DocSpace.BackupService"/>
+    <ROW Property="ServiceName_ClearEvents" Value="DocSpace.ClearEvents"/>
+    <ROW Property="ServiceName_DocEditor" Value="DocSpace.DocEditor"/>
+    <ROW Property="ServiceName_FileServer" Value="DocSpace.FileServer"/>
+    <ROW Property="ServiceName_FileService" Value="DocSpace.FileService"/>
+    <ROW Property="ServiceName_WebHealthChecksUI" Value="DocSpace.Web.HealthChecks.UI"/>
+    <ROW Property="ServiceName_Login" Value="DocSpace.Login"/>
+    <ROW Property="ServiceName_MigrationRunner" Value="DocSpace.MigrationRunner"/>
+    <ROW Property="ServiceName_NotifyService" Value="DocSpace.NotifyService"/>
+    <ROW Property="ServiceName_PeopleServer" Value="DocSpace.PeopleServer"/>
+    <ROW Property="ServiceName_Socket.IO" Value="DocSpace.Socket.IO"/>
+    <ROW Property="ServiceName_SsoAuth" Value="DocSpace.SsoAuth.Svc"/>
+    <ROW Property="ServiceName_StudioNotifyService" Value="DocSpace.StudioNotifyService"/>
+    <ROW Property="ServiceName_WebApi" Value="DocSpace.WebApi"/>
+    <ROW Property="ServiceName_WebStudio" Value="DocSpace.WebStudio"/>
     <ROW Property="ShortProductName" Value="ONLYOFFICE DocSpace"/>
     <ROW Property="Socket.IO_Port" Value="9899"/>
     <ROW Property="SsoAuth_Port" Value="9834"/>
@@ -104,8 +105,8 @@
     <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000#ExeBuild:Windows 2000" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT5X" MultiBuildValue="DefaultBuild:Windows XP/2003#ExeBuild:Windows XP/2003" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003#ExeBuild:Windows XP/2003" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT64" MultiBuildValue="DefaultBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows 8.1 x64, Windows 10 x64, Windows 11 x64#ExeBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows 8.1 x64, Windows 10 x64, Windows 11 x64" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT64Display" MultiBuildValue="DefaultBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows 8.1 x64, Windows 10 x64, Windows 11 x64#ExeBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows 8.1 x64, Windows 10 x64, Windows 11 x64" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT64" MultiBuildValue="DefaultBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 8.1 x64, Windows Server 2012 R2 x64, Windows 10 x64, Windows 11 x64#ExeBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 8.1 x64, Windows Server 2012 R2 x64, Windows 10 x64, Windows 11 x64" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT64Display" MultiBuildValue="DefaultBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 8.1 x64, Windows Server 2012 R2 x64, Windows 10 x64, Windows 11 x64#ExeBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 8.1 x64, Windows Server 2012 R2 x64, Windows 10 x64, Windows 11 x64" ValueLocId="-"/>
     <ROW Property="WindowsTypeNTDisplay" MultiBuildValue="DefaultBuild:32-bit Windows versions#ExeBuild:32-bit Windows versions" ValueLocId="-"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
@@ -850,6 +851,7 @@
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL" Ordering="16"/>
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL" Ordering="15"/>
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="22"/>
+    <ROW Dialog_="CancelDlg" Control_="Yes" Event="DoAction" Argument="OpenCancelUrl" Condition="OPEN_INSTALL_CANCEL_URL = &quot;1&quot;" Ordering="101"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL AND ( SqlConnectionError=&quot;&quot; AND PostgreSqlConnectionError = &quot;&quot; )" Ordering="212"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL AND ( SqlConnectionError=&quot;&quot; AND PostgreSqlConnectionError = &quot;&quot; )" Ordering="211"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; )" Ordering="218"/>
@@ -893,6 +895,8 @@
     <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError = &quot;&quot; AND  ELK_CONNECTION = &quot;False&quot; )" Ordering="9"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="1"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="2"/>
+    <ROW Dialog_="CancelDlg" Control_="No" Event="EndDialog" Argument="Return" Condition="1" Ordering="100" MsiKey="CancelDlg#No#EndDialog#Return#1"/>
+    <ROW Dialog_="CancelDlg" Control_="Yes" Event="EndDialog" Argument="Exit" Condition="1" Ordering="100" MsiKey="CancelDlg#Yes#EndDialog#Exit#1"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestPostgreSqlConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; )" Ordering="210"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="PostgreSQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="217"/>
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="PostgreSQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError &lt;&gt; &quot;&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="21"/>
@@ -1058,6 +1062,7 @@
     <ROW Action="ElasticSearchSetup" Type="6" Source="utils.vbs" Target="ElasticSearchSetup"/>
     <ROW Action="MoveNginxConfigs" Type="6" Source="utils.vbs" Target="MoveNginxConfigs"/>
     <ROW Action="MySQLConfigure" Type="262" Source="utils.vbs" Target="MySQLConfigure"/>
+    <ROW Action="OpenCancelUrl" Type="194" Source="viewer.exe" Target="http://www.onlyoffice.com/install-canceled.aspx" WithoutSeq="true" Options="1"/>
     <ROW Action="PostgreSQLConfigure" Type="4102" Source="utils.vbs" Target="PostgreSqlConfigure"/>
     <ROW Action="RedisSearchSetup" Type="6" Source="utils.vbs" Target="RedisSetup"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace#ExeBuild:[ProgramFilesFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
@@ -1292,7 +1297,7 @@
     <ROW Action="AI_RestartElevated" Sequence="51" Builds="ExeBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
-    <ROW Condition="( Version9X OR ( NOT VersionNT64 ) OR ( VersionNT64 AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 602) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 603) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 1000) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 1100) OR (MsiNTProductType &lt;&gt; 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT64Display]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT64" IsPredefined="true" Builds="DefaultBuild;ExeBuild"/>
+    <ROW Condition="( Version9X OR ( NOT VersionNT64 ) OR ( VersionNT64 AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 602) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 602) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 603) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 603) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 1000) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 1100) OR (MsiNTProductType &lt;&gt; 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT64Display]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT64" IsPredefined="true" Builds="DefaultBuild;ExeBuild"/>
     <ROW Condition="( Version9X OR VersionNT64 )" Description="[ProductName] cannot be installed on [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT" IsPredefined="true" Builds="DefaultBuild;ExeBuild"/>
     <ROW Condition="((VersionNT &lt;&gt; 501) AND (VersionNT &lt;&gt; 502))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="DefaultBuild;ExeBuild"/>
     <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on [WindowsTypeNT40Display]." DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild;ExeBuild"/>
@@ -1524,6 +1529,7 @@
     <ROW PrereqKey="C4FE6FD5B7C4D07B3A313E754A9A6A8" DisplayName="Visual C++ Redistributable for Visual Studio 2015-2019 x64" VersionMin="14.26" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/d60aa805-26e9-47df-b4e3-cd6fcc392333/7D7105C52FCD6766BEEE1AE162AA81E278686122C1E44890712326634D0B055E/VC_redist.x64.exe" Location="1" ExactSize="14974616" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista RTM x64, Windows Vista SP1 x64, Windows Server 2008 RTM x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="xym" MD5="264c296cc0bf00db6ba8e7bf8cc4e706" TargetName="Visual C++ Redistributable for Visual Studio 2015-2019"/>
     <ROW PrereqKey="F3520F64DA5998338D97129FAD2" DisplayName=".NET Runtime 7.0.3 x64" VersionMin="7.0" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/c69813b7-2ece-4c2e-8c45-e33006985e18/61cc8fe4693a662b2da55ad932a46446/dotnet-runtime-7.0.3-win-x64.exe" Location="1" ExactSize="28223424" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="ym" MD5="c9d6796b57a1630d4f004302262c241e" TargetName=".NET 7.0"/>
     <ROW PrereqKey="CA62D813A4E74FA2AAE86A7D7B7B1493" DisplayName="Visual C++ Redistributable for Visual Studio 2013 Update 5 x64" VersionMin="12.0" SetupFileUrl="http://download.microsoft.com/download/C/C/2/CC2DF5F8-4454-44B4-802D-5EA68D086676/vcredist_x64.exe" Location="1" ExactSize="7201056" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="xym" MD5="b364dd867258dfc79342e00d57c81bb5" TargetName="Visual C++ Redistributable for Visual Studio 2013?vcredist_2013u5_x64.exe"/>
+    <ROW PrereqKey="Certbot" DisplayName="Certbot" VersionMin="2.6.0" SetupFileUrl="https://github.com/certbot/certbot/releases/download/v2.6.0/certbot-beta-installer-win_amd64_signed.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yx" TargetName="Certbot"/>
     <ROW PrereqKey="DocumentServer" DisplayName="DocumentServer" SetupFileUrl="onlyoffice-documentserver.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/VERYSILENT /norestart /DIR=&quot;[APPDIR]..\DocumentServer&quot; /DS_PORT=&quot;[DOCUMENT_SERVER_PORT]&quot; /JWT_ENABLED=&quot;[DOCUMENT_SERVER_JWT_ENABLED]&quot; /JWT_SECRET=&quot;[DOCUMENT_SERVER_JWT_SECRET]&quot; /JWT_HEADER=&quot;[DOCUMENT_SERVER_JWT_HEADER]&quot; /DB_HOST=&quot;[PS_DB_HOST]&quot; /DB_USER=&quot;[PS_DB_USER]&quot; /DB_PWD=&quot;[PS_DB_PWD]&quot; /DB_NAME=&quot;[PS_DB_NAME]&quot; /LOG" BasicUiComLine="/VERYSILENT /norestart /DIR=&quot;[APPDIR]..\DocumentServer&quot; /DS_PORT=&quot;[DOCUMENT_SERVER_PORT]&quot; /JWT_ENABLED=&quot;[DOCUMENT_SERVER_JWT_ENABLED]&quot; /JWT_SECRET=&quot;[DOCUMENT_SERVER_JWT_SECRET]&quot; /JWT_HEADER=&quot;[DOCUMENT_SERVER_JWT_HEADER]&quot; /DB_HOST=&quot;[PS_DB_HOST]&quot; /DB_USER=&quot;[PS_DB_USER]&quot; /DB_PWD=&quot;[PS_DB_PWD]&quot; /DB_NAME=&quot;[PS_DB_NAME]&quot; /LOG" NoUiComLine="/VERYSILENT /norestart /DIR=&quot;[APPDIR]..\DocumentServer&quot; /DS_PORT=&quot;[DOCUMENT_SERVER_PORT]&quot; /JWT_ENABLED=&quot;[DOCUMENT_SERVER_JWT_ENABLED]&quot; /JWT_SECRET=&quot;[DOCUMENT_SERVER_JWT_SECRET]&quot; /JWT_HEADER=&quot;[DOCUMENT_SERVER_JWT_HEADER]&quot; /DB_HOST=&quot;[PS_DB_HOST]&quot; /DB_USER=&quot;[PS_DB_USER]&quot; /DB_PWD=&quot;[PS_DB_PWD]&quot; /DB_NAME=&quot;[PS_DB_NAME]&quot; /LOG" Options="fi=" TargetName="onlyoffice-documentserver.exe" Builds="DefaultBuild" Feature="DocumentServer" RepairComLine="/VERYSILENT /norestart /DIR=&quot;[APPDIR]..\DocumentServer&quot; /DS_PORT=&quot;[DOCUMENT_SERVER_PORT]&quot; /JWT_ENABLED=&quot;[DOCUMENT_SERVER_JWT_ENABLED]&quot; /JWT_SECRET=&quot;[DOCUMENT_SERVER_JWT_SECRET]&quot; /JWT_HEADER=&quot;[DOCUMENT_SERVER_JWT_HEADER]&quot; /DB_HOST=&quot;[PS_DB_HOST]&quot; /DB_USER=&quot;[PS_DB_USER]&quot; /DB_PWD=&quot;[PS_DB_PWD]&quot; /DB_NAME=&quot;[PS_DB_NAME]&quot; /LOG"/>
     <ROW PrereqKey="EA5B60A5CAD4115A8386D017CC889B9" DisplayName="ASP.NET Core Runtime 7.0.3 x64" VersionMin="7.0" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/d37efccc-2ba1-4fc9-a1ef-a8e1e77fb681/b9a20fc29ff05f18d81620ec88ade699/aspnetcore-runtime-7.0.3-win-x64.exe" Location="1" ExactSize="9562088" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="xym" MD5="a87c53a62579d43c6e20683ad686c991" TargetName="ASP.NET Core 7.0"/>
     <ROW PrereqKey="Erlangv26.0x64" DisplayName="Erlang v26.0.2 x64" VersionMin="26.0.2" SetupFileUrl="https://github.com/erlang/otp/releases/download/OTP-26.0.2/otp_win64_26.0.2.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yx" TargetName="Erlang v26.0 x64"/>
@@ -1535,10 +1541,10 @@
     <ROW PrereqKey="RequiredApplication" DisplayName="MySQL Connector/ODBC 8.0.33 x86" VersionMin="8.0.33" SetupFileUrl="https://cdn.mysql.com/Downloads/Connector-ODBC/8.0/mysql-connector-odbc-8.0.33-win32.msi" Location="1" ExactSize="0" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" TargetName="MySQL Connector ODBC 8.0.33 x86"/>
     <ROW PrereqKey="RequiredApplication_1" DisplayName="Node.js 18.16.1" VersionMin="18.16.0" SetupFileUrl="https://nodejs.org/dist/v18.16.1/node-v18.16.1-x64.msi" Location="1" ExactSize="0" Operator="0" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="my" TargetName="Node.js v18.16.1 x64"/>
     <ROW PrereqKey="RequiredApplication_2" DisplayName="MySQL Installer Community 8.0.33 x86" VersionMin="1.6.6.0" SetupFileUrl="https://cdn.mysql.com/Downloads/MySQLInstaller/mysql-installer-community-8.0.33.0.msi" Location="1" ExactSize="0" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="MySQL Installer Community 8.0.33 x86"/>
-    <ROW PrereqKey="RequiredApplication_4" DisplayName="Elasticsearch v7.10.0 x64" VersionMin="7.10.0" SetupFileUrl="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="Elasticsearch v7.10.0 x64"/>
+    <ROW PrereqKey="RequiredApplication_4" DisplayName="Elasticsearch v7.16.3 x64" VersionMin="7.16.3" SetupFileUrl="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.3.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="Elasticsearch v7.16.3 x64"/>
     <ROW PrereqKey="RequiredApplication_5" DisplayName="RabbitMQ v3.12.1 x64" VersionMin="3.12" SetupFileUrl="https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.1/rabbitmq-server-3.12.1.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yx" TargetName="RabbitMQ v3.12.1 x64"/>
     <ROW PrereqKey="RequiredApplication_6" DisplayName="Redis 5.0.10 x64" VersionMin="5.0" SetupFileUrl="http://download.onlyoffice.com/install/windows/redist/Redis-x64-5.0.10.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" BasicUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" NoUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" Options="yx" TargetName="Redis 5.0.10 x64"/>
-    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 F3520F64DA5998338D97129FAD2 EA5B60A5CAD4115A8386D017CC889B9 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 RequiredApplication RequiredApplication_2 MySQLInstallerRunn RequiredApplication_1 RequiredApplication_4 Erlangv26.0x64 RequiredApplication_5 RequiredApplication_6 FFmpegx64 PostgreSQL_ODBC PostgresSQL OpenResty DocumentServer"/>
+    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 F3520F64DA5998338D97129FAD2 EA5B60A5CAD4115A8386D017CC889B9 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 RequiredApplication RequiredApplication_2 MySQLInstallerRunn RequiredApplication_1 RequiredApplication_4 Erlangv26.0x64 RequiredApplication_5 RequiredApplication_6 FFmpegx64 Certbot PostgreSQL_ODBC PostgresSQL OpenResty DocumentServer"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="A918597FE054CCCB65ABDBA0AD8F63CSyst" Prereq="A918597FE054CCCB65ABDBA0AD8F63C" SearchType="0" SearchString="[SystemFolder]vcruntime140.dll" VerMin="14.26.28720" Order="2" Property="PreReqSearch_A918597FE054CCCB65ABDB"/>
@@ -1555,8 +1561,9 @@
     <ROW SearchKey="SystemFolderfile.dll_1" Prereq="RequiredApplication_1" SearchType="4" SearchString="{47C07A3A-42EF-4213-A85D-8F5A59077C28}" VerMin="18.16.0" Order="1" Property="PreReqSearch_1"/>
     <ROW SearchKey="SystemFolderfile.dll_2" Prereq="RequiredApplication_2" SearchType="4" SearchString="{18B94B70-06F1-4AC0-B308-37280DB868C2}" VerMin="1.6.6.0" Order="1" Property="PreReqSearch_2"/>
     <ROW SearchKey="SystemFolderfile.dll_3" Prereq="OpenResty" SearchType="4" SearchString="{264FA774-91E5-4854-8010-4AB58CA830BD}" VerMin="1.21.4.2" Order="1" Property="PreReqSearch_8"/>
+    <ROW SearchKey="SystemFolderfile.dll_4" Prereq="Certbot" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Certbot\DisplayVersion" VerMin="2.6.0" Order="1" Property="PreReqSearch_10"/>
     <ROW SearchKey="UpgradeCode" Prereq="PostgreSQL_ODBC" SearchType="4" SearchString="{BBD29DF5-89F6-4B8B-BDC9-C3EA3A4AFDBB}" VerMin="15.0" Order="1" Property="PreReqSearch_14"/>
-    <ROW SearchKey="UpgradeCode_1" Prereq="RequiredApplication_4" SearchType="4" SearchString="{DAAA2CBA-A1ED-4F29-AFBF-5478617B00F6}" VerMin="7.10.0" Order="2" Property="PreReqSearch_7"/>
+    <ROW SearchKey="UpgradeCode_1" Prereq="RequiredApplication_4" SearchType="4" SearchString="{DAAA2CBA-A1ED-4F29-AFBF-5478617B00F6}" VerMin="7.16.3" Order="2" Property="PreReqSearch_7"/>
     <ROW SearchKey="UpgradeCode_3" Prereq="RequiredApplication_6" SearchType="4" SearchString="{05410198-7212-4FC4-B7C8-AFEFC3DA0FBC}" VerMin="5.0.10" Order="2" Property="PreReqSearch_12"/>
     <ROW SearchKey="Version" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.7\Version" Order="1" Property="PreReqSearch_4"/>
     <ROW SearchKey="Version_1" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 8.0\Version" Order="2" Property="PreReqSearch_5"/>
@@ -1572,17 +1579,22 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateComponent">
     <ROW Name="ReplaceAppDir" TxtUpdateSet="xml" FindPattern="{APPDIR}" ReplacePattern="[APPDIR]" Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceAppDir1" TxtUpdateSet="YourFile.txt_5" FindPattern="{APPDIR}" ReplacePattern="[APPDIR]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceWinVol" TxtUpdateSet="xml" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="1" FileEncoding="-1"/>
     <ROW Name="ReplaceInclude" TxtUpdateSet="YourFile.txt" FindPattern="/etc/nginx/includes" ReplacePattern="includes" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_1" FindPattern="/var/www/client" ReplacePattern="&quot;[APPDIR]client&quot;" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_2" FindPattern="/var/www/public/" ReplacePattern="&quot;[APPDIR]public/&quot;" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceDsProxyPass" TxtUpdateSet="YourFile.txt" FindPattern="proxy_pass .*;" ReplacePattern="proxy_pass http://[DOCUMENT_SERVER_HOST]:[DOCUMENT_SERVER_PORT];" Options="19" Order="1" FileEncoding="-1"/>
-    <ROW Name="ReplaceListen" TxtUpdateSet="YourFile.txt" FindPattern="listen.*;" ReplacePattern="listen [APP_PORT];" Options="19" Order="2" FileEncoding="-1"/>
+    <ROW Name="ReplaceRouter" TxtUpdateSet="YourFile.txt_3" FindPattern="$router_host" ReplacePattern="127.0.0.1" Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceRouter1" TxtUpdateSet="YourFile.txt_4" FindPattern="$router_host" ReplacePattern="127.0.0.1" Options="2" Order="0" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
     <ROW Key="YourFile.txt" Component="conf" FileName="onlyoffice.conf" Directory="conf_Dir" Options="17"/>
     <ROW Key="YourFile.txt_1" Component="conf" FileName="onlyoffice-client.conf" Directory="conf_Dir" Options="17"/>
     <ROW Key="YourFile.txt_2" Component="includes" FileName="onlyoffice-public.conf" Directory="includes_Dir" Options="17"/>
+    <ROW Key="YourFile.txt_3" Component="conf" FileName="onlyoffice-proxy.conf" Directory="conf_Dir" Options="17"/>
+    <ROW Key="YourFile.txt_4" Component="conf" FileName="onlyoffice-proxy-ssl.conf.tmpl" Directory="conf_Dir" Options="17"/>
+    <ROW Key="YourFile.txt_5" Component="includes" FileName="letsencrypt.conf" Directory="includes_Dir" Options="17"/>
     <ROW Key="xml" Component="tools" FileName="*.xml" Directory="tools_Dir" Options="17"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlAttributeComponent">

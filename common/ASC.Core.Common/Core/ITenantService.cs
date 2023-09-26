@@ -31,6 +31,7 @@ public interface ITenantService
 {
     Task<byte[]> GetTenantSettingsAsync(int tenant, string key);
     byte[] GetTenantSettings(int tenant, string key);
+    IEnumerable<Tenant> GetTenantsWithCsp();
     Task<IEnumerable<Tenant>> GetTenantsAsync(DateTime from, bool active = true);
     Task<IEnumerable<Tenant>> GetTenantsAsync(List<int> ids);
     Task<IEnumerable<Tenant>> GetTenantsAsync(string login, string passwordHash);

@@ -143,7 +143,7 @@
   "TooltipElementCopyMessage": "Kopieren {{element}}",
   "TooltipElementsCopyMessage": "Kopieren {{element}} Element(e)",
   "TooltipElementsMoveMessage": "{{element}} Element(e) verschieben",
-  "TrashEmptyDescription": "Die Sektion 'Papierkorb' enthält alle gelöschten Dateien. Sie können diese Dokumente entweder wiederherstellen, wenn sie versehentlich gelöscht wurden, oder unwiderruflich entfernen. Bitte beachten Sie, wenn Sie die Dateien aus dem 'Papierkorb' entfernen, können diese nicht mehr wiederhergestellt werden.",
+  "TrashEmptyDescription": "Die Sektion 'Papierkorb' enthält alle gelöschten Dateien. Sie können diese Dokumente entweder wiederherstellen, wenn sie versehentlich gelöscht wurden, oder unwiderruflich entfernen. Dateien im 'Papierkorb' werden nach 30 Tagen automatisch gelöscht. Bitte beachten Sie, wenn Sie die Dateien aus dem 'Papierkorb' entfernen, können diese nicht mehr wiederhergestellt werden.",
   "TrashErasureWarning": "Objekte im Papierkorb werden nach 30 Tagen automatisch gelöscht.",
   "UnarchivedRoomAction": "Der Raum '{{name}}' ist nicht archiviert.",
   "UnarchivedRoomsAction": "Die Räume sind nicht archiviert.",

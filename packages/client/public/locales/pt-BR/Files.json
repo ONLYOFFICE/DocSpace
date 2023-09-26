@@ -143,7 +143,7 @@
   "TooltipElementCopyMessage": "Cópia {{element}}",
   "TooltipElementsCopyMessage": "Cópia {{element}} elementos",
   "TooltipElementsMoveMessage": "Mover {{element}} elementos",
-  "TrashEmptyDescription": "A sessão 'Lixeira' é o lugar para o qual todos os arquivos excluídos serão movidos. Você pode restaurá-los caso tenha excluído por engano ou permanentemente. Observe que quando você exclui arquivos da \"Lixeira\", eles não poderão mais ser restaurados.",
+  "TrashEmptyDescription": "A sessão 'Lixeira' é o lugar para o qual todos os arquivos excluídos serão movidos. Você pode restaurá-los caso tenha excluído por engano ou permanentemente. Os arquivos na 'Lixeira' são excluídos automaticamente após 30 dias. Observe que quando você exclui arquivos da \"Lixeira\", eles não poderão mais ser restaurados.",
   "TrashErasureWarning": "Os itens na Lixeira são excluídos automaticamente após 30 dias.",
   "UnarchivedRoomAction": "A sala '{{name}}' foi desarquivada.",
   "UnarchivedRoomsAction": "As salas são desarquivadas.",

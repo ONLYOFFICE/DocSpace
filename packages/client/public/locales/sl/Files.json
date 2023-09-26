@@ -103,7 +103,7 @@
   "TooltipElementCopyMessage": "Kopiraj {{element}}",
   "TooltipElementsCopyMessage": "Kopiraj {{element}} elemente",
   "TooltipElementsMoveMessage": "Premakni {{element}} elemente",
-  "TrashEmptyDescription": "Oddelek 'koš' je prostor, kamor so premaknjene vse izbrisane datoteke. Če ste jih izbrisali po pomoti jih lahko obnovite, ali pa jih popolnoma izbrišete. Prosim vedite, da, ko datoteke izbrišete iz 'koša' teh ni več mogoče obnoviti.",
+  "TrashEmptyDescription": "Oddelek 'Koš' je prostor, kamor so premaknjene vse izbrisane datoteke. Če ste jih izbrisali po pomoti jih lahko obnovite, ali pa jih popolnoma izbrišete. Datoteke v 'Košu' se po 30 dneh samodejno izbrišejo. Prosim vedite, da, ko datoteke izbrišete iz 'koša' teh ni več mogoče obnoviti.",
   "TrashErasureWarning": "Elementi v košu se samodejno izbrišejo po 30 dneh.",
   "UnarchivedRoomAction": "Soba '{{name}}' ni arhivirana.",
   "UnarchivedRoomsAction": "Sobe niso arhivirane.",

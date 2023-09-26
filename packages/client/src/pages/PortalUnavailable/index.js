@@ -98,12 +98,15 @@ const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
           <Text textAlign="center" className="portal-unavailable_text">
             {t("PortalUnavailable:AccessingProblem")}
           </Text>
-          <Button
-            scale
-            label={t("Common:LogoutButton")}
-            size={"medium"}
-            onClick={onClick}
-          />
+          {!window.navigator.userAgent.includes("ZoomWebKit") &&
+            !window.navigator.userAgent.includes("ZoomApps") && (
+              <Button
+                scale
+                label={t("Common:LogoutButton")}
+                size={"medium"}
+                onClick={onClick}
+              />
+            )}
 
           <ColorTheme
             textAlign="center"

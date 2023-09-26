@@ -33,51 +33,27 @@ public interface INotifyEngineAction
 }
 
 [Singletone]
-public class NotifyEngine : INotifyEngine, IDisposable
+public class NotifyEngine
 {
     private readonly ILogger _logger;
     private readonly Context _context;
-    private readonly List<SendMethodWrapper> _sendMethods = new List<SendMethodWrapper>();
-    private readonly Queue<NotifyRequest> _requests = new Queue<NotifyRequest>(1000);
-    private readonly Thread _notifyScheduler;
-    private readonly Thread _notifySender;
-    private readonly AutoResetEvent _requestsEvent = new AutoResetEvent(false);
-    private readonly AutoResetEvent _methodsEvent = new AutoResetEvent(false);
+    internal readonly List<SendMethodWrapper> SendMethods = new List<SendMethodWrapper>();
     private readonly Dictionary<string, IPatternStyler> _stylers = new Dictionary<string, IPatternStyler>();
     private readonly IPatternFormatter _sysTagFormatter = new ReplacePatternFormatter(@"_#(?<tagName>[A-Z0-9_\-.]+)#_", true);
-    private readonly TimeSpan _defaultSleep = TimeSpan.FromSeconds(10);
-    private readonly IServiceScopeFactory _serviceScopeFactory;
     internal readonly ICollection<Type> Actions;
 
-
-    public NotifyEngine(Context context, ILoggerProvider options, IServiceScopeFactory serviceScopeFactory)
+    public NotifyEngine(
+        Context context,
+        ILoggerProvider options)
     {
         Actions = new List<Type>();
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logger = options.CreateLogger("ASC.Notify");
-        _serviceScopeFactory = serviceScopeFactory;
-        _notifyScheduler = new Thread(NotifySchedulerAsync) { IsBackground = true, Name = "NotifyScheduler" };
-        _notifySender = new Thread(NotifySenderAsync) { IsBackground = true, Name = "NotifySender" };
     }
 
     public void AddAction<T>() where T : INotifyEngineAction
     {
         Actions.Add(typeof(T));
-    }
-
-    public void QueueRequest(NotifyRequest request)
-    {
-        lock (_requests)
-        {
-            if (!_notifySender.IsAlive)
-            {
-                _notifySender.Start();
-            }
-
-            _requests.Enqueue(request);
-        }
-
-        _requestsEvent.Set();
     }
 
     internal void RegisterSendMethod(Func<DateTime, Task> method, string cron)
@@ -86,145 +62,24 @@ public class NotifyEngine : INotifyEngine, IDisposable
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(cron);
 
         var w = new SendMethodWrapper(method, cron, _logger);
-        lock (_sendMethods)
+        lock (SendMethods)
         {
-            if (!_notifyScheduler.IsAlive)
-            {
-                _notifyScheduler.Start();
-            }
-
-            _sendMethods.Remove(w);
-            _sendMethods.Add(w);
+            SendMethods.Remove(w);
+            SendMethods.Add(w);
         }
-        _methodsEvent.Set();
     }
 
     internal void UnregisterSendMethod(Func<DateTime, Task> method)
     {
         ArgumentNullException.ThrowIfNull(method);
 
-        lock (_sendMethods)
+        lock (SendMethods)
         {
-            _sendMethods.Remove(new SendMethodWrapper(method, null, _logger));
+            SendMethods.Remove(new SendMethodWrapper(method, null, _logger));
         }
     }
 
-    private async void NotifySchedulerAsync()
-    {
-        try
-        {
-            while (true)
-            {
-                var min = DateTime.MaxValue;
-                var now = DateTime.UtcNow;
-                List<SendMethodWrapper> copy;
-                lock (_sendMethods)
-                {
-                    copy = _sendMethods.ToList();
-                }
-
-                foreach (var w in copy)
-                {
-                    if (!w.ScheduleDate.HasValue)
-                    {
-                        lock (_sendMethods)
-                        {
-                            _sendMethods.Remove(w);
-                        }
-                    }
-
-                    if (w.ScheduleDate.Value <= now)
-                    {
-                        try
-                        {
-                            await w.InvokeSendMethod(now);
-                        }
-                        catch (Exception error)
-                        {
-                            _logger.ErrorInvokeSendMethod(error);
-                        }
-                        w.UpdateScheduleDate(now);
-                    }
-
-                    if (w.ScheduleDate.Value > now && w.ScheduleDate.Value < min)
-                    {
-                        min = w.ScheduleDate.Value;
-                    }
-                }
-
-                var wait = min != DateTime.MaxValue ? min - DateTime.UtcNow : _defaultSleep;
-
-                if (wait < _defaultSleep)
-                {
-                    wait = _defaultSleep;
-                }
-                else if (wait.Ticks > int.MaxValue)
-                {
-                    wait = TimeSpan.FromTicks(int.MaxValue);
-                }
-                _methodsEvent.WaitOne(wait, false);
-            }
-        }
-        catch (ThreadAbortException)
-        {
-            return;
-        }
-        catch (Exception e)
-        {
-            _logger.ErrorNotifyScheduler(e);
-        }
-    }
-
-
-    private async void NotifySenderAsync()
-    {
-        try
-        {
-            while (true)
-            {
-                NotifyRequest request = null;
-                lock (_requests)
-                {
-                    if (_requests.Count > 0)
-                    {
-                        request = _requests.Dequeue();
-                    }
-                }
-                if (request != null)
-                {
-                    await using var scope = _serviceScopeFactory.CreateAsyncScope();
-                    foreach (var action in Actions)
-                    {
-                        ((INotifyEngineAction)scope.ServiceProvider.GetRequiredService(action)).AfterTransferRequest(request);
-                    }
-
-                    try
-                    {
-                        await SendNotify(request, scope);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.ErrorSendNotify(e);
-                    }
-                }
-                else
-                {
-                    _requestsEvent.WaitOne();
-                }
-            }
-        }
-        catch (ThreadAbortException)
-        {
-            return;
-        }
-        catch (Exception e)
-        {
-            _logger.ErrorNotifySender(e);
-        }
-    }
-
-
-    private async Task<NotifyResult> SendNotify(NotifyRequest request, IServiceScope serviceScope)
+    internal async Task<NotifyResult> SendNotify(NotifyRequest request, IServiceScope serviceScope)
     {
         var sendResponces = new List<SendResponse>();
 
@@ -352,8 +207,8 @@ public class NotifyEngine : INotifyEngine, IDisposable
         try
         {
             await PrepareRequestFillSendersAsync(request, serviceScope);
-            PrepareRequestFillPatterns(request, serviceScope);
-            PrepareRequestFillTags(request, serviceScope);
+            await PrepareRequestFillPatterns(request, serviceScope);
+            await PrepareRequestFillTags(request, serviceScope);
         }
         catch (Exception ex)
         {
@@ -455,7 +310,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         noticeMessage.Pattern = pattern;
         noticeMessage.ContentType = pattern.ContentType;
         noticeMessage.AddArgument(request.Arguments.ToArray());
-        var patternProvider = request.GetPatternProvider(serviceScope);
+        var patternProvider = await request.GetPatternProvider(serviceScope);
 
         var formatter = patternProvider.GetFormatter(pattern);
         try
@@ -475,6 +330,12 @@ public class NotifyEngine : INotifyEngine, IDisposable
             //Do styling here
             if (!string.IsNullOrEmpty(pattern.Styler))
             {
+                var tenantManager = serviceScope.ServiceProvider.GetService<TenantManager>();
+                var userManager = serviceScope.ServiceProvider.GetService<UserManager>();
+
+                var culture = await request.GetCulture(tenantManager, userManager);
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
                 //We need to run through styler before templating
                 StyleMessage(serviceScope, noticeMessage);
             }
@@ -520,7 +381,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private void PrepareRequestFillPatterns(NotifyRequest request, IServiceScope serviceScope)
+    private async Task PrepareRequestFillPatterns(NotifyRequest request, IServiceScope serviceScope)
     {
         if (request._patterns == null)
         {
@@ -530,7 +391,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                 return;
             }
 
-            var apProvider = request.GetPatternProvider(serviceScope);
+            var apProvider = await request.GetPatternProvider(serviceScope);
             for (var i = 0; i < request._senderNames.Length; i++)
             {
                 var senderName = request._senderNames[i];
@@ -549,9 +410,9 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private void PrepareRequestFillTags(NotifyRequest request, IServiceScope serviceScope)
+    private async Task PrepareRequestFillTags(NotifyRequest request, IServiceScope serviceScope)
     {
-        var patternProvider = request.GetPatternProvider(serviceScope);
+        var patternProvider = await request.GetPatternProvider(serviceScope);
         foreach (var pattern in request._patterns)
         {
             IPatternFormatter formatter;
@@ -583,8 +444,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-
-    private sealed class SendMethodWrapper : IDisposable
+    internal sealed class SendMethodWrapper : IDisposable
     {
         private readonly SemaphoreSlim _semaphore;
         private readonly CronExpression _cronExpression;
@@ -666,41 +526,5 @@ public class NotifyEngine : INotifyEngine, IDisposable
         {
             _semaphore.Dispose();
         }
-    }
-
-    public void Dispose()
-    {
-        if (_methodsEvent != null)
-        {
-            _methodsEvent.Dispose();
-        }
-
-        if (_requestsEvent != null)
-        {
-            _requestsEvent.Dispose();
-        }
-    }
-}
-
-[Scope]
-public class NotifyEngineQueue
-{
-    private readonly NotifyEngine _notifyEngine;
-    private readonly IServiceProvider _serviceProvider;
-
-    public NotifyEngineQueue(NotifyEngine notifyEngine, IServiceProvider serviceProvider)
-    {
-        _notifyEngine = notifyEngine;
-        _serviceProvider = serviceProvider;
-    }
-
-    public async Task QueueRequestAsync(NotifyRequest request)
-    {
-        foreach (var action in _notifyEngine.Actions)
-        {
-            await ((INotifyEngineAction)_serviceProvider.GetRequiredService(action)).BeforeTransferRequestAsync(request);
-        }
-
-        _notifyEngine.QueueRequest(request);
     }
 }

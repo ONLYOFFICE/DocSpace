@@ -118,7 +118,7 @@ const Login: React.FC<ILoginProps> = ({
   };
 
   const onSocialButtonClick = useCallback(
-    (e: HTMLElementEvent<HTMLButtonElement | HTMLElement>) => {
+    async (e: HTMLElementEvent<HTMLButtonElement | HTMLElement>) => {
       const { target } = e;
       let targetElement = target;
 
@@ -129,9 +129,14 @@ const Login: React.FC<ILoginProps> = ({
         targetElement = target.parentElement;
       }
       const providerName = targetElement.dataset.providername;
-      const url = targetElement.dataset.url || "";
+      let url = targetElement.dataset.url || "";
 
       try {
+        //Lifehack for Twitter
+        if (providerName == "twitter") {
+          url += "authCallback";
+        }
+
         const tokenGetterWin = isDesktopEditor
           ? (window.location.href = url)
           : window.open(
@@ -140,17 +145,18 @@ const Login: React.FC<ILoginProps> = ({
               "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
             );
 
-        getOAuthToken(tokenGetterWin).then((code: string) => {
-          const token = window.btoa(
-            JSON.stringify({
-              auth: providerName,
-              mode: "popup",
-              callback: "authCallback",
-            })
-          );
-          if (tokenGetterWin && typeof tokenGetterWin !== "string")
-            tokenGetterWin.location.href = getLoginLink(token, code);
-        });
+        const code: string = await getOAuthToken(tokenGetterWin);
+
+        const token = window.btoa(
+          JSON.stringify({
+            auth: providerName,
+            mode: "popup",
+            callback: "authCallback",
+          })
+        );
+
+        if (tokenGetterWin && typeof tokenGetterWin !== "string")
+          tokenGetterWin.location.href = getLoginLink(token, code);
       } catch (err) {
         console.log(err);
       }
@@ -195,8 +201,12 @@ const Login: React.FC<ILoginProps> = ({
     setMoreAuthVisible(false);
   };
 
-  const onRecoverDialogVisible = () => {
-    setRecoverDialogVisible(!recoverDialogVisible);
+  const openRecoverDialog = () => {
+    setRecoverDialogVisible(true);
+  };
+
+  const closeRecoverDialog = () => {
+    setRecoverDialogVisible(false);
   };
 
   const bgPattern = getBgPattern(currentColorScheme?.id);
@@ -262,7 +272,7 @@ const Login: React.FC<ILoginProps> = ({
               isLoading={isLoading}
               hashSettings={portalSettings?.passwordHash}
               setIsLoading={setIsLoading}
-              onRecoverDialogVisible={onRecoverDialogVisible}
+              openRecoverDialog={openRecoverDialog}
               match={match}
               enableAdmMess={enableAdmMess}
               cookieSettingsEnabled={cookieSettingsEnabled}
@@ -281,7 +291,7 @@ const Login: React.FC<ILoginProps> = ({
 
           <RecoverAccessModalDialog
             visible={recoverDialogVisible}
-            onClose={onRecoverDialogVisible}
+            onClose={closeRecoverDialog}
             textBody={t("RecoverTextBody")}
             emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
             id="recover-access-modal"
