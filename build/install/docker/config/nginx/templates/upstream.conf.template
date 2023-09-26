@@ -60,12 +60,6 @@ map $SERVICE_SSOAUTH $service_sso {
     default $SERVICE_SSOAUTH;
 }
 
-map $SERVICE_TELEGRAMREPORTS $service_telegramreports {
-    volatile;
-    "" 127.0.0.1:5016;
-    default $SERVICE_TELEGRAMREPORTS;
-}
-
 map $SERVICE_HELTHCHECKS $service_healthchecks {
     volatile;
     "" 127.0.0.1:5033;
