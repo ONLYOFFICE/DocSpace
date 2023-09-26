@@ -16,6 +16,8 @@ import { showLoader, getSystemTheme } from "@docspace/common/utils";
 import ThemePreview from "./theme-preview";
 
 const StyledWrapper = styled.div`
+  width: 100%;
+  max-width: 660px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -26,7 +28,7 @@ const StyledWrapper = styled.div`
 
   .checkbox {
     height: 20px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 8px !important;
@@ -39,7 +41,7 @@ const StyledWrapper = styled.div`
   .system-theme-description {
     padding: 0px 0 4px 24px;
     max-width: 295px;
-    color: ${props => props.theme.profile.themePreview.descriptionColor};
+    color: ${(props) => props.theme.profile.themePreview.descriptionColor};
   }
 
   .themes-container {
