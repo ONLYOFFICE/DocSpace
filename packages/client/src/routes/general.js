@@ -31,7 +31,7 @@ const generalRoutes = [
   {
     path: "profile/file-management",
     element: (
-      <PrivateRoute>
+      <PrivateRoute withCollaborator restricted>
         <Profile />
       </PrivateRoute>
     ),
