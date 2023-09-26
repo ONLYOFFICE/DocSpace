@@ -13,6 +13,7 @@ import config from "PACKAGE_FILE";
 import MainProfile from "./sub-components/main-profile";
 import LoginContent from "./sub-components/LoginContent";
 import Notifications from "./sub-components/notifications";
+import FileManagement from "./sub-components/file-management";
 import InterfaceTheme from "./sub-components/interface-theme";
 
 import { tablet, hugeMobile } from "@docspace/components/utils/device";
@@ -41,7 +42,7 @@ const SectionBodyContent = (props) => {
   const data = [
     {
       id: "login",
-      name: t("Login"),
+      name: t("ConnectDialog:Login"),
       content: <LoginContent />,
     },
     {
@@ -60,7 +61,7 @@ const SectionBodyContent = (props) => {
     data.splice(2, 0, {
       id: "file-management",
       name: t("FileManagement"),
-      content: <h1>File management</h1>,
+      content: <FileManagement />,
     });
 
   const getCurrentTab = () => {
@@ -109,6 +110,7 @@ export default inject(({ peopleStore, clientLoadingStore }) => {
       "BackupCodesDialog",
       "DeleteSelfProfileDialog",
       "Notifications",
+      "ConnectDialog",
     ])(SectionBodyContent)
   )
 );
