@@ -2,6 +2,5 @@
   "LblInviteAgain": "ادعوه مرة أخرى",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address.",
   "NotFoundUsers": "لم يتم العثور على مستخدمين",
-  "NotFoundUsersDescription": "لا يمكن عرض أي أشخاص يطابقون الفلتر الخاص بك. الرجاء تحديد خيارات تصفية أخرى أو امسح عامل التصفية لعرض جميع الأشخاص في هذا القسم.",
   "UserStatus": "الحالة"
 }

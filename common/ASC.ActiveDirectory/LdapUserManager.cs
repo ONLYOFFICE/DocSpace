@@ -286,8 +286,7 @@ public class LdapUserManager
                     var source = scope.ServiceProvider.GetRequiredService<LdapNotifySource>();
                     source.Init(await tenantManager.GetCurrentTenantAsync());
                     var workContext = scope.ServiceProvider.GetRequiredService<WorkContext>();
-                    var notifuEngineQueue = scope.ServiceProvider.GetRequiredService<NotifyEngineQueue>();
-                    var client = workContext.NotifyContext.RegisterClient(notifuEngineQueue, source);
+                    var client = workContext.RegisterClient(scope.ServiceProvider, source);
 
                     var confirmLink = await _commonLinkUtility.GetConfirmationEmailUrlAsync(ldapUserInfo.Email, ConfirmType.EmailActivation);
 

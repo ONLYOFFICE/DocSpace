@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Common.IntegrationEvents.Events;
+
 using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Web.Studio.Core.Notify;
@@ -42,24 +44,15 @@ public class StudioNotifyServiceSender
     public StudioNotifyServiceSender(
         IServiceScopeFactory serviceProvider,
         IConfiguration configuration,
-        ICacheNotify<NotifyItem> cache,
         WorkContext workContext,
         TenantExtraConfig tenantExtraConfig,
         CoreBaseSettings coreBaseSettings)
     {
-        cache.Subscribe(OnMessage, CacheNotifyAction.Any);
         _serviceProvider = serviceProvider;
         _configuration = configuration;
         _workContext = workContext;
         _tenantExtraConfig = tenantExtraConfig;
         _coreBaseSettings = coreBaseSettings;
-    }
-
-    public void OnMessage(NotifyItem item)
-    {
-        using var scope = _serviceProvider.CreateScope();
-        var scopeClass = scope.ServiceProvider.GetRequiredService<StudioNotifyWorker>();
-        scopeClass.OnMessageAsync(item).Wait();
     }
 
     public void RegisterSendMethod()
@@ -139,66 +132,32 @@ public class StudioNotifyServiceSender
 [Scope]
 public class StudioNotifyWorker
 {
-    private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly WorkContext _workContext;
+    private readonly IServiceProvider _serviceProvider;
     private readonly TenantManager _tenantManager;
-    private readonly UserManager _userManager;
-    private readonly SecurityContext _securityContext;
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly CommonLinkUtility _commonLinkUtility;
 
     public StudioNotifyWorker(
         TenantManager tenantManager,
-        UserManager userManager,
-        SecurityContext securityContext,
         StudioNotifyHelper studioNotifyHelper,
         CommonLinkUtility baseCommonLinkUtility,
-        NotifyEngineQueue notifyEngineQueue,
-        WorkContext workContext)
+        WorkContext workContext,
+        IServiceProvider serviceProvider)
     {
         _tenantManager = tenantManager;
-        _userManager = userManager;
-        _securityContext = securityContext;
         _studioNotifyHelper = studioNotifyHelper;
         _commonLinkUtility = baseCommonLinkUtility;
-        _notifyEngineQueue = notifyEngineQueue;
         _workContext = workContext;
+        _serviceProvider = serviceProvider;
     }
 
-    public async Task OnMessageAsync(NotifyItem item)
+    public async Task OnMessageAsync(NotifyItemIntegrationEvent item)
     {
         _commonLinkUtility.ServerUri = item.BaseUrl;
         await _tenantManager.SetCurrentTenantAsync(item.TenantId);
 
-        CultureInfo culture = null;
-
-        var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
-
-        var tenant = await _tenantManager.GetCurrentTenantAsync(false);
-
-        if (tenant != null)
-        {
-            culture = tenant.GetCulture();
-        }
-
-        if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
-        {
-            await _securityContext.AuthenticateMeWithoutCookieAsync(Guid.Parse(item.UserId));
-            var user = await _userManager.GetUsersAsync(userId);
-            if (!string.IsNullOrEmpty(user.CultureName))
-            {
-                culture = CultureInfo.GetCultureInfo(user.CultureName);
-            }
-        }
-
-        if (culture != null && !Equals(CultureInfo.CurrentCulture, culture))
-        {
-            CultureInfo.CurrentCulture = culture;
-        }
-        if (culture != null && !Equals(CultureInfo.CurrentUICulture, culture))
-        {
-            CultureInfo.CurrentUICulture = culture;
-        }
+        var client = _workContext.RegisterClient(_serviceProvider, _studioNotifyHelper.NotifySource);
 
         await client.SendNoticeToAsync(
             (NotifyAction)item.Action,
@@ -206,7 +165,7 @@ public class StudioNotifyWorker
             item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
             item.SenderNames.Count > 0 ? item.SenderNames.ToArray() : null,
             item.CheckSubsciption,
-            item.Tags.Select(r => new TagValue(r.Tag_, r.Value)).ToArray());
+            item.Tags.Select(r => new TagValue(r.Key, r.Value)).ToArray());
     }
 }
 
