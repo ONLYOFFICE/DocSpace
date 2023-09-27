@@ -300,7 +300,7 @@ public class LdapUserManager
                         new TagValue(NotifyConstants.TagUserName, ldapUserInfo.DisplayUserName(_displayUserSettingsHelper)),
                         new TagValue(NotifyConstants.TagUserEmail, ldapUserInfo.Email),
                         new TagValue(NotifyConstants.TagMyStaffLink, _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetMyStaff())),
-                        NotifyConstants.TagGreenButton(_resource.NotifyButtonJoin, confirmLink),
+                        NotifyConstants.TagOrangeButton(_resource.NotifyButtonJoin, confirmLink),
                         new TagValue(NotifyCommonTags.WithoutUnsubscribe, true));
                 }
 

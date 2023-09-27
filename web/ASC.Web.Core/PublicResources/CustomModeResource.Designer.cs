@@ -103,7 +103,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Click the button below and log in* to your cloud.
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///The link is valid for 7 days.
         ///
@@ -120,7 +120,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Want to change the password on your cloud office account? Click the button below to confirm.
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///The link is valid for 7 days.
         ///
@@ -139,8 +139,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///If you can&apos;t open the link, please copy the following &quot;$InviteLink&quot;:&quot;$InviteLink&quot; and paste it into your browser address bar.
         ///
-        ///Sincerely,
-        ///ONLYOFFICE team.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_personal_custom_mode_confirmation {
             get {

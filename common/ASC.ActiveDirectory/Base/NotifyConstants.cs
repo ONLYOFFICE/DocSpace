@@ -47,7 +47,19 @@ public static class NotifyConstants
         };
         return new TagActionValue("GreenButton", action);
     }
-
+    public static ITagValue TagOrangeButton(string btnText, string btnUrl)
+    {
+        Func<string> action = () =>
+        {
+            return
+                string.Format(@"<table style=""border: 0 none; border-collapse: collapse; border-spacing: 0; empty-cells: show; margin: 0 auto; max-width: 600px; padding: 0; vertical-align: top; width: 100%; text-align: left;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{td}<td style=""height: 48px; width: 380px; margin:0; padding:0; text-align:center;""><a style=""{3}"" target=""_blank"" href=""{0}"">{1}</a></td>{2}</tr></tbody></table>",
+                    btnUrl,
+                    btnText,
+                    "<td style=\"height: 48px; width: 80px; margin:0; padding-bottom:56px;\">&nbsp;</td>",
+                    "background-color:#FF6F3D; border:1px solid #FF6F3D; border-radius: 3px; color:#ffffff; display: inline-block; font-family: 'Open Sans', Helvetica, Arial, Tahoma, sans-serif; font-size: 13px; font-weight: 600; padding-top: 15px; padding-right: 25px; padding-bottom: 15px; padding-left: 25px; text-align: center; text-decoration: none; text-transform: uppercase; -webkit-text-size-adjust: none; mso-hide: all; white-space: nowrap; letter-spacing: 0.04em;");
+        };
+        return new TagActionValue("OrangeButton", action);
+    }
     private class TagActionValue : ITagValue
     {
         private readonly Func<string> action;

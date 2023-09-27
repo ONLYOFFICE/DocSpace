@@ -130,13 +130,11 @@ Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to
 
 * *Connect any cloud storage* and work without switching between apps.
 
-$GreenButton
+$OrangeButton
 
 If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
 
-Truly yours, 
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>h1.Welcome to ONLYOFFICE Personal
@@ -161,15 +159,14 @@ h3.For a quick start, here's what you can do in ONLYOFFICE:
 
 You can also edit documents offline with our free "desktop editors":"https://www.onlyoffice.com/download-desktop.aspx" or get a mobile editing suite for your "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" device.
 
-Sincerely,
-ONLYOFFICE team</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
     <value>Want to change the email on your cloud office account?
 
 Click the button below and log in* to your cloud.
 
-$GreenButton
+$OrangeButton
 
 The link is valid for 7 days.
 
@@ -180,7 +177,7 @@ Don’t want to change your email? Just ignore this message.</value>
   <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
     <value>Want to change the password on your cloud office account? Click the button below to confirm.
 
-$GreenButton
+$OrangeButton
 
 The link is valid for 7 days.
 
@@ -193,8 +190,7 @@ you've just registered an account at the ONLYOFFICE solution for personal use. C
 
 If you can't open the link, please copy the following "$InviteLink":"$InviteLink" and paste it into your browser address bar.
 
-Sincerely,
-ONLYOFFICE team</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
     <value>You have requested a termination of your account at personal.onlyoffice.com. Follow the link to complete the request (the link is active for a 7-day period): 
@@ -209,8 +205,7 @@ Ignore this email if you do not want to proceed.
 
 If you have any questions, please contact us at "support@onlyoffice.com":"mailto:support@onlyoffice.com"
 
-Sincerely,
-ONLYOFFICE team</value>
+$TrulyYours</value>
   </data>
   <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
     <value>Dear $UserName,

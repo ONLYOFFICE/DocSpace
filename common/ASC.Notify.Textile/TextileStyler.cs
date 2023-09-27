@@ -74,42 +74,25 @@ public class TextileStyler : IPatternStyler
         }
 
         formatter.Format(message.Body);
-        var newMaster = message.GetArgument("MasterTemplate").Value as string;
         var imagePath = GetImagePath(message);
-        var logoImg = GetLogoImg(message, imagePath);
-        var logoText = GetLogoText(message);
         var template = GetTemplate(message);
         var mailSettings = GetMailSettings(message);
-        var unsubscribeText = GetUnsubscribeText(message, mailSettings, newMaster);
+        var unsubscribeText = GetUnsubscribeText(message, mailSettings);
 
-        InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent, newMaster);
-        InitTopFooter(message, out var footerTop);
-        
-        if (newMaster != null)
-        {
-            message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
-                               .Replace("%TOPFOOTER%", footerTop)
-                               .Replace("%FOOTER%", footerContent)
-                               .Replace("%FOOTERSOCIAL%", footerSocialContent)
-                               .Replace("%TEXTFOOTER%", unsubscribeText)
-                               .Replace("%IMAGEPATH%", imagePath);
-        }
-        else
-        {
-            message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
-                               .Replace("%LOGO%", logoImg)
-                               .Replace("%LOGOTEXT%", logoText)
-                               .Replace("%SITEURL%", mailSettings == null ? _mailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl)
-                               .Replace("%FOOTER%", footerContent)
-                               .Replace("%FOOTERSOCIAL%", footerSocialContent)
-                               .Replace("%TEXTFOOTER%", unsubscribeText)
-                               .Replace("%IMAGEPATH%", imagePath);
-        }
+        InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent);
+        InitImage(message, out var footerTop);
+
+        message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
+                              .Replace("%TOPFOOTER%", footerTop)
+                              .Replace("%FOOTER%", footerContent)
+                              .Replace("%FOOTERSOCIAL%", footerSocialContent)
+                              .Replace("%TEXTFOOTER%", unsubscribeText)
+                              .Replace("%IMAGEPATH%", imagePath);
     }
 
     private static string GetTemplate(NoticeMessage message)
     {
-        var template = NotifyTemplateResource.HtmlMaster;
+        var template = NotifyTemplateResource.HtmlMasterV2;
 
         var templateTag = message.GetArgument("MasterTemplate");
         if (templateTag != null)
@@ -190,7 +173,7 @@ public class TextileStyler : IPatternStyler
         return mailWhiteLabelTag == null ? null : mailWhiteLabelTag.Value as MailWhiteLabelSettings;
     }
 
-    private void InitFooter(NoticeMessage message, MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent, string Master)
+    private void InitFooter(NoticeMessage message, MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
     {
         footerContent = string.Empty;
         footerSocialContent = string.Empty;
@@ -212,24 +195,24 @@ public class TextileStyler : IPatternStyler
         switch (footerValue)
         {
             case "common":
-                InitCommonFooter(settings, out footerContent, out footerSocialContent, Master);
+                InitCommonFooter(settings, out footerContent, out footerSocialContent);
                 break;
             case "social":
-                InitSocialFooter(settings, out footerSocialContent, Master);
+                InitSocialFooter(settings, out footerSocialContent);
                 break;
             case "personal":
-                footerSocialContent = Master != null ?  NotifyTemplateResource.SocialNetworksFooterV2 : NotifyTemplateResource.SocialNetworksFooterV10;
+                footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
                 break;
             case "personalCustomMode":
                 break;
             case "opensource":
                 footerContent = NotifyTemplateResource.FooterOpensourceV10;
-                footerSocialContent = Master != null ? NotifyTemplateResource.SocialNetworksFooterV2 : NotifyTemplateResource.SocialNetworksFooterV10;
+                footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
                 break;
         }
     }
 
-    private void InitTopFooter(NoticeMessage message, out string footerTop)
+    private void InitImage(NoticeMessage message, out string footerTop)
     {
         footerTop = string.Empty;
 
@@ -240,20 +223,20 @@ public class TextileStyler : IPatternStyler
         var TopGif = message.GetArgument("TopGif");
         if (TopGif != null && !string.IsNullOrEmpty((string)TopGif.Value))
         {
-            footerTop = NotifyTemplateResource.TopGifV2
+            footerTop = NotifyTemplateResource.TopGif
                 .Replace("%LOGO%", (string)TopGif.Value)
                 .Replace("%SITEURL%", mailSettings == null ? _mailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl);
         }
         else
         {
-            footerTop = NotifyTemplateResource.TopLogoV2
+            footerTop = NotifyTemplateResource.TopLogo
                 .Replace("%LOGO%", logoImg)
                 .Replace("%LOGOTEXT%", logoText)
                 .Replace("%SITEURL%", mailSettings == null ? _mailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl);
         }
 
     }
-    private void InitCommonFooter(MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent, string Master)
+    private void InitCommonFooter(MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
     {
         footerContent = string.Empty;
         footerSocialContent = string.Empty;
@@ -265,7 +248,7 @@ public class TextileStyler : IPatternStyler
                                       .Replace("%SUPPORTURL%", _mailWhiteLabelSettingsHelper.DefaultMailSupportUrl)
                                       .Replace("%SALESEMAIL%", _mailWhiteLabelSettingsHelper.DefaultMailSalesEmail)
                                       .Replace("%DEMOURL%", _mailWhiteLabelSettingsHelper.DefaultMailDemoUrl);
-            footerSocialContent = Master != null ? NotifyTemplateResource.SocialNetworksFooterV2 : NotifyTemplateResource.SocialNetworksFooterV10;
+            footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
 
         }
         else if (settings.FooterEnabled)
@@ -276,21 +259,21 @@ public class TextileStyler : IPatternStyler
                 .Replace("%SALESEMAIL%", settings.SalesEmail)
                 .Replace("%DEMOURL%", string.IsNullOrEmpty(settings.DemoUrl) ? "mailto:" + settings.SalesEmail : settings.DemoUrl);
 
-            footerSocialContent = settings.FooterSocialEnabled ? (Master != null ? NotifyTemplateResource.SocialNetworksFooterV2: NotifyTemplateResource.SocialNetworksFooterV10) : string.Empty;
+            footerSocialContent = settings.FooterSocialEnabled ? (NotifyTemplateResource.SocialNetworksFooter) : string.Empty;
         }
     }
 
-    private static void InitSocialFooter(MailWhiteLabelSettings settings, out string footerSocialContent, string Master)
+    private static void InitSocialFooter(MailWhiteLabelSettings settings, out string footerSocialContent)
     {
         footerSocialContent = string.Empty;
 
         if (settings == null || (settings.FooterEnabled && settings.FooterSocialEnabled))
         {
-            footerSocialContent = Master != null ? NotifyTemplateResource.SocialNetworksFooterV2 : NotifyTemplateResource.SocialNetworksFooterV10;
+            footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
         }
     }
 
-    private string GetUnsubscribeText(NoticeMessage message, MailWhiteLabelSettings settings, string Master)
+    private string GetUnsubscribeText(NoticeMessage message, MailWhiteLabelSettings settings)
     {
         var withoutUnsubscribe = message.GetArgument("WithoutUnsubscribe");
 
@@ -310,7 +293,7 @@ public class TextileStyler : IPatternStyler
 
         var rootPath = message.GetArgument("__VirtualRootPath").Value;
 
-        return string.Format(Master != null ? NotifyTemplateResource.TextForFooterUnsubsribeDocSpaceV2 : NotifyTemplateResource.TextForFooterUnsubsribeDocSpace, rootPath, unsubscribeLink);
+        return string.Format(NotifyTemplateResource.TextForFooterUnsubsribeDocSpaceV2, rootPath, unsubscribeLink);
     }
 
     private string GetPortalUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)

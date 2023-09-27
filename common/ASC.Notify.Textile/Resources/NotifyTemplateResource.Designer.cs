@@ -110,6 +110,21 @@ namespace ASC.Notify.Textile.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;tr border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+        ///          &lt;td style=&quot;width: 24px; vertical-align: top; margin: 0; padding: 32px 0 0 208px;&quot;&gt;
+        ///              &lt;a href=&quot;https://www.facebook.com/pages/OnlyOffice/833032526736775&quot; style=&quot;width: 24px; height: 24px; display: block; margin: 0; padding: 0;&quot; target=&quot;_blank&quot;&gt;
+        ///                  &lt;img src=&quot;%IMAGEPATH%/social-facebook-24.png&quot; alt=&quot;Facebook&quot; style=&quot;width: 24px; height: 24px;&quot; /&gt;
+        ///              &lt;/a&gt;
+        ///          &lt;/td&gt;
+        ///          &lt;td style=&quot;width: 24px; vertic [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string SocialNetworksFooter {
+            get {
+                return ResourceManager.GetString("SocialNetworksFooter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;tr border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
         ///          &lt;td style=&quot;width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 155px;&quot;&gt;
         ///              &lt;a href=&quot;https://www.facebook.com/pages/OnlyOffice/833032526736775&quot; style=&quot;width: 40px; height: 40px; display: block; margin: 0; padding: 0;&quot; target=&quot;_blank&quot;&gt;
         ///                  &lt;img src=&quot;%IMAGEPATH%/social-fb-40.png&quot; alt=&quot;Facebook&quot; style=&quot;width: 40px; height: 40px;&quot; /&gt;
@@ -120,21 +135,6 @@ namespace ASC.Notify.Textile.Resources {
         public static string SocialNetworksFooterV10 {
             get {
                 return ResourceManager.GetString("SocialNetworksFooterV10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;tr border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
-        ///          &lt;td style=&quot;width: 24px; vertical-align: top; margin: 0; padding: 32px 0 0 208px;&quot;&gt;
-        ///              &lt;a href=&quot;https://www.facebook.com/pages/OnlyOffice/833032526736775&quot; style=&quot;width: 24px; height: 24px; display: block; margin: 0; padding: 0;&quot; target=&quot;_blank&quot;&gt;
-        ///                  &lt;img src=&quot;%IMAGEPATH%/social-facebook-24.png&quot; alt=&quot;Facebook&quot; style=&quot;width: 24px; height: 24px;&quot; /&gt;
-        ///              &lt;/a&gt;
-        ///          &lt;/td&gt;
-        ///          &lt;td style=&quot;width: 24px; vertic [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string SocialNetworksFooterV2 {
-            get {
-                return ResourceManager.GetString("SocialNetworksFooterV2", resourceCulture);
             }
         }
         
@@ -166,9 +166,9 @@ namespace ASC.Notify.Textile.Resources {
         ///                    &lt;img src=&quot;%LOGO%&quot; style=&quot;border: 0px none; width: 600px; margin: 0; padding: 0;&quot; alt=&quot;ONLYOFFICE&quot; /&gt;
         ///                 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string TopGifV2 {
+        public static string TopGif {
             get {
-                return ResourceManager.GetString("TopGifV2", resourceCulture);
+                return ResourceManager.GetString("TopGif", resourceCulture);
             }
         }
         
@@ -179,9 +179,9 @@ namespace ASC.Notify.Textile.Resources {
         ///                &lt;a href=&quot;%SITEURL%&quot; style=&quot;text-decoration: none; display: inline-block; width: 386px; height: 44px; margin: 0; padding: 0;&quot; target=&quot;_blank&quot;&gt;
         ///                    &lt;img src=&quot;%LOGO%&quot; style=&quot;border: 0px none; width: 386px; height: [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string TopLogoV2 {
+        public static string TopLogo {
             get {
-                return ResourceManager.GetString("TopLogoV2", resourceCulture);
+                return ResourceManager.GetString("TopLogo", resourceCulture);
             }
         }
     }

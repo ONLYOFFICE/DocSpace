@@ -196,6 +196,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Best regards, ONLYOFFICE™ Support Team.
+        /// </summary>
+        public static string BestRegardsText {
+            get {
+                return ResourceManager.GetString("BestRegardsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to WATCH FULL PLAYLIST.
         /// </summary>
         public static string ButtomWatchFullPlaylist {
@@ -481,7 +490,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///To start participating in the &quot;${__VirtualRootPath}&quot;:&quot;$InviteLink&quot; portal life you need to activate your email address. This is done for security reasons.
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///This link is valid for 7 days only. Please complete your email activation within that period..
         /// </summary>
@@ -534,7 +543,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Click the button below and log in* to your cloud.
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///The link is valid for 7 days.
         ///
@@ -551,7 +560,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///The link is valid for 7 days.
         ///
@@ -570,7 +579,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Please follow the link below to change your mobile phone:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///If you do not want to change your mobile phone or received this email by mistake, please ignore it or contact your portal administrator to find out the details..
         /// </summary>
@@ -587,7 +596,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Please click the button below to go to the portal login page and configure the authenticator application:
         ///
-        ///$GreenButton.
+        ///$OrangeButton.
         /// </summary>
         public static string pattern_change_tfa {
             get {
@@ -604,7 +613,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Please follow the link below to confirm the operation:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///*Note*: this link is valid for 7 days only. Please complete the portal owner change process within that period..
         /// </summary>
@@ -623,7 +632,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Please follow the link below to confirm the operation:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///*Note*: this link is valid for 7 days only. Please complete the portal address change process within that period..
         /// </summary>
@@ -931,7 +940,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///To accept the invitation please enter your name and password following this link:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///*Note*: this link is valid for 48 hours only. Please complete the operation within that period..
         /// </summary>
@@ -998,11 +1007,10 @@ namespace ASC.Web.Core.PublicResources {
         ///Your portal is now available at the old address &quot;$PortalUrl&quot;:&quot;$PortalUrl&quot;
         ///
         ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;
-        ///Best regards,
-        ///ONLYOFFICE™ Support Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
         ///
-        ///^To change the notification type, please manage your &quot;subscription s [rest of string was truncated]&quot;;.
+        ///$TrulyYours
+        ///
+        ///^To change the notification type, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
         /// </summary>
         public static string pattern_migration_error {
             get {
@@ -1018,11 +1026,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;
         ///
-        ///Best regards,
-        ///ONLYOFFICE™ Support Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
+        ///$TrulyYours
         ///
-        ///^To change the notification type, please manage your &quot;subscription setting [rest of string was truncated]&quot;;.
+        ///^To change the notification type, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
         /// </summary>
         public static string pattern_migration_server_failure {
             get {
@@ -1039,8 +1045,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;
         ///
-        ///Best regards,
-        ///O [rest of string was truncated]&quot;;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_migration_start {
             get {
@@ -1055,11 +1060,11 @@ namespace ASC.Web.Core.PublicResources {
         ///Your portal has been migrated to a new domain. Please restore your access to the portal by specifying the password which will be used for signing in.
         ///
         ///Please follow the link below to set your password for the account:
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///*Note*: this link is valid for 7 days only. Please complete the access restore process within that period.
         ///
-        ///If you received this email by mistake, please ignore it or contact your &quot;$PortalUrl&quot;:&quot;$PortalUrl&quot; portal adminis [rest of string was truncated]&quot;;.
+        ///If you received this email by mistake, please ignore it or contact your &quot;$PortalUrl&quot;:&quot;$PortalUrl&quot; portal admini [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_migration_success_v115 {
             get {
@@ -1217,8 +1222,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We&apos;re glad you&apos;re here. Stay tuned!
         ///
-        ///Sincerely,
-        ///ONLYOFFICE team.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_personal_activate {
             get {
@@ -1283,7 +1287,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Click the button below and log in* to your cloud.
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///The link is valid for 7 days.
         ///
@@ -1300,7 +1304,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
         ///
-        ///$GreenButton 
+        ///$OrangeButton 
         ///
         ///The link is valid for 7 days.
         ///
@@ -1319,8 +1323,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///If you can&apos;t open the link, please copy the following &quot;$InviteLink&quot;:&quot;$InviteLink&quot; and paste it into your browser address bar.
         ///
-        ///Sincerely,
-        ///ONLYOFFICE team.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_personal_confirmation {
             get {
@@ -1331,11 +1334,11 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You have requested a termination of your account at personal.onlyoffice.com. Follow the link to complete the request (the link is active for a 7-day period): 
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///*Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our &quot;Privacy statement&quot;:&quot;https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;.
         ///
-        ///&quot;Read more about account terminati [rest of string was truncated]&quot;;.
+        ///&quot;Read more about account terminat [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_profile_delete {
             get {
@@ -1350,12 +1353,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You have requested a temporary deactivation of your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal. Please follow the link below to confirm the operation:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///*Note*: this link is valid for 7 days only. Please complete the portal deactivation process within that period.
         ///
         ///You can reactivate your portal any time by clicking the following link:
-        ///p=. &quot;Reactivate Portal&quot;:&quot;$ActivateUrl&quot; (this  [rest of string was truncated]&quot;;.
+        ///p=. &quot;Reactivate Portal&quot;:&quot;$ActivateUrl&quot; (this [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_portal_deactivate {
             get {
@@ -1370,12 +1373,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You have requested a temporary deactivation of your [${__VirtualRootPath}](${__VirtualRootPath}) portal. Please follow the link below to confirm the operation:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///_Note_: this link is valid for 7 days only. Please complete the portal deactivation process within that period.
         ///
         ///You can reactivate your portal any time by clicking the following link:
-        ///[Reactivate Portal]($ActivateUrl) (this link has n [rest of string was truncated]&quot;;.
+        ///[Reactivate Portal]($ActivateUrl) (this link has  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_portal_deactivate_tg {
             get {
@@ -1455,7 +1458,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///If you still want to delete your profile please follow the link below to confirm the operation:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///*Note*: this link is valid for 7 days only. Please complete the profile deletion process within that period..
         /// </summary>
@@ -1646,7 +1649,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your portal has been restored. To access it, you need to set a new password:
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///*Note*: this link is valid for 7 days only.
         ///
@@ -1667,11 +1670,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;
         ///
-        ///Best regards,
-        ///ONLYOFFICE™ Support Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
+        ///$TrulyYours
         ///
-        ///^To change the notification type, please manage your &quot;subscription settings&quot;:&quot;$Re [rest of string was truncated]&quot;;.
+        ///^To change the notification type, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
         /// </summary>
         public static string pattern_restore_started {
             get {
@@ -1843,11 +1844,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Make sure to pay your Business subscription before the grace period is due. Thus, you will be able to further use all the benefits of your ONLYOFFICE DocSpace.
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_saas_owner_payment_warning_grace_period_activation {
             get {
@@ -1862,11 +1861,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We recommend paying your Business subscription now and continue to use all the benefits of your ONLYOFFICE DocSpace.
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_saas_owner_payment_warning_grace_period_before_activation {
             get {
@@ -1881,11 +1878,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Make sure to pay your Business subscription as soon as possible. Thus, you will be able to use all the benefits of your ONLYOFFICE DocSpace as before.
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_saas_owner_payment_warning_grace_period_expired {
             get {
@@ -1900,11 +1895,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Make sure to pay your Business subscription today. Thus, you will be able to further use all the benefits of your ONLYOFFICE DocSpace.
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_saas_owner_payment_warning_grace_period_last_day {
             get {
@@ -1921,9 +1914,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///After clicking on the invitation link, please set a new password for your account.
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_saas_room_invite {
             get {
@@ -2026,8 +2017,7 @@ namespace ASC.Web.Core.PublicResources {
         ///This message was generated automatically to test your SMTP settings. If you are viewing it this means that the settings are correct and you can use them on your portal.
         ///
         ///
-        ///Best regards,
-        ///ONLYOFFICE Team.
+        ///$TrulyYours.
         /// </summary>
         public static string pattern_smtp_test {
             get {
@@ -2144,7 +2134,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Accept the invitation by following the link below and use your login and password from the corporate account to sign in. 
         ///
-        ///$GreenButton
+        ///$OrangeButton
         ///
         ///The link is only valid for 7 days..
         /// </summary>

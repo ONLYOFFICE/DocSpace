@@ -85,11 +85,14 @@ public class NotifyHelper
 
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
 
+        var bestReagardsTxt = WebstudioNotifyPatternResource.ResourceManager.GetString("BestRegardsText");
+
         await client.SendNoticeToAsync(
             Actions.BackupCreated,
             new[] { await _studioNotifyHelper.ToRecipientAsync(userId) },
             new[] { StudioNotifyService.EMailSenderName },
-            new TagValue(Tags.OwnerName, (await _userManager.GetUsersAsync(userId)).DisplayUserName(_displayUserSettingsHelper)));
+            new TagValue(Tags.OwnerName, (await _userManager.GetUsersAsync(userId)).DisplayUserName(_displayUserSettingsHelper)),
+            TagValues.TrulyYours(bestReagardsTxt));
     }
 
     public async Task SendAboutRestoreStartedAsync(Tenant tenant, bool notifyAllUsers)
@@ -97,6 +100,8 @@ public class NotifyHelper
         await _tenantManager.SetCurrentTenantAsync(tenant.Id);
 
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
+
+        var bestReagardsTxt = WebstudioNotifyPatternResource.ResourceManager.GetString("BestRegardsText");
 
         var owner = await _userManager.GetUsersAsync(tenant.OwnerId);
         var users =
@@ -107,7 +112,8 @@ public class NotifyHelper
         await client.SendNoticeToAsync(
             Actions.RestoreStarted,
             users,
-            new[] { StudioNotifyService.EMailSenderName });
+            new[] { StudioNotifyService.EMailSenderName },
+            TagValues.TrulyYours(bestReagardsTxt));
     }
 
     public async Task SendAboutRestoreCompletedAsync(Tenant tenant, bool notifyAllUsers)
@@ -124,13 +130,13 @@ public class NotifyHelper
             var hash = (await _authManager.GetUserPasswordStampAsync(user.Id)).ToString("s");
             var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
-            var greenButtonText = BackupResource.ResourceManager.GetString("ButtonSetPassword", GetCulture(user));
+            var orangeButtonText = BackupResource.ResourceManager.GetString("ButtonSetPassword", GetCulture(user));
 
             await client.SendNoticeToAsync(
                 Actions.RestoreCompletedV115,
                 new IRecipient[] { user },
                 new[] { StudioNotifyService.EMailSenderName },
-                TagValues.GreenButton(greenButtonText, confirmationUrl));
+                TagValues.OrangeButton(orangeButtonText, confirmationUrl));
         }
     }
 
@@ -157,8 +163,11 @@ public class NotifyHelper
                     var hash = (await _authManager.GetUserPasswordStampAsync(user.Id)).ToString("s");
                     var confirmationUrl = url + "/" + _commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
-                    var greenButtonText = BackupResource.ResourceManager.GetString("ButtonSetPassword", GetCulture(user));
-                    currentArgs.Add(TagValues.GreenButton(greenButtonText, confirmationUrl));
+                    var orangeButtonText = BackupResource.ResourceManager.GetString("ButtonSetPassword", GetCulture(user));
+                    currentArgs.Add(TagValues.OrangeButton(orangeButtonText, confirmationUrl));
+
+                    var bestReagardsTxt = WebstudioNotifyPatternResource.ResourceManager.GetString("BestRegardsText");
+                    currentArgs.Add(TagValues.TrulyYours(bestReagardsTxt));
 
                     await client.SendNoticeToAsync(
                         action,
