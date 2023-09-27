@@ -523,29 +523,29 @@ public class FileSharing
         }
     }
 
-    public async IAsyncEnumerable<AceWrapper> GetRoomSharesAsync<T>(Folder<T> room, ShareFilterType filterType, EmployeeActivationStatus? status, int offset, int count)
+    public async IAsyncEnumerable<AceWrapper> GetPureSharesAsync<T>(FileEntry<T> entry, ShareFilterType filterType, EmployeeActivationStatus? status, int offset, int count)
     {
-        if (room == null || !DocSpaceHelper.IsRoom(room.FolderType))
+        if (entry == null)
         {
             throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
         }
 
-        if (!await _fileSecurity.CanReadAsync(room))
+        if (!await _fileSecurity.CanReadAsync(entry))
         {
-            _logger.ErrorUserCanTGetSharedInfo(_authContext.CurrentAccount.ID, room.FileEntryType, room.Id.ToString()!);
+            _logger.ErrorUserCanTGetSharedInfo(_authContext.CurrentAccount.ID, entry.FileEntryType, entry.Id.ToString()!);
 
             yield break;
         }
         
-        var canEditAccess = await _fileSecurity.CanEditAccessAsync(room);
+        var canEditAccess = await _fileSecurity.CanEditAccessAsync(entry);
 
-        var allDefaultAces = await GetDefaultRoomAcesAsync(room, filterType, status).ToListAsync();
+        var allDefaultAces = await GetDefaultAcesAsync(entry, filterType, status).ToListAsync();
         var defaultAces = allDefaultAces.Skip(offset).Take(count).ToList();
         
         offset = Math.Max(defaultAces.Count > 0 ? 0 : offset - allDefaultAces.Count, 0);
         count -= defaultAces.Count;
 
-        var records = _fileSecurity.GetPureSharesAsync(room, filterType, status, offset, count);
+        var records = _fileSecurity.GetPureSharesAsync(entry, filterType, status, offset, count);
 
         foreach (var record in defaultAces)
         {
@@ -554,13 +554,13 @@ public class FileSharing
 
         await foreach (var record in records)
         {
-            yield return await ToAceAsync(room, record, canEditAccess);
+            yield return await ToAceAsync(entry, record, canEditAccess);
         }
     }
 
     public async Task<int> GetRoomSharesCountAsync<T>(Folder<T> room, ShareFilterType filterType)
     {
-        var defaultAces = await GetDefaultRoomAcesAsync(room, filterType, null).CountAsync();
+        var defaultAces = await GetDefaultAcesAsync(room, filterType, null).CountAsync();
         var sharesCount = await _fileSecurity.GetPureSharesCountAsync(room, filterType, null);
 
         return defaultAces + sharesCount;
@@ -882,7 +882,7 @@ public class FileSharing
             .Select(aceWrapper => new AceShortWrapper(aceWrapper)));
     }
     
-    private async IAsyncEnumerable<AceWrapper> GetDefaultRoomAcesAsync<T>(Folder<T> room, ShareFilterType filterType, EmployeeActivationStatus? status)
+    private async IAsyncEnumerable<AceWrapper> GetDefaultAcesAsync<T>(FileEntry<T> entry, ShareFilterType filterType, EmployeeActivationStatus? status)
     {
         if (filterType != ShareFilterType.User)
         {
@@ -891,7 +891,7 @@ public class FileSharing
 
         if (status.HasValue)
         {
-            var user = await _userManager.GetUsersAsync(room.CreateBy);
+            var user = await _userManager.GetUsersAsync(entry.CreateBy);
 
             if (user.ActivationStatus != status.Value)
             {
@@ -901,8 +901,8 @@ public class FileSharing
 
         var owner = new AceWrapper
         {
-            Id = room.CreateBy,
-            SubjectName = await _global.GetUserNameAsync(room.CreateBy),
+            Id = entry.CreateBy,
+            SubjectName = await _global.GetUserNameAsync(entry.CreateBy),
             SubjectGroup = false,
             Access = FileShare.ReadWrite,
             Owner = true,

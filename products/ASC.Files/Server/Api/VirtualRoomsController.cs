@@ -309,7 +309,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         };
 
         result.Warning = await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
-        result.Members = await _fileStorageService.GetSharedInfoAsync(id, inDto.Invitations.Select(s => s.Id))
+        result.Members = await _fileStorageService.GetRoomSharedInfoAsync(id, inDto.Invitations.Select(s => s.Id))
             .SelectAwait(async a => await _fileShareDtoHelper.Get(a))
             .ToListAsync();
 
@@ -405,6 +405,14 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         }
 
         _apiContext.SetCount(counter);
+    }
+
+    [HttpGet("rooms/{id}/link")]
+    public async Task<FileShareDto> GetPrimarySharedLinkAsync(T id)
+    {
+        var linkAce = await _fileStorageService.GetPrimarySharedLinkAsync(id, FileEntryType.Folder);
+        
+        return linkAce != null ? await _fileShareDtoHelper.Get(linkAce) : null;
     }
 
     /// <summary>

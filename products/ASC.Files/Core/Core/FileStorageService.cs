@@ -2527,7 +2527,7 @@ public class FileStorageService //: IFileStorageService
     {
         var room = await GetFolderDao<T>().GetFolderAsync(roomId).NotFoundIfNull();
 
-        await foreach (var ace in _fileSharing.GetRoomSharesAsync(room, filterType, null, offset, count))
+        await foreach (var ace in _fileSharing.GetPureSharesAsync(room, filterType, null, offset, count))
         {
             yield return ace;
         }
@@ -2535,12 +2535,12 @@ public class FileStorageService //: IFileStorageService
 
     public async Task<int> GetRoomSharesCountAsync<T>(T roomId, ShareFilterType filterType)
     {
-        var room = await GetFolderDao<T>().GetFolderAsync(roomId).NotFoundIfNull();
+        var room = (await GetFolderDao<T>().GetFolderAsync(roomId)).NotFoundIfNull();
 
         return await _fileSharing.GetRoomSharesCountAsync(room, filterType);
     }
 
-    public async IAsyncEnumerable<AceWrapper> GetSharedInfoAsync<T>(T roomId, IEnumerable<Guid> subjects)
+    public async IAsyncEnumerable<AceWrapper> GetRoomSharedInfoAsync<T>(T roomId, IEnumerable<Guid> subjects)
     {
         var room = await GetFolderDao<T>().GetFolderAsync(roomId).NotFoundIfNull();
 
@@ -2548,6 +2548,27 @@ public class FileStorageService //: IFileStorageService
         {
             yield return ace;
         }
+    }
+
+    public async Task<AceWrapper> GetPrimarySharedLinkAsync<T>(T entryId, FileEntryType entryType)
+    {
+        FileEntry<T> entry = entryType == FileEntryType.File 
+            ? await GetFileDao<T>().GetFileAsync(entryId)
+            : await GetFolderDao<T>().GetFolderAsync(entryId);
+
+        entry.NotFoundIfNull();
+
+        ErrorIf(!await _fileSecurity.CanEditAccessAsync(entry), FilesCommonResource.ErrorMassage_SecurityException);
+
+        var link = await _fileSharing.GetPureSharesAsync(entry, ShareFilterType.PrimaryExternalLink, null, 0, 1)
+            .FirstOrDefaultAsync();
+
+        if (link == null)
+        {
+            return await SetExternalLinkAsync(entry, Guid.NewGuid(), FileShare.Read, FilesCommonResource.DefaultExternalLinkTitle, primary: true);
+        }
+
+        return link;
     }
 
     public async Task<string> SetAceObjectAsync<T>(AceCollection<T> aceCollection, bool notify)
@@ -3312,7 +3333,7 @@ public class FileStorageService //: IFileStorageService
         {
             var counter = 0;
 
-            await foreach (var ace in _fileSharing.GetRoomSharesAsync(room, ShareFilterType.User, EmployeeActivationStatus.Pending, offset, packSize + margin))
+            await foreach (var ace in _fileSharing.GetPureSharesAsync(room, ShareFilterType.User, EmployeeActivationStatus.Pending, offset, packSize + margin))
             {
                 counter++;
                 
