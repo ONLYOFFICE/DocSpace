@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import api from "@docspace/common/api";
-
-const { OformsFilter } = api;
+import OformsFilter from "@docspace/common/api/oforms/filter";
+import { submitToGallery } from "@docspace/common/api/oforms";
 
 class OformsStore {
   authStore;
@@ -10,6 +9,10 @@ class OformsStore {
   oformsFilter = OformsFilter.getDefault();
   gallerySelected = null;
   oformsIsLoading = false;
+
+  submitToGalleryTileIsVisible = !localStorage.getItem(
+    "submitToGalleryTileIsHidden"
+  );
 
   constructor(authStore) {
     makeAutoObservable(this);
@@ -31,6 +34,18 @@ class OformsStore {
       this.setOformsFilter(newOformsFilter);
       this.setOformFiles(oformData?.data?.data ?? []);
     });
+  };
+
+  submitToFormGallery = async (file, formName, language, signal = null) => {
+    const res = await submitToGallery(
+      this.authStore.settingsStore.formGallery.uploadUrl,
+      file,
+      formName,
+      language,
+      signal
+    );
+
+    return res;
   };
 
   setOformFiles = (oformFiles) => {
@@ -86,6 +101,11 @@ class OformsStore {
   get hasMoreForms() {
     return this.oformFiles.length < this.oformsFilterTotal;
   }
+
+  hideSubmitToGalleryTile = () => {
+    localStorage.setItem("submitToGalleryTileIsHidden", true);
+    this.submitToGalleryTileIsVisible = false;
+  };
 }
 
 export default OformsStore;

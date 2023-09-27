@@ -21,7 +21,7 @@ const Submenu = (props) => {
     startSelect = 0,
     forsedActiveItemId,
     onSelect,
-    scale,
+    size,
     ...rest
   } = props;
   if (!data) return null;
@@ -106,7 +106,7 @@ const Submenu = (props) => {
       <div className="sticky">
         <SubmenuRoot>
           <SubmenuScrollbarSize />
-          <SubmenuScroller scale={scale}>
+          <SubmenuScroller size={size}>
             <StyledSubmenuItems ref={submenuItemsRef} role="list">
               {data.map((d) => {
                 const isActive =
@@ -145,10 +145,14 @@ const Submenu = (props) => {
                 );
               })}
             </StyledSubmenuItems>
-            {!scale && <StyledSubmenuBottomLine className="bottom-line" />}
+            {size !== "scale" && (
+              <StyledSubmenuBottomLine className="bottom-line" />
+            )}
           </SubmenuScroller>
         </SubmenuRoot>
-        {scale && <StyledSubmenuBottomLine className="bottom-line" />}
+        {size === "scale" && (
+          <StyledSubmenuBottomLine className="bottom-line" />
+        )}
       </div>
       <div className="sticky-indent"></div>
 
@@ -167,7 +171,7 @@ Submenu.propTypes = {
   /** Property that allows explicitly selecting content passed through an external operation  */
   forsedActiveItemId: PropTypes.any,
   /** Scales the width of the bottom line to 100%.  */
-  scale: PropTypes.bool,
+  size: PropTypes.string,
   /** Sets a callback function that is triggered when the submenu item is selected */
   onSelect: PropTypes.func,
 };

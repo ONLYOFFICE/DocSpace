@@ -21,6 +21,7 @@ import FormFillRectSvgUrl from "PUBLIC_DIR/images/form.fill.rect.svg?url";
 import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
 import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
 import FormPlusReactSvgUrl from "PUBLIC_DIR/images/form.plus.react.svg?url";
+import FormFileReactSvgUrl from "PUBLIC_DIR/images/form.file.react.svg?url";
 import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import PinReactSvgUrl from "PUBLIC_DIR/images/pin.react.svg?url";
@@ -32,6 +33,9 @@ import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.s
 import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
+import LeaveRoomSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
+import CatalogRoomsReactSvgUrl from "PUBLIC_DIR/images/catalog.rooms.react.svg?url";
+
 import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
@@ -49,6 +53,7 @@ import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { getOAuthToken } from "@docspace/common/utils";
 import api from "@docspace/common/api";
+import { FolderType } from "@docspace/common/constants";
 
 const LOADER_TIMER = 500;
 let loadingTime;
@@ -194,6 +199,17 @@ class ContextOptionsStore {
       });
       setConvertPasswordDialogVisible(true);
     });
+  };
+
+  onClickSubmitToFormGallery = (item) => {
+    if (item && !item.exst) {
+      const splitTitle = item.title.split(".");
+      item.title = splitTitle.slice(0, -1).join(".");
+      item.exst = splitTitle.length !== 1 ? `.${splitTitle.at(-1)}` : null;
+    }
+
+    this.dialogsStore.setFormItem(item);
+    this.dialogsStore.setSubmitToGalleryDialogVisible(true);
   };
 
   onOpenLocation = (item) => {
@@ -389,6 +405,12 @@ class ContextOptionsStore {
 
   onClickDownloadAs = () => {
     this.dialogsStore.setDownloadDialogVisible(true);
+  };
+
+  onClickCreateRoom = () => {
+    this.filesActionsStore.setProcessCreatingRoomFromData(true);
+    const event = new Event(Events.ROOM_CREATE);
+    window.dispatchEvent(event);
   };
 
   onDuplicate = (item, t) => {
@@ -674,6 +696,10 @@ class ContextOptionsStore {
     }
   };
 
+  onLeaveRoom = () => {
+    this.dialogsStore.setLeaveRoomDialogVisible(true);
+  };
+
   onSelect = (item) => {
     const { onSelectItem } = this.filesActionsStore;
 
@@ -767,7 +793,7 @@ class ContextOptionsStore {
         label: t("EnableNotifications"),
         icon: UnmuteReactSvgUrl,
         onClick: (e) => this.onClickMute(e, item, t),
-        disabled: false,
+        disabled: !item.inRoom,
         "data-action": "unmute",
         action: "unmute",
       },
@@ -777,7 +803,7 @@ class ContextOptionsStore {
         label: t("DisableNotifications"),
         icon: MuteReactSvgUrl,
         onClick: (e) => this.onClickMute(e, item, t),
-        disabled: false,
+        disabled: !item.inRoom,
         "data-action": "mute",
         action: "mute",
       },
@@ -1020,6 +1046,19 @@ class ContextOptionsStore {
       },
       separator0,
       {
+        id: "option_submit-to-gallery",
+        key: "submit-to-gallery",
+        label: t("Common:SubmitToFormGallery"),
+        icon: FormFileReactSvgUrl,
+        onClick: () => this.onClickSubmitToFormGallery(item),
+        isOutsideLink: true,
+        disabled: !item.security.SubmitToFormGallery,
+      },
+      {
+        key: "separator-SubmitToGallery",
+        isSeparator: true,
+      },
+      {
         id: "option_reconnect-storage",
         key: "reconnect-storage",
         label: t("Common:ReconnectStorage"),
@@ -1159,6 +1198,14 @@ class ContextOptionsStore {
         action: "remove",
       },
       {
+        id: "option_create_room",
+        key: "create-room",
+        label: t("Files:CreateRoom"),
+        icon: CatalogRoomsReactSvgUrl,
+        onClick: this.onClickCreateRoom,
+        disabled: this.selectedFolderStore.rootFolderType !== FolderType.USER,
+      },
+      {
         id: "option_download",
         key: "download",
         label: t("Common:Download"),
@@ -1192,7 +1239,7 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
-        key: "separator2",
+        key: "separator3",
         isSeparator: true,
       },
       {
@@ -1220,6 +1267,14 @@ class ContextOptionsStore {
         disabled: false,
         "data-action": "archive",
         action: "archive",
+      },
+      {
+        id: "option_leave-room",
+        key: "leave-room",
+        label: t("LeaveTheRoom"),
+        icon: LeaveRoomSvgUrl,
+        onClick: this.onLeaveRoom,
+        disabled: this.treeFoldersStore.isArchiveFolder || !item.inRoom,
       },
       {
         id: "option_unarchive-room",
@@ -1448,6 +1503,14 @@ class ContextOptionsStore {
         disabled: favoriteItems.length || !removeFromFavoriteItems.length,
         "data-action": "remove",
         action: "remove",
+      },
+      {
+        id: "create_room",
+        key: "create-room",
+        label: t("Files:CreateRoom"),
+        icon: CatalogRoomsReactSvgUrl,
+        onClick: this.onClickCreateRoom,
+        disabled: this.selectedFolderStore.rootFolderType !== FolderType.USER,
       },
       {
         key: "download",

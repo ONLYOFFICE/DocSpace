@@ -21,20 +21,18 @@ import LinkBlock from "./LinkBlock";
 import ToggleBlock from "./ToggleBlock";
 import PasswordAccessBlock from "./PasswordAccessBlock";
 import LimitTimeBlock from "./LimitTimeBlock";
-import { LinkType } from "../../../helpers/constants";
 import { isMobileOnly } from "react-device-detect";
 
 const EditLinkPanel = (props) => {
   const {
     t,
     roomId,
-    linkId,
     isEdit,
     visible,
     password,
     setIsVisible,
     editExternalLink,
-    setExternalLinks,
+    setExternalLink,
     shareLink,
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
@@ -47,7 +45,7 @@ const EditLinkPanel = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const linkTitle = link.sharedTo.title ?? "";
+  const linkTitle = link?.sharedTo?.title ?? "";
   const [linkNameValue, setLinkNameValue] = useState(linkTitle);
   const [passwordValue, setPasswordValue] = useState(password);
   const [expirationDate, setExpirationDate] = useState(date);
@@ -93,7 +91,9 @@ const EditLinkPanel = (props) => {
       return;
     }
 
-    const newLink = JSON.parse(JSON.stringify(link));
+    const externalLink = link ?? { access: 2, sharedTo: {} };
+
+    const newLink = JSON.parse(JSON.stringify(externalLink));
 
     newLink.sharedTo.title = linkNameValue;
     newLink.sharedTo.password = passwordAccessIsChecked ? passwordValue : null;
@@ -102,10 +102,8 @@ const EditLinkPanel = (props) => {
 
     setIsLoading(true);
     editExternalLink(roomId, newLink)
-      .then((res) => {
-        setExternalLinks(res);
-
-        const link = res.find((l) => l?.sharedTo?.id === linkId);
+      .then((link) => {
+        setExternalLink(link);
 
         if (isEdit) {
           copy(linkValue);
@@ -113,7 +111,7 @@ const EditLinkPanel = (props) => {
         } else {
           copy(link?.sharedTo?.shareLink);
 
-          toastr.success(t("Files:LinkAddedSuccessfully"));
+          toastr.success(t("Files:LinkCreatedSuccessfully"));
         }
       })
       .catch((err) => toastr.error(err?.message))
@@ -179,13 +177,14 @@ const EditLinkPanel = (props) => {
       >
         <div className="edit-link_header">
           <Heading className="edit-link_heading">
-            {isEdit ? t("Files:EditLink") : t("Files:AddNewLink")}
+            {isEdit ? t("Files:EditLink") : t("Files:CreateNewLink")}
           </Heading>
         </div>
         <StyledScrollbar stype="mediumBlack">
           <div className="edit-link_body">
             <LinkBlock
               t={t}
+              isEdit={isEdit}
               isLoading={isLoading}
               shareLink={shareLink}
               linkNameValue={linkNameValue}
@@ -230,7 +229,7 @@ const EditLinkPanel = (props) => {
             scale
             primary
             size="normal"
-            label={t("Common:SaveButton")}
+            label={isEdit ? t("Common:SaveButton") : t("Common:Create")}
             isDisabled={isLoading || !linkNameIsValid || isExpired}
             onClick={onSave}
           />
@@ -270,25 +269,22 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     setUnsavedChangesDialog,
     linkParams,
   } = dialogsStore;
-  const { externalLinks, editExternalLink, setExternalLinks } = publicRoomStore;
+  const { externalLinks, editExternalLink, setExternalLink } = publicRoomStore;
   const { isEdit } = linkParams;
 
   const linkId = linkParams?.link?.sharedTo?.id;
   const link = externalLinks.find((l) => l?.sharedTo?.id === linkId);
-  const template = externalLinks.find(
-    (t) =>
-      t?.sharedTo?.isTemplate && t?.sharedTo?.linkType === LinkType.External
-  );
-  const shareLink = link?.sharedTo?.shareLink ?? template?.sharedTo?.shareLink;
+
+  const shareLink = link?.sharedTo?.shareLink;
 
   return {
     visible: editLinkPanelIsVisible,
     setIsVisible: setEditLinkPanelIsVisible,
     isEdit,
-    linkId: link?.sharedTo?.id ?? template?.sharedTo?.id,
+    linkId: link?.sharedTo?.id,
     editExternalLink,
     roomId: selectionParentRoom.id,
-    setExternalLinks,
+    setExternalLink,
     isLocked: !!link?.sharedTo?.password,
     password: link?.sharedTo?.password ?? "",
     date: link?.sharedTo?.expirationDate,
@@ -297,7 +293,7 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     externalLinks,
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
-    link: link ?? template,
+    link,
     language: auth.language,
   };
 })(

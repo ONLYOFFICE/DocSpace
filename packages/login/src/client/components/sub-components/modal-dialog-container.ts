@@ -24,7 +24,6 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
 
   .email-reg-field {
-    height: 46px;
     margin: 0;
   }
 `;

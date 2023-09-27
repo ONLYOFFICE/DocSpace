@@ -439,9 +439,8 @@ public class BaseIndexer<T> where T : class, ISearchItem
         if (index != null)
         {
             webstudioDbContext.WebstudioIndex.Remove(index);
+            await webstudioDbContext.SaveChangesAsync();
         }
-
-        await webstudioDbContext.SaveChangesAsync();
 
         _logger.DebugIndexDeleted(Wrapper.IndexName);
         _client.Instance.Indices.Delete(Wrapper.IndexName);

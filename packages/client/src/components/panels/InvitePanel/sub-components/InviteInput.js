@@ -24,16 +24,19 @@ import {
   StyledDescription,
 } from "../StyledInvitePanel";
 
+import Filter from "@docspace/common/api/people/filter";
+import { getMembersList } from "@docspace/common/api/people";
+
+const searchUsersThreshold = 2;
+
 const InviteInput = ({
   defaultAccess,
-  getUsersByQuery,
   hideSelector,
   inviteItems,
   onClose,
   roomId,
   roomType,
   setInviteItems,
-  roomUsers,
   t,
   isOwner,
   inputsRef,
@@ -44,14 +47,11 @@ const InviteInput = ({
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [searchPanelVisible, setSearchPanelVisible] = useState(false);
+  const [isAddEmailPanelBlocked, setIsAddEmailPanelBlocked] = useState(true);
 
   const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
 
   const searchRef = useRef();
-
-  const inRoom = (id) => {
-    return roomUsers.some((user) => user.sharedTo.id === id);
-  };
 
   const toUserItems = (query) => {
     const addresses = parseAddresses(query);
@@ -81,10 +81,17 @@ const InviteInput = ({
   const searchByQuery = async (value) => {
     const query = value.trim();
 
-    if (!!query.length) {
-      const users = await getUsersByQuery(query);
-      setUsersList(users);
-    } else {
+    if (query.length >= searchUsersThreshold) {
+      const filter = Filter.getFilterWithOutDisabledUser();
+      filter.search = query;
+
+      const users = await getMembersList(roomId, filter);
+
+      setUsersList(users.items);
+      setIsAddEmailPanelBlocked(false);
+    }
+
+    if (!query) {
       closeInviteInputPanel();
       setInputValue("");
       setUsersList([]);
@@ -100,11 +107,20 @@ const InviteInput = ({
     const value = e.target.value;
     const clearValue = value.trim();
 
-    if ((!!usersList.length || clearValue.length > 2) && !searchPanelVisible) {
-      openInviteInputPanel();
+    setInputValue(value);
+
+    if (clearValue.length < searchUsersThreshold) {
+      setUsersList([]);
+      setIsAddEmailPanelBlocked(true);
+      return;
     }
 
-    setInputValue(value);
+    if (
+      (!!usersList.length || clearValue.length >= searchUsersThreshold) &&
+      !searchPanelVisible
+    ) {
+      openInviteInputPanel();
+    }
 
     if (roomId !== -1) {
       debouncedSearch(clearValue);
@@ -124,9 +140,7 @@ const InviteInput = ({
   };
 
   const getItemContent = (item) => {
-    const { avatar, displayName, email, id } = item;
-
-    const invited = inRoom(id);
+    const { avatar, displayName, email, id, shared } = item;
 
     item.access = selectedAccess;
 
@@ -146,18 +160,18 @@ const InviteInput = ({
       <DropDownItem
         key={id}
         onClick={addUser}
-        disabled={invited}
+        disabled={shared}
         height={48}
         className="list-item"
       >
         <Avatar size="min" role="user" source={avatar} />
         <div>
-          <SearchItemText primary disabled={invited}>
+          <SearchItemText primary disabled={shared}>
             {displayName}
           </SearchItemText>
           <SearchItemText>{email}</SearchItemText>
         </div>
-        {invited && <SearchItemText info>{t("Invited")}</SearchItemText>}
+        {shared && <SearchItemText info>{t("Invited")}</SearchItemText>}
       </DropDownItem>
     );
   };
@@ -203,12 +217,26 @@ const InviteInput = ({
   };
 
   const closeInviteInputPanel = (e) => {
-    // if (e?.target.tagName.toUpperCase() == "INPUT") return;
+    if (e?.target.tagName.toUpperCase() === "INPUT") return;
 
     setSearchPanelVisible(false);
   };
 
   const foundUsers = usersList.map((user) => getItemContent(user));
+
+  const addEmailPanel = isAddEmailPanelBlocked ? (
+    <></>
+  ) : (
+    <DropDownItem
+      className="add-item"
+      style={{ width: "inherit" }}
+      textOverflow
+      onClick={addEmail}
+      height={48}
+    >
+      {t("Common:AddButton")} «{inputValue}»
+    </DropDownItem>
+  );
 
   const accessOptions = getAccessOptions(t, roomType);
 
@@ -277,7 +305,7 @@ const InviteInput = ({
             onKeyDown={onKeyDown}
           />
         </StyledInviteInput>
-        {inputValue.length > 2 && (
+        {inputValue.length >= searchUsersThreshold && (
           <StyledDropDown
             width={searchRef?.current?.offsetWidth}
             isDefaultMode={false}
@@ -288,19 +316,7 @@ const InviteInput = ({
             eventTypes="click"
             {...dropDownMaxHeight}
           >
-            {!!usersList.length ? (
-              foundUsers
-            ) : (
-              <DropDownItem
-                className="add-item"
-                style={{ width: "inherit" }}
-                textOverflow
-                onClick={addEmail}
-                height={48}
-              >
-                {t("Common:AddButton")} «{inputValue}»
-              </DropDownItem>
-            )}
+            {!!usersList.length ? foundUsers : addEmailPanel}
           </StyledDropDown>
         )}
 
@@ -320,7 +336,6 @@ const InviteInput = ({
             onParentPanelClose={onClose}
             onClose={closeUsersPanel}
             visible={addUsersPanelVisible}
-            shareDataItems={roomUsers}
             tempDataItems={inviteItems}
             setDataItems={addItems}
             accessOptions={accessOptions}
@@ -329,6 +344,7 @@ const InviteInput = ({
             defaultAccess={selectedAccess}
             withoutBackground={isMobileView}
             withBlur={!isMobileView}
+            roomId={roomId}
           />
         )}
       </StyledInviteInputContainer>
@@ -336,16 +352,14 @@ const InviteInput = ({
   );
 };
 
-export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
+export default inject(({ auth, dialogsStore }) => {
   const { theme } = auth.settingsStore;
   const { isOwner } = auth.userStore.user;
-  const { getUsersByQuery } = peopleStore.usersStore;
   const { invitePanelOptions, setInviteItems, inviteItems } = dialogsStore;
 
   return {
     setInviteItems,
     inviteItems,
-    getUsersByQuery,
     roomId: invitePanelOptions.roomId,
     hideSelector: invitePanelOptions.hideSelector,
     defaultAccess: invitePanelOptions.defaultAccess,

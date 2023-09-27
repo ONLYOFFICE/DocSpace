@@ -32,7 +32,7 @@ export const StyledSubmenu = styled.div`
   `}
 
   .sticky-indent {
-    height: 15px;
+    height: 20px;
   }
 `;
 
@@ -130,7 +130,7 @@ export const SubmenuScroller = styled.div`
   overflow-y: hidden;
 
   ${(props) =>
-    !props.scale &&
+    props.size !== "scale" &&
     css`
       display: grid;
       flex: 0 1 auto;

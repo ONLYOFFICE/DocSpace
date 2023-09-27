@@ -13,13 +13,14 @@ import {
   desktop,
   smallTablet,
   mobile,
+  hugeMobile,
 } from "@docspace/components/utils/device";
 
 const settingsStudioStyles = css`
   ${({ settingsStudio }) =>
     settingsStudio &&
     css`
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               padding: 0 20px 16px 7px;
@@ -29,7 +30,7 @@ const settingsStudioStyles = css`
             `}
 
       @media ${tablet} {
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 padding: 0 24px 16px 0;
@@ -40,7 +41,7 @@ const settingsStudioStyles = css`
       }
 
       @media ${smallTablet} {
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 padding: 8px 24px 16px 0;
@@ -51,7 +52,7 @@ const settingsStudioStyles = css`
       }
 
       @media ${mobile} {
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 padding: 0 24px 16px 0;
@@ -64,7 +65,7 @@ const settingsStudioStyles = css`
 `;
 
 const paddingStyles = css`
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           padding: 19px 20px 16px 3px;
@@ -76,9 +77,20 @@ const paddingStyles = css`
 
   ${settingsStudioStyles};
 
+  @media ${tablet} {
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 19px 24px 16px 0;
+          `
+        : css`
+            padding: 19px 0 16px 24px;
+          `}
+  }
+
   ${isMobile &&
   css`
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding: 0 23px 16px 0 !important;
@@ -88,9 +100,20 @@ const paddingStyles = css`
           `}
   `};
 
+  @media ${hugeMobile} {
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 0px 24px 16px 0;
+          `
+        : css`
+            padding: 0px 0 16px 24px;
+          `}
+  }
+
   ${isMobileOnly &&
   css`
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding: 0px 24px 16px 0 !important;
@@ -104,16 +127,16 @@ const paddingStyles = css`
 const commonStyles = css`
   flex-grow: 1;
 
-  ${props => (props.isDesktop ? "height: auto" : "height: 100%")};
+  ${(props) => (props.isDesktop ? "height: auto" : "height: 100%")};
 
-  ${props => !props.withScroll && `height: 100%;`}
+  ${(props) => !props.withScroll && `height: 100%;`}
   border-left: none;
   border-right: none;
   border-top: none;
 
   .section-wrapper {
     height: 100%;
-    ${props =>
+    ${(props) =>
       !props.withScroll &&
       css`
         display: flex;
@@ -121,17 +144,17 @@ const commonStyles = css`
         height: 100%;
         box-sizing: border-box;
       `};
-    ${props => !props.withScroll && paddingStyles}
+    ${(props) => !props.withScroll && paddingStyles}
   }
 
   .section-wrapper-content {
     ${paddingStyles}
     flex: 1 0 auto;
     outline: none;
-    ${props =>
+    ${(props) =>
       props.viewAs == "tile" &&
       css`
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 padding-right: 20px;
@@ -141,7 +164,7 @@ const commonStyles = css`
               `}
       `}
 
-    ${props =>
+    ${(props) =>
       (props.viewAs == "settings" || props.viewAs == "profile") &&
       css`
         padding-top: 0;
@@ -171,7 +194,7 @@ const commonStyles = css`
       `}
 
       @media ${desktop} {
-        ${props =>
+        ${(props) =>
           props.viewAs === "row" &&
           css`
             margin-top: -15px;
@@ -187,10 +210,10 @@ const StyledSectionBody = styled.div`
 
   ${commonStyles};
 
-  ${props =>
+  ${(props) =>
     props.withScroll &&
     css`
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-right: -20px;
@@ -200,7 +223,7 @@ const StyledSectionBody = styled.div`
             `}
 
       @media ${tablet} {
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin-right: -24px;
@@ -213,7 +236,7 @@ const StyledSectionBody = styled.div`
 
   ${isMobile &&
   css`
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: -24px;
@@ -242,10 +265,10 @@ const StyledDropZoneBody = styled(DragAndDrop)`
     height: 100%;
   }
 
-  ${props =>
+  ${(props) =>
     props.withScroll &&
     css`
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-right: -20px;
@@ -255,7 +278,7 @@ const StyledDropZoneBody = styled(DragAndDrop)`
             `}
 
       @media ${tablet} {
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin-right: -24px;
@@ -267,7 +290,7 @@ const StyledDropZoneBody = styled(DragAndDrop)`
 
       ${isMobile &&
       css`
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin-right: -24px;
@@ -339,13 +362,15 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
-        className="section-body">
+        className="section-body"
+      >
         {withScroll ? (
           !isMobileOnly ? (
             <Scrollbar
               id="sectionScroll"
               scrollclass="section-scroll"
-              stype="mediumBlack">
+              stype="mediumBlack"
+            >
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
@@ -374,13 +399,15 @@ class SectionBody extends React.Component {
         withScroll={withScroll}
         isLoaded={isLoaded}
         isDesktop={isDesktop}
-        settingsStudio={settingsStudio}>
+        settingsStudio={settingsStudio}
+      >
         {withScroll ? (
           !isMobileOnly ? (
             <Scrollbar
               id="sectionScroll"
               scrollclass="section-scroll"
-              stype="mediumBlack">
+              stype="mediumBlack"
+            >
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}

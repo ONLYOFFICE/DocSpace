@@ -78,6 +78,8 @@ export type useRoomsHelperProps = {
   isFirstLoad: boolean;
   setIsRoot: (value: boolean) => void;
   searchValue?: string;
+  isRoomsOnly: boolean;
+  onSetBaseFolderPath?: (value: number | string | undefined) => void;
 };
 
 export type useFilesHelpersProps = {
@@ -98,13 +100,24 @@ export type useFilesHelpersProps = {
   setSelectedTreeNode: (treeNode: any) => void;
   filterParam?: string;
   getRootData?: () => Promise<void>;
+  onSetBaseFolderPath?: (value: number | string | undefined) => void;
+  isRoomsOnly: boolean;
+  rootThirdPartyId?: string;
+  getRoomList?: (
+    startIndex: number,
+    isInit?: boolean,
+    search?: string | null,
+    isErrorPath?: boolean
+  ) => void;
+  t: any;
 };
 
 export type FilesSelectorProps = {
   isPanelVisible: boolean;
-  withoutBasicSelection: boolean;
-  withoutImmediatelyClose: boolean;
+  // withoutImmediatelyClose: boolean;
   isThirdParty: boolean;
+  rootThirdPartyId?: string;
+  isRoomsOnly: boolean;
   isEditorDialog: boolean;
   setMoveToPublicRoomVisible: (visible: boolean, operationData: object) => void;
 

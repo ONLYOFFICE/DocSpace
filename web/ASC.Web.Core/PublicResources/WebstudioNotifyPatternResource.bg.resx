@@ -551,12 +551,7 @@ $GreenButton
 
 Процесът на премахване на данни от потребител "$FromUserName":"$FromUserLink" е завършен успешно.
 
-Изтриването на лични данни е разрешено:
-
-# Документи - $DocsSpace
-# CRM - $CrmSpace
-# Поща - $MailSpace
-# Говоря - $TalkSpace</value>
+Изтриването на лични данни е разрешено $DocsSpace</value>
   </data>
   <data name="pattern_remove_user_data_failed" xml:space="preserve">
     <value>Уважаеми $UserName,

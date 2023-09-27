@@ -29,7 +29,6 @@ namespace ASC.Core.Billing;
 /// <summary>
 /// </summary>
 [DebuggerDisplay("{State} before {DueDate}")]
-[Serializable]
 public class Tariff
 {
     /// <summary>ID</summary>

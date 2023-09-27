@@ -156,7 +156,7 @@ public class InvitationLinkHelper
         await using var context = _dbContextFactory.CreateDbContext();
 
         var target = _messageTarget.Create(email);
-        var description = JsonConvert.SerializeObject(new[] { key });
+        var description = JsonSerializer.Serialize(new[] { key });
 
         var message = await Queries.AuditEventsAsync(context, target.ToString(), description);
 
@@ -168,7 +168,7 @@ public class InvitationLinkHelper
         var headers = _httpContextAccessor?.HttpContext?.Request.Headers;
         var target = _messageTarget.Create(email);
 
-        await _messageService.SendAsync(headers, MessageAction.RoomInviteLinkUsed, target, key);
+        await _messageService.SendHeadersMessageAsync(MessageAction.RoomInviteLinkUsed, target, headers, key);
     }
 }
 

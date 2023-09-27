@@ -164,18 +164,17 @@ public class UserPhotoManagerCache
 
     public string SearchInCache(Guid userId, Size size)
     {
-        string fileName = null;
-
         if (!_photofiles.TryGetValue(userId, out var val))
         {
             return null;
         }
 
-        if (size != Size.Empty && !val.TryGetValue(UserPhotoManager.ToCache(size), out fileName))
+        if (!val.TryGetValue(UserPhotoManager.ToCache(size), out var fileName))
         {
             return null;
         }
-        else if (String.IsNullOrEmpty(fileName))
+        
+        if (string.IsNullOrEmpty(fileName))
         {
             fileName = val.Values.FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
         }
@@ -562,6 +561,9 @@ public class UserPhotoManager
 
             await Task.WhenAll(t1, t2, t3, t4, t5);
         }
+        
+        _userPhotoManagerCache.AddToCache(userID, Size.Empty, fileName, await _tenantManager.GetCurrentTenantIdAsync());
+        
         return (photoUrl, fileName);
     }
 

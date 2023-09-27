@@ -96,7 +96,6 @@ public class DocumentServiceTracker
         public string Message { get; set; } //attach
     }
 
-    [Serializable]
     public class TrackResponse
     {
         public int Error
@@ -260,6 +259,7 @@ public class DocumentServiceTrackerHelper
 
         var users = _fileTracker.GetEditingBy(fileId);
         var usersDrop = new List<string>();
+        File<T> file = null;
 
         string docKey;
         var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
@@ -301,7 +301,7 @@ public class DocumentServiceTrackerHelper
                 try
                 {
                     var doc = await _fileShareLink.CreateKeyAsync(fileId);
-                    await _entryManager.TrackEditingAsync(fileId, userId, userId, doc);
+                    file = await _entryManager.TrackEditingAsync(fileId, userId, userId, doc, await _tenantManager.GetCurrentTenantIdAsync());
                 }
                 catch (Exception e)
                 {
@@ -325,6 +325,11 @@ public class DocumentServiceTrackerHelper
         }
 
         await _socketManager.StartEditAsync(fileId);
+
+        if (file != null && fileData.Actions != null && fileData.Actions.Count > 0)
+        {
+            _ = _filesMessageService.SendAsync(MessageAction.FileOpenedForChange, file, file.Title);
+        }
     }
 
     private async Task<TrackResponse> ProcessSaveAsync<T>(T fileId, TrackerData fileData)
@@ -455,7 +460,7 @@ public class DocumentServiceTrackerHelper
         {
             if (user != null)
             {
-                 _ = _filesMessageService.SendAsync(file, MessageInitiator.DocsService, MessageAction.UserFileUpdated, user.DisplayUserName(false, _displayUserSettingsHelper), file.Title);
+                _ = _filesMessageService.SendAsync(MessageAction.UserFileUpdated, file, MessageInitiator.DocsService, user.DisplayUserName(false, _displayUserSettingsHelper), file.Title);
             }
 
             if (!forcesave)

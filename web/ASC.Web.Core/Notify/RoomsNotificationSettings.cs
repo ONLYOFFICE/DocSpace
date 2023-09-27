@@ -28,7 +28,6 @@
 using AutoMapper.Internal;
 
 namespace ASC.Web.Core.Notify;
-[Serializable]
 public class RoomsNotificationSettings : ISettings<RoomsNotificationSettings>
 {
     public List<int> DisabledRooms { get; set; }
@@ -41,8 +40,9 @@ public class RoomsNotificationSettings : ISettings<RoomsNotificationSettings>
 
     public RoomsNotificationSettings GetDefault()
     {
-        return new RoomsNotificationSettings() {
-            DisabledRooms = new List<int> ()
+        return new RoomsNotificationSettings()
+        {
+            DisabledRooms = new List<int>()
         };
     }
 }

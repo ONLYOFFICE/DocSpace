@@ -438,7 +438,6 @@ public enum ResumableUploadSessionStatus
     Aborted
 }
 
-[Serializable]
 internal class ResumableUploadSession
 {
     public long BytesToTransfer { get; set; }

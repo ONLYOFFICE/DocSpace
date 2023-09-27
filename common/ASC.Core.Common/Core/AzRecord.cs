@@ -26,7 +26,6 @@
 
 namespace ASC.Core;
 
-[Serializable]
 public class AzRecord : IMapFrom<Acl>
 {
     public Guid Subject { get; set; }

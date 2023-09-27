@@ -4,13 +4,12 @@ import { UnavailableStyles } from "../../../../utils/commonSettingsStyles";
 const StyledSsoPage = styled.div`
   box-sizing: border-box;
   outline: none;
-  max-width: 700px;
-  padding-top: 5px;
 
   .intro-text {
-    margin-bottom: 18px;
+    width: 100%;
     max-width: 700px;
-    color: ${props => props.theme.client.settings.common.descriptionColor};
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
+    padding-bottom: 18px;
   }
 
   .toggle {
@@ -25,7 +24,7 @@ const StyledSsoPage = styled.div`
     .toggle-caption_title {
       display: flex;
       .toggle-caption_title_badge {
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin-right: 4px;
@@ -36,22 +35,6 @@ const StyledSsoPage = styled.div`
         cursor: auto;
       }
     }
-  }
-
-  .tooltip-button,
-  .icon-button {
-    padding: 0 5px;
-  }
-
-  .hide-button {
-    ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            margin-right: 12px;
-          `
-        : css`
-            margin-left: 12px;
-          `}
   }
 
   .field-input {
@@ -93,7 +76,7 @@ const StyledSsoPage = styled.div`
   }
 
   .radio-button-group {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 24px;
@@ -107,33 +90,8 @@ const StyledSsoPage = styled.div`
     max-width: 100%;
   }
 
-  .checkbox-input {
-    ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            margin: 10px 0 6px 8px;
-          `
-        : css`
-            margin: 10px 8px 6px 0;
-          `}
-  }
-
-  .upload-button {
-    height: 32px;
-    width: 45px;
-    ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            margin-right: 9px;
-          `
-        : css`
-            margin-left: 9px;
-          `}
-    overflow: inherit;
-  }
-
   .save-button {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 8px;
@@ -147,22 +105,12 @@ const StyledSsoPage = styled.div`
     width: fit-content;
   }
 
-  .xml-upload-file {
-    .text-input {
-      display: none;
-    }
-
-    .icon {
-      position: static;
-    }
-  }
-
   .service-provider-settings {
-    display: ${props => (!props.hideSettings ? "none" : "block")};
+    display: ${(props) => (!props.hideSettings ? "none" : "block")};
   }
 
   .sp-metadata {
-    display: ${props => (!props.hideMetadata ? "none" : "block")};
+    display: ${(props) => (!props.hideMetadata ? "none" : "block")};
   }
 
   .advanced-block {
@@ -187,7 +135,7 @@ const StyledSsoPage = styled.div`
 
     .label > div {
       display: inline-flex;
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-right: 4px;
@@ -198,7 +146,7 @@ const StyledSsoPage = styled.div`
     }
   }
 
-  ${props => !props.isSettingPaid && UnavailableStyles}
+  ${(props) => !props.isSettingPaid && UnavailableStyles}
 `;
 
 export default StyledSsoPage;

@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.AspNetCore.RateLimiting;
-
 namespace ASC.People.Api;
 
 public class UserController : PeopleControllerBase
@@ -65,6 +63,7 @@ public class UserController : PeopleControllerBase
     private readonly UsersQuotaSyncOperation _usersQuotaSyncOperation;
     private readonly CountUserChecker _countUserChecker;
     private readonly UsersInRoomChecker _usersInRoomChecker;
+    private readonly IUrlShortener _urlShortener;
 
     public UserController(
         ICache cache,
@@ -105,7 +104,8 @@ public class UserController : PeopleControllerBase
         CountPaidUserChecker countPaidUserChecker,
         CountUserChecker activeUsersChecker,
         UsersInRoomChecker usersInRoomChecker,
-        IQuotaService quotaService)
+        IQuotaService quotaService,
+        IUrlShortener urlShortener)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
@@ -141,6 +141,7 @@ public class UserController : PeopleControllerBase
         _usersInRoomChecker = usersInRoomChecker;
         _quotaService = quotaService;
         _usersQuotaSyncOperation = usersQuotaSyncOperation;
+        _urlShortener = urlShortener;
     }
 
     /// <summary>
@@ -363,9 +364,9 @@ public class UserController : PeopleControllerBase
 
             var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
             var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, invite.Type, _authContext.CurrentAccount.ID);
+            var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
 
-            await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, link);
-            _logger.Debug(link);
+            await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, shortenLink);
         }
 
         var result = new List<EmployeeDto>();
@@ -391,6 +392,7 @@ public class UserController : PeopleControllerBase
     /// <path>api/2.0/people/{userid}/password</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}/password")]
+    [EnableRateLimiting("sensitive_api")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
     public async Task<EmployeeFullDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
     {
@@ -478,7 +480,7 @@ public class UserController : PeopleControllerBase
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         await _userPhotoManager.RemovePhotoAsync(user.Id);
         await _userManager.DeleteUserAsync(user.Id);
-        _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
+        _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false, false);
 
         await _messageService.SendAsync(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
 
@@ -733,9 +735,9 @@ public class UserController : PeopleControllerBase
     [HttpGet("filter")]
     public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, [FromQuery] EmployeeType[] employeeTypes, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
-        var users = await GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, employeeTypes, isAdministrator, payments, accountLoginType);
+        var users = GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, employeeTypes, isAdministrator, payments, accountLoginType);
 
-        foreach (var user in users)
+        await foreach (var user in users)
         {
             yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
@@ -829,9 +831,9 @@ public class UserController : PeopleControllerBase
     [HttpGet("simple/filter")]
     public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, [FromQuery] EmployeeType[] employeeTypes, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
-        var users = await GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, employeeTypes, isAdministrator, payments, accountLoginType);
+        var users = GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, employeeTypes, isAdministrator, payments, accountLoginType);
 
-        foreach (var user in users)
+        await foreach (var user in users)
         {
             yield return await _employeeDtoHelper.GetAsync(user);
         }
@@ -975,7 +977,7 @@ public class UserController : PeopleControllerBase
 
             await _userPhotoManager.RemovePhotoAsync(user.Id);
             await _userManager.DeleteUserAsync(user.Id);
-            _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
+            _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false, false);
         }
 
         await _messageService.SendAsync(MessageAction.UsersDeleted, _messageTarget.Create(users.Select(x => x.Id)), userNames);
@@ -1054,7 +1056,9 @@ public class UserController : PeopleControllerBase
                 }
 
                 var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, type, _authContext.CurrentAccount.ID);
-                await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, link);
+                var shortenLink = await _urlShortener.GetShortenLinkAsync(link);
+
+                await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, shortenLink);
             }
             else
             {
@@ -1712,7 +1716,7 @@ public class UserController : PeopleControllerBase
         }
     }
 
-    private async Task<IQueryable<UserInfo>> GetByFilterAsync(
+    private async IAsyncEnumerable<UserInfo> GetByFilterAsync(
         EmployeeStatus? employeeStatus,
         Guid? groupId,
         EmployeeActivationStatus? activationStatus,
@@ -1779,11 +1783,22 @@ public class UserController : PeopleControllerBase
             includeGroups.Add(adminGroups);
         }
 
-        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
+        var totalCountTask = _userManager.GetUsersCountAsync(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType,
+            _apiContext.FilterValue);
 
-        _apiContext.SetTotalCount(total).SetCount(count);
+        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, 
+            _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex);
 
-        return users;
+        var counter = 0;
+
+        await foreach(var user in users)
+        {
+            counter++;
+
+            yield return user;
+        }
+
+        _apiContext.SetCount(counter).SetTotalCount(await totalCountTask);
 
         void FilterByUserType(EmployeeType employeeType, List<List<Guid>> includeGroups, List<Guid> excludeGroups)
         {
@@ -1873,4 +1888,73 @@ public class UserController : PeopleControllerBase
     //        };
     //    }
     //}
+}
+
+[ConstraintRoute("int")]
+public class UserControllerAdditionalInternal : UserControllerAdditional<int>
+{
+    public UserControllerAdditionalInternal(
+        EmployeeFullDtoHelper employeeFullDtoHelper, 
+        FileSecurity fileSecurity, 
+        ApiContext apiContext, 
+        IDaoFactory daoFactory) 
+        : base(employeeFullDtoHelper, fileSecurity, apiContext, daoFactory)
+    {
+        
+    }
+}
+
+public class UserControllerAdditionalThirdParty : UserControllerAdditional<string>
+{
+    public UserControllerAdditionalThirdParty(
+        EmployeeFullDtoHelper employeeFullDtoHelper, 
+        FileSecurity fileSecurity, 
+        ApiContext apiContext, 
+        IDaoFactory daoFactory) 
+        : base(employeeFullDtoHelper, fileSecurity, apiContext, daoFactory)
+    {
+        
+    }
+}
+
+public class UserControllerAdditional<T> : ApiControllerBase
+{
+    private readonly EmployeeFullDtoHelper _employeeFullDtoHelper;
+    private readonly FileSecurity _fileSecurity;
+    private readonly ApiContext _apiContext;
+    private readonly IDaoFactory _daoFactory;
+
+    public UserControllerAdditional(
+        EmployeeFullDtoHelper employeeFullDtoHelper, 
+        FileSecurity fileSecurity, 
+        ApiContext apiContext, 
+        IDaoFactory daoFactory)
+    {
+        _employeeFullDtoHelper = employeeFullDtoHelper;
+        _fileSecurity = fileSecurity;
+        _apiContext = apiContext;
+        _daoFactory = daoFactory;
+    }
+
+    [HttpGet("room/{id}")]
+    public async IAsyncEnumerable<EmployeeFullDto> GetUsersWithRoomSharedAsync(T id, EmployeeStatus? employeeStatus, EmployeeActivationStatus? activationStatus, bool? excludeShared)
+    {
+        var offset = Convert.ToInt32(_apiContext.StartIndex);
+        var count = Convert.ToInt32(_apiContext.Count);
+
+        var room = (await _daoFactory.GetFolderDao<T>().GetFolderAsync(id)).NotFoundIfNull();
+        var totalCountTask = _fileSecurity.GetUsersWithSharedCountAsync(room, _apiContext.FilterValue, employeeStatus, activationStatus, excludeShared ?? false);
+
+        var counter = 0;
+
+        await foreach (var u in _fileSecurity.GetUsersWithSharedAsync(room, _apiContext.FilterValue, employeeStatus, activationStatus, excludeShared ?? false, offset, 
+                           count))
+        {
+            counter++;
+            
+            yield return await _employeeFullDtoHelper.GetFullAsync(u.UserInfo, u.Shared);
+        }
+
+        _apiContext.SetCount(counter).SetTotalCount(await totalCountTask);
+    }
 }

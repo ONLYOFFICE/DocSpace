@@ -64,8 +64,10 @@
     <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="9.1.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ASC.EventBus\ASC.EventBus.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Protobuf Include="protos\asc_cache_item.proto" />
-    <Protobuf Include="protos\notify_item.proto" />
     <Protobuf Include="protos\distributed_task_cancelation.proto" />
   </ItemGroup>
 </Project>

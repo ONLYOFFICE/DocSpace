@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Events } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 import throttle from "lodash/throttle";
+import { checkDialogsOpen } from "@docspace/common/utils/checkDialogsOpen";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
@@ -40,7 +41,6 @@ const withHotkeys = (Component) => {
       backToParentFolder,
 
       uploadFile,
-      someDialogIsOpen,
       enabledHotkeys,
       mediaViewerIsVisible,
 
@@ -61,6 +61,8 @@ const withHotkeys = (Component) => {
       setInviteUsersWarningDialogVisible,
 
       security,
+      copyToClipboard,
+      uploadClipboardFiles,
     } = props;
 
     const navigate = useNavigate();
@@ -70,11 +72,7 @@ const withHotkeys = (Component) => {
         ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
-      enabled:
-        !someDialogIsOpen &&
-        enabledHotkeys &&
-        !mediaViewerIsVisible &&
-        !filesIsLoading,
+      enabled: enabledHotkeys && !mediaViewerIsVisible && !filesIsLoading,
       // keyup: true,
       // keydown: false,
     };
@@ -116,13 +114,21 @@ const withHotkeys = (Component) => {
       }
     };
 
+    const onPaste = async (e) => {
+      e.preventDefault();
+      uploadClipboardFiles(t, e);
+    };
+
     useEffect(() => {
       const throttledKeyDownEvent = throttle(onKeyDown, 300);
 
       window.addEventListener("keydown", throttledKeyDownEvent);
+      document.addEventListener("paste", onPaste);
 
-      return () =>
+      return () => {
         window.removeEventListener("keypress", throttledKeyDownEvent);
+        document.removeEventListener("paste", onPaste);
+      };
     });
 
     //Select/deselect item
@@ -131,7 +137,9 @@ const withHotkeys = (Component) => {
     useHotkeys(
       "*",
       (e) => {
-        if (e.shiftKey || e.ctrlKey) return;
+        const someDialogIsOpen = checkDialogsOpen();
+
+        if (e.shiftKey || e.ctrlKey || someDialogIsOpen) return;
 
         switch (e.key) {
           case "ArrowDown":
@@ -331,6 +339,13 @@ const withHotkeys = (Component) => {
       hotkeysFilter
     );
 
+    useHotkeys("Ctrl+c, command+c", () => copyToClipboard(t), hotkeysFilter);
+    useHotkeys(
+      "Ctrl+x, command+x",
+      () => copyToClipboard(t, true),
+      hotkeysFilter
+    );
+
     //Upload file
     useHotkeys(
       "Shift+u",
@@ -395,12 +410,13 @@ const withHotkeys = (Component) => {
         selectAll,
         activateHotkeys,
         uploadFile,
+        copyToClipboard,
+        uploadClipboardFiles,
       } = hotkeyStore;
 
       const {
         setDeleteDialogVisible,
         setSelectFileDialogVisible,
-        someDialogIsOpen,
         setInviteUsersWarningDialogVisible,
       } = dialogsStore;
       const {
@@ -459,7 +475,6 @@ const withHotkeys = (Component) => {
         backToParentFolder,
 
         uploadFile,
-        someDialogIsOpen,
         enabledHotkeys,
         mediaViewerIsVisible,
 
@@ -481,6 +496,9 @@ const withHotkeys = (Component) => {
         setInviteUsersWarningDialogVisible,
 
         security,
+        copyToClipboard,
+
+        uploadClipboardFiles,
       };
     }
   )(observer(WithHotkeys));

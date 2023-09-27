@@ -35,19 +35,28 @@ const ToggleButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-left: -52px;
+  margin-inline-start: -52px;
 `;
 
 const FlexWrapper = styled.div`
   display: flex;
 `;
 
-export const WebhookRowContent = ({ sectionWidth, webhook, isChecked, handleToggleEnabled }) => {
+export const WebhookRowContent = ({
+  sectionWidth,
+  webhook,
+  isChecked,
+  handleToggleEnabled,
+}) => {
   return (
     <StyledRowContent sectionWidth={sectionWidth}>
       <ContentWrapper>
         <FlexWrapper>
-          <Text fontWeight={600} fontSize="14px" style={{ marginRight: "8px" }}>
+          <Text
+            fontWeight={600}
+            fontSize="14px"
+            style={{ marginInlineEnd: "8px" }}
+          >
             {webhook.name}
           </Text>
           <StatusBadge status={webhook.status} />

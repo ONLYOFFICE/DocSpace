@@ -181,6 +181,13 @@ const StyledRow = styled.div`
             margin-right: 0;
           `}
   }
+
+  .combo-button-label {
+    color: ${(props) => props.theme.text.disableColor};
+  }
+  .combo-buttons_expander-icon path {
+    fill: ${(props) => props.theme.text.disableColor};
+  }
 `;
 
 const StyledInviteInput = styled.div`

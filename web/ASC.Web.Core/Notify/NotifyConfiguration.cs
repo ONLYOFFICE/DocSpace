@@ -52,7 +52,7 @@ public class NotifyConfiguration
             {
                 _configured = true;
                 _workContext.NotifyStartUp();
-                _workContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
+                _workContext.NotifyClientRegistration += NotifyClientRegisterCallback;
                 _notifyEngine.AddAction<NotifyTransferRequest>();
             }
         }
@@ -182,38 +182,10 @@ public class ProductSecurityInterceptor
             {
                 var tenant = _tenantManager.GetCurrentTenant();
 
-                if (32 <= r.Recipient.ID.Length)
-                {
-                    var guid = default(Guid);
-                    try
-                    {
-                        guid = new Guid(r.Recipient.ID);
-                    }
-                    catch (FormatException) { }
-                    catch (OverflowException) { }
-
-                    if (guid != default)
-                    {
-                        u = await _userManager.GetUsersAsync(guid);
-                    }
-                }
-
-                if (Constants.LostUser.Equals(u))
-                {
-                    u = await _userManager.GetUserByEmailAsync(r.Recipient.ID);
-                }
-
-                if (Constants.LostUser.Equals(u))
-                {
-                    u = await _userManager.GetUserByUserNameAsync(r.Recipient.ID);
-                }
+                u = await _userManager.SearchUserAsync(r.Recipient.ID);
 
                 if (!Constants.LostUser.Equals(u))
                 {
-                    var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
-                    CultureInfo.CurrentCulture = culture;
-                    CultureInfo.CurrentUICulture = culture;
-
                     // security
                     var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
                     var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
@@ -231,14 +203,6 @@ public class ProductSecurityInterceptor
                         return !await _webItemSecurity.IsAvailableForUserAsync(productId, u.Id);
                     }
                 }
-            }
-
-            var tagCulture = r.Arguments.FirstOrDefault(a => a.Tag == CommonTags.Culture);
-            if (tagCulture != null)
-            {
-                var culture = CultureInfo.GetCultureInfo((string)tagCulture.Value);
-                CultureInfo.CurrentCulture = culture;
-                CultureInfo.CurrentUICulture = culture;
             }
         }
         catch (Exception error)

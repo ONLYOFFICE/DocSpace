@@ -28,7 +28,6 @@ namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class SsoSettingsV2 : ISettings<SsoSettingsV2>
 {
     [JsonIgnore]
@@ -94,7 +93,7 @@ public class SsoSettingsV2 : ISettings<SsoSettingsV2>
 
     /// <summary>Specifies if SSO is enabled or not</summary>
     /// <type>System.Boolean, System</type>
-    public bool EnableSso { get; set; }
+    public bool? EnableSso { get; set; }
 
     /// <summary>IDP settings</summary>
     /// <type>ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoIdpSettings, ASC.Web.Core</type>
@@ -134,7 +133,6 @@ public class SsoSettingsV2 : ISettings<SsoSettingsV2>
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class SsoIdpSettings
 {
     /// <summary>Entity ID</summary>
@@ -167,7 +165,6 @@ public class SsoIdpSettings
 
 #region FieldsMapping
 
-[Serializable]
 public class SsoFieldMapping
 {
     public string FirstName { get; set; }
@@ -190,7 +187,6 @@ public class SsoFieldMapping
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class SsoCertificate
 {
     /// <summary>Specifies if a certificate is self-signed or not</summary>
@@ -224,7 +220,6 @@ public class SsoCertificate
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class SsoIdpCertificateAdvanced
 {
     /// <summary>Verification algorithm</summary>
@@ -254,7 +249,6 @@ public class SsoIdpCertificateAdvanced
 
 /// <summary>
 /// </summary>
-[Serializable]
 public class SsoSpCertificateAdvanced
 {
     /// <summary>Signing algorithm</summary>
@@ -291,7 +285,6 @@ public class SsoSpCertificateAdvanced
 
 #region Types
 
-[Serializable]
 public class SsoNameIdFormatType
 {
     public const string Saml11Unspecified = "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
@@ -315,7 +308,6 @@ public class SsoNameIdFormatType
     public const string Saml20Kerberos = "urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos";
 }
 
-[Serializable]
 public class SsoBindingType
 {
     public const string Saml20HttpPost = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
@@ -323,7 +315,6 @@ public class SsoBindingType
     public const string Saml20HttpRedirect = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
 }
 
-[Serializable]
 public class SsoMetadata
 {
     public const string BaseUrl = "";
@@ -338,7 +329,6 @@ public class SsoMetadata
 
 }
 
-[Serializable]
 public class SsoSigningAlgorithmType
 {
     public const string RSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
@@ -348,7 +338,6 @@ public class SsoSigningAlgorithmType
     public const string RSA_SHA512 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512";
 }
 
-[Serializable]
 public class SsoEncryptAlgorithmType
 {
     public const string AES_128 = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
@@ -358,7 +347,6 @@ public class SsoEncryptAlgorithmType
     public const string TRI_DEC = "http://www.w3.org/2001/04/xmlenc#tripledes-cbc";
 }
 
-[Serializable]
 public class SsoSpCertificateActionType
 {
     public const string Signing = "signing";
@@ -368,7 +356,6 @@ public class SsoSpCertificateActionType
     public const string SigningAndEncrypt = "signing and encrypt";
 }
 
-[Serializable]
 public class SsoIdpCertificateActionType
 {
     public const string Verification = "verification";

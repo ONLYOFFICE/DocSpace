@@ -40,34 +40,29 @@ public class ReassignProgressItem : DistributedTaskProgress
     public Guid ToUser { get; private set; }
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly IDictionary<string, StringValues> _httpHeaders;
-    private readonly int _tenantId;
-    private readonly Guid _currentUserId;
-    private readonly bool _deleteProfile;
 
-    //private readonly IFileStorageService _docService;
-    //private readonly ProjectsReassign _projectsReassign;
+    private IDictionary<string, StringValues> _httpHeaders;
+    private int _tenantId;
+    private Guid _currentUserId;
+    private bool _notify;
+    private bool _deleteProfile;
 
-    public ReassignProgressItem(
-        IServiceScopeFactory serviceScopeFactory,
-            IDictionary<string, StringValues> httpHeaders,
-            int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+    private CancellationToken _cancellationToken;
+
+    public ReassignProgressItem(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
+    }
+
+    public void Init(IDictionary<string, StringValues> httpHeaders, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool notify, bool deleteProfile)
+    {
         _httpHeaders = httpHeaders;
-
-        //_docService = Web.Files.Classes.Global.FileStorageService;
-        //_projectsReassign = new ProjectsReassign();
-
         _tenantId = tenantId;
         FromUser = fromUserId;
         ToUser = toUserId;
         _currentUserId = currentUserId;
+        _notify = notify;
         _deleteProfile = deleteProfile;
-
-        //_docService = Web.Files.Classes.Global.FileStorageService;
-        //_projectsReassign = new ProjectsReassign();
-
         Id = QueueWorkerReassign.GetProgressItemId(tenantId, fromUserId);
         Status = DistributedTaskStatus.Created;
         Exception = null;
@@ -75,42 +70,73 @@ public class ReassignProgressItem : DistributedTaskProgress
         IsCompleted = false;
     }
 
+    public override async Task RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
+    {
+        _cancellationToken = cancellationToken;
+
+        await base.RunJob(distributedTask, cancellationToken);
+    }
+
     protected override async Task DoJob()
     {
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
-        var queueWorkerRemove = scope.ServiceProvider.GetService<QueueWorkerRemove>();
         var (tenantManager, coreBaseSettings, messageService, fileStorageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
         var logger = options.CreateLogger("ASC.Web");
         await tenantManager.SetCurrentTenantAsync(_tenantId);
 
         try
         {
-            Percentage = 0;
-            Status = DistributedTaskStatus.Running;
-
             await securityContext.AuthenticateMeWithoutCookieAsync(_currentUserId);
 
-            Percentage = 33;
-            PublishChanges();
+            SetPercentageAndCheckCancellation(5, true);
 
-            await fileStorageService.ReassignStorageAsync<int>(FromUser, ToUser);
+            await fileStorageService.DemandPermissionToReassignDataAsync(FromUser, ToUser);
 
-            Percentage = 66;
-            PublishChanges();
+            SetPercentageAndCheckCancellation(10, true);
 
-            await SendSuccessNotifyAsync(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
-
-            Percentage = 99;
-            PublishChanges();
+            List<int> personalFolderIds = null;
 
             if (_deleteProfile)
             {
-                await DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper, queueWorkerRemove);
+                await fileStorageService.DeletePersonalDataAsync<int>(FromUser);
+            }
+            else
+            {
+                personalFolderIds = await fileStorageService.GetPersonalFolderIdsAsync<int>(FromUser);
             }
 
-            Percentage = 100;
+            SetPercentageAndCheckCancellation(30, true);
+
+            await fileStorageService.ReassignProvidersAsync<string>(FromUser, ToUser);
+
+            SetPercentageAndCheckCancellation(50, true);
+
+            await fileStorageService.ReassignFoldersAsync<int>(FromUser, ToUser, personalFolderIds);
+
+            SetPercentageAndCheckCancellation(70, true);
+
+            await fileStorageService.ReassignFilesAsync<int>(FromUser, ToUser, personalFolderIds);
+
+            SetPercentageAndCheckCancellation(90, true);
+
+            await SendSuccessNotifyAsync(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
+
+            SetPercentageAndCheckCancellation(95, true);
+
+            if (_deleteProfile)
+            {
+                await DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper);
+            }
+
+            SetPercentageAndCheckCancellation(100, false);
+
             Status = DistributedTaskStatus.Completed;
+        }
+        catch (OperationCanceledException)
+        {
+            Status = DistributedTaskStatus.Canceled;
+            throw;
         }
         catch (Exception ex)
         {
@@ -121,11 +147,10 @@ public class ReassignProgressItem : DistributedTaskProgress
         }
         finally
         {
-            logger.LogInformation("data reassignment is complete");
+            logger.LogInformation($"data reassignment {Status.ToString().ToLowerInvariant()}");
             IsCompleted = true;
+            PublishChanges();
         }
-
-        PublishChanges();
     }
 
     public object Clone()
@@ -133,23 +158,38 @@ public class ReassignProgressItem : DistributedTaskProgress
         return MemberwiseClone();
     }
 
+    private void SetPercentageAndCheckCancellation(double percentage, bool publish)
+    {
+        Percentage = percentage;
+
+        if (publish)
+        {
+            PublishChanges();
+        }
+
+        _cancellationToken.ThrowIfCancellationRequested();
+    }
+
     private async Task SendSuccessNotifyAsync(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
     {
         var fromUser = await userManager.GetUsersAsync(FromUser);
         var toUser = await userManager.GetUsersAsync(ToUser);
 
-        await studioNotifyService.SendMsgReassignsCompletedAsync(_currentUserId, fromUser, toUser);
+        if (_notify)
+        {
+            await studioNotifyService.SendMsgReassignsCompletedAsync(_currentUserId, fromUser, toUser);
+        }
 
         var fromUserName = fromUser.DisplayUserName(false, displayUserSettingsHelper);
         var toUserName = toUser.DisplayUserName(false, displayUserSettingsHelper);
 
         if (_httpHeaders != null)
         {
-            await messageService.SendAsync(_httpHeaders, MessageAction.UserDataReassigns, messageTarget.Create(FromUser), new[] { fromUserName, toUserName });
+            await messageService.SendHeadersMessageAsync(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), _httpHeaders, new[] { fromUserName, toUserName });
         }
         else
         {
-           await messageService.SendAsync(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
+            await messageService.SendAsync(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
         }
     }
 
@@ -161,18 +201,17 @@ public class ReassignProgressItem : DistributedTaskProgress
         await studioNotifyService.SendMsgReassignsFailedAsync(_currentUserId, fromUser, toUser, errorMessage);
     }
 
-    private async Task DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper, QueueWorkerRemove queueWorkerRemove)
+    private async Task DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
     {
         var user = await userManager.GetUsersAsync(FromUser);
         var userName = user.DisplayUserName(false, displayUserSettingsHelper);
 
         await userPhotoManager.RemovePhotoAsync(user.Id);
         await userManager.DeleteUserAsync(user.Id);
-        queueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
         if (_httpHeaders != null)
         {
-            await messageService.SendAsync(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
+            await messageService.SendHeadersMessageAsync(MessageAction.UserDeleted, messageTarget.Create(FromUser), _httpHeaders, userName);
         }
         else
         {
