@@ -12,6 +12,7 @@ import Box from "@docspace/components/box";
 import HelpButton from "@docspace/components/help-button";
 import toastr from "@docspace/components/toast/toastr";
 import { useTheme } from "styled-components";
+import Loaders from "@docspace/common/components/Loaders";
 
 import {
   LogoutConnectionDialog,
@@ -54,10 +55,13 @@ const ActiveSessions = ({
   const { interfaceDirection } = useTheme();
 
   useEffect(() => {
-    getAllSessions().then((res) => {
-      setSessions(res.items);
-      setCurrentSession(res.loginEvent);
-    });
+    setLoading(true);
+    getAllSessions()
+      .then((res) => {
+        setSessions(res.items);
+        setCurrentSession(res.loginEvent);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const onClickRemoveAllSessions = async () => {
@@ -126,6 +130,7 @@ const ActiveSessions = ({
         </span>
       </>
     );
+  if (loading) return <Loaders.ProfileFooter isProfileFooter />;
   return (
     <StyledFooter>
       <Text fontSize="16px" fontWeight={700}>
