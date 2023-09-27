@@ -2341,18 +2341,16 @@ class FilesActionStore {
 
       try {
         const selectedFolder = await getFolder(selections[0].id);
-        const { folders, files } = selectedFolder;
-        const amountDataInFolder = folders.length + files.length;
+        const { folders, files, total } = selectedFolder;
 
-        if (amountDataInFolder > 1)
-          this.setSelectedItems(false, amountDataInFolder);
+        if (total > 1) this.setSelectedItems(false, total);
 
-        if (amountDataInFolder === 1) {
+        if (total === 1) {
           const title = !!folders.length ? folders[0].title : files[0].title;
-          this.setSelectedItems(title, amountDataInFolder);
+          this.setSelectedItems(title, total);
         }
 
-        if (amountDataInFolder === 0) {
+        if (total === 0) {
           this.filesStore.setSelection([]);
           this.filesStore.setBufferSelection(null);
           return;
