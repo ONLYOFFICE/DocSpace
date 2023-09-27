@@ -488,10 +488,16 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
                 q = q.Where(s => s.SubjectType == SubjectType.InvitationLink);
                 break;
             case ShareFilterType.ExternalLink:
+                q = q.Where(s => s.SubjectType == SubjectType.ExternalLink || s.SubjectType == SubjectType.PrimaryExternalLink);
+                break;
+            case ShareFilterType.AdditionalExternalLink:
                 q = q.Where(s => s.SubjectType == SubjectType.ExternalLink);
                 break;
+            case ShareFilterType.PrimaryExternalLink:
+                q = q.Where(s => s.SubjectType == SubjectType.PrimaryExternalLink);
+                break;
             case ShareFilterType.Link:
-                q = q.Where(s => s.SubjectType == SubjectType.InvitationLink || s.SubjectType == SubjectType.ExternalLink);
+                q = q.Where(s => s.SubjectType == SubjectType.InvitationLink || s.SubjectType == SubjectType.ExternalLink || s.SubjectType == SubjectType.PrimaryExternalLink);
                 break;
         }
 

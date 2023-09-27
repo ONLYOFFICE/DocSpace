@@ -142,15 +142,15 @@ public class FileSharingAceHelper
 
                 if (w.IsLink && eventType == EventType.Create)
                 {
-                    var linksCount = await _fileSecurity.GetPureSharesCountAsync(entry, ShareFilterType.ExternalLink, null);
-
-                    var maxCount = w.SubjectType switch
+                    var (filter, maxCount) = w.SubjectType switch
                     {
-                        SubjectType.InvitationLink => MaxInvitationLinks,
-                        SubjectType.ExternalLink => MaxAdditionalExternalLinks,
-                        SubjectType.PrimaryExternalLink => MaxPrimaryExternalLinks,
-                        _ => 0
+                        SubjectType.InvitationLink => (ShareFilterType.InvitationLink, MaxInvitationLinks),
+                        SubjectType.ExternalLink => (ShareFilterType.AdditionalExternalLink, MaxAdditionalExternalLinks),
+                        SubjectType.PrimaryExternalLink => (ShareFilterType.PrimaryExternalLink, MaxPrimaryExternalLinks),
+                        _ => (ShareFilterType.Link, 0)
                     };
+                    
+                    var linksCount = await _fileSecurity.GetPureSharesCountAsync(entry, filter, null);
 
                     if (linksCount >= maxCount)
                     {
