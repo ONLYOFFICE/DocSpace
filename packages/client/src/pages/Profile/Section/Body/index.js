@@ -68,7 +68,7 @@ const SectionBodyContent = (props) => {
     const arrayPaths = location.pathname.split("/");
     arrayPaths.splice(arrayPaths.length - 1);
     const path = arrayPaths.join("/");
-    navigate(`${path}/${e.id}`);
+    navigate(`${path}/${e.id}`, { state: { disableScrollToTop: true } });
   };
 
   if (!isProfileLoaded) return <Loaders.ProfileView />;
