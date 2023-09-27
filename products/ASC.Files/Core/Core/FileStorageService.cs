@@ -2550,7 +2550,7 @@ public class FileStorageService //: IFileStorageService
         }
     }
 
-    public async Task<AceWrapper> GetPrimarySharedLinkAsync<T>(T entryId, FileEntryType entryType)
+    public async Task<AceWrapper> GetPrimaryExternalLinkAsync<T>(T entryId, FileEntryType entryType)
     {
         FileEntry<T> entry = entryType == FileEntryType.File 
             ? await GetFileDao<T>().GetFileAsync(entryId)
