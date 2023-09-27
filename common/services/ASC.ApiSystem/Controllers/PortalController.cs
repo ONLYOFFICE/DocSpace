@@ -50,7 +50,6 @@ public class PortalController : ControllerBase
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
     private readonly ILogger<PortalController> _log;
-    private readonly CookieStorage _cookieStorage;
     private readonly QuotaUsageManager _quotaUsageManager;
 
     public PortalController(
@@ -73,7 +72,6 @@ public class PortalController : ControllerBase
         CoreBaseSettings coreBaseSettings,
         AuthContext authContext,
         UserManager userManager,
-        CookieStorage cookieStorage,
         QuotaUsageManager quotaUsageManager)
     {
         _configuration = configuration;
@@ -95,7 +93,6 @@ public class PortalController : ControllerBase
         _authContext = authContext;
         _userManager = userManager;
         _log = option;
-        _cookieStorage = cookieStorage;
         _quotaUsageManager = quotaUsageManager;
     }
 
@@ -487,86 +484,10 @@ public class PortalController : ControllerBase
         }
     }
 
-    [HttpGet("quotausagefromapi")]
+    [HttpGet("quotausage")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
-    public async Task<IActionResult> GetPortalsQuotaUsageFromApiAsync([FromQuery] TenantModel model)
-    {
-        if (!_coreBaseSettings.Standalone)
-        {
-            return StatusCode(StatusCodes.Status403Forbidden, new
-            {
-                error = "error",
-                message = "Method for server edition only."
-            });
-        }
-
-        try
-        {
-            var tenants = (await _commonMethods.GetTenantsAsync(model))
-                .Distinct()
-                .Where(t => t.Status == TenantStatus.Active);
-
-            var result = new List<QuotaUsageDto>();
-
-            foreach (var tenant in tenants)
-            {
-                var auth = await _hostedSolution.CreateAuthenticationCookieAsync(_cookieStorage, tenant.Id, tenant.OwnerId);
-
-                var domain = tenant.GetTenantDomain(_coreSettings);
-
-                var url = Request.Scheme + Uri.SchemeDelimiter + domain + "/api/2.0/settings/quota";
-
-                var responseString = await _commonMethods.ExecApiRequest(url, auth);
-
-                if (string.IsNullOrEmpty(responseString))
-                {
-                    continue;
-                }
-
-                var options = new JsonSerializerOptions()
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-
-                var responseJson = JsonSerializer.Deserialize<JsonElement>(responseString, options);
-
-                if (!responseJson.TryGetProperty("response", out var dataObj) || dataObj.ValueKind != JsonValueKind.Object)
-                {
-                    continue;
-                }
-
-                var quotaUsage = JsonSerializer.Deserialize<QuotaUsageDto>(dataObj.ToString(), options);
-
-                quotaUsage.TenantId = tenant.Id;
-                quotaUsage.TenantAlias = tenant.Alias;
-                quotaUsage.TenantDomain = domain;
-
-                result.Add(quotaUsage);
-            }
-
-            return Ok(new
-            {
-                quotausage = result
-            });
-        }
-        catch (Exception ex)
-        {
-            _log.LogError(ex, "GetPortalsStatAsync");
-
-            return StatusCode(StatusCodes.Status500InternalServerError, new
-            {
-                error = "error",
-                message = ex.Message,
-                stacktrace = ex.StackTrace
-            });
-        }
-    }
-
-    [HttpGet("quotausagefromdb")]
-    [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
-    public async Task<IActionResult> GetPortalsQuotaUsageFromDbAsync([FromQuery] TenantModel model)
+    public async Task<IActionResult> GetPortalsQuotaUsage([FromQuery] TenantModel model)
     {
         if (!_coreBaseSettings.Standalone)
         {

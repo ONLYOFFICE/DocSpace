@@ -356,37 +356,5 @@ public class CommonMethods
         }
         return false;
     }
-
-    public async Task<string> ExecApiRequest(string uriString, string authHeader)
-    {
-        var request = new HttpRequestMessage
-        {
-            Method = HttpMethod.Get,
-            RequestUri = new Uri(uriString),
-        };
-
-        request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-        try
-        {
-            var httpClient = _clientFactory.CreateClient();
-
-            httpClient.DefaultRequestHeaders.TryAddWithoutValidation(HeaderNames.Authorization, authHeader);
-
-            using var response = await httpClient.SendAsync(request);
-            using var responseStream = await response.Content.ReadAsStreamAsync();
-            using var reader = new StreamReader(responseStream);
-
-            var responseString = await reader.ReadToEndAsync();
-
-            return responseString;
-        }
-        catch (Exception ex)
-        {
-            _log.LogError(ex, "ExecApiRequest");
-            return null;
-        }
-    }
-
 }
 

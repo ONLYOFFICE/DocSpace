@@ -30,7 +30,6 @@ global using System.Globalization;
 global using System.Net;
 global using System.Net.Http.Headers;
 global using System.Text;
-global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Web;
@@ -57,7 +56,6 @@ global using ASC.Core.Common.Hosting;
 global using ASC.Core.Common.Quota.Features;
 global using ASC.Core.Common.Quota;
 global using ASC.Core.Common.Settings;
-global using ASC.Core.Security.Authentication;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
 global using ASC.EventBus.Extensions.Logger;
@@ -86,7 +84,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Net.Http.Headers;
 
 global using Newtonsoft.Json.Linq;
 
