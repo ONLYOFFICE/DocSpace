@@ -24,18 +24,19 @@ import {
   StyledDescription,
 } from "../StyledInvitePanel";
 
+import Filter from "@docspace/common/api/people/filter";
+import { getMembersList } from "@docspace/common/api/people";
+
 const searchUsersThreshold = 2;
 
 const InviteInput = ({
   defaultAccess,
-  getUsersByQuery,
   hideSelector,
   inviteItems,
   onClose,
   roomId,
   roomType,
   setInviteItems,
-  roomUsers,
   t,
   isOwner,
   inputsRef,
@@ -51,10 +52,6 @@ const InviteInput = ({
   const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
 
   const searchRef = useRef();
-
-  const inRoom = (id) => {
-    return roomUsers.some((user) => user.sharedTo.id === id);
-  };
 
   const toUserItems = (query) => {
     const addresses = parseAddresses(query);
@@ -85,8 +82,12 @@ const InviteInput = ({
     const query = value.trim();
 
     if (query.length >= searchUsersThreshold) {
-      const users = await getUsersByQuery(query);
-      setUsersList(users);
+      const filter = Filter.getFilterWithOutDisabledUser();
+      filter.search = query;
+
+      const users = await getMembersList(roomId, filter);
+
+      setUsersList(users.items);
       setIsAddEmailPanelBlocked(false);
     }
 
@@ -139,9 +140,7 @@ const InviteInput = ({
   };
 
   const getItemContent = (item) => {
-    const { avatar, displayName, email, id } = item;
-
-    const invited = inRoom(id);
+    const { avatar, displayName, email, id, shared } = item;
 
     item.access = selectedAccess;
 
@@ -161,18 +160,18 @@ const InviteInput = ({
       <DropDownItem
         key={id}
         onClick={addUser}
-        disabled={invited}
+        disabled={shared}
         height={48}
         className="list-item"
       >
         <Avatar size="min" role="user" source={avatar} />
         <div>
-          <SearchItemText primary disabled={invited}>
+          <SearchItemText primary disabled={shared}>
             {displayName}
           </SearchItemText>
           <SearchItemText>{email}</SearchItemText>
         </div>
-        {invited && <SearchItemText info>{t("Invited")}</SearchItemText>}
+        {shared && <SearchItemText info>{t("Invited")}</SearchItemText>}
       </DropDownItem>
     );
   };
@@ -337,7 +336,6 @@ const InviteInput = ({
             onParentPanelClose={onClose}
             onClose={closeUsersPanel}
             visible={addUsersPanelVisible}
-            shareDataItems={roomUsers}
             tempDataItems={inviteItems}
             setDataItems={addItems}
             accessOptions={accessOptions}
@@ -346,6 +344,7 @@ const InviteInput = ({
             defaultAccess={selectedAccess}
             withoutBackground={isMobileView}
             withBlur={!isMobileView}
+            roomId={roomId}
           />
         )}
       </StyledInviteInputContainer>
@@ -353,16 +352,14 @@ const InviteInput = ({
   );
 };
 
-export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
+export default inject(({ auth, dialogsStore }) => {
   const { theme } = auth.settingsStore;
   const { isOwner } = auth.userStore.user;
-  const { getUsersByQuery } = peopleStore.usersStore;
   const { invitePanelOptions, setInviteItems, inviteItems } = dialogsStore;
 
   return {
     setInviteItems,
     inviteItems,
-    getUsersByQuery,
     roomId: invitePanelOptions.roomId,
     hideSelector: invitePanelOptions.hideSelector,
     defaultAccess: invitePanelOptions.defaultAccess,

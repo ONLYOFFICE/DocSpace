@@ -6,30 +6,18 @@ const StyledUserTypeHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: ${props => (props.isExpect ? "20px" : "8px")};
+  padding-top: ${(props) => (props.isExpect ? "20px" : "16px")};
   padding-bottom: 12px;
 
   .title {
     font-weight: 600;
     font-size: 14px;
     line-height: 20px;
-    color: ${props => props.theme.infoPanel.members.subtitleColor};
+    color: ${(props) => props.theme.infoPanel.members.subtitleColor};
   }
 
   .icon {
-    cursor: pointer;
-
-    path,
-    rect {
-      fill: ${props => props.theme.infoPanel.members.iconColor};
-    }
-
-    &:hover {
-      path,
-      rect {
-        fill: ${props => props.theme.infoPanel.members.iconHoverColor};
-      }
-    }
+    margin-right: 8px;
   }
 `;
 
@@ -56,7 +44,7 @@ const StyledUser = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    ${props =>
+    ${(props) =>
       props.isExpect && `color: ${props.theme.infoPanel.members.isExpectName}`};
   }
 
@@ -64,8 +52,8 @@ const StyledUser = styled.div`
     font-weight: 600;
     font-size: 14px;
     line-height: 16px;
-    color: ${props => props.theme.infoPanel.members.meLabelColor};
-    ${props =>
+    color: ${(props) => props.theme.infoPanel.members.meLabelColor};
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: -8px;
@@ -76,7 +64,7 @@ const StyledUser = styled.div`
   }
 
   .role-wrapper {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-right: 8px;
@@ -93,8 +81,10 @@ const StyledUser = styled.div`
     white-space: nowrap;
 
     .disabled-role-combobox {
-      color: ${props =>
+      color: ${(props) =>
         props.theme.infoPanel.members.disabledRoleSelectorColor};
+
+      margin-right: 16px;
     }
   }
 
@@ -102,14 +92,14 @@ const StyledUser = styled.div`
     cursor: pointer;
     svg {
       path {
-        fill: ${props => props.theme.iconButton.color};
+        fill: ${(props) => props.theme.iconButton.color};
       }
     }
 
     :hover {
       svg {
         path {
-          fill: ${props => props.theme.iconButton.hoverColor};
+          fill: ${(props) => props.theme.iconButton.hoverColor};
         }
       }
     }
