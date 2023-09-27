@@ -1327,7 +1327,8 @@ class UploadDataStore {
     fileIds,
     conflictResolveType,
     deleteAfter,
-    operationId
+    operationId,
+    content
   ) => {
     const { setSecondaryProgressBarData, clearSecondaryProgressData } =
       this.secondaryProgressDataStore;
@@ -1337,7 +1338,8 @@ class UploadDataStore {
       folderIds,
       fileIds,
       conflictResolveType,
-      deleteAfter
+      deleteAfter,
+      content
     )
       .then((res) => {
         const pbData = { icon: "duplicate", operationId };
@@ -1450,6 +1452,7 @@ class UploadDataStore {
       deleteAfter,
       isCopy,
       translations,
+      content,
     } = data;
     const conflictResolveType = data.conflictResolveType
       ? data.conflictResolveType
@@ -1474,7 +1477,8 @@ class UploadDataStore {
           fileIds,
           conflictResolveType,
           deleteAfter,
-          operationId
+          operationId,
+          content
         )
       : this.moveToAction(
           destFolderId,
@@ -1484,59 +1488,6 @@ class UploadDataStore {
           deleteAfter,
           operationId
         );
-  };
-
-  preparingDataForCopyingToRoom = async (destFolderId, t) => {
-    const { selection, bufferSelection } = this.filesStore;
-    let fileIds = [];
-    let folderIds = [];
-
-    const selections =
-      selection.length > 0 && selection[0] != null
-        ? selection
-        : bufferSelection != null
-        ? [bufferSelection]
-        : [];
-
-    if (!selections.length) return;
-
-    const oneFolder = selections.length === 1 && selections[0].isFolder;
-
-    if (oneFolder) {
-      try {
-        const selectedFolder = await getFolder(selections[0].id);
-        const { folders, files } = selectedFolder;
-
-        if (!!files.length) files.map((item) => fileIds.push(item.id));
-        if (!!folders.length) folders.map((item) => folderIds.push(item.id));
-      } catch (err) {
-        toastr.error(err);
-      }
-    }
-
-    !oneFolder &&
-      selections.map((item) => {
-        if (item.fileExst || item.contentLength) fileIds.push(item.id);
-        else folderIds.push(item.id);
-      });
-
-    this.filesStore.setSelection([]);
-    this.filesStore.setBufferSelection(null);
-
-    if (!folderIds.length && !fileIds.length) return;
-
-    const operationData = {
-      destFolderId,
-      folderIds,
-      fileIds,
-      deleteAfter: false,
-      isCopy: true,
-      translations: {
-        copy: t("Common:CopyOperation"),
-      },
-    };
-
-    this.itemOperationToFolder(operationData);
   };
 
   loopFilesOperations = async (data, pbData, isDownloadAction) => {

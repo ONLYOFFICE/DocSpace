@@ -22,6 +22,7 @@ import {
   removeShareFiles,
   createFolder,
   moveToFolder,
+  getFolder,
 } from "@docspace/common/api/files";
 import {
   ConflictResolveType,
@@ -2317,6 +2318,73 @@ class FilesActionStore {
 
   setGroupMenuBlocked = (blocked) => {
     this.isGroupMenuBlocked = blocked;
+  };
+
+  preparingDataForCopyingToRoom = async (destFolderId, t) => {
+    const { selection, bufferSelection } = this.filesStore;
+
+    let fileIds = [];
+    let folderIds = [];
+
+    const selections =
+      selection.length > 0 && selection[0] != null
+        ? selection
+        : bufferSelection != null
+        ? [bufferSelection]
+        : [];
+
+    if (!selections.length) return;
+    const oneFolder = selections.length === 1 && selections[0].isFolder;
+
+    if (oneFolder) {
+      folderIds = [selections[0].id];
+
+      try {
+        const selectedFolder = await getFolder(selections[0].id);
+        const { folders, files } = selectedFolder;
+        const amountDataInFolder = folders.length + files.length;
+
+        if (amountDataInFolder > 1)
+          this.setSelectedItems(false, amountDataInFolder);
+
+        if (amountDataInFolder === 1) {
+          const title = !!folders.length ? folders[0].title : files[0].title;
+          this.setSelectedItems(title, amountDataInFolder);
+        }
+
+        if (amountDataInFolder === 0) {
+          this.filesStore.setSelection([]);
+          this.filesStore.setBufferSelection(null);
+          return;
+        }
+      } catch (err) {
+        toastr.error(err);
+      }
+    }
+
+    !oneFolder &&
+      selections.map((item) => {
+        if (item.fileExst || item.contentLength) fileIds.push(item.id);
+        else folderIds.push(item.id);
+      });
+
+    !oneFolder && this.setSelectedItems();
+    this.filesStore.setSelection([]);
+    this.filesStore.setBufferSelection(null);
+
+    const operationData = {
+      destFolderId,
+      folderIds: folderIds,
+      fileIds,
+      deleteAfter: false,
+      isCopy: true,
+      translations: {
+        copy: t("Common:CopyOperation"),
+      },
+      content: oneFolder,
+    };
+
+    this.uploadDataStore.itemOperationToFolder(operationData);
   };
 }
 

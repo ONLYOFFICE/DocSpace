@@ -85,8 +85,7 @@ class CreateEditRoomStore {
       uploadRoomLogo,
       addLogoToRoom,
     } = this.filesStore;
-    const { preparingDataForCopyingToRoom } =
-      this.filesActionsStore.uploadDataStore;
+    const { preparingDataForCopyingToRoom } = this.filesActionsStore;
 
     const createRoomData = {
       roomType: roomParams.type,
@@ -155,10 +154,8 @@ class CreateEditRoomStore {
         });
       } else !withPaging && this.onOpenNewRoom(room);
 
-      if (processCreatingRoomFromData) {
-        setSelectedItems();
+      if (processCreatingRoomFromData)
         preparingDataForCopyingToRoom(room.id, t);
-      }
 
       this.roomIsCreated = true;
     } catch (err) {
