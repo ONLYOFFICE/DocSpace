@@ -51,6 +51,7 @@ public class PortalController : ControllerBase
     private readonly UserManager _userManager;
     private readonly ILogger<PortalController> _log;
     private readonly CookieStorage _cookieStorage;
+    private readonly QuotaUsageManager _quotaUsageManager;
 
     public PortalController(
         IConfiguration configuration,
@@ -72,7 +73,8 @@ public class PortalController : ControllerBase
         CoreBaseSettings coreBaseSettings,
         AuthContext authContext,
         UserManager userManager,
-        CookieStorage cookieStorage)
+        CookieStorage cookieStorage,
+        QuotaUsageManager quotaUsageManager)
     {
         _configuration = configuration;
         _securityContext = securityContext;
@@ -94,6 +96,7 @@ public class PortalController : ControllerBase
         _userManager = userManager;
         _log = option;
         _cookieStorage = cookieStorage;
+        _quotaUsageManager = quotaUsageManager;
     }
 
     #region For TEST api
@@ -446,6 +449,15 @@ public class PortalController : ControllerBase
     [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
     public async Task<IActionResult> GetPortalsAsync([FromQuery] TenantModel model)
     {
+        if (!_coreBaseSettings.Standalone)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new
+            {
+                error = "error",
+                message = "Method for server edition only."
+            });
+        }
+
         try
         {
             var tenants = await _commonMethods.GetTenantsAsync(model);
@@ -464,7 +476,7 @@ public class PortalController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "");
+            _log.LogError(ex, "GetPortalsAsync");
 
             return StatusCode(StatusCodes.Status500InternalServerError, new
             {
@@ -475,18 +487,27 @@ public class PortalController : ControllerBase
         }
     }
 
-    [HttpGet("statistics")]
+    [HttpGet("quotausagefromapi")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
-    public async Task<IActionResult> GetPortalsStatAsync([FromQuery] TenantModel model)
+    public async Task<IActionResult> GetPortalsQuotaUsageFromApiAsync([FromQuery] TenantModel model)
     {
+        if (!_coreBaseSettings.Standalone)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new
+            {
+                error = "error",
+                message = "Method for server edition only."
+            });
+        }
+
         try
         {
             var tenants = (await _commonMethods.GetTenantsAsync(model))
                 .Distinct()
                 .Where(t => t.Status == TenantStatus.Active);
 
-            var result = new List<object>();
+            var result = new List<QuotaUsageDto>();
 
             foreach (var tenant in tenants)
             {
@@ -503,37 +524,82 @@ public class PortalController : ControllerBase
                     continue;
                 }
 
-                var responseJson = JsonSerializer.Deserialize<JsonElement>(responseString);
+                var options = new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var responseJson = JsonSerializer.Deserialize<JsonElement>(responseString, options);
 
                 if (!responseJson.TryGetProperty("response", out var dataObj) || dataObj.ValueKind != JsonValueKind.Object)
                 {
                     continue;
                 }
 
-                result.Add(new {
-                    tenantId = tenant.Id,
-                    tenantAlias = tenant.Alias,
-                    tenantDomain = domain,
+                var quotaUsage = JsonSerializer.Deserialize<QuotaUsageDto>(dataObj.ToString(), options);
 
-                    storageSize= dataObj.GetProperty("storageSize").GetUInt64(),
-                    usedSize = dataObj.GetProperty("usedSize").GetUInt64(),
-                    maxRoomAdminsCount = dataObj.GetProperty("maxRoomAdminsCount").GetInt32(),
-                    roomAdminCount = dataObj.GetProperty("roomAdminCount").GetInt32(),
-                    maxUsers = dataObj.GetProperty("maxUsers").GetInt64(),
-                    usersCount = dataObj.GetProperty("usersCount").GetInt64(),
-                    maxRoomsCount = dataObj.GetProperty("maxRoomsCount").GetInt32(),
-                    roomsCount = dataObj.GetProperty("roomsCount").GetInt32()
-                });
+                quotaUsage.TenantId = tenant.Id;
+                quotaUsage.TenantAlias = tenant.Alias;
+                quotaUsage.TenantDomain = domain;
+
+                result.Add(quotaUsage);
             }
 
             return Ok(new
             {
-                statistics = result
+                quotausage = result
             });
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "");
+            _log.LogError(ex, "GetPortalsStatAsync");
+
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                error = "error",
+                message = ex.Message,
+                stacktrace = ex.StackTrace
+            });
+        }
+    }
+
+    [HttpGet("quotausagefromdb")]
+    [AllowCrossSiteJson]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
+    public async Task<IActionResult> GetPortalsQuotaUsageFromDbAsync([FromQuery] TenantModel model)
+    {
+        if (!_coreBaseSettings.Standalone)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new
+            {
+                error = "error",
+                message = "Method for server edition only."
+            });
+        }
+
+        try
+        {
+            var tenants = (await _commonMethods.GetTenantsAsync(model))
+                    .Distinct()
+                    .Where(t => t.Status == TenantStatus.Active);
+
+            var result = new List<QuotaUsageDto>();
+
+            foreach (var tenant in tenants)
+            {
+                var quotaUsage = await _quotaUsageManager.Get(tenant);
+
+                result.Add(quotaUsage);
+            }
+
+            return Ok(new
+            {
+                quotausage = result
+            });
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "GetQuotaUsed");
 
             return StatusCode(StatusCodes.Status500InternalServerError, new
             {

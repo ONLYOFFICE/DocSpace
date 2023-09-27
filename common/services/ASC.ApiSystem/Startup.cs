@@ -117,6 +117,9 @@ public class Startup
 
         services.RegisterFeature();
 
+        services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
+        services.AddScoped<CountRoomCheckerStatistic>();
+
         _diHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
         _diHelper.RegisterProducts(_configuration, _hostEnvironment.ContentRootPath);
