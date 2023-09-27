@@ -14,15 +14,12 @@ const StyledWrapper = styled.div`
 `;
 
 const LoginContent = (props) => {
-  const { setBackupCodes, getTfaType, getBackupCodes } = props;
-
-  const [tfa, setTfa] = useState(false);
+  const { setBackupCodes, tfaSettings, getBackupCodes } = props;
   const [backupCodesCount, setBackupCodesCount] = useState(0);
+  const tfaOn = tfaSettings && tfaSettings !== "none";
 
   const fetchData = async () => {
-    const type = await getTfaType();
-    setTfa(type);
-    if (type && type !== "none") {
+    if (tfaOn) {
       const codes = await getBackupCodes();
       setBackupCodes(codes);
 
@@ -44,9 +41,7 @@ const LoginContent = (props) => {
 
   return (
     <StyledWrapper>
-      {tfa && tfa !== "none" && (
-        <LoginSettings backupCodesCount={backupCodesCount} />
-      )}
+      {tfaOn && <LoginSettings backupCodesCount={backupCodesCount} />}
       <SocialNetworks />
       <ActiveSession />
     </StyledWrapper>
@@ -55,10 +50,10 @@ const LoginContent = (props) => {
 
 export default inject(({ auth }) => {
   const { tfaStore } = auth;
-  const { getBackupCodes, getTfaType, setBackupCodes } = tfaStore;
+  const { getBackupCodes, tfaSettings, setBackupCodes } = tfaStore;
   return {
     getBackupCodes,
-    getTfaType,
+    tfaSettings,
     setBackupCodes,
   };
 })(observer(LoginContent));
