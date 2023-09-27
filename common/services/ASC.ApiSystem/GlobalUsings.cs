@@ -82,6 +82,7 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Hosting.WindowsServices;
+global using Microsoft.Net.Http.Headers;
 
 global using Newtonsoft.Json.Linq;
 

@@ -371,7 +371,7 @@ public class CommonMethods
         {
             var httpClient = _clientFactory.CreateClient();
 
-            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authHeader);
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation(HeaderNames.Authorization, authHeader);
 
             using var response = await httpClient.SendAsync(request);
             using var responseStream = await response.Content.ReadAsStreamAsync();
