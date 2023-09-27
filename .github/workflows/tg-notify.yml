@@ -1,0 +1,69 @@
+name: Notify Telegram on hotfix/release changes
+
+on:
+  push:
+    branches:    
+      - 'hotfix/v**'
+      - 'release/v**'  
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 
+
+    - uses: GrantBirki/git-diff-action@v2.1.1
+      id: git-diff-action
+      with:
+        search_path: config/**
+        raw_diff_file_output: diff.txt
+        file_output_only: "true"
+
+
+    - name: print raw diff
+      env:
+        DIFF: ${{ steps.git-diff-action.outputs.raw-diff-path }}
+      run: cat $DIFF
+
+    - name: Check if changes in 'config' folder
+      id: check-config-changes
+      env:
+        DIFF: ${{ steps.git-diff-action.outputs.raw-diff-path }}
+      run: |
+        cat "$DIFF"
+        if cat "$DIFF" | grep config; then
+          echo "Changes detected in the 'config' folder"
+          echo "CHANGES=true" >> $GITHUB_ENV
+        else
+          echo "No changes in the 'config' folder"
+        fi
+
+    - name: Get commit message and URL
+      id: commit-info
+      run: |
+        COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+        COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+        echo "COMMIT_MESSAGE=${COMMIT_MESSAGE}" >> $GITHUB_ENV
+        echo "COMMIT_URL=${COMMIT_URL}" >> $GITHUB_ENV
+
+    - name: Send Telegram notification
+      if: env.CHANGES == 'true'
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      run: |
+        message="A T T E N T I O N!
+
+        Changes detected in the 'config' folder on branch ${{ github.ref }} of ${{ github.repository }}
+
+        Commit message: ${{ env.COMMIT_MESSAGE }}
+        
+        Commit URL: ${{ env.COMMIT_URL }}"
+
+
+        curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+          -d "chat_id=${TELEGRAM_CHAT_ID}" \
+          -d "text=${message}"
