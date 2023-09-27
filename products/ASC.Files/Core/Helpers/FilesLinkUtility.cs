@@ -47,7 +47,7 @@ public class FilesLinkUtility
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings,
         IConfiguration configuration,
-        InstanceCrypto instanceCrypto, 
+        InstanceCrypto instanceCrypto,
         ExternalShare externalShare)
     {
         _commonLinkUtility = commonLinkUtility;
@@ -85,11 +85,12 @@ public class FilesLinkUtility
         get { return FilesBaseAbsolutePath + "filehandler.ashx"; }
     }
 
+    private const string PublicUrlKey = "public";
     public string DocServiceUrl
     {
         get
         {
-            var url = GetUrlSetting("public");
+            var url = GetUrlSetting(PublicUrlKey, out _);
             if (!string.IsNullOrEmpty(url) && url != "/")
             {
                 url = url.TrimEnd('/') + "/";
@@ -98,7 +99,7 @@ public class FilesLinkUtility
         }
         set
         {
-            SetUrlSetting("api", null);
+            SetUrlSetting(ApiUrlKey, null);
 
             value = (value ?? "").Trim().ToLowerInvariant();
             if (!string.IsNullOrEmpty(value))
@@ -110,15 +111,16 @@ public class FilesLinkUtility
                 }
             }
 
-            SetUrlSetting("public", value);
+            SetUrlSetting(PublicUrlKey, value);
         }
     }
 
+    private const string InternalUrlKey = "internal";
     public string DocServiceUrlInternal
     {
         get
         {
-            var url = GetUrlSetting("internal");
+            var url = GetUrlSetting(InternalUrlKey, out _);
             if (string.IsNullOrEmpty(url))
             {
                 url = DocServiceUrl;
@@ -146,15 +148,16 @@ public class FilesLinkUtility
                 }
             }
 
-            SetUrlSetting("internal", value);
+            SetUrlSetting(InternalUrlKey, value);
         }
     }
 
+    private const string ApiUrlKey = "api";
     public string DocServiceApiUrl
     {
         get
         {
-            var url = GetUrlSetting("api");
+            var url = GetUrlSetting(ApiUrlKey, out _);
             if (string.IsNullOrEmpty(url))
             {
                 url = DocServiceUrl;
@@ -171,7 +174,7 @@ public class FilesLinkUtility
     {
         get
         {
-            var url = GetUrlSetting("converter");
+            var url = GetUrlSetting("converter", out _);
             if (string.IsNullOrEmpty(url))
             {
                 url = DocServiceUrlInternal;
@@ -188,7 +191,7 @@ public class FilesLinkUtility
     {
         get
         {
-            var url = GetUrlSetting("command");
+            var url = GetUrlSetting("command", out _);
             if (string.IsNullOrEmpty(url))
             {
                 url = DocServiceUrlInternal;
@@ -205,7 +208,7 @@ public class FilesLinkUtility
     {
         get
         {
-            var url = GetUrlSetting("docbuilder");
+            var url = GetUrlSetting("docbuilder", out _);
             if (string.IsNullOrEmpty(url))
             {
                 url = DocServiceUrlInternal;
@@ -222,7 +225,7 @@ public class FilesLinkUtility
     {
         get
         {
-            var url = GetUrlSetting("healthcheck");
+            var url = GetUrlSetting("healthcheck", out _);
             if (string.IsNullOrEmpty(url))
             {
                 url = DocServiceUrlInternal;
@@ -235,9 +238,10 @@ public class FilesLinkUtility
         }
     }
 
+    private const string PortalUrlKey = "portal";
     public string DocServicePortalUrl
     {
-        get { return GetUrlSetting("portal"); }
+        get { return GetUrlSetting(PortalUrlKey, out _); }
         set
         {
             value = (value ?? "").Trim().ToLowerInvariant();
@@ -250,7 +254,26 @@ public class FilesLinkUtility
                 }
             }
 
-            SetUrlSetting("portal", value);
+            SetUrlSetting(PortalUrlKey, value);
+        }
+    }
+
+    public bool IsDefault
+    {
+        get
+        {
+            bool isDefault;
+
+            GetUrlSetting(PublicUrlKey, out isDefault);
+            if (!isDefault) return false;
+
+            GetUrlSetting(InternalUrlKey, out isDefault);
+            if (!isDefault) return false;
+
+            GetUrlSetting(PortalUrlKey, out isDefault);
+            if (!isDefault) return false;
+
+            return true;
         }
     }
 
@@ -415,18 +438,28 @@ public class FilesLinkUtility
         return virtualPath.EndsWith(".ashx") ? virtualPath : virtualPath.TrimEnd('/') + "/ChunkedUploader.ashx";
     }
 
-    private string GetUrlSetting(string key, string appSettingsKey = null)
+    private string GetUrlSetting(string key, out bool isDefault)
     {
         var value = string.Empty;
+        isDefault = false;
+
         if (_coreBaseSettings.Standalone)
         {
             value = _coreSettings.GetSetting(GetSettingsKey(key));
         }
+
         if (string.IsNullOrEmpty(value))
         {
-            value = _configuration["files:docservice:url:" + (appSettingsKey ?? key)];
+            value = GetDefaultUrlSetting(key);
+            isDefault = true;
         }
+
         return value;
+    }
+
+    private string GetDefaultUrlSetting(string key)
+    {
+        return _configuration[$"files:docservice:url:{key}"];
     }
 
     private void SetUrlSetting(string key, string value)
@@ -441,9 +474,18 @@ public class FilesLinkUtility
             value = null;
         }
 
-        if (GetUrlSetting(key) != value)
+        if (value != null)
         {
-             _coreSettings.SaveSetting(GetSettingsKey(key), value);
+            var def = GetDefaultUrlSetting(key);
+            if (def == value)
+            {
+                value = null;
+            }
+        }
+
+        if (GetUrlSetting(key, out _) != value)
+        {
+            _coreSettings.SaveSetting(GetSettingsKey(key), value);
         }
     }
 
@@ -451,7 +493,7 @@ public class FilesLinkUtility
     {
         return "DocKey_" + key;
     }
-    
+
     private string GetUrlWithShare(string url)
     {
         if (_externalShare.GetLinkId() == default)

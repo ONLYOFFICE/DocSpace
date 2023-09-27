@@ -24,27 +24,29 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.Notify.Engine;
+
 namespace ASC.Core.Common.Log;
-internal static partial class NotifyEngineLogger
+public static partial class NotifyEngineLogger
 {
     [LoggerMessage(Level = LogLevel.Warning, Message = "error styling message")]
     public static partial void WarningErrorStyling(this ILogger logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "InvokeSendMethod")]
-    public static partial void ErrorInvokeSendMethod(this ILogger logger, Exception exception);  
-    
+    public static partial void ErrorInvokeSendMethod(this ILogger logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "NotifyScheduler")]
-    public static partial void ErrorNotifyScheduler(this ILogger logger, Exception exception); 
-    
+    public static partial void ErrorNotifyScheduler(this ILogger<NotifySenderService> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "SendNotify")]
-    public static partial void ErrorSendNotify(this ILogger logger, Exception exception);
-    
+    public static partial void ErrorSendNotify(this ILogger<NotifySenderService> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "NotifySender")]
-    public static partial void ErrorNotifySender(this ILogger logger, Exception exception);  
-    
+    public static partial void ErrorNotifySender(this ILogger<NotifySenderService> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "Prepare")]
-    public static partial void ErrorPrepare(this ILogger logger, Exception exception);   
-    
+    public static partial void ErrorPrepare(this ILogger logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "UpdateScheduleDate")]
     public static partial void ErrorUpdateScheduleDate(this ILogger logger, Exception exception);
 }

@@ -763,10 +763,10 @@ static file class Queries
     public static readonly Func<FilesDbContext, IEnumerable<FilesConverts>> Folders =
         Microsoft.EntityFrameworkCore.EF.CompileQuery(
             (FilesDbContext ctx) =>
-                ctx.FilesConverts.AsNoTracking());
+                ctx.FilesConverts);
 
     public static readonly Func<FilesDbContext, IAsyncEnumerable<FilesConverts>> FoldersAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
-                ctx.FilesConverts.AsNoTracking());
+                ctx.FilesConverts);
 }

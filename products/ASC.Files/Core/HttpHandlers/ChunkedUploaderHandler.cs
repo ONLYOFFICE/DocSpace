@@ -53,6 +53,7 @@ public class ChunkedUploaderHandlerService
     private readonly SocketManager _socketManager;
     private readonly FileDtoHelper _filesWrapperHelper;
     private readonly ILogger<ChunkedUploaderHandlerService> _logger;
+    private readonly AuthContext _authContext;
 
     public ChunkedUploaderHandlerService(
         ILogger<ChunkedUploaderHandlerService> logger,
@@ -66,7 +67,8 @@ public class ChunkedUploaderHandlerService
         ChunkedUploadSessionHolder chunkedUploadSessionHolder,
         ChunkedUploadSessionHelper chunkedUploadSessionHelper,
         SocketManager socketManager,
-        FileDtoHelper filesWrapperHelper)
+        FileDtoHelper filesWrapperHelper,
+        AuthContext authContext)
     {
         _tenantManager = tenantManager;
         _fileUploader = fileUploader;
@@ -80,6 +82,7 @@ public class ChunkedUploaderHandlerService
         _socketManager = socketManager;
         _filesWrapperHelper = filesWrapperHelper;
         _logger = logger;
+        _authContext = authContext;
     }
 
     public async Task Invoke(HttpContext context)
@@ -109,7 +112,7 @@ public class ChunkedUploaderHandlerService
 
             if (!await TryAuthorizeAsync(request))
             {
-                await WriteError(context, "Can't authorize given initiate session request or session with specified upload id already expired");
+                await WriteError(context, "Not authorized or session with specified upload id already expired");
 
                 return;
             }
@@ -141,7 +144,7 @@ public class ChunkedUploaderHandlerService
                     if (resumedSession.BytesUploaded == resumedSession.BytesTotal)
                     {
                         await WriteSuccess(context, await ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
-                        _ = _filesMessageService.SendAsync(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
+                        _ = _filesMessageService.SendAsync(MessageAction.FileUploaded, resumedSession.File, resumedSession.File.Title);
 
                         await _socketManager.CreateFileAsync(resumedSession.File);
                     }
@@ -171,32 +174,21 @@ public class ChunkedUploaderHandlerService
 
     private async Task<bool> TryAuthorizeAsync<T>(ChunkedRequestHelper<T> request)
     {
-        if (request.Type(_instanceCrypto) == ChunkedRequestType.Initiate)
+        if (!_authContext.IsAuthenticated)
         {
-            await _tenantManager.SetCurrentTenantAsync(request.TenantId);
-            await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(await _tenantManager.GetCurrentTenantIdAsync(), request.AuthKey(_instanceCrypto)));
-            var cultureInfo = request.CultureInfo(_setupInfo);
-            if (cultureInfo != null)
-            {
-                CultureInfo.CurrentUICulture = cultureInfo;
+            return false;
             }
 
+        if (request.Type(_instanceCrypto) == ChunkedRequestType.Initiate)
+        {
             return true;
         }
 
         if (!string.IsNullOrEmpty(request.UploadId))
         {
             var uploadSession = await _chunkedUploadSessionHolder.GetSessionAsync<T>(request.UploadId);
-            if (uploadSession != null)
+            if (uploadSession != null && _authContext.CurrentAccount.ID == uploadSession.UserId)
             {
-                await _tenantManager.SetCurrentTenantAsync(uploadSession.TenantId);
-                await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(await _tenantManager.GetCurrentTenantIdAsync(), uploadSession.UserId));
-                var culture = _setupInfo.GetPersonalCulture(uploadSession.CultureName).Value;
-                if (culture != null)
-                {
-                    CultureInfo.CurrentUICulture = culture;
-                }
-
                 return true;
             }
         }
@@ -257,12 +249,10 @@ public class ChunkedRequestHelper<T>
     private IFormFile _file;
     private int? _tenantId;
     private long? _fileContentLength;
-    private Guid? _authKey;
-    private CultureInfo _cultureInfo;
 
     public ChunkedRequestType Type(InstanceCrypto instanceCrypto)
     {
-        if (_request.Query["initiate"] == "true" && IsAuthDataSet(instanceCrypto) && IsFileDataSet())
+        if (_request.Query["initiate"] == "true" && IsFileDataSet())
         {
             return ChunkedRequestType.Initiate;
         }
@@ -297,18 +287,6 @@ public class ChunkedRequestHelper<T>
 
             return _tenantId.Value;
         }
-    }
-
-    public Guid AuthKey(InstanceCrypto instanceCrypto)
-    {
-        if (!_authKey.HasValue)
-        {
-            _authKey = !string.IsNullOrEmpty(_request.Query["userid"])
-                            ? new Guid(instanceCrypto.Decrypt(_request.Query["userid"]))
-                            : Guid.Empty;
-        }
-
-        return _authKey.Value;
     }
 
     public T FolderId
@@ -361,29 +339,6 @@ public class ChunkedRequestHelper<T>
 
     public Stream ChunkStream => File.OpenReadStream();
 
-    public CultureInfo CultureInfo(SetupInfo setupInfo)
-    {
-        if (_cultureInfo != null)
-        {
-            return _cultureInfo;
-        }
-
-        var queryValue = _request.Query["culture"];
-
-        string culture;
-
-        if (queryValue.Count == 0)
-        {
-            culture = "en-US";
-        }
-        else
-        {
-            culture = queryValue[0];
-        }
-
-        return _cultureInfo = setupInfo.GetPersonalCulture(culture).Value;
-    }
-
     public bool Encrypted => _request.Query["encrypted"] == "true";
 
     private IFormFile File
@@ -407,11 +362,6 @@ public class ChunkedRequestHelper<T>
     public ChunkedRequestHelper(HttpRequest request)
     {
         _request = request ?? throw new ArgumentNullException(nameof(request));
-    }
-
-    private bool IsAuthDataSet(InstanceCrypto instanceCrypto)
-    {
-        return TenantId > -1 && AuthKey(instanceCrypto) != Guid.Empty;
     }
 
     private bool IsFileDataSet()

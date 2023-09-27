@@ -34,23 +34,17 @@ public class FilesMessageService
     private readonly MessageService _messageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDaoFactory _daoFactory;
-    private readonly NotifyClient _notifyClient;
-    private readonly AuthContext _authContext;
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
         MessageService messageService,
-        IDaoFactory daoFactory,
-        NotifyClient notifyClient,
-        AuthContext authContext)
+        IDaoFactory daoFactory)
     {
         _logger = options.CreateLogger("ASC.Messaging");
         _messageTarget = messageTarget;
         _messageService = messageService;
         _daoFactory = daoFactory;
-        _notifyClient = notifyClient;
-        _authContext = authContext;
     }
 
     public FilesMessageService(
@@ -58,52 +52,44 @@ public class FilesMessageService
         MessageTarget messageTarget,
         MessageService messageService,
         IHttpContextAccessor httpContextAccessor,
-        IDaoFactory daoFactory,
-        NotifyClient notifyClient,
-        AuthContext authContext)
-        : this(options, messageTarget, messageService, daoFactory, notifyClient, authContext)
+        IDaoFactory daoFactory)
+        : this(options, messageTarget, messageService, daoFactory)
     {
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task SendAsync(IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task SendAsync(MessageAction action, params string[] description)
     {
-        await SendHeadersMessageAsync(headers, action, null, description);
+        await _messageService.SendHeadersMessageAsync(action, description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, IDictionary<string, StringValues> headers, params string[] description)
     {
-        await SendAsync(entry, headers, action, null, FileShare.None, Guid.Empty, description);
+        await SendAsync(action, entry, headers, null, Guid.Empty, FileShare.None, description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, List<AceWrapper> aces, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, params string[] description)
     {
-        if (action == MessageAction.RoomDeleted)
-        {
-            var userId = _authContext.CurrentAccount.ID;
-            await _notifyClient.SendRoomRemovedAsync(entry, aces, userId);
-        }
-
-        await SendAsync(entry, headers, action, null, FileShare.None, Guid.Empty, description);
+        await SendAsync(action, entry, null, Guid.Empty, FileShare.None, description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, string oldTitle, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, string oldTitle, FileEntry<T> entry, params string[] description)
     {
-        await SendAsync(entry, headers, action, oldTitle, FileShare.None, Guid.Empty, description);
+        await SendAsync(action, entry, oldTitle, description: description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, Guid userId, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, Guid userId, params string[] description)
     {
-        await SendAsync(entry, headers, action, null, FileShare.None, userId, description);
+        await SendAsync(action, entry, null, userId, FileShare.None, description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, FileShare userRole, Guid userId, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, Guid userId, FileShare userRole, params string[] description)
     {
         description = description.Append(FileStorageService.GetAccessString(userRole)).ToArray();
-        await SendAsync(entry, headers, action, null, userRole, userId, description);
+        await SendAsync(action, entry, null, userId, userRole, description);
     }
 
-    private async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, string oldTitle, FileShare userRole, Guid userId, params string[] description)
+    private async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, IDictionary<string, StringValues> headers, string oldTitle = null, Guid userId = default(Guid), FileShare userRole = FileShare.None, params string[] description)
     {
         if (entry == null)
         {
@@ -117,10 +103,34 @@ public class FilesMessageService
             description = description.Append(additionalParam).ToArray();
         }
 
-        await SendHeadersMessageAsync(headers, action, _messageTarget.Create(entry.Id), description);
+        if (headers == null)//todo check need if
+        {
+            _logger.DebugEmptyRequestHeaders(action);
+
+            return;
+        }
+
+        await _messageService.SendHeadersMessageAsync(action, _messageTarget.Create(entry.Id), headers, description);
     }
 
-    public async Task SendAsync<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    private async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, string oldTitle = null, Guid userId = default(Guid), FileShare userRole = FileShare.None, params string[] description)
+    {
+        if (entry == null)
+        {
+            return;
+        }
+
+        var additionalParam = await GetAdditionalNotificationParamAsync(entry, action, oldTitle, userId, userRole);
+
+        if (additionalParam != "")
+        {
+            description = description.Append(additionalParam).ToArray();
+        }
+
+        await _messageService.SendAsync(action, _messageTarget.Create(entry.Id), description);
+    }
+
+    public async Task SendAsync<T1, T2>(MessageAction action, FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, params string[] description)
     {
         if (entry1 == null || entry2 == null)
         {
@@ -134,11 +144,6 @@ public class FilesMessageService
             description = description.Append(additionalParams).ToArray();
         }
 
-        await SendHeadersMessageAsync(headers, action, _messageTarget.CreateFromGroupValues(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
-    }
-
-    private async Task SendHeadersMessageAsync(IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
-    {
         if (headers == null)//todo check need if
         {
             _logger.DebugEmptyRequestHeaders(action);
@@ -146,10 +151,10 @@ public class FilesMessageService
             return;
         }
 
-        await _messageService.SendAsync(headers, action, target, description);
+        await _messageService.SendHeadersMessageAsync(action, _messageTarget.CreateFromGroupValues(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), headers, description);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, MessageAction action, string description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, string description)
     {
         if (entry == null)
         {
@@ -175,7 +180,7 @@ public class FilesMessageService
         }
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, string d1, string d2)
     {
         if (entry == null)
         {
@@ -191,7 +196,7 @@ public class FilesMessageService
         await _messageService.SendAsync(action, _messageTarget.Create(entry.Id), d1, d2);
     }
 
-    public async Task SendAsync<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(MessageAction action, FileEntry<T> entry, MessageInitiator initiator, params string[] description)
     {
         if (entry == null)
         {

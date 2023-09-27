@@ -58,4 +58,8 @@ public class SignupAccountRequestDto : LinkAccountRequestDto
     /// <summary>Password hash</summary>
     /// <type>System.String, System</type>
     public string PasswordHash { get; set; }
+    
+    /// <summary>Link key</summary>
+    /// <type>System.String, System</type>
+    public string Key { get; set; }
 }

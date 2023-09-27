@@ -35,6 +35,6 @@ public class CspSettings : ISettings<CspSettings>
 
     public CspSettings GetDefault()
     {
-        return new CspSettings();
+        return new CspSettings() { Domains = new List<string>() };
     }
 }

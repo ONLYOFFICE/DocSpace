@@ -113,11 +113,7 @@ ONLYOFFICEチーム</value>
 
 "$FromUserName":"$FromUserLink"のデータ削除過程は正常に終了されました。
 
-個人データの削除により解放された容量：
-
-＃文書 ‐ $DocsSpace 
-＃メール ‐ $MailSpace
-＃チャット ‐ $TalkSpace</value>
+個人データの削除により解放された容量 $DocsSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.新しいポータルが登録された

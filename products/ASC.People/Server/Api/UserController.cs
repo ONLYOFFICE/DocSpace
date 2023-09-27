@@ -480,7 +480,7 @@ public class UserController : PeopleControllerBase
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         await _userPhotoManager.RemovePhotoAsync(user.Id);
         await _userManager.DeleteUserAsync(user.Id);
-        _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
+        _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false, false);
 
         await _messageService.SendAsync(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
 
@@ -977,7 +977,7 @@ public class UserController : PeopleControllerBase
 
             await _userPhotoManager.RemovePhotoAsync(user.Id);
             await _userManager.DeleteUserAsync(user.Id);
-            _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
+            _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false, false);
         }
 
         await _messageService.SendAsync(MessageAction.UsersDeleted, _messageTarget.Create(users.Select(x => x.Id)), userNames);
@@ -1888,4 +1888,73 @@ public class UserController : PeopleControllerBase
     //        };
     //    }
     //}
+}
+
+[ConstraintRoute("int")]
+public class UserControllerAdditionalInternal : UserControllerAdditional<int>
+{
+    public UserControllerAdditionalInternal(
+        EmployeeFullDtoHelper employeeFullDtoHelper, 
+        FileSecurity fileSecurity, 
+        ApiContext apiContext, 
+        IDaoFactory daoFactory) 
+        : base(employeeFullDtoHelper, fileSecurity, apiContext, daoFactory)
+    {
+        
+    }
+}
+
+public class UserControllerAdditionalThirdParty : UserControllerAdditional<string>
+{
+    public UserControllerAdditionalThirdParty(
+        EmployeeFullDtoHelper employeeFullDtoHelper, 
+        FileSecurity fileSecurity, 
+        ApiContext apiContext, 
+        IDaoFactory daoFactory) 
+        : base(employeeFullDtoHelper, fileSecurity, apiContext, daoFactory)
+    {
+        
+    }
+}
+
+public class UserControllerAdditional<T> : ApiControllerBase
+{
+    private readonly EmployeeFullDtoHelper _employeeFullDtoHelper;
+    private readonly FileSecurity _fileSecurity;
+    private readonly ApiContext _apiContext;
+    private readonly IDaoFactory _daoFactory;
+
+    public UserControllerAdditional(
+        EmployeeFullDtoHelper employeeFullDtoHelper, 
+        FileSecurity fileSecurity, 
+        ApiContext apiContext, 
+        IDaoFactory daoFactory)
+    {
+        _employeeFullDtoHelper = employeeFullDtoHelper;
+        _fileSecurity = fileSecurity;
+        _apiContext = apiContext;
+        _daoFactory = daoFactory;
+    }
+
+    [HttpGet("room/{id}")]
+    public async IAsyncEnumerable<EmployeeFullDto> GetUsersWithRoomSharedAsync(T id, EmployeeStatus? employeeStatus, EmployeeActivationStatus? activationStatus, bool? excludeShared)
+    {
+        var offset = Convert.ToInt32(_apiContext.StartIndex);
+        var count = Convert.ToInt32(_apiContext.Count);
+
+        var room = (await _daoFactory.GetFolderDao<T>().GetFolderAsync(id)).NotFoundIfNull();
+        var totalCountTask = _fileSecurity.GetUsersWithSharedCountAsync(room, _apiContext.FilterValue, employeeStatus, activationStatus, excludeShared ?? false);
+
+        var counter = 0;
+
+        await foreach (var u in _fileSecurity.GetUsersWithSharedAsync(room, _apiContext.FilterValue, employeeStatus, activationStatus, excludeShared ?? false, offset, 
+                           count))
+        {
+            counter++;
+            
+            yield return await _employeeFullDtoHelper.GetFullAsync(u.UserInfo, u.Shared);
+        }
+
+        _apiContext.SetCount(counter).SetTotalCount(await totalCountTask);
+    }
 }

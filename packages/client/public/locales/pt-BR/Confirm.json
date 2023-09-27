@@ -28,6 +28,5 @@
   "SetAppTitle": "Configure seu aplicativo autenticador",
   "SuccessDeactivate": "Sua conta foi desativada com sucesso. Em 10 segundos você será redirecionado para o <1>site</1>.",
   "SuccessReactivate": "Sua conta foi reativada com sucesso. Em 10 segundos você será redirecionado para o <1>portal</1>.",
-  "SuccessRemoved": "Sua conta foi removida com sucesso. Em 10 segundos você será redirecionado para o <1>site</1>.",
-  "WelcomeUser": "Bem-vindo ao nosso DocSpace!\nPara começar a se registrar ou iniciar sessão via rede social."
+  "SuccessRemoved": "Sua conta foi removida com sucesso. Em 10 segundos você será redirecionado para o <1>site</1>."
 }

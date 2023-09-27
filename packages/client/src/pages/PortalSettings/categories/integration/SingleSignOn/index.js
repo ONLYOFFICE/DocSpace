@@ -35,7 +35,7 @@ const SingleSignOn = (props) => {
     setDocumentTitle(t("Settings:SingleSignOn"));
   }, []);
 
-  if (!isInit) return <SSOLoader />;
+  if (!isInit && isSSOAvailable) return <SSOLoader />;
 
   return (
     <StyledSsoPage

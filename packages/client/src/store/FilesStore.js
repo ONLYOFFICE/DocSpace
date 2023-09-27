@@ -30,6 +30,7 @@ import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import debounce from "lodash.debounce";
+import clone from "lodash/clone";
 import Queue from "queue-promise";
 
 const { FilesFilter, RoomsFilter } = api;
@@ -80,8 +81,9 @@ class FilesStore {
   bufferSelection = null;
   selected = "close";
 
-  filter = FilesFilter.getDefault(); //TODO: FILTER
+  filter = FilesFilter.getDefault();
   roomsFilter = RoomsFilter.getDefault();
+  membersFilter = { page: 0, pageCount: 100, total: 0 };
 
   categoryType = getCategoryType(window.location);
 
@@ -474,7 +476,7 @@ class FilesStore {
 
       api.files
         .getFolderInfo(folder.id)
-        .then(() => this.setFolder(folderInfo))
+        .then(this.setFolder)
         .catch(() => {
           // console.log("Folder deleted")
         });
@@ -1069,7 +1071,6 @@ class FilesStore {
   };
 
   setSelection = (selection) => {
-    // console.log("setSelection", selection);
     this.selection = selection;
   };
 
@@ -1218,6 +1219,10 @@ class FilesStore {
 
   setFilesOwner = (folderIds, fileIds, ownerId) => {
     return api.files.setFileOwner(folderIds, fileIds, ownerId);
+  };
+
+  setRoomOwner = (ownerId, folderIds) => {
+    return api.files.setFileOwner(ownerId, folderIds);
   };
 
   setFilterUrl = (filter) => {
@@ -1865,6 +1870,7 @@ class FilesStore {
         "mark-read",
         // "mark-as-favorite",
         // "remove-from-favorites",
+        "create-room",
         "download",
         "download-as",
         "convert",
@@ -2105,6 +2111,7 @@ class FilesStore {
         "download",
         "archive-room",
         "unarchive-room",
+        "leave-room",
         "delete",
       ];
 
@@ -2203,6 +2210,7 @@ class FilesStore {
         // "link-for-portal-users",
         "separator1",
         "open-location",
+        "create-room",
         "download",
         "move", //category
         "move-to",
@@ -2420,9 +2428,48 @@ class FilesStore {
     return api.rooms.removeLogoFromRoom(id);
   }
 
-  getRoomMembers(id) {
-    return api.rooms.getRoomMembers(id);
-  }
+  getDefaultMembersFilter = () => {
+    return { page: 0, pageCount: 100, total: 0 };
+  };
+
+  setRoomMembersFilter = (roomMembersFilter) => {
+    this.roomMembersFilter = roomMembersFilter;
+  };
+
+  getRoomMembers = (id, clearFilter = true) => {
+    let newFilter = this.membersFilter;
+
+    if (clearFilter) {
+      newFilter = this.getDefaultMembersFilter();
+    } else {
+      newFilter.page += 1;
+    }
+    this.setRoomMembersFilter(newFilter);
+
+    const membersFilters = {
+      startIndex: newFilter.page * newFilter.pageCount,
+      count: newFilter.pageCount,
+      filterType: 0, // 0 (Members)
+    };
+
+    return api.rooms.getRoomMembers(id, membersFilters).then((res) => {
+      const newFilter = clone(this.membersFilter);
+      newFilter.total = res.total;
+      this.setMembersFilter(newFilter);
+
+      return res.items;
+    });
+  };
+
+  setMembersFilter = (filter) => {
+    this.membersFilter = filter;
+  };
+
+  getRoomLinks = (id) => {
+    return api.rooms
+      .getRoomMembers(id, { filterType: 2 }) // 2 (External link)
+      .then((res) => res.items);
+  };
 
   updateRoomMemberRole(id, data) {
     return api.rooms.updateRoomMemberRole(id, data);
@@ -2525,7 +2572,11 @@ class FilesStore {
   };
 
   removeFiles = (fileIds, folderIds, showToast, destFolderId) => {
-    const newFilter = this.filter.clone();
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+
+    const isRooms = isRoomsFolder || isArchiveFolder;
+    const newFilter = isRooms ? this.roomsFilter.clone() : this.filter.clone();
+
     const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
 
     if (destFolderId && destFolderId === this.selectedFolderStore.id) return;
@@ -2549,7 +2600,7 @@ class FilesStore {
       newFilter.total -= deleteCount;
 
       runInAction(() => {
-        this.setFilter(newFilter);
+        isRooms ? this.setRoomsFilter(newFilter) : this.setFilter(newFilter);
         this.setFiles(files);
         this.setFolders(folders);
         this.setTempActionFilesIds([]);
@@ -2867,6 +2918,7 @@ class FilesStore {
         security,
         viewAccessability,
         mute,
+        inRoom = true,
       } = item;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
@@ -3002,6 +3054,7 @@ class FilesStore {
         providerType,
         security,
         viewAccessability,
+        inRoom,
       };
     });
 
@@ -3416,13 +3469,14 @@ class FilesStore {
     preview = false
   ) => {
     const foundIndex = this.files.findIndex((x) => x.id === id);
+    const file = foundIndex !== -1 ? this.files[foundIndex] : undefined;
     if (
-      foundIndex !== -1 &&
+      file &&
       !preview &&
-      this.files[foundIndex].rootFolderType !== FolderType.Archive
+      file.rootFolderType !== FolderType.Archive &&
+      file.fileExst !== ".oform"
     ) {
-      const newStatus =
-        this.files[foundIndex].fileStatus | FileStatus.IsEditing;
+      const newStatus = file.fileStatus | FileStatus.IsEditing;
 
       this.updateSelectionStatus(id, newStatus, true);
       this.updateFileStatus(foundIndex, newStatus);
@@ -3610,16 +3664,16 @@ class FilesStore {
     return Math.floor(sectionWidth / minTileWidth);
   };
 
-  setInvitationLinks = async (roomId, linkId, title, access) => {
+  setInvitationLinks = async (roomId, title, access, linkId) => {
     return await api.rooms.setInvitationLinks(roomId, linkId, title, access);
   };
 
-  resendEmailInvitations = async (id, usersIds) => {
-    return await api.rooms.resendEmailInvitations(id, usersIds);
+  resendEmailInvitations = async (id, resendAll) => {
+    return await api.rooms.resendEmailInvitations(id, resendAll);
   };
 
   getRoomSecurityInfo = async (id) => {
-    return await api.rooms.getRoomSecurityInfo(id);
+    return await api.rooms.getRoomSecurityInfo(id).then((res) => res.items);
   };
 
   setRoomSecurity = async (id, data) => {

@@ -263,24 +263,10 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
             await using var filesDbContext = _dbContextFactory.CreateDbContext();
             await using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
-                var link = await Queries.TagLinksAsync(filesDbContext, _tenantId, id).ToListAsync();
-
-                filesDbContext.TagLink.RemoveRange(link);
-                await filesDbContext.SaveChangesAsync();
-
-                var tagsToRemove = await Queries.DbFilesTag(filesDbContext).ToListAsync();
-
-                filesDbContext.Tag.RemoveRange(tagsToRemove);
-
-                var securityToDelete = await Queries.SecuritiesAsync(filesDbContext, _tenantId, id).ToListAsync();
-
-                filesDbContext.Security.RemoveRange(securityToDelete);
-                await filesDbContext.SaveChangesAsync();
-
-                var mappingToDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, id).ToListAsync();
-
-                filesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                await filesDbContext.SaveChangesAsync();
+                await Queries.DeleteTagLinksAsync(filesDbContext, _tenantId, id);
+                await Queries.DeleteDbFilesTag(filesDbContext);
+                await Queries.DeleteSecuritiesAsync(filesDbContext, _tenantId, id);
+                await Queries.DeleteThirdpartyIdMappingsAsync(filesDbContext, _tenantId, id);
 
                 await tx.CommitAsync();
             }
@@ -515,7 +501,7 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         return Task.FromResult("tar.gz");
     }
 
-    public Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId)
+    public Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId, IEnumerable<string> exceptFolderIds)
     {
         return Task.CompletedTask;
     }
@@ -812,7 +798,7 @@ internal abstract class BaseFolderDao
 
 static file class Queries
 {
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>> TagLinksAsync =
+    public static readonly Func<FilesDbContext, int, string, Task<int>> DeleteTagLinksAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string idStart) =>
                 ctx.TagLink
@@ -820,17 +806,19 @@ static file class Queries
                     .Where(r => ctx.ThirdpartyIdMapping
                         .Where(t => t.TenantId == tenantId)
                         .Where(t => t.Id.StartsWith(idStart))
-                        .Select(t => t.HashId).Any(h => h == r.EntryId)));
+                        .Select(t => t.HashId).Any(h => h == r.EntryId))
+                        .ExecuteDelete());
 
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
-        ThirdpartyIdMappingsAsync =
+    public static readonly Func<FilesDbContext, int, string, Task<int>>
+        DeleteThirdpartyIdMappingsAsync =
             Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
                 (FilesDbContext ctx, int tenantId, string idStart) =>
                     ctx.ThirdpartyIdMapping
                         .Where(r => r.TenantId == tenantId)
-                        .Where(t => t.Id.StartsWith(idStart)));
+                        .Where(t => t.Id.StartsWith(idStart))
+                        .ExecuteDelete());
 
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> SecuritiesAsync =
+    public static readonly Func<FilesDbContext, int, string, Task<int>> DeleteSecuritiesAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string idStart) =>
                 ctx.Security
@@ -838,17 +826,19 @@ static file class Queries
                     .Where(r => ctx.ThirdpartyIdMapping
                         .Where(t => t.TenantId == tenantId)
                         .Where(t => t.Id.StartsWith(idStart))
-                        .Select(t => t.HashId).Any(h => h == r.EntryId)));
+                        .Select(t => t.HashId).Any(h => h == r.EntryId))
+                        .ExecuteDelete());
 
-    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>> DbFilesTag =
+    public static readonly Func<FilesDbContext, Task<int>> DeleteDbFilesTag =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
-                from ft in ctx.Tag
-                join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
-                {
-                    TenantId = ftl.TenantId,
-                    Id = ftl.TagId
-                }
-                where ftl == null
-                select ft);
+                (from ft in ctx.Tag
+                 join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
+                 {
+                     TenantId = ftl.TenantId,
+                     Id = ftl.TagId
+                 }
+                 where ftl == null
+                 select ft)
+                .ExecuteDelete());
 }

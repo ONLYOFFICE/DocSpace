@@ -48,6 +48,9 @@ public class ThirdpartyController : ApiControllerBase
     private readonly MessageTarget _messageTarget;
     private readonly StudioNotifyService _studioNotifyService;
     private readonly TenantManager _tenantManager;
+    private readonly InvitationLinkService _invitationLinkService;
+    private readonly FileSecurity _fileSecurity;
+    private readonly UsersInRoomChecker _usersInRoomChecker;
 
     public ThirdpartyController(
         AccountLinker accountLinker,
@@ -69,7 +72,10 @@ public class ThirdpartyController : ApiControllerBase
         UserManager userManager,
         MessageTarget messageTarget,
         StudioNotifyService studioNotifyService,
-        TenantManager tenantManager)
+        TenantManager tenantManager,
+        InvitationLinkService invitationLinkService,
+        FileSecurity fileSecurity,
+        UsersInRoomChecker usersInRoomChecker)
     {
         _accountLinker = accountLinker;
         _cookiesManager = cookiesManager;
@@ -91,6 +97,9 @@ public class ThirdpartyController : ApiControllerBase
         _messageTarget = messageTarget;
         _studioNotifyService = studioNotifyService;
         _tenantManager = tenantManager;
+        _invitationLinkService = invitationLinkService;
+        _fileSecurity = fileSecurity;
+        _usersInRoomChecker = usersInRoomChecker;
     }
 
     /// <summary>
@@ -200,7 +209,6 @@ public class ThirdpartyController : ApiControllerBase
     [HttpPost("thirdparty/signup")]
     public async Task SignupAccountAsync(SignupAccountRequestDto inDto)
     {
-        var employeeType = inDto.EmployeeType ?? EmployeeType.RoomAdmin;
         var passwordHash = inDto.PasswordHash;
         var mustChangePassword = false;
         if (string.IsNullOrEmpty(passwordHash))
@@ -226,11 +234,23 @@ public class ThirdpartyController : ApiControllerBase
             throw new Exception(Resource.ErrorNotCorrectEmail);
         }
 
+        var linkData = await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, inDto.Email, inDto.EmployeeType ?? EmployeeType.RoomAdmin);
+
+        if (!linkData.IsCorrect)
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
+        }
+
+        var employeeType = linkData.EmployeeType;
+
         var userID = Guid.Empty;
         try
         {
             await _securityContext.AuthenticateMeWithoutCookieAsync(Core.Configuration.Constants.CoreSystem);
-            var newUser = await CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, false);
+
+            var invitedByEmail = linkData.LinkType == InvitationLinkType.Individual;
+
+            var newUser = await CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, true, invitedByEmail);
             var messageAction = employeeType == EmployeeType.RoomAdmin ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
             await _messageService.SendAsync(MessageInitiator.System, messageAction, _messageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
             userID = newUser.Id;
@@ -262,6 +282,22 @@ public class ThirdpartyController : ApiControllerBase
         {
             _personalSettingsHelper.IsNewUser = true;
         }
+
+        if (linkData is { LinkType: InvitationLinkType.CommonWithRoom })
+        {
+            var success = int.TryParse(linkData.RoomId, out var id);
+
+            if (success)
+            {
+                await _usersInRoomChecker.CheckAppend();
+                await _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, linkData.Share);
+            }
+            else
+            {
+                await _usersInRoomChecker.CheckAppend();
+                await _fileSecurity.ShareAsync(linkData.RoomId, FileEntryType.Folder, user.Id, linkData.Share);
+            }
+        }
     }
 
     /// <summary>
@@ -283,27 +319,36 @@ public class ThirdpartyController : ApiControllerBase
         await _messageService.SendAsync(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
     }
 
-    private async Task<UserInfo> CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)
+    private async Task<UserInfo> CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink, bool inviteByEmail)
     {
         if (SetupInfo.IsSecretEmail(email))
         {
             fromInviteLink = false;
         }
 
-        var userInfo = new UserInfo
+        var user = new UserInfo();
+
+        if (inviteByEmail)
         {
-            FirstName = string.IsNullOrEmpty(firstName) ? UserControlsCommonResource.UnknownFirstName : firstName,
-            LastName = string.IsNullOrEmpty(lastName) ? UserControlsCommonResource.UnknownLastName : lastName,
-            Email = email,
-        };
+            user = await _userManager.GetUserByEmailAsync(email);
+
+            if (user.Equals(Constants.LostUser) || user.ActivationStatus != EmployeeActivationStatus.Pending)
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
+            }
+        }
+
+        user.FirstName = string.IsNullOrEmpty(firstName) ? UserControlsCommonResource.UnknownFirstName : firstName;
+        user.LastName = string.IsNullOrEmpty(lastName) ? UserControlsCommonResource.UnknownLastName : lastName;
+        user.Email = email;
 
         if (_coreBaseSettings.Personal)
         {
-            userInfo.ActivationStatus = EmployeeActivationStatus.Activated;
-            userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : CultureInfo.CurrentUICulture.Name;
+            user.ActivationStatus = EmployeeActivationStatus.Activated;
+            user.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : CultureInfo.CurrentUICulture.Name;
         }
 
-        return await _userManagerWrapper.AddUserAsync(userInfo, passwordHash, true, true, employeeType, fromInviteLink);
+        return await _userManagerWrapper.AddUserAsync(user, passwordHash, true, true, employeeType, fromInviteLink, updateExising: inviteByEmail);
     }
 
     private async Task SaveContactImage(Guid userID, string url)

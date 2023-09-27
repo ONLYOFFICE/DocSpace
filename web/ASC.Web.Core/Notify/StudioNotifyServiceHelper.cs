@@ -24,12 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Common.IntegrationEvents.Events;
+using ASC.EventBus.Abstractions;
+
 namespace ASC.Web.Core.Notify;
 
 [Scope]
 public class StudioNotifyServiceHelper
 {
-    private readonly ICacheNotify<NotifyItem> _cache;
+    private readonly IEventBus _eventBus;
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
@@ -40,18 +43,18 @@ public class StudioNotifyServiceHelper
         AuthContext authContext,
         TenantManager tenantManager,
         CommonLinkUtility commonLinkUtility,
-        ICacheNotify<NotifyItem> cache)
+        IEventBus eventBus)
     {
         _studioNotifyHelper = studioNotifyHelper;
         _authContext = authContext;
         _tenantManager = tenantManager;
         _commonLinkUtility = commonLinkUtility;
-        _cache = cache;
+        _eventBus = eventBus;
     }
 
     public async Task SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
     {
-        await SendNoticeToAsync(action, null, recipients, senderNames, false, args);
+        await SendNoticeToAsync(action, null, recipients, senderNames, false, null, args);
     }
 
     public async Task SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, string baseUri, params ITagValue[] args)
@@ -61,48 +64,21 @@ public class StudioNotifyServiceHelper
 
     public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
     {
-        await SendNoticeToAsync(action, objectID, recipients, senderNames, false, args);
+        await SendNoticeToAsync(action, objectID, recipients, senderNames, false, null, args);
     }
 
-    public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, params ITagValue[] args)
-    {
-        await SendNoticeToAsync(action, objectID, recipients, null, false, args);
-    }
-
-    public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, bool checkSubscription, params ITagValue[] args)
-    {
-        await SendNoticeToAsync(action, objectID, recipients, null, checkSubscription, args);
-    }
-
-    public async Task SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, params ITagValue[] args)
-    {
-        await SendNoticeToAsync(action, objectID, new[] { recipient }, null, false, args);
-    }
-
-    public async Task SendNoticeAsync(INotifyAction action, string objectID, params ITagValue[] args)
+    public async Task SendNoticeAsync(INotifyAction action, params ITagValue[] args)
     {
         var subscriptionSource = _studioNotifyHelper.NotifySource.GetSubscriptionProvider();
-        var recipients = await subscriptionSource.GetRecipientsAsync(action, objectID);
+        var recipients = await subscriptionSource.GetRecipientsAsync(action, null);
 
-        await SendNoticeToAsync(action, objectID, recipients, null, false, args);
-    }
-
-    public async Task SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, bool checkSubscription, params ITagValue[] args)
-    {
-        await SendNoticeToAsync(action, objectID, new[] { recipient }, null, checkSubscription, args);
-    }
-
-    public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubscription, params ITagValue[] args)
-    {
-        await SendNoticeToAsync(action, objectID, recipients, senderNames, checkSubscription, null, args);
+        await SendNoticeToAsync(action, null, recipients, null, false, null, args);
     }
 
     public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, string baseUri, params ITagValue[] args)
     {
-        var item = new NotifyItem
+        var item = new NotifyItemIntegrationEvent(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantIdAsync())
         {
-            TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
-            UserId = _authContext.CurrentAccount.ID.ToString(),
             Action = (NotifyAction)action,
             CheckSubsciption = checkSubsciption,
             BaseUrl = baseUri ?? _commonLinkUtility.GetFullAbsolutePath("")
@@ -113,11 +89,13 @@ public class StudioNotifyServiceHelper
             item.ObjectId = objectID;
         }
 
-        if (recipients != null)
+        if (recipients != null && recipients.Any())
         {
+            item.Recipients = new List<Recipient>();
+
             foreach (var r in recipients)
             {
-                var recipient = new Recipient { Id = r.ID, Name = r.Name };
+                var recipient = new Recipient { Id = r.ID, Name = r.Name, Addresses = new List<string>() };
                 if (r is IDirectRecipient d)
                 {
                     recipient.Addresses.AddRange(d.Addresses);
@@ -133,16 +111,16 @@ public class StudioNotifyServiceHelper
             }
         }
 
-        if (senderNames != null)
+        if (senderNames != null && senderNames.Any())
         {
-            item.SenderNames.AddRange(senderNames);
+            item.SenderNames = senderNames.ToList();
         }
 
-        if (args != null)
+        if (args != null && args.Any())
         {
-            item.Tags.AddRange(args.Where(r => r.Value != null).Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
+            item.Tags = args.Where(r => r.Value != null).Select(r => new Tag { Key = r.Tag, Value = r.Value.ToString() }).ToList();
         }
 
-        _cache.Publish(item, CacheNotifyAction.Any);
+        _eventBus.Publish(item);
     }
 }

@@ -29,8 +29,8 @@ namespace ASC.Notify.Model;
 public interface INotifySource
 {
     string Id { get; }
-    IActionProvider GetActionProvider();
-    IPatternProvider GetPatternProvider();
+    Task<IActionProvider> GetActionProvider(NotifyRequest r);
+    Task<IPatternProvider> GetPatternProvider(NotifyRequest r);
     IRecipientProvider GetRecipientsProvider();
     ISubscriptionProvider GetSubscriptionProvider();
 }

@@ -6,12 +6,13 @@ import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
 import ConsumerToggle from "./consumerToggle";
 import { Base } from "@docspace/components/themes";
-import { thirdpartiesLogo } from "@docspace/common/utils/image-helpers";
+import { thirdpartiesLogo } from "@docspace/common/utils/image-thirdparties";
 
 const StyledItem = styled.div`
   .consumer-description {
     ${(props) =>
       !props.isThirdPartyAvailable &&
+      !props.isSet &&
       css`
         color: #a3a9ae;
       `}
@@ -44,6 +45,7 @@ const StyledBox = styled(Box)`
 
     ${(props) =>
       !props.isThirdPartyAvailable &&
+      !props.isSet &&
       css`
         path {
           opacity: 0.5;
@@ -67,8 +69,11 @@ class ConsumerItem extends React.Component {
 
     const logo = thirdpartiesLogo?.get(`${consumer.name.toLowerCase()}.svg`);
 
+    const isSet =
+      !consumer.canSet || consumer.props.find((p) => p.value) ? true : false;
+
     return (
-      <StyledItem isThirdPartyAvailable={isThirdPartyAvailable}>
+      <StyledItem isThirdPartyAvailable={isThirdPartyAvailable} isSet={isSet}>
         <Box
           displayProp="flex"
           justifyContent="space-between"
@@ -76,11 +81,7 @@ class ConsumerItem extends React.Component {
           widthProp="100%"
         >
           <StyledBox
-            isSet={
-              !consumer.canSet || consumer.props.find((p) => p.value)
-                ? true
-                : false
-            }
+            isSet={isSet}
             isLinkedIn={consumer.name === "linkedin"}
             isThirdPartyAvailable={isThirdPartyAvailable}
           >

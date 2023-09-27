@@ -15,7 +15,7 @@ export function getUserList(filter = Filter.getDefault(), fake = false) {
     checkFilterInstance(filter, Filter);
 
     params = `/filter?${filter.toApiUrlParams(
-      "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
+      "id,status,isAdmin,isOwner,isRoomAdmin,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
     )}`;
   }
 
@@ -356,5 +356,38 @@ export function getUsersByQuery(query) {
   return request({
     method: "get",
     url: `/people/search?query=${query}`,
+  });
+}
+
+export function getMembersList(roomId, filter = Filter.getDefault()) {
+  let params = "";
+
+  if (filter) {
+    checkFilterInstance(filter, Filter);
+
+    params = `?${filter.toApiUrlParams(
+      "id,email,avatar,icon,displayName,hasAvatar,isOwner,isAdmin,isVisitor,isCollaborator,"
+    )}`;
+  }
+
+  const excludeShared = filter.excludeShared ? filter.excludeShared : false;
+
+  if (params) {
+    params += `&excludeShared=${excludeShared}`;
+  } else {
+    params = `excludeShared=${excludeShared}`;
+  }
+
+  return request({
+    method: "get",
+    url: `people/room/${roomId}${params}`,
+  }).then((res) => {
+    res.items = res.items.map((user) => {
+      if (user && user.displayName) {
+        user.displayName = Encoder.htmlDecode(user.displayName);
+      }
+      return user;
+    });
+    return res;
   });
 }

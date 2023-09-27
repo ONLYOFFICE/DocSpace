@@ -65,15 +65,17 @@ public class RemoveUserDataController : ApiControllerBase
     /// <short>Get the deletion progress</short>
     /// <param type="System.Guid, System" name="userId">User ID</param>
     /// <category>User data</category>
-    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress</returns>
-    /// <path>api/2.0/people/remove/progress</path>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.TaskProgressResponseDto, ASC.People">Deletion progress</returns>
+    /// <path>api/2.0/people/remove/progress/{userid}</path>
     /// <httpMethod>GET</httpMethod>
-    [HttpGet("remove/progress")]
-    public async Task<RemoveProgressItem> GetRemoveProgressAsync(Guid userId)
+    [HttpGet("remove/progress/{userid}")]
+    public async Task<TaskProgressResponseDto> GetRemoveProgressAsync(Guid userId)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
+        var progressItem = _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
+
+        return TaskProgressResponseDto.Get(progressItem);
     }
 
     /// <summary>
@@ -108,11 +110,11 @@ public class RemoveUserDataController : ApiControllerBase
     /// <short>Start the data deletion</short>
     /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for starting the deletion process</param>
     /// <category>User data</category>
-    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress</returns>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.TaskProgressResponseDto, ASC.People">Deletion progress</returns>
     /// <path>api/2.0/people/remove/start</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("remove/start")]
-    public async Task<RemoveProgressItem> StartRemoveAsync(TerminateRequestDto inDto)
+    public async Task<TaskProgressResponseDto> StartRemoveAsync(TerminateRequestDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
@@ -128,7 +130,9 @@ public class RemoveUserDataController : ApiControllerBase
             throw new ArgumentException("Can not delete user with id = " + inDto.UserId);
         }
 
-        return _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);
+        var progressItem = _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true, true);
+
+        return TaskProgressResponseDto.Get(progressItem);
     }
 
     /// <summary>

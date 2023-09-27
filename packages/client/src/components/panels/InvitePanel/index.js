@@ -24,6 +24,9 @@ import InviteInput from "./sub-components/InviteInput";
 import ExternalLinks from "./sub-components/ExternalLinks";
 import Scrollbar from "@docspace/components/scrollbar";
 import { LinkType } from "../../../helpers/constants";
+
+import InfoBar from "./sub-components/InfoBar";
+
 const InvitePanel = ({
   folders,
   getFolderInfo,
@@ -52,23 +55,21 @@ const InvitePanel = ({
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
   const [shareLinks, setShareLinks] = useState([]);
-  const [roomUsers, setRoomUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [externalLinksVisible, setExternalLinksVisible] = useState(false);
   const [scrollAllPanelContent, setScrollAllPanelContent] = useState(false);
   const [activeLink, setActiveLink] = useState({});
+  const [infoBarIsVisible, setInfoBarIsVisible] = useState(true);
   const [addUsersPanelVisible, setAddUsersPanelVisible] = useState(false);
   const [isMobileView, setIsMobileView] = useState(isMobileOnly);
+
+  const onCloseBar = () => setInfoBarIsVisible(false);
 
   const inputsRef = useRef();
   const invitePanelBodyRef = useRef();
 
   const onChangeExternalLinksVisible = (visible) => {
     setExternalLinksVisible(visible);
-  };
-
-  const onChangeActiveLink = (activeLink) => {
-    setActiveLink(activeLink);
   };
 
   const selectRoom = () => {
@@ -84,26 +85,24 @@ const InvitePanel = ({
   };
 
   const getInfo = () => {
-    getRoomSecurityInfo(roomId).then((users) => {
-      let links = [];
+    getRoomSecurityInfo(roomId).then((links) => {
+      const link = links[0];
+      if (link) {
+        const { shareLink, id, title, expirationDate } = link.sharedTo;
 
-      users.map((user) => {
-        const { shareLink, id, title, expirationDate, linkType } =
-          user.sharedTo;
+        const activeLink = {
+          id,
+          title,
+          shareLink,
+          expirationDate,
+          access: link.access || defaultAccess,
+        };
 
-        if (!!shareLink && linkType === LinkType.Invite) {
-          links.push({
-            id,
-            title,
-            shareLink,
-            expirationDate,
-            access: user.access || defaultAccess,
-          });
-        }
-      });
+        onChangeExternalLinksVisible(!!links.length);
 
-      setShareLinks(links);
-      setRoomUsers(users);
+        setShareLinks([activeLink]);
+        setActiveLink(activeLink);
+      }
     });
   };
 
@@ -241,6 +240,7 @@ const InvitePanel = ({
 
   const roomType = selectedRoom ? selectedRoom.roomType : -1;
   const hasInvitedUsers = !!inviteItems.length;
+  const hasAdmins = inviteItems.findIndex((u) => u.isAdmin || u.isOwner) > -1;
 
   const bodyInvitePanel = useMemo(() => {
     return (
@@ -248,11 +248,12 @@ const InvitePanel = ({
         <ExternalLinks
           t={t}
           shareLinks={shareLinks}
+          setShareLinks={setShareLinks}
           getInfo={getInfo}
           roomType={roomType}
           onChangeExternalLinksVisible={onChangeExternalLinksVisible}
           externalLinksVisible={externalLinksVisible}
-          onChangeActiveLink={onChangeActiveLink}
+          setActiveLink={setActiveLink}
           activeLink={activeLink}
           isMobileView={isMobileView}
         />
@@ -260,13 +261,15 @@ const InvitePanel = ({
         <InviteInput
           t={t}
           onClose={onClose}
-          roomUsers={roomUsers}
           roomType={roomType}
           inputsRef={inputsRef}
           addUsersPanelVisible={addUsersPanelVisible}
           setAddUsersPanelVisible={setAddUsersPanelVisible}
           isMobileView={isMobileView}
         />
+        {infoBarIsVisible && hasAdmins && (
+          <InfoBar t={t} onClose={onCloseBar} />
+        )}
         {hasInvitedUsers && (
           <ItemsList
             t={t}
@@ -289,7 +292,6 @@ const InvitePanel = ({
     onChangeExternalLinksVisible,
     externalLinksVisible,
     onClose,
-    roomUsers,
     setHasErrors,
     scrollAllPanelContent,
     hasInvitedUsers,
@@ -450,5 +452,6 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     "Translations",
     "Common",
     "InfoPanel",
+    "PeopleSelector",
   ])(observer(InvitePanel))
 );

@@ -88,14 +88,9 @@ public class StudioNotifyService
         _studioNotifyHelper = studioNotifyHelper;
     }
 
-    public async Task SendMsgToAdminAboutProfileUpdatedAsync()
-    {
-        await _client.SendNoticeAsync(Actions.SelfProfileUpdated, null);
-    }
-
     public async Task SendMsgToAdminFromNotAuthUserAsync(string email, string message)
     {
-        await _client.SendNoticeAsync(Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
+        await _client.SendNoticeAsync(Actions.UserMessageToAdmin, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
     }
 
     public async Task SendMsgToSalesAsync(string email, string userName, string message)
@@ -195,7 +190,7 @@ public class StudioNotifyService
 
         var displayUserName = userInfo.DisplayUserName(false, _displayUserSettingsHelper);
 
-        await _messageService.SendAsync(auditEventDate, MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(userInfo.Id), displayUserName);
+        await _messageService.SendAsync(MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(userInfo.Id), auditEventDate, displayUserName);
     }
 
     #endregion
@@ -262,56 +257,6 @@ public class StudioNotifyService
 
     #endregion
 
-    #region MailServer
-
-    public async Task SendMailboxCreatedAsync(List<string> toEmails, string username, string address)
-    {
-        await SendMailboxCreatedAsync(toEmails, username, address, null, null, -1, -1, null);
-    }
-
-    public async Task SendMailboxCreatedAsync(List<string> toEmails, string username, string address, string server,
-        string encyption, int portImap, int portSmtp, string login, bool skipSettings = false)
-    {
-        var tags = new List<ITagValue>
-            {
-                new TagValue(Tags.UserName, username ?? string.Empty),
-                new TagValue(Tags.Address, address ?? string.Empty)
-            };
-
-        if (!skipSettings)
-        {
-            var link = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/addons/mail/#accounts/changepwd={address}";
-
-            tags.Add(new TagValue(Tags.MyStaffLink, link));
-            tags.Add(new TagValue(Tags.Server, server));
-            tags.Add(new TagValue(Tags.Encryption, encyption ?? string.Empty));
-            tags.Add(new TagValue(Tags.ImapPort, portImap.ToString(CultureInfo.InvariantCulture)));
-            tags.Add(new TagValue(Tags.SmtpPort, portSmtp.ToString(CultureInfo.InvariantCulture)));
-            tags.Add(new TagValue(Tags.Login, login));
-        }
-
-        await _client.SendNoticeToAsync(
-        skipSettings
-            ? Actions.MailboxWithoutSettingsCreated
-            : Actions.MailboxCreated,
-        null,
-            await _studioNotifyHelper.RecipientFromEmailAsync(toEmails, false),
-        new[] { EMailSenderName });
-    }
-
-    public async Task SendMailboxPasswordChangedAsync(List<string> toEmails, string username, string address)
-    {
-        await _client.SendNoticeToAsync(
-        Actions.MailboxPasswordChanged,
-        null,
-           await _studioNotifyHelper.RecipientFromEmailAsync(toEmails, false),
-        new[] { EMailSenderName },
-        new TagValue(Tags.UserName, username ?? string.Empty),
-        new TagValue(Tags.Address, address ?? string.Empty));
-    }
-
-    #endregion
-
     public async Task SendMsgMobilePhoneChangeAsync(UserInfo userInfo)
     {
         var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
@@ -343,7 +288,7 @@ public class StudioNotifyService
     {
         if (!_coreBaseSettings.Personal)
         {
-            await _client.SendNoticeAsync(Actions.UserHasJoin, null);
+            await _client.SendNoticeAsync(Actions.UserHasJoin);
         }
     }
 

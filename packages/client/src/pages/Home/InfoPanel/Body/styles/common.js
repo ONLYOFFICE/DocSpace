@@ -63,6 +63,25 @@ const StyledTitle = styled.div`
   align-items: center;
   height: 32px;
 
+  .info_title-icons {
+    display: flex;
+    margin-left: auto;
+    gap: 14px;
+    .icon {
+      cursor: pointer;
+      path,
+      rect {
+        fill: ${(props) => props.theme.infoPanel.members.iconColor};
+      }
+      &:hover {
+        path,
+        rect {
+          fill: ${(props) => props.theme.infoPanel.members.iconHoverColor};
+        }
+      }
+    }
+  }
+
   img {
     &.icon {
       display: flex;

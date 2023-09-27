@@ -40,6 +40,7 @@ const RootContainer = styled(Box)`
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(293px, 1fr));
     gap: 20px;
+    margin-bottom: 20px;
   }
 
   .consumer-item-wrapper {
@@ -64,8 +65,11 @@ const RootContainer = styled(Box)`
     }
   }
 
-  .paid-badge {
-    margin-bottom: 8px;
+  .business-plan {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
   }
 `;
 
@@ -169,6 +173,13 @@ class ThirdPartyServices extends React.Component {
         consumer.name !== "twilio"
     );
 
+    const freeConsumers = filteredConsumers.filter(
+      (consumer) => consumer.canSet === false
+    );
+    const paidConsumers = filteredConsumers.filter(
+      (consumer) => !freeConsumers.includes(consumer)
+    );
+
     const imgSrc = theme.isBase ? IntegrationSvgUrl : IntegrationDarkSvgUrl;
 
     const submitRequest = () =>
@@ -177,14 +188,6 @@ class ThirdPartyServices extends React.Component {
     return (
       <>
         <RootContainer className="RootContainer">
-          {!isThirdPartyAvailable && (
-            <Badge
-              backgroundColor="#EDC409"
-              label={t("Common:Paid")}
-              className="paid-badge"
-              isPaidBadge={true}
-            />
-          )}
           <Text className="third-party-description">
             {t("ThirdPartyTitleDescription")}
           </Text>
@@ -216,7 +219,37 @@ class ThirdPartyServices extends React.Component {
             />
           </Box>
           <div className="consumers-list-container">
-            {filteredConsumers.map((consumer) => (
+            {freeConsumers.map((consumer) => (
+              <Box className="consumer-item-wrapper" key={consumer.name}>
+                <ConsumerItem
+                  consumer={consumer}
+                  dialogVisible={dialogVisible}
+                  isLoading={isLoading}
+                  onChangeLoading={onChangeLoading}
+                  onModalClose={onModalClose}
+                  onModalOpen={onModalOpen}
+                  setConsumer={setConsumer}
+                  updateConsumerProps={updateConsumerProps}
+                  t={t}
+                  isThirdPartyAvailable={isThirdPartyAvailable}
+                />
+              </Box>
+            ))}
+          </div>
+          {!isThirdPartyAvailable && (
+            <div className="business-plan">
+              <Text fontSize="16px" fontWeight={700}>
+                {t("IncludedInBusiness")}
+              </Text>
+              <Badge
+                backgroundColor="#EDC409"
+                label={t("Common:Paid")}
+                isPaidBadge={true}
+              />
+            </div>
+          )}
+          <div className="consumers-list-container">
+            {paidConsumers.map((consumer) => (
               <Box className="consumer-item-wrapper" key={consumer.name}>
                 <ConsumerItem
                   consumer={consumer}

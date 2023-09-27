@@ -92,7 +92,7 @@ public class OperationController : ApiControllerBase
     [HttpPut("fileops/copy")]
     public async IAsyncEnumerable<FileOperationDto> CopyBatchItems(BatchRequestDto inDto)
     {
-        foreach (var e in await _fileStorageService.MoveOrCopyItemsAsync(inDto.FolderIds.ToList(), inDto.FileIds.ToList(), inDto.DestFolderId, inDto.ConflictResolveType, true, inDto.DeleteAfter))
+        foreach (var e in await _fileStorageService.MoveOrCopyItemsAsync(inDto.FolderIds.ToList(), inDto.FileIds.ToList(), inDto.DestFolderId, inDto.ConflictResolveType, true, inDto.DeleteAfter, inDto.Content))
         {
             yield return await _fileOperationDtoHelper.GetAsync(e);
         }
@@ -190,7 +190,7 @@ public class OperationController : ApiControllerBase
     [HttpPut("fileops/move")]
     public async IAsyncEnumerable<FileOperationDto> MoveBatchItems(BatchRequestDto inDto)
     {
-        foreach (var e in await _fileStorageService.MoveOrCopyItemsAsync(inDto.FolderIds.ToList(), inDto.FileIds.ToList(), inDto.DestFolderId, inDto.ConflictResolveType, false, inDto.DeleteAfter))
+        foreach (var e in await _fileStorageService.MoveOrCopyItemsAsync(inDto.FolderIds.ToList(), inDto.FileIds.ToList(), inDto.DestFolderId, inDto.ConflictResolveType, false, inDto.DeleteAfter, inDto.Content))
         {
             yield return await _fileOperationDtoHelper.GetAsync(e);
         }
