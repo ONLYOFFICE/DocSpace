@@ -21,6 +21,7 @@ const AccessSelector = ({
   className,
   standalone,
   isMobileView,
+  noBorder = false,
 }) => {
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
   const width = containerRef?.current?.offsetWidth - 32;
@@ -64,7 +65,7 @@ const AccessSelector = ({
           selectedOption={selectedOption}
           onSelect={onSelectAccess}
           accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
-          noBorder={false}
+          noBorder={noBorder}
           directionX="right"
           directionY="bottom"
           fixedDirection={true}
@@ -82,7 +83,7 @@ const AccessSelector = ({
           selectedOption={selectedOption}
           onSelect={onSelectAccess}
           accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
-          noBorder={false}
+          noBorder={noBorder}
           directionX="right"
           directionY="top"
           fixedDirection={true}
