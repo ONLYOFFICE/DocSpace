@@ -25,7 +25,7 @@ const StyledWrapper = styled.div`
 
   .settings-section {
     display: grid;
-    grid-gap: 18px;
+    grid-gap: 12px;
   }
 `;
 
