@@ -1957,9 +1957,9 @@ public class FileStorageService //: IFileStorageService
         return _fileOperationsManager.GetOperationResults(_authContext.CurrentAccount.ID);
     }
 
-    public List<FileOperationResult> TerminateTasks()
+    public List<FileOperationResult> TerminateTasks(string id = null)
     {
-        return _fileOperationsManager.CancelOperations(_authContext.CurrentAccount.ID);
+        return _fileOperationsManager.CancelOperations(_authContext.CurrentAccount.ID, id);
     }
 
     public async Task<List<FileOperationResult>> BulkDownloadAsync(Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files)

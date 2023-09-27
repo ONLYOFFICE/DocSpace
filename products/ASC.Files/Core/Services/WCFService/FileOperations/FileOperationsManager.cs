@@ -90,10 +90,10 @@ public class FileOperationsManager
         return results;
     }
 
-    public List<FileOperationResult> CancelOperations(Guid userId)
+    public List<FileOperationResult> CancelOperations(Guid userId, string id = null)
     {
         var operations = _tasks.GetAllTasks()
-            .Where(t => new Guid(t[FileOperation.Owner]) == userId);
+            .Where(t => (string.IsNullOrEmpty(id) || t.Id == id) && new Guid(t[FileOperation.Owner]) == userId);
 
         foreach (var o in operations)
         {

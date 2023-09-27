@@ -241,10 +241,10 @@ public class OperationController : ApiControllerBase
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
     [AllowAnonymous]
-    [HttpPut("fileops/terminate")]
-    public async IAsyncEnumerable<FileOperationDto> TerminateTasks()
+    [HttpPut("fileops/terminate/{id?}")]
+    public async IAsyncEnumerable<FileOperationDto> TerminateTasks(string id = null)
     {
-        var tasks = _fileStorageService.TerminateTasks();
+        var tasks = _fileStorageService.TerminateTasks(id);
 
         foreach (var e in tasks)
         {
