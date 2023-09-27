@@ -129,7 +129,7 @@ const ActiveSessions = ({
   if (!sessionsIsInit) return <Loaders.ProfileFooter isProfileFooter />;
   return (
     <StyledFooter>
-      <Text fontSize="16px" fontWeight={700}>
+      <Text fontSize="16px" fontWeight={700} lineHeight="22px">
         {t("Profile:ActiveSessions")}
       </Text>
       <Box
