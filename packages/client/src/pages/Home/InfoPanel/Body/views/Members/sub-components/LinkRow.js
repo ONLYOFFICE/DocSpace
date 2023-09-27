@@ -40,15 +40,8 @@ const LinkRow = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    title,
-    shareLink,
-    id,
-    password,
-    disabled,
-    expirationDate,
-    isExpired,
-  } = link.sharedTo;
+  const { title, shareLink, password, disabled, expirationDate, isExpired } =
+    link.sharedTo;
 
   const isLocked = !!password;
   const expiryDate = !!expirationDate;
@@ -76,8 +69,8 @@ const LinkRow = (props) => {
     newLink.sharedTo.disabled = !newLink.sharedTo.disabled;
 
     editExternalLink(roomId, newLink)
-      .then((res) => {
-        setExternalLink(id, res);
+      .then((link) => {
+        setExternalLink(link);
 
         disabled
           ? toastr.success(t("Files:LinkEnabledSuccessfully"))

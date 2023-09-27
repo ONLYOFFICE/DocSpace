@@ -9,10 +9,15 @@ import { isMobileOnly } from "react-device-detect";
 import { decode } from "he";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
 import { getUserRole } from "@docspace/common/utils";
+import Text from "@docspace/components/text";
+import EmailPlusReactSvgUrl from "PUBLIC_DIR/images/e-mail+.react.svg?url";
+import { StyledUserTypeHeader } from "../../styles/members";
+import IconButton from "@docspace/components/icon-button";
 
 const User = ({
   t,
   user,
+  setMembers,
   isExpect,
   membersHelper,
   currentMember,
@@ -21,6 +26,9 @@ const User = ({
   setSelectionParentRoom,
   changeUserType,
   setIsScrollLocked,
+  isTitle,
+  onRepeatInvitation,
+  showInviteIcon,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -48,22 +56,45 @@ const User = ({
     })
       .then(() => {
         setIsLoading(false);
-        const inRoomMembers = selectionParentRoom.members.inRoom;
+        const users = selectionParentRoom.members.users;
+        const administrators = selectionParentRoom.members.administrators;
         const expectedMembers = selectionParentRoom.members.expected;
         if (option.key === "remove") {
+          setMembers({
+            users: users?.filter((m) => m.id !== user.id),
+            administrators: administrators?.filter((m) => m.id !== user.id),
+            expected: expectedMembers?.filter((m) => m.id !== user.id),
+          });
+
           setSelectionParentRoom({
             ...selectionParentRoom,
             members: {
-              inRoom: inRoomMembers?.filter((m) => m.id !== user.id),
+              users: users?.filter((m) => m.id !== user.id),
+              administrators: administrators?.filter((m) => m.id !== user.id),
               expected: expectedMembers?.filter((m) => m.id !== user.id),
             },
           });
           //setUserIsRemoved(true);
         } else {
+          setMembers({
+            users: users?.map((m) =>
+              m.id === user.id ? { ...m, access: option.access } : m
+            ),
+            administrators: administrators?.map((m) =>
+              m.id === user.id ? { ...m, access: option.access } : m
+            ),
+            expected: expectedMembers?.map((m) =>
+              m.id === user.id ? { ...m, access: option.access } : m
+            ),
+          });
+
           setSelectionParentRoom({
             ...selectionParentRoom,
             members: {
-              inRoom: inRoomMembers?.map((m) =>
+              users: users?.map((m) =>
+                m.id === user.id ? { ...m, access: option.access } : m
+              ),
+              administrators: administrators?.map((m) =>
                 m.id === user.id ? { ...m, access: option.access } : m
               ),
               expected: expectedMembers?.map((m) =>
@@ -126,7 +157,22 @@ const User = ({
     user.isOwner ? t("Common:DocSpaceOwner") : t("Common:DocSpaceAdmin")
   }. ${t("Common:HasFullAccess")}`;
 
-  return (
+  return isTitle ? (
+    <StyledUserTypeHeader isExpect={isExpect}>
+      <Text className="title">{user.displayName}</Text>
+
+      {showInviteIcon && (
+        <IconButton
+          className={"icon"}
+          title={t("Common:RepeatInvitation")}
+          iconName={EmailPlusReactSvgUrl}
+          isFill={true}
+          onClick={onRepeatInvitation}
+          size={16}
+        />
+      )}
+    </StyledUserTypeHeader>
+  ) : (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
         role={role}

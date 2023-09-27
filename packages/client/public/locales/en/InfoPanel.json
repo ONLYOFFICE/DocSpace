@@ -39,5 +39,9 @@
   "SubmenuHistory": "History",
   "SystemProperties": "System properties",
   "UsersInRoom": "Users in room",
-  "Versions": "Versions"
+  "Versions": "Versions",
+  "Administration": "Administration",
+  "Users": "Users",
+  "ExpectUsers": "Expect users",
+  "InfoBanner": "The list of invited users includes the owner and/or admins of this DocSpace with full access to all rooms. The owner and/or administrator cannot be assigned other access rights. Once added to the room, they will be notified of all changes."
 }

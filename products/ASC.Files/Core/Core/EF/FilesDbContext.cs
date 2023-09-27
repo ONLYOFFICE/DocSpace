@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using User = ASC.Core.Common.EF.User;
+
 namespace ASC.Files.Core.EF;
 
 public class FilesDbContext : DbContext
@@ -42,6 +44,7 @@ public class FilesDbContext : DbContext
     public DbSet<DbFilesProperties> FilesProperties { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<FilesConverts> FilesConverts { get; set; }
+    public DbSet<User> Users { get; set; }
 
     public FilesDbContext(DbContextOptions<FilesDbContext> dbContextOptions) : base(dbContextOptions) { }
 
@@ -63,6 +66,7 @@ public class FilesDbContext : DbContext
             .AddDbFilesProperties()
             .AddDbTenant()
             .AddFilesConverts()
+            .AddUser()
             .AddDbFunctions();
     }
 }

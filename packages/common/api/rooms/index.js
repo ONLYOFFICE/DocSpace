@@ -1,5 +1,9 @@
 import { request } from "../client";
-import { checkFilterInstance, decodeDisplayName } from "../../utils";
+import {
+  checkFilterInstance,
+  decodeDisplayName,
+  toUrlParams,
+} from "../../utils";
 import { FolderType } from "../../constants";
 import RoomsFilter from "./filter";
 
@@ -45,10 +49,17 @@ export function getRoomInfo(id) {
   });
 }
 
-export function getRoomMembers(id) {
+export function getRoomMembers(id, filter) {
+  let params = "";
+  const str = toUrlParams(filter);
+
+  if (str) {
+    params = `?${str}`;
+  }
+
   const options = {
     method: "get",
-    url: `/files/rooms/${id}/share`,
+    url: `/files/rooms/${id}/share${params}`,
   };
 
   return request(options).then((res) => {
@@ -288,12 +299,12 @@ export const setInvitationLinks = async (roomId, linkId, title, access) => {
   return res;
 };
 
-export const resendEmailInvitations = async (id, usersIds) => {
+export const resendEmailInvitations = async (id, resendAll = true) => {
   const options = {
     method: "post",
     url: `/files/rooms/${id}/resend`,
     data: {
-      usersIds,
+      resendAll,
     },
   };
 
@@ -302,10 +313,11 @@ export const resendEmailInvitations = async (id, usersIds) => {
   return res;
 };
 
+//// 1 (Invitation link)
 export const getRoomSecurityInfo = async (id) => {
   const options = {
     method: "get",
-    url: `/files/rooms/${id}/share`,
+    url: `/files/rooms/${id}/share?filterType=1`,
   };
 
   const res = await request(options);
