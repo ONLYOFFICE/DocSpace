@@ -99,7 +99,6 @@ public class QuotaUsageDto
     public ulong UsedSize { get; set; }
     public int MaxRoomAdminsCount { get; set; }
     public int RoomAdminCount { get; set; }
-    public long UserStorageSize { get; set; }
     public long MaxUsers { get; set; }
     public long UsersCount { get; set; }
     public int MaxRoomsCount { get; set; }
