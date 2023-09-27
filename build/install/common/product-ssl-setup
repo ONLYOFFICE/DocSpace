@@ -46,7 +46,7 @@ if [ "$#" -ge "2" ]; then
     if [ -f "${OPENRESTY}/onlyoffice-proxy-ssl.conf.template" ]; then
       cp -f ${OPENRESTY}/onlyoffice-proxy-ssl.conf.template ${OPENRESTY}/onlyoffice-proxy.conf
 
-      ENVIRONMENT=$(grep -oP 'ENVIRONMENT=\K.*' /usr/lib/systemd/system/${PRODUCT}-api.service)
+      ENVIRONMENT=$(grep -oP 'ENVIRONMENT=\K.*' $(dirname $(dpkg-query -L ${PRODUCT}-api | grep systemd/system/))/${PRODUCT}-api.service)
       sed -i "s/\(\"portal\":\).*/\1 \"https:\/\/${DOMAIN:-$(hostname --fqdn)}\"/" /etc/onlyoffice/docspace/appsettings.$ENVIRONMENT.json
       sed -i "s~\(ssl_certificate \).*;~\1${CERTIFICATE_FILE};~g" ${OPENRESTY}/onlyoffice-proxy.conf
       sed -i "s~\(ssl_certificate_key \).*;~\1${PRIVATEKEY_FILE};~g" ${OPENRESTY}/onlyoffice-proxy.conf
