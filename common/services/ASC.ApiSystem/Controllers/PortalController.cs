@@ -498,28 +498,31 @@ public class PortalController : ControllerBase
 
                 var responseString = await _commonMethods.ExecApiRequest(url, auth);
 
-                if (responseString == null)
+                if (string.IsNullOrEmpty(responseString))
                 {
                     continue;
                 }
 
-                var responseJson = JObject.Parse(responseString);
+                var responseJson = JsonSerializer.Deserialize<JsonElement>(responseString);
 
-                var dataObj = responseJson.Value<JObject>("response");
+                if (!responseJson.TryGetProperty("response", out var dataObj) || dataObj.ValueKind != JsonValueKind.Object)
+                {
+                    continue;
+                }
 
                 result.Add(new {
                     tenantId = tenant.Id,
                     tenantAlias = tenant.Alias,
                     tenantDomain = domain,
 
-                    storageSize= dataObj.Value<ulong>("storageSize"),
-                    usedSize = dataObj.Value<ulong>("usedSize"),
-                    maxRoomAdminsCount = dataObj.Value<int>("maxRoomAdminsCount"),
-                    roomAdminCount = dataObj.Value<int>("roomAdminCount"),
-                    maxUsers = dataObj.Value<long>("maxUsers"),
-                    usersCount = dataObj.Value<long>("usersCount"),
-                    maxRoomsCount = dataObj.Value<int>("maxRoomsCount"),
-                    roomsCount = dataObj.Value<int>("roomsCount")
+                    storageSize= dataObj.GetProperty("storageSize").GetUInt64(),
+                    usedSize = dataObj.GetProperty("usedSize").GetUInt64(),
+                    maxRoomAdminsCount = dataObj.GetProperty("maxRoomAdminsCount").GetInt32(),
+                    roomAdminCount = dataObj.GetProperty("roomAdminCount").GetInt32(),
+                    maxUsers = dataObj.GetProperty("maxUsers").GetInt64(),
+                    usersCount = dataObj.GetProperty("usersCount").GetInt64(),
+                    maxRoomsCount = dataObj.GetProperty("maxRoomsCount").GetInt32(),
+                    roomsCount = dataObj.GetProperty("roomsCount").GetInt32()
                 });
             }
 
