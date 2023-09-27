@@ -136,25 +136,6 @@ const Members = ({
     return array.findIndex((x) => x.id === type) > -1;
   };
 
-  // const updateSelectionParentRoomAction = useCallback(async () => {
-  //   if (!selectionParentRoom) return;
-
-  //   if (selectionParentRoom.members) {
-  //     setMembers(selectionParentRoom.members);
-  //     return;
-  //   }
-
-  //   const fetchedMembers = await fetchMembers(selectionParentRoom.id);
-  //   setSelectionParentRoom({
-  //     ...selectionParentRoom,
-  //     members: fetchedMembers,
-  //   });
-  // }, [selectionParentRoom]);
-
-  // useEffect(() => {
-  //   updateSelectionParentRoomAction();
-  // }, [selectionParentRoom, updateSelectionParentRoomAction]);
-
   const updateSelectionParentRoomActionSelection = useCallback(async () => {
     if (!selection.isRoom) return;
 
