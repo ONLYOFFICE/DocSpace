@@ -10,27 +10,31 @@ const StyledSectionBodyContent = styled.div`
   }
 
   .notification-container {
-    display: grid;
-    grid-template-columns: 1fr 124px;
+    display: flex;
+    flex-direction: column;
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+
+      div > label {
+        position: relative;
+        gap: 0;
+      }
+    }
     margin-bottom: 12px;
 
-    .toggle-btn {
-      ${(props) =>
-        props.theme.interfaceDirection === "rtl"
-          ? css`
-              padding-right: 44px;
-            `
-          : css`
-              padding-left: 44px;
-            `}
-    }
     .notification-container_description {
       color: ${(props) =>
         props.theme.profile.notifications.textDescriptionColor};
     }
   }
+
   .badges-container {
     margin-bottom: 24px;
+    p {
+      line-height: 20px;
+    }
   }
 `;
 

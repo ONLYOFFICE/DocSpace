@@ -117,7 +117,7 @@ const Notifications = ({ setSubscriptions, isFirstSubscriptionsLoad }) => {
       {isLoadingContent ? (
         <Loaders.Notifications count={3} />
       ) : (
-        <>
+        <div className="badges-container">
           <RoomsActivityContainer
             t={t}
             textProps={textProps}
@@ -133,7 +133,7 @@ const Notifications = ({ setSubscriptions, isFirstSubscriptionsLoad }) => {
             textProps={textProps}
             textDescriptionsProps={textDescriptionsProps}
           />
-        </>
+        </div>
       )}
     </>
   );

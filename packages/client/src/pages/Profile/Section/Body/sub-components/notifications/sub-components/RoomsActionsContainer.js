@@ -14,7 +14,7 @@ const RoomsActionsContainer = ({
   textProps,
   textDescriptionsProps,
 }) => {
-  const onChangeBadgeSubscription = async e => {
+  const onChangeBadgeSubscription = async (e) => {
     const checked = e.currentTarget.checked;
     !checked && resetTreeItemCount();
 
@@ -28,19 +28,17 @@ const RoomsActionsContainer = ({
 
   return (
     <div className="notification-container">
-      <div>
+      <div className="row">
         <Text {...textProps} className="subscription-title">
           {t("RoomsActions")}
         </Text>
-        <Text {...textDescriptionsProps}>
-          {t("ActionsWithFilesDescription")}
-        </Text>
+        <ToggleButton
+          className="rooms-actions"
+          onChange={onChangeBadgeSubscription}
+          isChecked={badgesSubscription}
+        />
       </div>
-      <ToggleButton
-        className="rooms-actions toggle-btn"
-        onChange={onChangeBadgeSubscription}
-        isChecked={badgesSubscription}
-      />
+      <Text {...textDescriptionsProps}>{t("ActionsWithFilesDescription")}</Text>
     </div>
   );
 };

@@ -12,7 +12,7 @@ const RoomsActivityContainer = ({
   textProps,
   textDescriptionsProps,
 }) => {
-  const onChangeEmailSubscription = async e => {
+  const onChangeEmailSubscription = async (e) => {
     const checked = e.currentTarget.checked;
     try {
       await changeSubscription(NotificationsType.RoomsActivity, checked);
@@ -23,17 +23,17 @@ const RoomsActivityContainer = ({
 
   return (
     <div className="notification-container">
-      <div>
+      <div className="row">
         <Text {...textProps} className="subscription-title">
           {t("RoomsActivity")}
         </Text>
-        <Text {...textDescriptionsProps}>{t("RoomsActivityDescription")}</Text>
+        <ToggleButton
+          className="rooms-activity toggle-btn"
+          onChange={onChangeEmailSubscription}
+          isChecked={roomsActivitySubscription}
+        />
       </div>
-      <ToggleButton
-        className="rooms-activity toggle-btn"
-        onChange={onChangeEmailSubscription}
-        isChecked={roomsActivitySubscription}
-      />
+      <Text {...textDescriptionsProps}>{t("RoomsActivityDescription")}</Text>
     </div>
   );
 };
