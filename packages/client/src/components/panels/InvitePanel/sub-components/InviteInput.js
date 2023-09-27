@@ -37,7 +37,6 @@ const InviteInput = ({
   roomId,
   roomType,
   setInviteItems,
-  roomUsers,
   t,
   isOwner,
   inputsRef,
@@ -53,10 +52,6 @@ const InviteInput = ({
   const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
 
   const searchRef = useRef();
-
-  const inRoom = (id) => {
-    return roomUsers.some((user) => user.sharedTo.id === id);
-  };
 
   const toUserItems = (query) => {
     const addresses = parseAddresses(query);
@@ -341,7 +336,6 @@ const InviteInput = ({
             onParentPanelClose={onClose}
             onClose={closeUsersPanel}
             visible={addUsersPanelVisible}
-            shareDataItems={roomUsers}
             tempDataItems={inviteItems}
             setDataItems={addItems}
             accessOptions={accessOptions}

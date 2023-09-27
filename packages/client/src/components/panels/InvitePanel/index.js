@@ -55,7 +55,6 @@ const InvitePanel = ({
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
   const [shareLinks, setShareLinks] = useState([]);
-  const [roomUsers, setRoomUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [externalLinksVisible, setExternalLinksVisible] = useState(false);
   const [scrollAllPanelContent, setScrollAllPanelContent] = useState(false);
@@ -104,8 +103,6 @@ const InvitePanel = ({
         setShareLinks([activeLink]);
         setActiveLink(activeLink);
       }
-
-      // setRoomUsers(users); // TODO:
     });
   };
 
@@ -264,7 +261,6 @@ const InvitePanel = ({
         <InviteInput
           t={t}
           onClose={onClose}
-          roomUsers={roomUsers}
           roomType={roomType}
           inputsRef={inputsRef}
           addUsersPanelVisible={addUsersPanelVisible}
@@ -296,7 +292,6 @@ const InvitePanel = ({
     onChangeExternalLinksVisible,
     externalLinksVisible,
     onClose,
-    roomUsers,
     setHasErrors,
     scrollAllPanelContent,
     hasInvitedUsers,

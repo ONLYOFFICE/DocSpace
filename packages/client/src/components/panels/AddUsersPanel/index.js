@@ -27,7 +27,6 @@ const AddUsersPanel = ({
   defaultAccess,
   onClose,
   onParentPanelClose,
-  shareDataItems,
   tempDataItems,
   setDataItems,
   t,
@@ -71,43 +70,27 @@ const AddUsersPanel = ({
     const items = [];
 
     for (let item of users) {
-      const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
+      const currentAccess =
+        item.isOwner || item.isAdmin
+          ? ShareAccessRights.RoomManager
+          : access.access;
 
-      if (!currentItem) {
-        const currentAccess =
-          item.isOwner || item.isAdmin
-            ? ShareAccessRights.RoomManager
-            : access.access;
-
-        const newItem = {
-          access: currentAccess,
-          email: item.email,
-          id: item.id,
-          displayName: item.label,
-          avatar: item.avatar,
-          isOwner: item.isOwner,
-          isAdmin: item.isAdmin,
-        };
-        items.push(newItem);
-      }
+      const newItem = {
+        access: currentAccess,
+        email: item.email,
+        id: item.id,
+        displayName: item.label,
+        avatar: item.avatar,
+        isOwner: item.isOwner,
+        isAdmin: item.isAdmin,
+      };
+      items.push(newItem);
     }
 
     if (users.length > items.length)
       toastr.warning("Some users are already in room");
 
     setDataItems(items);
-    onClose();
-  };
-
-  const onUserSelect = (owner) => {
-    const ownerItem = shareDataItems.find((x) => x.isOwner);
-    ownerItem.sharedTo = owner[0];
-
-    if (owner[0].key) {
-      owner[0].id = owner[0].key;
-    }
-
-    setDataItems(shareDataItems);
     onClose();
   };
 
