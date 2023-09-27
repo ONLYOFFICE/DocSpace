@@ -102,10 +102,6 @@ const InterfaceTheme = (props) => {
 
   return (
     <StyledWrapper>
-      <Text fontSize="16px" fontWeight={700}>
-        {t("InterfaceTheme")}
-      </Text>
-
       <div>
         <Checkbox
           className="system-theme-checkbox"
