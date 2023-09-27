@@ -76,6 +76,10 @@ class SettingsSetupStore {
 
   securityLifetime = [];
 
+  sessionsIsInit = false;
+  sessions = [];
+  currentSession = [];
+
   constructor() {
     this.selectionStore = new SelectionStore(this);
     this.authStore = authStore;
@@ -484,6 +488,15 @@ class SettingsSetupStore {
   setLogoutVisible = (visible) => (this.logoutVisible = visible);
 
   setLogoutAllVisible = (visible) => (this.logoutAllVisible = visible);
+
+  getSessions = () => {
+    if (this.sessionsIsInit) return;
+    this.getAllSessions().then((res) => {
+      this.sessions = res.items;
+      this.currentSession = res.loginEvent;
+      this.sessionsIsInit = true;
+    });
+  };
 }
 
 export default SettingsSetupStore;

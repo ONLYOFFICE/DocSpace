@@ -47,21 +47,17 @@ const ActiveSessions = ({
   logoutAllVisible,
   setLogoutAllVisible,
   removeAllExecptThis,
+  sessionsIsInit,
+  getSessions,
+  sessions,
+  currentSession,
 }) => {
-  const [sessions, setSessions] = useState([]);
-  const [currentSession, setCurrentSession] = useState(0);
   const [modalData, setModalData] = useState({});
   const [loading, setLoading] = useState(false);
   const { interfaceDirection } = useTheme();
 
   useEffect(() => {
-    setLoading(true);
-    getAllSessions()
-      .then((res) => {
-        setSessions(res.items);
-        setCurrentSession(res.loginEvent);
-      })
-      .finally(() => setLoading(false));
+    getSessions();
   }, []);
 
   const onClickRemoveAllSessions = async () => {
@@ -130,7 +126,7 @@ const ActiveSessions = ({
         </span>
       </>
     );
-  if (loading) return <Loaders.ProfileFooter isProfileFooter />;
+  if (!sessionsIsInit) return <Loaders.ProfileFooter isProfileFooter />;
   return (
     <StyledFooter>
       <Text fontSize="16px" fontWeight={700}>
@@ -267,6 +263,10 @@ export default inject(({ auth, setup }) => {
     logoutAllVisible,
     setLogoutAllVisible,
     removeAllExecptThis,
+    sessionsIsInit,
+    sessions,
+    currentSession,
+    getSessions,
   } = setup;
   return {
     locale,
@@ -278,5 +278,9 @@ export default inject(({ auth, setup }) => {
     logoutAllVisible,
     setLogoutAllVisible,
     removeAllExecptThis,
+    sessionsIsInit,
+    sessions,
+    currentSession,
+    getSessions,
   };
 })(observer(withTranslation(["Profile", "Common"])(ActiveSessions)));
