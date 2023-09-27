@@ -17,7 +17,7 @@ import { StyledSectionBodyContent, StyledTextContent } from "./StyledComponent";
 let timerId = null;
 const { Badges, RoomsActivity, DailyFeed, UsefulTips } = NotificationsType;
 
-const Notifications = ({ setSubscriptions }) => {
+const Notifications = ({ setSubscriptions, isFirstSubscriptionsLoad }) => {
   const { t, ready } = useTranslation("Notifications");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -54,11 +54,13 @@ const Notifications = ({ setSubscriptions }) => {
   };
 
   useEffect(() => {
-    timerId = setTimeout(() => {
-      setIsLoading(true);
-    }, 400);
+    if (isFirstSubscriptionsLoad) {
+      timerId = setTimeout(() => {
+        setIsLoading(true);
+      }, 400);
 
-    getData();
+      getData();
+    }
   }, []);
 
   const isLoadingContent = isLoading || !ready;
@@ -66,12 +68,13 @@ const Notifications = ({ setSubscriptions }) => {
   //if (!isLoading && !isContentLoaded) return <></>;
 
   const textProps = {
-    fontSize: "14px",
+    fontSize: "13px",
     fontWeight: "600",
     noSelect: true,
   };
   const textDescriptionsProps = {
-    fontSize: "12px",
+    fontSize: "13px",
+    fontWeight: "400",
     className: "notification-container_description",
   };
 
@@ -146,9 +149,10 @@ const Notifications = ({ setSubscriptions }) => {
 export default inject(({ peopleStore }) => {
   const { targetUserStore } = peopleStore;
 
-  const { setSubscriptions } = targetUserStore;
+  const { setSubscriptions, isFirstSubscriptionsLoad } = targetUserStore;
 
   return {
     setSubscriptions,
+    isFirstSubscriptionsLoad,
   };
 })(observer(Notifications));
