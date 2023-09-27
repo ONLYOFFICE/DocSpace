@@ -63,7 +63,7 @@ const Notifications = ({ setSubscriptions }) => {
 
   const isLoadingContent = isLoading || !ready;
 
-  if (!isLoading && !isContentLoaded) return <></>;
+  //if (!isLoading && !isContentLoaded) return <></>;
 
   const textProps = {
     fontSize: "14px",
