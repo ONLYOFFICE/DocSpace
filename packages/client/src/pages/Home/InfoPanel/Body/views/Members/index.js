@@ -42,14 +42,10 @@ const Members = ({
   const membersHelper = new MembersHelper({ t });
 
   const [members, setMembers] = useState(null);
-  const [showLoader, setShowLoader] = useState(false);
 
   const security = selectionParentRoom ? selectionParentRoom.security : {};
 
   const fetchMembers = async (roomId, clearFilter = true) => {
-    // let timerId;
-    // if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
-
     const isPublic = selection?.roomType ?? selectionParentRoom?.roomType;
     const requests = [getRoomMembers(roomId, clearFilter)];
 
@@ -60,7 +56,6 @@ const Members = ({
     const [data, links] = await Promise.all(requests);
 
     links && setExternalLinks(links);
-    // clearTimeout(timerId);
 
     const users = [];
     const administrators = [];
@@ -121,7 +116,6 @@ const Members = ({
       });
     }
 
-    setShowLoader(false);
     setUpdateRoomMembers(false);
 
     return {
