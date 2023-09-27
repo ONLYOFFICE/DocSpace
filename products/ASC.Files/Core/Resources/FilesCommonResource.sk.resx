@@ -377,9 +377,6 @@
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Administrátor miestnosti</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Externý odkaz</value>
-  </data>
   <data name="IndexTitle" xml:space="preserve">
     <value>Hľadať v obsahu dokumentov</value>
   </data>

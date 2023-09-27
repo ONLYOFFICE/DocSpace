@@ -416,9 +416,6 @@
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Вы не можете закрепить комнату</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Внешняя ссылка</value>
-  </data>
   <data name="ErrorMessage_MaxLinksCount" xml:space="preserve">
     <value>Максимальное количество ссылок не должно превышать {0}</value>
   </data>

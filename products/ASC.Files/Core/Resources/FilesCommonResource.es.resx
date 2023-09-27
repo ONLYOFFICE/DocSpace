@@ -416,7 +416,4 @@
   <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
     <value>No puede editar salas archivadas</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Enlace externo</value>
-  </data>
 </root>

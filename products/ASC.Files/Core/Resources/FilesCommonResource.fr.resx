@@ -416,7 +416,4 @@ Compatibilité maximale avec docx, xlsx, pptx.</value>
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Vous ne pouvez pas épingler une salle</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Lien externe</value>
-  </data>
 </root>

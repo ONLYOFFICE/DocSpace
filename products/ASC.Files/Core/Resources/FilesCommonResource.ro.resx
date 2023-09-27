@@ -164,7 +164,4 @@ Compatibilitate garantată 100% cu formatele MS Office.</value>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Colaborator</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Link extern</value>
-  </data>
 </root>

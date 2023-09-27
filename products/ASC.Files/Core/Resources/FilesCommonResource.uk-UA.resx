@@ -416,7 +416,4 @@
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Переглядайте і завантажуйте спільні документи. Завантажуйте файли до спільних папок. Гарантована максимальна сумісність із форматами docx, xlsx і pptx.</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Зовнішнє посилання</value>
-  </data>
 </root>

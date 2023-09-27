@@ -416,7 +416,4 @@ Massima compatibilità con docx, xlsx, pptx.</value>
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Non puoi fissare una stanza</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Collegamento esterno</value>
-  </data>
 </root>

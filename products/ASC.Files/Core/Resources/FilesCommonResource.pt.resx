@@ -257,9 +257,6 @@ Alta compatibilidade com docx, xlsx, pptx.</value>
   <data name="AceStatusEnum_Restrict" xml:space="preserve">
     <value>Negar acesso</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Ligação externa</value>
-  </data>
   <data name="AceShareLink" xml:space="preserve">
     <value>Portal externo</value>
   </data>

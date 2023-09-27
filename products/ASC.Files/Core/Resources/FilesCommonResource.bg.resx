@@ -416,7 +416,4 @@
   <data name="MessageFillFormDraftDiscard" xml:space="preserve">
     <value>Файлът вече не е чернова за попълване на формуляра.</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Външен линк</value>
-  </data>
 </root>

@@ -416,7 +416,4 @@ Je garantována 100% kompatibilita s MS Office formáty.</value>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Zobrazení a stažení sdílených dokumentů. Nahrávání souborů do sdílených složek. Zaručena nejvyšší kompatibilita s formáty docx, xlsx, pptx.</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Externí odkaz</value>
-  </data>
 </root>

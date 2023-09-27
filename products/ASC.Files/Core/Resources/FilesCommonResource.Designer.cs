@@ -330,7 +330,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to External link.
+        ///   Looks up a localized string similar to Shared link.
         /// </summary>
         public static string DefaultExternalLinkTitle {
             get {

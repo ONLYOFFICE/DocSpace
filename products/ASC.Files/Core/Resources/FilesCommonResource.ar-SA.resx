@@ -207,9 +207,6 @@
   <data name="CommentUpload" xml:space="preserve">
     <value>تم الرفع</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>رابط خارجي</value>
-  </data>
   <data name="DocuSignStatusDeclined" xml:space="preserve">
     <value>مرفوض</value>
   </data>

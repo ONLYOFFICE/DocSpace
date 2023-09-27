@@ -412,9 +412,6 @@
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Przeglądaj i pobieraj współdzielone dokumenty. Przesyłaj pliki do współdzielonych katalogów. Najwyższy poziom kompatybilność z docx, xlsx i pptx gwarantowany.</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Link zewnętrzny</value>
-  </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
     <value>Edytuj dokumenty, udostępniaj je i współpracuj nad nimi w czasie rzeczywistym. Twórz współdzielone dokumenty i zarządzaj nimi, aby cały zespół miał do nich dostęp.
 Najwyższy poziom kompatybilności z docx, xlsx, pptx.</value>

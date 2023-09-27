@@ -386,9 +386,6 @@ docx, xlsx, pptx와 최고의 호환성이 보장됩니다.</value>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
     <value>저장할 파일을 가져오지 못했습니다</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>외부 링크</value>
-  </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
     <value>문서 서비스에서 오류가 발생했습니다</value>
   </data>

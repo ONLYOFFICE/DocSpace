@@ -416,7 +416,4 @@
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Você não pode marcar uma sala</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Link externo</value>
-  </data>
 </root>

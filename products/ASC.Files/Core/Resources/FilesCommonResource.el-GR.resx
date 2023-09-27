@@ -416,7 +416,4 @@
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Δημιουργήστε και επεξεργαστείτε τα δικά σας έγγραφα καθώς και τα κοινόχρηστα έγγραφα με τα κατάλληλα δικαιώματα πρόσβασης|Δώστε πρόσβαση ανάγνωσης/επεξεργασίας σε άλλους χρήστες στα έγγραφα και τους φακέλους|Συνδεθείτε σε Dropbox, Box και άλλους λογαριασμούς στην ενότητα «Τα έγγραφά μου»</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Εξωτερικός σύνδεσμος</value>
-  </data>
 </root>

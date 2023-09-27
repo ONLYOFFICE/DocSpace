@@ -416,7 +416,4 @@ Khả năng tương thích cao nhất với docx, xlsx, pptx.</value>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Xem và tải tài liệu được chia sẻ xuống. Tải tập tin lên để chia sẻ thư mục. Khả năng tương thích cao nhất với docx, xlsx, pptx được đảm bảo.</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Liên kết ngoài</value>
-  </data>
 </root>

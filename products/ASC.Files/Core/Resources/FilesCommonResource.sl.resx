@@ -416,7 +416,4 @@ Najvišja združljivost z docx, xlsx, pptx.</value>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Ogled in prenos dokumentov v skupni rabi. Naložite datoteke v mape v skupni rabi. Zagotovljena maksimalna združljivost z docx, xlsx, pptx.</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Zunanja povezava</value>
-  </data>
 </root>

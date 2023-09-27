@@ -416,7 +416,4 @@ docx, xlsx, pptx ilə ən yüksək uyğunluq.</value>
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Otağı sabitləyə bilməzsiniz</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Xarici Keçid</value>
-  </data>
 </root>

@@ -416,7 +416,4 @@ docx、xlsx、pptxとの100％の互換性が保証されています。</value>
   <data name="MessageFillFormDraftDiscard" xml:space="preserve">
     <value>このファイルは、もはや記入用の下書きではありません。</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>外部のリンク</value>
-  </data>
 </root>

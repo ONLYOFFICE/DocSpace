@@ -412,9 +412,6 @@
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Näytä ja lataa jaetut asiakirjat. Lataa tiedostot jaettuihin kansioihin. Taattu yhteensopivuus docx:n, xlsx:n, pptx:n kanssa.</value>
   </data>
-  <data name="DefaultExternalLinkTitle" xml:space="preserve">
-    <value>Ulkoinen linkki</value>
-  </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
     <value>Muokkaa, jaa ja tee yhteistyötä office-asiakirjoilla reaaliajassa. Luo ja hallitse yhteisiä asiakirjoja, joihin koko tiimillä on pääsy.
 Paras yhteensopivuus docx:n, xlsx:n, pptx:n kanssa.</value>
