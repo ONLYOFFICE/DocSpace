@@ -349,16 +349,15 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Sets an external link to invite the users to a room with the ID specified in the request.
+    /// Sets an external or invitation link with the ID specified in the request.
     /// </summary>
-    /// <short>Set an external invitation link</short>
+    /// <short>Set an external or invitation link</short>
     /// <category>Rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.LinkRequestDto, ASC.Files.Core" name="inDto">Invitation link request parameters</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">Security information of room files</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">Security information of room</returns>
     /// <path>api/2.0/files/rooms/{id}/links</path>
     /// <httpMethod>PUT</httpMethod>
-    /// <collection>list</collection>
     [HttpPut("rooms/{id}/links")]
     public async Task<FileShareDto> SetLinkAsync(T id, LinkRequestDto inDto)
     {
@@ -374,13 +373,13 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Getting room links
+    /// Returns the links of a room with the ID specified in the request.
     /// </summary>
-    /// <short>Set an external invitation link</short>
+    /// <short>Returns room links</short>
     /// <category>Rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
     /// <param type="ASC.Files.Core.ApiModels.ResponseDto.LinkType, ASC.Files.Core" name="type">Link type</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">Room security info</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">Security information of room</returns>
     /// <path>api/2.0/files/rooms/{id}/links</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -407,10 +406,19 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         _apiContext.SetCount(counter);
     }
 
+    /// <summary>
+    /// Returns the primary external link with the identifier specified in the request.
+    /// </summary>
+    /// <short>Returns primary external link</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">Security information of room</returns>
+    /// <path>api/2.0/files/rooms/{id}/link</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("rooms/{id}/link")]
-    public async Task<FileShareDto> GetPrimarySharedLinkAsync(T id)
+    public async Task<FileShareDto> GetPrimaryExternalLinkAsync(T id)
     {
-        var linkAce = await _fileStorageService.GetPrimarySharedLinkAsync(id, FileEntryType.Folder);
+        var linkAce = await _fileStorageService.GetPrimaryExternalLinkAsync(id, FileEntryType.Folder);
         
         return linkAce != null ? await _fileShareDtoHelper.Get(linkAce) : null;
     }
