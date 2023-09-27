@@ -11,16 +11,18 @@ const StyledWrapper = styled.div`
   grid-gap: 32px;
 
   .toggle-btn {
+    height: 20px;
+    line-height: 20px;
     position: relative;
+
+    & > svg {
+      margin-top: 2px;
+    }
   }
 
   .heading {
     margin-bottom: -2px;
     margin-top: 0;
-  }
-
-  .toggle-button-text {
-    margin-top: -1px;
   }
 
   .settings-section {
