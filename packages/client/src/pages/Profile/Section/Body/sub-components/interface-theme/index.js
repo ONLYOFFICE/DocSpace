@@ -20,7 +20,7 @@ const StyledWrapper = styled.div`
   max-width: 660px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 
   .system-theme-checkbox {
     display: inline-flex;
@@ -39,7 +39,10 @@ const StyledWrapper = styled.div`
   }
 
   .system-theme-description {
-    padding: 0px 0 4px 24px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    padding-left: 24px;
     max-width: 295px;
     color: ${(props) => props.theme.profile.themePreview.descriptionColor};
   }

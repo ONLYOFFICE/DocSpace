@@ -4,7 +4,7 @@ import { tablet } from "@docspace/components/utils/device";
 export const StyledWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  border: ${props => props.theme.profile.themePreview.border};
+  border: ${(props) => props.theme.profile.themePreview.border};
   border-radius: 12px;
   height: 284px;
   width: 318px;
@@ -15,13 +15,14 @@ export const StyledWrapper = styled.div`
   }
 
   .card-header {
-    padding: 12px 20px;
-    border-bottom: ${props => props.theme.profile.themePreview.border};
+    padding: 11px 19px;
+    border-bottom: ${(props) => props.theme.profile.themePreview.border};
+    line-height: 20px;
   }
 
   .floating-btn {
     bottom: 100px !important;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             left: 30px !important;
