@@ -19,15 +19,11 @@ import { tablet, hugeMobile } from "@docspace/components/utils/device";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
 
   @media ${tablet} {
     width: 100%;
     max-width: 100%;
-  }
-
-  @media ${hugeMobile} {
-    gap: 32px;
   }
 `;
 
