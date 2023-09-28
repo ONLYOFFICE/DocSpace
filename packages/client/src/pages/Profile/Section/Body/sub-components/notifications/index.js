@@ -109,7 +109,7 @@ const Notifications = ({ setSubscriptions, isFirstSubscriptionsLoad }) => {
         {isLoadingContent ? (
           <Loaders.Rectangle height={"22px"} width={"57px"} />
         ) : (
-          <Text fontSize={"14px"} fontWeight={600}>
+          <Text fontSize={"14px"} fontWeight={600} className="email-title">
             {t("Common:Email")}
           </Text>
         )}

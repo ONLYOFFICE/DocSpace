@@ -16,6 +16,7 @@ const StyledSectionBodyContent = styled.div`
     .row {
       display: flex;
       justify-content: space-between;
+      align-items: center;
 
       div > label {
         position: relative;
@@ -40,12 +41,15 @@ const StyledSectionBodyContent = styled.div`
 
 const StyledTextContent = styled.div`
   margin-bottom: 12px;
-  height: 24px;
   border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
   p {
     line-height: 16px;
     padding-bottom: 8px;
+  }
+
+  .email-title {
+    padding-top: 2px;
   }
 `;
 
