@@ -12,7 +12,7 @@ import { loadScript, combineUrl } from "@docspace/common/utils";
 import PDFViewerProps, { BookMark } from "./PDFViewer.props";
 import ViewerLoader from "../ViewerLoader";
 import MainPanel from "./ui/MainPanel";
-import Sidebar from "./ui/Sidebar";
+import Sidebar from "./ui/SideBar";
 
 import {
   ErrorMessage,
