@@ -6,16 +6,19 @@ on:
       - master
     paths:
       - 'build/install/OneClickInstall/**'
+      - 'build/install/docker/**'
   workflow_dispatch:
 
 env:
-  SCRIPT_DIR: 'build/install/OneClickInstall'
   PRODUCT: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
 
 jobs:
   release:
     name: Scripts release
     runs-on: ubuntu-latest
+    env:
+      DOCKER_DIR: "$GITHUB_WORKSPACE/build/install/docker"
+      SCRIPT_DIR: "$GITHUB_WORKSPACE/build/install/OneClickInstall"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -24,6 +27,11 @@ jobs:
         run: |
           cp ${{ env.SCRIPT_DIR }}/${{ env.PRODUCT }}-install.sh ${{ env.SCRIPT_DIR }}/${{ env.PRODUCT }}-enterprise-install.sh
           sed -i 's/\(PARAMETERS -it\).*";/\1 ENTERPRISE";/' ${{ env.SCRIPT_DIR }}/${{ env.PRODUCT }}-enterprise-install.sh
+
+      - name: Create Docker Tarball
+        run: |
+          cd ${{ env.DOCKER_DIR }}
+          tar -czvf ${{ env.SCRIPT_DIR }}/docker.tar.gz --exclude='config/supervisor*' *.yml .env config/
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -47,7 +55,8 @@ jobs:
             --include="install-RedHat/*" \
             --include="install-Debian.sh" \
             --include="install-Debian/*" \
-            --include="install.Docker"
+            --include="install-Docker.sh" \
+            --include="docker.tar.gz"
 
       - name: Invalidate AWS CloudFront cache
         run: |
@@ -60,4 +69,5 @@ jobs:
             "/install-RedHat/*" \
             "/install-Debian.sh" \
             "/install-Debian/*" \
-            "/install-Docker.sh" 
+            "/install-Docker.sh" \
+            "/docker.tar.gz"
