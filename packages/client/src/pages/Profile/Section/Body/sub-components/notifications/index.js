@@ -14,7 +14,6 @@ import DailyFeedContainer from "./sub-components/DailyFeedContainer";
 import RoomsActivityContainer from "./sub-components/RoomsActivityContainer";
 import { StyledSectionBodyContent, StyledTextContent } from "./StyledComponent";
 
-let timerId = null;
 const { Badges, RoomsActivity, DailyFeed, UsefulTips } = NotificationsType;
 
 const Notifications = ({ setSubscriptions, isFirstSubscriptionsLoad }) => {
@@ -43,9 +42,6 @@ const Notifications = ({ setSubscriptions, isFirstSubscriptionsLoad }) => {
         tips.isEnabled
       );
 
-      clearTimeout(timerId);
-      timerId = null;
-
       setIsLoading(false);
       setIsContentLoaded(true);
     } catch (e) {
@@ -55,10 +51,7 @@ const Notifications = ({ setSubscriptions, isFirstSubscriptionsLoad }) => {
 
   useEffect(() => {
     if (isFirstSubscriptionsLoad) {
-      timerId = setTimeout(() => {
-        setIsLoading(true);
-      }, 400);
-
+      setIsLoading(true);
       getData();
     }
   }, []);
