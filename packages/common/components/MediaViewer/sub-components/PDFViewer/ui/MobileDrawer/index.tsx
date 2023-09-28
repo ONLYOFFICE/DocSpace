@@ -10,7 +10,7 @@ import {
   MobileDrawerHeader,
   MobileDrawerWrapper,
 } from "./MobileDrawer.styled";
-import { Thumbnails } from "../Sidebar/Sidebar.styled";
+import { Thumbnails } from "../SideBar/Sidebar.styled";
 
 import MobileDrawerProps from "./MobileDrawer.props";
 
