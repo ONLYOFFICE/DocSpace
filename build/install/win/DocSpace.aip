@@ -50,6 +50,7 @@
     <ROW Property="INSTALL_ROOT_FOLDER_NAME" Value="[|Manufacturer]"/>
     <ROW Property="JWT_ENABLED" Value="true"/>
     <ROW Property="JWT_HEADER" Value="Authorization"/>
+    <ROW Property="LICENSE_PATH" Value=" "/>
     <ROW Property="Login_Port" Value="5011"/>
     <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3#ExeBuild:7"/>
     <ROW Property="MYSQLODBCDRIVER" Value="MySQL ODBC 8.0 Unicode Driver"/>
@@ -417,11 +418,13 @@
     <ROW JsonProperty="environment_1" Parent="app_1" Name="environment" Condition="1" Order="2" Flags="57" Value="[ENVIRONMENT]"/>
     <ROW JsonProperty="environment_2" Parent="app_3" Name="environment" Condition="1" Order="1" Flags="57" Value="[ENVIRONMENT]"/>
     <ROW JsonProperty="environment_3" Parent="app_4" Name="environment" Condition="1" Order="1" Flags="57" Value="[ENVIRONMENT]"/>
+    <ROW JsonProperty="file" Parent="license" Name="file" Condition="ProductName = &quot;ONLYOFFICE DocSpace Enterprise&quot;" Order="0" Flags="60"/>
     <ROW JsonProperty="files" Parent="Root_1" Name="files" Condition="1" Order="3" Flags="60"/>
     <ROW JsonProperty="folder" Parent="products" Name="folder" Condition="1" Order="0" Flags="57" Value="[APPDIR_FORWARD_SLASH]products"/>
     <ROW JsonProperty="folder_1" Parent="products_1" Name="folder" Condition="1" Order="0" Flags="57" Value="[APPDIR_FORWARD_SLASH]products"/>
     <ROW JsonProperty="header" Parent="secret" Name="header" Condition="1" Order="1" Flags="57" Value="[DOCUMENT_SERVER_JWT_HEADER]"/>
     <ROW JsonProperty="internal" Parent="url" Name="internal" Condition="1" Order="1" Flags="57" Value="http://[DOCUMENT_SERVER_HOST]:[DOCUMENT_SERVER_PORT]"/>
+    <ROW JsonProperty="license" Parent="Root_1" Name="license" Condition="ProductName = &quot;ONLYOFFICE DocSpace Enterprise&quot;" Order="4" Flags="60"/>
     <ROW JsonProperty="logPath" Parent="Root_4" Name="logPath" Condition="1" Order="1" Flags="57" Value="[APPDIR_FORWARD_SLASH]Logs"/>
     <ROW JsonProperty="machinekey" Parent="core_1" Name="machinekey" Condition="1" Order="1" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="machinekey_1" Parent="app_1" Name="machinekey" Condition="1" Order="3" Flags="57" Value="[MACHINE_KEY]"/>
@@ -429,6 +432,7 @@
     <ROW JsonProperty="migration" Parent="Root_1" Name="migration" Condition="1" Order="1" Flags="60"/>
     <ROW JsonProperty="notify" Parent="core_1" Name="notify" Condition="1" Order="3" Flags="60"/>
     <ROW JsonProperty="options" Parent="Root_11" Name="options" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="path" Parent="file" Name="path" Condition="ProductName = &quot;ONLYOFFICE DocSpace Enterprise&quot;" Order="0" Flags="57" Value="[LICENSE_PATH]"/>
     <ROW JsonProperty="port" Parent="app" Name="port" Condition="1" Order="0" Flags="57" Value="[Socket.IO_Port]"/>
     <ROW JsonProperty="port_1" Parent="app_1" Name="port" Condition="1" Order="0" Flags="57" Value="[SsoAuth_Port]"/>
     <ROW JsonProperty="portal" Parent="url" Name="portal" Condition="1" Order="2" Flags="57" Value="http://localhost:80"/>
@@ -1078,6 +1082,7 @@
     <ROW Action="Set_DS_JWT_ENABLED" Type="51" Source="DOCUMENT_SERVER_JWT_ENABLED" Target="[JWT_ENABLED]"/>
     <ROW Action="Set_DS_JWT_HEADER" Type="51" Source="DOCUMENT_SERVER_JWT_HEADER" Target="[JWT_HEADER]"/>
     <ROW Action="Set_DS_JWT_SECRET" Type="51" Source="DOCUMENT_SERVER_JWT_SECRET" Target="[JWT_SECRET]"/>
+    <ROW Action="Set_LICENSE_PATH" Type="51" Source="LICENSE_PATH" Target="[APPDIR]\Data\license.lic"/>
     <ROW Action="StartElasticSearchService" Type="3073" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_13"/>
     <ROW Action="StartMigrationRunner" Type="3074" Source="viewer.exe" Target="/EnforcedRunAsAdmin /RunAsAdmin /HideWindow /dir &quot;[APPDIR]services\ASC.Migration.Runner\service&quot; &quot;[APPDIR]services\ASC.Migration.Runner\service\ASC.Migration.Runner.exe&quot; standalone=true" Options="1"/>
     <ROW Action="StartMySQLService" Type="1" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_11"/>
@@ -1275,6 +1280,7 @@
     <ROW Action="AI_DATA_SETTER_23" Condition="( NOT Installed )" Sequence="6602"/>
     <ROW Action="StartOpenResty" Condition="( NOT Installed )" Sequence="6605"/>
     <ROW Action="AI_DATA_SETTER_24" Condition="( NOT Installed )" Sequence="6604"/>
+    <ROW Action="Set_LICENSE_PATH" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) OR ( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) AND UPGRADINGPRODUCTCODE ) )" Sequence="201"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
