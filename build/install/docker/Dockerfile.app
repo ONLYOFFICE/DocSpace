@@ -97,7 +97,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onl
 EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
-FROM node:18.12.1-slim as noderun
+FROM node:18.18.0-slim as noderun
 ARG BUILD_PATH
 ARG SRC_PATH 
 ENV BUILD_PATH=${BUILD_PATH}
@@ -117,7 +117,7 @@ RUN mkdir -p /var/log/onlyoffice && \
         curl \
         vim \
         python3-pip && \
-    pip3 install --upgrade jsonpath-ng multipledispatch netaddr netifaces && \
+        pip3 install --upgrade jsonpath-ng multipledispatch netaddr netifaces --break-system-packages && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onlyoffice/config/
