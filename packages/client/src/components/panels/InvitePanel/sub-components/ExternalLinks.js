@@ -48,6 +48,7 @@ const ExternalLinks = ({
       const link = shareLinks.find((l) => l.access === +defaultAccess);
 
       setActiveLink(link);
+      copyLink(link.shareLink);
     } else {
       !externalLinksVisible ? editLink() : disableLink();
     }
