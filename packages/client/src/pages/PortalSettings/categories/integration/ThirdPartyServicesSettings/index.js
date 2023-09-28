@@ -40,7 +40,6 @@ const RootContainer = styled(Box)`
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(293px, 1fr));
     gap: 20px;
-    margin-bottom: 20px;
   }
 
   .consumer-item-wrapper {
@@ -66,10 +65,11 @@ const RootContainer = styled(Box)`
   }
 
   .business-plan {
+    grid-column: 1 / -1;
     display: flex;
     gap: 8px;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: -4px;
   }
 `;
 
@@ -235,20 +235,18 @@ class ThirdPartyServices extends React.Component {
                 />
               </Box>
             ))}
-          </div>
-          {!isThirdPartyAvailable && (
-            <div className="business-plan">
-              <Text fontSize="16px" fontWeight={700}>
-                {t("IncludedInBusiness")}
-              </Text>
-              <Badge
-                backgroundColor="#EDC409"
-                label={t("Common:Paid")}
-                isPaidBadge={true}
-              />
-            </div>
-          )}
-          <div className="consumers-list-container">
+            {!isThirdPartyAvailable && (
+              <div className="business-plan">
+                <Text fontSize="16px" fontWeight={700}>
+                  {t("IncludedInBusiness")}
+                </Text>
+                <Badge
+                  backgroundColor="#EDC409"
+                  label={t("Common:Paid")}
+                  isPaidBadge={true}
+                />
+              </div>
+            )}
             {paidConsumers.map((consumer) => (
               <Box className="consumer-item-wrapper" key={consumer.name}>
                 <ConsumerItem
