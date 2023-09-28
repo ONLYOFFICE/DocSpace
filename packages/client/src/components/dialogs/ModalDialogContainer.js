@@ -42,11 +42,10 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
 
   .link-dialog {
-    
-   {${({ theme }) =>
-     theme.interfaceDirection === "rtl"
-       ? `margin-left: 12px;`
-       : `margin-right: 12px;`}
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 12px;`
+        : `margin-right: 12px;`}
   }
 
   .error-label {
@@ -85,13 +84,13 @@ const ModalDialogContainer = styled(ModalDialog)`
 
     .convert_dialog_image {
       display: block;
+
       @media ${tablet} {
         display: none;
       }
     }
 
     .convert_dialog-content {
-      
       ${({ theme }) =>
         theme.interfaceDirection === "rtl"
           ? `padding-right: 16px;`
@@ -114,6 +113,7 @@ const ModalDialogContainer = styled(ModalDialog)`
       }
     }
   }
+
   .convert_dialog_footer {
     display: flex;
     flex-direction: column;

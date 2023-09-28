@@ -121,7 +121,7 @@ const SocialNetworks = (props) => {
 
   return (
     <StyledWrapper>
-      <Text fontSize="16px" fontWeight={700}>
+      <Text fontSize="16px" fontWeight={700} lineHeight="22px">
         {t("ConnectSocialNetworks")}
       </Text>
       <div className="buttons">{providerButtons}</div>

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { hugeMobile } from "@docspace/components/utils/device";
 
 export const StyledWrapper = styled.div`
+  max-width: 660px;
   display: flex;
   flex-direction: column;
   gap: 12px;

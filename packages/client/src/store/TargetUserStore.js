@@ -27,6 +27,8 @@ class TargetUserStore {
   dailyFeedSubscriptions = false;
   usefulTipsSubscription = false;
 
+  isFirstSubscriptionsLoad = true;
+
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
     makeAutoObservable(this);
@@ -73,9 +75,8 @@ class TargetUserStore {
   };
 
   updateProfile = async (profile) => {
-    const member = this.peopleStore.usersStore.employeeWrapperToMemberModel(
-      profile
-    );
+    const member =
+      this.peopleStore.usersStore.employeeWrapperToMemberModel(profile);
 
     const res = await api.people.updateUser(member);
     if (!res.theme) res.theme = this.peopleStore.authStore.userStore.user.theme;
@@ -155,6 +156,7 @@ class TargetUserStore {
     this.roomsActivitySubscription = isEnableRoomsActivity;
     this.dailyFeedSubscriptions = isEnableDailyFeed;
     this.usefulTipsSubscription = isEnableTips;
+    this.isFirstSubscriptionsLoad = false;
   };
 
   changeSubscription = async (notificationType, isEnabled) => {
