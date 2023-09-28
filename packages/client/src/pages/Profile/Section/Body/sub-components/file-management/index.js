@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import ToggleButton from "@docspace/components/toggle-button";
 import Box from "@docspace/components/box";
+import Loaders from "@docspace/common/components/Loaders";
+
 import StyledWrapper from "./styled-file-management";
 
 const FileManagement = ({
@@ -35,7 +37,7 @@ const FileManagement = ({
   setThumbnails1280x720,
   thumbnails1280x720,
 }) => {
-  const { t } = useTranslation(["FilesSettings", "Common"]);
+  const { t, ready } = useTranslation(["FilesSettings", "Common"]);
 
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
@@ -85,6 +87,8 @@ const FileManagement = ({
   );
 
   const thumbnailsSizeLabel = "Thumbnails 1280x720";
+
+  if (!ready) return <Loaders.SettingsCommon />;
   return (
     <StyledWrapper showTitle={showTitle} hideAdminSettings={!showAdminSettings}>
       <Box className="settings-section">
