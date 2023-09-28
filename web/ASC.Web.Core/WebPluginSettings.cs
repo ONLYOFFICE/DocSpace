@@ -38,6 +38,8 @@ public class WebPluginSettings
     private long _maxSize;
     private string _extension;
     private string[] _allow;
+    private string[] _assetExtensions;
+    private string _systemUrl;
 
     public bool Enabled
     {
@@ -60,5 +62,27 @@ public class WebPluginSettings
     {
         get => _allow ?? Array.Empty<string>();
         set => _allow = value;
+    }
+
+    public string[] AssetExtensions
+    {
+        get => _assetExtensions ?? Array.Empty<string>();
+        set => _assetExtensions = value;
+    }
+}
+
+public class SystemWebPluginSettings : ISettings<SystemWebPluginSettings>
+{
+    public List<string> DisabledPlugins { get; set; }
+
+    [JsonIgnore]
+    public Guid ID
+    {
+        get { return new Guid("{33039FD8-CF74-46B5-9AF2-2B3D4B651F31}"); }
+    }
+
+    public SystemWebPluginSettings GetDefault()
+    {
+        return new SystemWebPluginSettings();
     }
 }

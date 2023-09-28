@@ -62,13 +62,11 @@ public class DbWebPluginService
         return await Queries.WebPluginByNameAsync(dbContext, tenantId, name);
     }
 
-    public async Task<List<DbWebPlugin>> GetAsync(int tenantId, bool? enabled = null)
+    public async Task<List<DbWebPlugin>> GetAsync(int tenantId)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();
 
-        return enabled.HasValue
-            ? await Queries.WebPluginsByStatusAsync(dbContext, tenantId, enabled.Value).ToListAsync()
-            : await Queries.WebPluginsAsync(dbContext, tenantId).ToListAsync();
+        return await Queries.WebPluginsAsync(dbContext, tenantId).ToListAsync();
     }
 
     public async Task UpdateAsync(int tenantId, int id, bool enabled)
@@ -94,14 +92,6 @@ static file class Queries
                 ctx.WebPlugins
                     .AsNoTracking()
                     .Where(r => r.TenantId == tenantId));
-
-    public static readonly Func<WebPluginDbContext, int, bool, IAsyncEnumerable<DbWebPlugin>>
-        WebPluginsByStatusAsync = EF.CompileAsyncQuery(
-            (WebPluginDbContext ctx, int tenantId, bool enabled) =>
-                ctx.WebPlugins
-                    .AsNoTracking()
-                    .Where(r => r.TenantId == tenantId)
-                    .Where(r => r.Enabled == enabled));
 
     public static readonly Func<WebPluginDbContext, int, int, Task<DbWebPlugin>>
         WebPluginByIdAsync = EF.CompileAsyncQuery(
