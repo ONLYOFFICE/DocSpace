@@ -44,7 +44,13 @@ const ExternalLinks = ({
   const inputsRef = useRef();
 
   const toggleLinks = () => {
-    !externalLinksVisible ? editLink() : disableLink();
+    if (roomId === -1) {
+      const link = shareLinks.find((l) => l.access === +defaultAccess);
+
+      setActiveLink(link);
+    } else {
+      !externalLinksVisible ? editLink() : disableLink();
+    }
     onChangeExternalLinksVisible(!externalLinksVisible);
   };
 
