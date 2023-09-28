@@ -15,7 +15,7 @@ const DeleteLinkDialogComponent = (props) => {
     setIsVisible,
     tReady,
     roomId,
-    setExternalLinks,
+    deleteExternalLink,
     editExternalLink,
   } = props;
 
@@ -45,8 +45,8 @@ const DeleteLinkDialogComponent = (props) => {
     newLink.access = 0;
 
     editExternalLink(roomId, newLink)
-      .then((res) => {
-        setExternalLinks(res);
+      .then(() => {
+        deleteExternalLink(newLink.sharedTo.id);
         toastr.success(t("Files:LinkDeletedSuccessfully"));
       })
       .catch((err) => toastr.error(err?.message))
@@ -104,7 +104,7 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     setDeleteLinkDialogVisible: setIsVisible,
     linkParams,
   } = dialogsStore;
-  const { editExternalLink, setExternalLinks } = publicRoomStore;
+  const { editExternalLink, deleteExternalLink } = publicRoomStore;
 
   return {
     visible,
@@ -112,6 +112,6 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     roomId: selectionParentRoom.id,
     link: linkParams.link,
     editExternalLink,
-    setExternalLinks,
+    deleteExternalLink,
   };
 })(observer(DeleteLinkDialog));

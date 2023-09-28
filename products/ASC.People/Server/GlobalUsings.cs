@@ -36,6 +36,7 @@ global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Extensions;
 global using ASC.Api.Core.Model;
 global using ASC.Api.Core.Security;
+global using ASC.Api.Core.Routing;
 global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Caching;

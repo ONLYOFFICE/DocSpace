@@ -30,7 +30,6 @@ const PublicRoomBar = (props) => {
         size={8}
         iconName={CrossReactSvg}
         onClick={onClose}
-        color="#657077"
       /> */}
     </StyledPublicRoomBar>
   );

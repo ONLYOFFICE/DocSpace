@@ -45,12 +45,25 @@ class PublicRoomStore {
     this.externalLinks = externalLinks;
   };
 
-  setExternalLink = (linkId, data) => {
-    const linkIndex = this.externalLinks.findIndex(
-      (l) => l.sharedTo.id === linkId
+  deleteExternalLink = (linkId) => {
+    const externalLinks = this.externalLinks.filter(
+      (l) => l.sharedTo.id !== linkId
     );
-    const dataLink = data.find((l) => l.sharedTo.id === linkId);
-    this.externalLinks[linkIndex] = dataLink;
+    this.externalLinks = externalLinks;
+  };
+
+  setExternalLink = (link) => {
+    const linkIndex = this.externalLinks.findIndex(
+      (l) => l.sharedTo.id === link.sharedTo.id
+    );
+    const externalLinks = this.externalLinks;
+
+    if (linkIndex === -1) {
+      externalLinks.push(link);
+      this.externalLinks = externalLinks;
+    } else {
+      externalLinks[linkIndex] = link;
+    }
   };
 
   setExternalLinks = (links) => {
