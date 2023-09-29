@@ -16,6 +16,7 @@ const EmptyScreen = ({
   theme,
   currentColorScheme,
   learnMoreLink,
+  withUpload,
 }) => {
   const imageSrc = theme.isBase
     ? EmptyScreenPluginsUrl
@@ -40,7 +41,7 @@ const EmptyScreen = ({
       style={{ gridColumnGap: "39px" }}
       buttonStyle={{ marginTop: "16px" }}
       imageSrc={imageSrc}
-      buttons={<UploadButton t={t} addPlugin={onAddAction} />}
+      buttons={withUpload && <UploadButton t={t} addPlugin={onAddAction} />}
     />
   );
 };
