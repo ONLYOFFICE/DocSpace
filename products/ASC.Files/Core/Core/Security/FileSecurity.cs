@@ -866,9 +866,9 @@ public class FileSecurity : IFileSecurity
                 }
 
                 var mytrashId = await _globalFolder.GetFolderTrashAsync(_daoFactory);
-                if (!Equals(mytrashId, 0) && Equals(e.RootId, mytrashId))
+                if (!Equals(mytrashId, 0))
                 {
-                    return folder == null || action != FilesSecurityActions.Delete || !Equals(e.Id, mytrashId);
+                    return Equals(e.RootId, mytrashId) && (folder == null || action != FilesSecurityActions.Delete || !Equals(e.Id, mytrashId));
                 }
                 break;
             case FolderType.USER:
@@ -926,8 +926,9 @@ public class FileSecurity : IFileSecurity
 
         FileShareRecord ace;
 
-        if (!isRoom && e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive &&
-            _cachedRecords.TryGetValue(GetCacheKey(e.ParentId, userId), out var value))
+        if (!isRoom && e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive && 
+            (_cachedRecords.TryGetValue(GetCacheKey(e.ParentId, userId), out var value)) || 
+            _cachedRecords.TryGetValue(GetCacheKey(e.ParentId, await _externalShare.GetLinkIdAsync()), out value))
         {
             ace = value.Clone();
             ace.EntryId = e.Id;
@@ -965,6 +966,14 @@ public class FileSecurity : IFileSecurity
                     .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
                     .FirstOrDefault();
             }
+            
+            if (!isRoom && e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive && 
+                ace is { SubjectType: SubjectType.User or SubjectType.ExternalLink })
+            {
+                var id = ace.SubjectType == SubjectType.ExternalLink ? ace.Subject : userId;
+
+                _cachedRecords.TryAdd(GetCacheKey(e.ParentId, id), ace);
+            }
         }
 
         if (ace is { SubjectType: SubjectType.ExternalLink } && ace.Subject != userId && 
@@ -984,11 +993,6 @@ public class FileSecurity : IFileSecurity
         e.Access = ace?.Share ?? defaultShare;
         e.Access = e.RootFolderType is FolderType.ThirdpartyBackup ? FileShare.Restrict : e.Access;
 
-        if (ace is { IsLink: false } && !isRoom && e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive && e.Access != FileShare.None)
-        {
-            _cachedRecords.TryAdd(GetCacheKey(e.ParentId, userId), ace);
-        }
-
         switch (action)
         {
             case FilesSecurityActions.Read:
@@ -996,7 +1000,8 @@ public class FileSecurity : IFileSecurity
             case FilesSecurityActions.Mute:
                 return e.Access != FileShare.Restrict;
             case FilesSecurityActions.Comment:
-                if (e.Access is FileShare.Comment or FileShare.Review ||
+                if (e.Access is FileShare.Comment || 
+                    e.Access == FileShare.Review ||
                     e.Access == FileShare.CustomFilter ||
                     e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
@@ -1149,7 +1154,7 @@ public class FileSecurity : IFileSecurity
                 if (e.Access != FileShare.Restrict && ace?.Options is not { DenyDownload: true })
                 {
                     return true;
-        }
+                }
                 break;
         }
 
@@ -1191,6 +1196,33 @@ public class FileSecurity : IFileSecurity
     public async Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(FileEntry<T> entry, IEnumerable<Guid> subjects = null)
     {
         return await _daoFactory.GetSecurityDao<T>().GetSharesAsync(entry, subjects);
+    }
+
+    public IAsyncEnumerable<FileShareRecord> GetPureSharesAsync<T>(FileEntry<T> entry, IEnumerable<Guid> subjects)
+    {
+        return _daoFactory.GetSecurityDao<T>().GetPureSharesAsync(entry, subjects);
+    }
+
+    public IAsyncEnumerable<FileShareRecord> GetPureSharesAsync<T>(FileEntry<T> entry, ShareFilterType filterType, EmployeeActivationStatus? status, int offset = 0, int count = -1)
+    {
+        return _daoFactory.GetSecurityDao<T>().GetPureSharesAsync(entry, filterType, status, offset, count);
+    }
+
+    public Task<int> GetPureSharesCountAsync<T>(FileEntry<T> entry, ShareFilterType filterType, EmployeeActivationStatus? status)
+    {
+        return _daoFactory.GetSecurityDao<T>().GetPureSharesCountAsync(entry, filterType, status);
+    }
+
+    public IAsyncEnumerable<UserInfoWithShared> GetUsersWithSharedAsync<T>(FileEntry<T> entry, string text, EmployeeStatus? employeeStatus, EmployeeActivationStatus? activationStatus, 
+        bool excludeShared, int offset, int count)
+    {
+        return _daoFactory.GetSecurityDao<T>().GetUsersWithSharedAsync(entry, text, employeeStatus, activationStatus, excludeShared, offset, count);
+    }
+
+    public async Task<int> GetUsersWithSharedCountAsync<T>(FileEntry<T> entry, string text, EmployeeStatus? employeeStatus, EmployeeActivationStatus? activationStatus, 
+        bool excludeShared)
+    {
+        return await _daoFactory.GetSecurityDao<T>().GetUsersWithSharedCountAsync(entry, text, employeeStatus, activationStatus, excludeShared);
     }
 
     public async IAsyncEnumerable<FileEntry> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)

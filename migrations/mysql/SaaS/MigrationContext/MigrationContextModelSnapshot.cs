@@ -724,7 +724,7 @@ namespace ASC.Migrations.MySql.SaaS.Migrations
                         new
                         {
                             TenantId = -3,
-                            Features = "free,total_size:2147483648,manager:3,room:12",
+                            Features = "free,oauth,total_size:2147483648,manager:3,room:12",
                             Name = "startup",
                             Price = 0m,
                             Visible = false

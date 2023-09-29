@@ -5,17 +5,17 @@ import Text from "@docspace/components/text";
 import { NotificationsType } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 
-const RoomsActivityContainer = ({
+const DailyFeedContainer = ({
   t,
-  roomsActivitySubscription,
+  dailyFeedSubscriptions,
   changeSubscription,
   textProps,
   textDescriptionsProps,
 }) => {
-  const onChangeEmailSubscription = async e => {
+  const onChangeEmailSubscription = async (e) => {
     const checked = e.currentTarget.checked;
     try {
-      await changeSubscription(NotificationsType.RoomsActivity, checked);
+      await changeSubscription(NotificationsType.DailyFeed, checked);
     } catch (e) {
       toastr.error(e);
     }
@@ -23,17 +23,17 @@ const RoomsActivityContainer = ({
 
   return (
     <div className="notification-container">
-      <div>
+      <div className="row">
         <Text {...textProps} className="subscription-title">
-          {t("RoomsActivity")}
+          {t("DailyFeed")}
         </Text>
-        <Text {...textDescriptionsProps}>{t("RoomsActivityDescription")}</Text>
+        <ToggleButton
+          className="daily-feed"
+          onChange={onChangeEmailSubscription}
+          isChecked={dailyFeedSubscriptions}
+        />
       </div>
-      <ToggleButton
-        className="rooms-activity toggle-btn"
-        onChange={onChangeEmailSubscription}
-        isChecked={roomsActivitySubscription}
-      />
+      <Text {...textDescriptionsProps}>{t("DailyFeedDescription")}</Text>
     </div>
   );
 };
@@ -41,10 +41,10 @@ const RoomsActivityContainer = ({
 export default inject(({ peopleStore }) => {
   const { targetUserStore } = peopleStore;
 
-  const { roomsActivitySubscription, changeSubscription } = targetUserStore;
+  const { changeSubscription, dailyFeedSubscriptions } = targetUserStore;
 
   return {
-    roomsActivitySubscription,
     changeSubscription,
+    dailyFeedSubscriptions,
   };
-})(observer(RoomsActivityContainer));
+})(observer(DailyFeedContainer));

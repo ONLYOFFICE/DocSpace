@@ -185,11 +185,11 @@ public class ReassignProgressItem : DistributedTaskProgress
 
         if (_httpHeaders != null)
         {
-            await messageService.SendAsync(_httpHeaders, MessageAction.UserDataReassigns, messageTarget.Create(FromUser), new[] { fromUserName, toUserName });
+            await messageService.SendHeadersMessageAsync(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), _httpHeaders, new[] { fromUserName, toUserName });
         }
         else
         {
-           await messageService.SendAsync(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
+            await messageService.SendAsync(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
         }
     }
 
@@ -211,7 +211,7 @@ public class ReassignProgressItem : DistributedTaskProgress
 
         if (_httpHeaders != null)
         {
-            await messageService.SendAsync(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
+            await messageService.SendHeadersMessageAsync(MessageAction.UserDeleted, messageTarget.Create(FromUser), _httpHeaders, userName);
         }
         else
         {

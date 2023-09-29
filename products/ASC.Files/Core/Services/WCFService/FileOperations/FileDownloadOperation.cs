@@ -31,7 +31,7 @@ internal class FileDownloadOperationData<T> : FileOperationData<T>
     public Dictionary<T, string> FilesDownload { get; }
     public IDictionary<string, StringValues> Headers { get; }
 
-    public FileDownloadOperationData(Dictionary<T, string> folders, Dictionary<T, string> files, Tenant tenant, IDictionary<string, StringValues> headers, 
+    public FileDownloadOperationData(Dictionary<T, string> folders, Dictionary<T, string> files, Tenant tenant, IDictionary<string, StringValues> headers,
         ExternalShareData externalShareData, bool holdResult = true)
         : base(folders.Select(f => f.Key).ToList(), files.Select(f => f.Key).ToList(), tenant, externalShareData, holdResult)
     {
@@ -119,7 +119,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
                 {
                     throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
                 }
-                
+
                 path = string.Format(@"{0}\{1}\{2}", linkId, sessionId, fileName);
                 sessionKey = await externalShare.CreateDownloadSessionKeyAsync();
             }
@@ -135,7 +135,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
                 stream,
                 MimeMapping.GetMimeMapping(path),
                 "attachment; filename=\"" + Uri.EscapeDataString(fileName) + "\"");
-            
+
             this[Res] = $"{filesLinkUtility.FileHandlerPath}?{FilesLinkUtility.Action}=bulk&filename={Uri.EscapeDataString(instanceCrypto.Encrypt(fileName))}";
 
             if (!isAuthenticated)
@@ -217,23 +217,23 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 
         PublishChanges();
 
-        var filesMessageService = _serviceProvider.GetRequiredService<FilesMessageService>();
+        var filesMessageService = scope.ServiceProvider.GetRequiredService<FilesMessageService>();
         foreach (var file in filesForSend)
         {
             var key = file.Id;
             if (_files.ContainsKey(key) && !string.IsNullOrEmpty(_files[key]))
             {
-                _ = filesMessageService.SendAsync(file, _headers, MessageAction.FileDownloadedAs, file.Title, _files[key]);
+                _ = filesMessageService.SendAsync(MessageAction.FileDownloadedAs, file, _headers, file.Title, _files[key]);
             }
             else
             {
-                _ = filesMessageService.SendAsync(file, _headers, MessageAction.FileDownloaded, file.Title);
+                _ = filesMessageService.SendAsync(MessageAction.FileDownloaded, file, _headers, file.Title);
             }
         }
 
         foreach (var folder in folderForSend)
         {
-            _ = filesMessageService.SendAsync(folder, _headers, MessageAction.FolderDownloaded, folder.Title);
+            _ = filesMessageService.SendAsync(MessageAction.FolderDownloaded, folder, _headers, folder.Title);
         }
     }
 

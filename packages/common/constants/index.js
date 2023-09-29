@@ -1,3 +1,4 @@
+import ShareAppleReactSvgUrl from "PUBLIC_DIR/images/share.apple.react.svg?url";
 import ShareGoogleReactSvgUrl from "PUBLIC_DIR/images/share.google.react.svg?url";
 import ShareFacebookReactSvgUrl from "PUBLIC_DIR/images/share.facebook.react.svg?url";
 import ShareTwitterReactSvgUrl from "PUBLIC_DIR/images/share.twitter.react.svg?url";
@@ -252,6 +253,10 @@ export const ConflictResolveType = Object.freeze({
   Duplicate: 2,
 });
 export const providersData = Object.freeze({
+  apple: {
+    label: "apple",
+    icon: ShareAppleReactSvgUrl,
+  },
   google: {
     label: "google",
     icon: ShareGoogleReactSvgUrl,

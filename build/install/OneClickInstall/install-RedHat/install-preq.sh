@@ -59,18 +59,12 @@ curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/sc
 curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | os=centos dist=$REV bash
 
 #add nodejs repo
-if [ "$REV" != "8" ]; then
-	[ "$REV" = "7" ] && NODE_VERSION="16" || NODE_VERSION="18"
-	yum install -y https://rpm.nodesource.com/pub_${NODE_VERSION}.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm
-else
-	curl -sL https://rpm.nodesource.com/setup_18.x | bash - || true
-	rpm --import http://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL
-fi
+[ "$REV" = "8" ] && NODEJS_OPTION="--setopt=nodesource-nodejs.module_hotfixes=1"
+[ "$REV" = "7" ] && NODE_VERSION="16" || NODE_VERSION="18"
+yum install -y https://rpm.nodesource.com/pub_${NODE_VERSION}.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm || true
 
 #add dotnet repo
-if [ $REV = "7" ] || [[ $DIST != "redhat" && $REV = "8" ]]; then
-	rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-prod.rpm || true
-fi
+[ $REV = "7" ] && rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-prod.rpm || true
 
 #add mysql repo
 [ "$REV" != "7" ] && dnf remove -y @mysql && dnf module -y reset mysql && dnf module -y disable mysql
@@ -82,7 +76,7 @@ if ! rpm -q mysql-community-server; then
 fi
 
 #add elasticsearch repo
-ELASTIC_VERSION="7.10.0"
+ELASTIC_VERSION="7.16.3"
 ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elasticsearch.repo <<END
@@ -96,18 +90,27 @@ autorefresh=1
 type=rpm-md
 END
 
+# add nginx repo
+cat > /etc/yum.repos.d/nginx.repo <<END
+[nginx-stable]
+name=nginx stable repo
+baseurl=https://nginx.org/packages/centos/$REV/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+END
+
 rpm --import https://openresty.org/package/pubkey.gpg
 OPENRESTY_REPO_FILE=$( [[ "$REV" -ge 9 ]] && echo "openresty2.repo" || echo "openresty.repo" )
 curl -o /etc/yum.repos.d/openresty.repo "https://openresty.org/package/centos/${OPENRESTY_REPO_FILE}"
-systemctl list-units --type=service | grep -q nginx && systemctl stop nginx && systemctl disable nginx
 
 ${package_manager} -y install epel-release \
 			python3 \
-			nodejs \
+			nodejs ${NODEJS_OPTION} \
 			dotnet-sdk-7.0 \
 			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
-			openresty \
 			postgresql \
 			postgresql-server \
 			rabbitmq-server$rabbitmq_version \
@@ -124,4 +127,4 @@ postgresql-setup initdb	|| true
 
 semanage permissive -a httpd_t
 
-package_services="rabbitmq-server postgresql redis openresty mysqld"
+package_services="rabbitmq-server postgresql redis mysqld"

@@ -5,8 +5,9 @@ set -e
 PRODUCT="docspace"
 DIR="/usr/bin"
 LETSENCRYPT="/etc/letsencrypt/live";
-NGINX="/etc/nginx/conf.d"
+OPENRESTY="/etc/openresty/conf.d"
 DHPARAM_FILE="/etc/ssl/certs/dhparam.pem"
+WEBROOT_PATH="/var/www/${PRODUCT}"
 
 if [ "$#" -ge "2" ]; then
   if [ "$1" != "-f" ]; then 
@@ -27,8 +28,8 @@ if [ "$#" -ge "2" ]; then
     echo "Generating Let's Encrypt SSL Certificates..."
 
     # Request and generate Let's Encrypt SSL certificate
-    echo certbot certonly --expand --webroot --noninteractive --agree-tos --email ${MAIL} -d ${DOMAIN} > /var/log/le-start.log
-    certbot certonly --expand --webroot --noninteractive --agree-tos --email ${MAIL} -d ${DOMAIN} > /var/log/le-new.log
+    echo certbot certonly --expand --webroot -w ${WEBROOT_PATH} --cert-name ${PRODUCT} --noninteractive --agree-tos --email ${MAIL} -d ${DOMAIN} > /var/log/le-start.log
+    certbot certonly --expand --webroot -w ${WEBROOT_PATH} --cert-name ${PRODUCT} --noninteractive --agree-tos --email ${MAIL} -d ${DOMAIN} > /var/log/le-new.log
   else
     echo "Using specified files to configure SSL..."
   
@@ -36,20 +37,20 @@ if [ "$#" -ge "2" ]; then
     PRIVATEKEY_FILE=$3
   fi
 
-  [[ ! -f "${DHPARAM_FILE}" ]] && openssl dhparam -out ${DHPARAM_FILE} 4096
+  [[ ! -f "${DHPARAM_FILE}" ]] && openssl dhparam -out ${DHPARAM_FILE} 2048
 
-  CERTIFICATE_FILE="${CERTIFICATE_FILE:-"${LETSENCRYPT}/${DOMAIN}/fullchain.pem"}"
-  PRIVATEKEY_FILE="${PRIVATEKEY_FILE:-"${LETSENCRYPT}/${DOMAIN}/privkey.pem"}"
+  CERTIFICATE_FILE="${CERTIFICATE_FILE:-"${LETSENCRYPT}/${PRODUCT}/fullchain.pem"}"
+  PRIVATEKEY_FILE="${PRIVATEKEY_FILE:-"${LETSENCRYPT}/${PRODUCT}/privkey.pem"}"
 
   if [ -f "${CERTIFICATE_FILE}" -a -f ${PRIVATEKEY_FILE} ]; then
-    if [ -f "${NGINX}/onlyoffice-proxy-ssl.conf.template" ]; then
-      cp -f ${NGINX}/onlyoffice-proxy-ssl.conf.template ${NGINX}/onlyoffice-proxy.conf
+    if [ -f "${OPENRESTY}/onlyoffice-proxy-ssl.conf.template" ]; then
+      cp -f ${OPENRESTY}/onlyoffice-proxy-ssl.conf.template ${OPENRESTY}/onlyoffice-proxy.conf
 
-      ENVIRONMENT=$(grep -oP 'ENVIRONMENT=\K.*' /usr/lib/systemd/system/${PRODUCT}-api.service)
+      ENVIRONMENT=$(grep -oP 'ENVIRONMENT=\K.*' $(dirname $(dpkg-query -L ${PRODUCT}-api | grep systemd/system/))/${PRODUCT}-api.service)
       sed -i "s/\(\"portal\":\).*/\1 \"https:\/\/${DOMAIN:-$(hostname --fqdn)}\"/" /etc/onlyoffice/docspace/appsettings.$ENVIRONMENT.json
-      sed -i "s~\(ssl_certificate \).*;~\1${CERTIFICATE_FILE};~g" ${NGINX}/onlyoffice-proxy.conf
-      sed -i "s~\(ssl_certificate_key \).*;~\1${PRIVATEKEY_FILE};~g" ${NGINX}/onlyoffice-proxy.conf
-      sed -i "s~\(ssl_dhparam \).*;~\1${DHPARAM_FILE};~g" ${NGINX}/onlyoffice-proxy.conf
+      sed -i "s~\(ssl_certificate \).*;~\1${CERTIFICATE_FILE};~g" ${OPENRESTY}/onlyoffice-proxy.conf
+      sed -i "s~\(ssl_certificate_key \).*;~\1${PRIVATEKEY_FILE};~g" ${OPENRESTY}/onlyoffice-proxy.conf
+      sed -i "s~\(ssl_dhparam \).*;~\1${DHPARAM_FILE};~g" ${OPENRESTY}/onlyoffice-proxy.conf
 
       if [[ "${LETSENCRYPT_ENABLE}" = "true" ]]; then
         # Create and set permissions for ${PRODUCT}-renew-letsencrypt

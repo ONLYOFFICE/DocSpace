@@ -10,7 +10,7 @@ import InfiniteGrid from "./InfiniteGrid";
 
 const paddingCss = css`
   @media ${desktop} {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 1px;
@@ -23,7 +23,7 @@ const paddingCss = css`
   }
 
   @media ${tablet} {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: -1px;
@@ -36,12 +36,12 @@ const paddingCss = css`
 
 const StyledGridWrapper = styled.div`
   display: grid;
-  grid-template-columns: ${props =>
+  grid-template-columns: ${(props) =>
     props.isRooms
       ? "repeat(auto-fill, minmax(274px, 1fr))"
       : "repeat(auto-fill, minmax(216px, 1fr))"};
   width: 100%;
-  margin-bottom: ${props => (props.isFolders || props.isRooms ? "23px" : 0)};
+  margin-bottom: ${(props) => (props.isFolders || props.isRooms ? "23px" : 0)};
   box-sizing: border-box;
   ${paddingCss};
 
@@ -90,7 +90,7 @@ const StyledTileContainer = styled.div`
       cursor: pointer !important;
 
       .sort-combo-box {
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin-left: 3px;
@@ -119,14 +119,14 @@ const StyledTileContainer = styled.div`
             .option-item__icon {
               display: none;
               cursor: pointer;
-              ${props =>
+              ${(props) =>
                 props.isDesc &&
                 css`
                   transform: rotate(180deg);
                 `}
 
               path {
-                fill: ${props => props.theme.filterInput.sort.sortFill};
+                fill: ${(props) => props.theme.filterInput.sort.sortFill};
               }
             }
 
@@ -138,7 +138,7 @@ const StyledTileContainer = styled.div`
           }
 
           .selected-option-item {
-            background: ${props =>
+            background: ${(props) =>
               props.theme.filterInput.sort.hoverBackground};
             cursor: auto;
 
@@ -156,10 +156,10 @@ const StyledTileContainer = styled.div`
           font-size: 12px;
           font-weight: 600;
 
-          color: ${props => props.theme.filterInput.sort.tileSortColor};
+          color: ${(props) => props.theme.filterInput.sort.tileSortColor};
 
           .sort-icon {
-            ${props =>
+            ${(props) =>
               props.theme.interfaceDirection === "rtl"
                 ? css`
                     margin-left: 8px;
@@ -169,7 +169,7 @@ const StyledTileContainer = styled.div`
                   `}
             svg {
               path {
-                fill: ${props => props.theme.filterInput.sort.tileSortFill};
+                fill: ${(props) => props.theme.filterInput.sort.tileSortFill};
               }
             }
           }
@@ -183,7 +183,7 @@ const StyledTileContainer = styled.div`
   }
 
   @media ${tablet} {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: -3px;
@@ -217,7 +217,7 @@ class TileContainer extends React.PureComponent {
     const Folders = [];
     const Files = [];
 
-    React.Children.map(children, item => {
+    React.Children.map(children, (item) => {
       const { isFolder, isRoom, fileExst, id } = item.props.item;
       if ((isFolder || id === -1) && !fileExst && !isRoom) {
         Folders.push(
@@ -254,7 +254,8 @@ class TileContainer extends React.PureComponent {
           <Heading
             size="xsmall"
             id={"folder-tile-heading"}
-            className="tile-items-heading">
+            className="tile-items-heading"
+          >
             {headingFolders}
           </Heading>
         )}
@@ -287,7 +288,8 @@ class TileContainer extends React.PureComponent {
         className={`${className} files-tile-container`}
         style={style}
         useReactWindow={useReactWindow}
-        isDesc={isDesc}>
+        isDesc={isDesc}
+      >
         {useReactWindow ? (
           <InfiniteGrid>{renderTile}</InfiniteGrid>
         ) : (

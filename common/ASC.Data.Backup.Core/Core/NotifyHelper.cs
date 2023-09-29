@@ -30,10 +30,10 @@ namespace ASC.Data.Backup;
 public class NotifyHelper
 {
     private readonly AuthManager _authManager;
-    private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly WorkContext _workContext;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly TenantLogoManager _tenantLogoManager;
+    private readonly IServiceProvider _serviceProvider;
     private readonly UserManager _userManager;
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly StudioNotifySource _studioNotifySource;
@@ -47,10 +47,10 @@ public class NotifyHelper
         DisplayUserSettingsHelper displayUserSettingsHelper,
         TenantManager tenantManager,
         AuthManager authManager,
-        NotifyEngineQueue notifyEngineQueue,
         WorkContext workContext,
         CommonLinkUtility commonLinkUtility,
-        TenantLogoManager tenantLogoManager)
+        TenantLogoManager tenantLogoManager,
+        IServiceProvider serviceProvider)
     {
         _userManager = userManager;
         _studioNotifyHelper = studioNotifyHelper;
@@ -58,10 +58,10 @@ public class NotifyHelper
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _tenantManager = tenantManager;
         _authManager = authManager;
-        _notifyEngineQueue = notifyEngineQueue;
         _workContext = workContext;
         _commonLinkUtility = commonLinkUtility;
         _tenantLogoManager = tenantLogoManager;
+        _serviceProvider = serviceProvider;
     }
 
     public async Task SendAboutTransferStartAsync(Tenant tenant, string targetRegion, bool notifyUsers)
@@ -83,7 +83,7 @@ public class NotifyHelper
     {
         await _tenantManager.SetCurrentTenantAsync(tenantId);
 
-        var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
+        var client = _workContext.RegisterClient(_serviceProvider, _studioNotifySource);
 
         await client.SendNoticeToAsync(
             Actions.BackupCreated,
@@ -96,7 +96,7 @@ public class NotifyHelper
     {
         await _tenantManager.SetCurrentTenantAsync(tenant.Id);
 
-        var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
+        var client = _workContext.RegisterClient(_serviceProvider, _studioNotifySource);
 
         var owner = await _userManager.GetUsersAsync(tenant.OwnerId);
         var users =
@@ -113,7 +113,7 @@ public class NotifyHelper
     public async Task SendAboutRestoreCompletedAsync(Tenant tenant, bool notifyAllUsers)
     {
         _tenantManager.SetCurrentTenant(tenant);
-        var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
+        var client = _workContext.RegisterClient(_serviceProvider, _studioNotifySource);
 
         var users = notifyAllUsers
             ? await _userManager.GetUsersAsync(EmployeeStatus.Active)
@@ -138,7 +138,7 @@ public class NotifyHelper
     {
         _tenantManager.SetCurrentTenant(tenant);
 
-        var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
+        var client = _workContext.RegisterClient(_serviceProvider, _studioNotifySource);
 
         var users = (await _userManager.GetUsersAsync())
             .Where(u => notify ? u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) : u.IsOwner(tenant))

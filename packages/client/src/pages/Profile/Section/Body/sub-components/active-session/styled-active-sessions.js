@@ -7,7 +7,7 @@ export const StyledFooter = styled.div`
     font-weight: 600;
   }
   .icon-button {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 4px;
@@ -21,11 +21,12 @@ export const StyledFooter = styled.div`
 export const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  margin-top: 4px;
+  margin-top: 2px;
 `;
 
 export const TableHead = styled.thead`
   font-size: 12px;
+  line-height: 16px;
 `;
 
 export const TableRow = styled.tr`
@@ -33,9 +34,9 @@ export const TableRow = styled.tr`
 `;
 
 export const TableHeaderCell = styled.th`
-  border-top: 1px solid ${props => props.theme.activeSessions.borderColor};
-  border-bottom: 1px solid ${props => props.theme.activeSessions.borderColor};
-  ${props =>
+  border-top: 1px solid ${(props) => props.theme.activeSessions.borderColor};
+  border-bottom: 1px solid ${(props) => props.theme.activeSessions.borderColor};
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           text-align: right;
@@ -44,7 +45,7 @@ export const TableHeaderCell = styled.th`
           text-align: left;
         `}
   font-weight: 600;
-  padding: 14px 0;
+  padding: 12px 0;
   color: #a3a9ae;
   position: relative;
   border-top: 0;
@@ -53,7 +54,7 @@ export const TableHeaderCell = styled.th`
     content: "";
     position: absolute;
     top: 17px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             right: -8px;
@@ -63,7 +64,7 @@ export const TableHeaderCell = styled.th`
           `}
     width: 1px;
     height: 10px;
-    background: ${props => props.theme.activeSessions.sortHeaderColor};
+    background: ${(props) => props.theme.activeSessions.sortHeaderColor};
   }
 `;
 
@@ -72,9 +73,9 @@ export const TableBody = styled.tbody`
 `;
 
 export const TableDataCell = styled.td`
-  border-top: 1px solid ${props => props.theme.activeSessions.borderColor};
-  border-bottom: 1px solid ${props => props.theme.activeSessions.borderColor};
-  ${props =>
+  border-top: 1px solid ${(props) => props.theme.activeSessions.borderColor};
+  border-bottom: 1px solid ${(props) => props.theme.activeSessions.borderColor};
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           text-align: right;
@@ -89,7 +90,7 @@ export const TableDataCell = styled.td`
   .tick-icon {
     svg {
       path {
-        fill: ${props => props.theme.activeSessions.tickIconColor};
+        fill: ${(props) => props.theme.activeSessions.tickIconColor};
       }
     }
   }
@@ -97,7 +98,7 @@ export const TableDataCell = styled.td`
   .remove-icon {
     svg {
       path {
-        fill: ${props => props.theme.activeSessions.removeIconColor};
+        fill: ${(props) => props.theme.activeSessions.removeIconColor};
       }
     }
   }
@@ -120,10 +121,10 @@ export const TableDataCell = styled.td`
 
   :first-child {
     font-size: 13px;
-    color: ${props => props.theme.activeSessions.color};
+    color: ${(props) => props.theme.activeSessions.color};
     span {
       color: #a3a9ae;
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               margin-right: 5px;
@@ -145,7 +146,7 @@ export const TableDataCell = styled.td`
       right: -8px;
       width: 1px;
       height: 12px;
-      background: ${props => props.theme.activeSessions.sortHeaderColor};
+      background: ${(props) => props.theme.activeSessions.sortHeaderColor};
     }
   }
 

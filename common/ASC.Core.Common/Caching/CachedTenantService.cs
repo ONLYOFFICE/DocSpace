@@ -369,4 +369,9 @@ class CachedTenantService : ITenantService
 
         _cacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Remove);
     }
+
+    public IEnumerable<Tenant> GetTenantsWithCsp()
+    {
+        return _service.GetTenantsWithCsp();
+    }
 }

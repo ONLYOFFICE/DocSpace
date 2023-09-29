@@ -6,17 +6,6 @@ import { ContextMenu, ContextMenuButton } from "@docspace/components";
 
 import ContextHelper from "../../helpers/ContextHelper";
 
-const StyledItemContextOptions = styled.div`
-  ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
-          margin-right: auto;
-        `
-      : css`
-          margin-left: auto;
-        `}
-`;
-
 const ItemContextOptions = ({
   t,
   selection,
@@ -70,7 +59,7 @@ const ItemContextOptions = ({
   };
 
   return (
-    <StyledItemContextOptions>
+    <>
       <ContextMenu
         ref={contextMenuRef}
         getContextModel={getData}
@@ -91,7 +80,7 @@ const ItemContextOptions = ({
           displayType="toggle"
         />
       )}
-    </StyledItemContextOptions>
+    </>
   );
 };
 

@@ -128,6 +128,13 @@ export const SubmenuScroller = styled.div`
   }
   overflow-x: auto;
   overflow-y: hidden;
+
+  ${(props) =>
+    props.size !== "scale" &&
+    css`
+      display: grid;
+      flex: 0 1 auto;
+    `}
 `;
 
 export const SubmenuRoot = styled.div`

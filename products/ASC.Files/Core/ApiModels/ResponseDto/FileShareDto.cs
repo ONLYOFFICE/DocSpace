@@ -74,7 +74,6 @@ public class FileShareLink
     public string Password { get; set; }
     public bool? Disabled { get; set; }
     public bool? DenyDownload { get; set; }
-    public bool IsTemplate { get; set; }
     public bool? IsExpired { get; set; }
 }
 
@@ -126,7 +125,6 @@ public class FileShareDtoHelper
                     Password = aceWrapper.FileShareOptions?.Password,
                     Disabled = aceWrapper.FileShareOptions?.Disabled is true ? true : expired,
                     DenyDownload = aceWrapper.FileShareOptions?.DenyDownload,
-                    IsTemplate = aceWrapper.IsTemplate,
                     LinkType = aceWrapper.SubjectType switch
                     {
                         SubjectType.InvitationLink => LinkType.Invitation,

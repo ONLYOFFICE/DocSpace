@@ -12,6 +12,7 @@ import Box from "@docspace/components/box";
 import HelpButton from "@docspace/components/help-button";
 import toastr from "@docspace/components/toast/toastr";
 import { useTheme } from "styled-components";
+import Loaders from "@docspace/common/components/Loaders";
 
 import {
   LogoutConnectionDialog,
@@ -46,24 +47,23 @@ const ActiveSessions = ({
   logoutAllVisible,
   setLogoutAllVisible,
   removeAllExecptThis,
+  sessionsIsInit,
+  getSessions,
+  sessions,
+  currentSession,
 }) => {
-  const [sessions, setSessions] = useState([]);
-  const [currentSession, setCurrentSession] = useState(0);
   const [modalData, setModalData] = useState({});
   const [loading, setLoading] = useState(false);
   const { interfaceDirection } = useTheme();
 
   useEffect(() => {
-    getAllSessions().then(res => {
-      setSessions(res.items);
-      setCurrentSession(res.loginEvent);
-    });
+    getSessions();
   }, []);
 
   const onClickRemoveAllSessions = async () => {
     try {
       setLoading(true);
-      await removeAllSessions().then(res => window.location.replace(res));
+      await removeAllSessions().then((res) => window.location.replace(res));
     } catch (error) {
       toastr.error(error);
     } finally {
@@ -76,7 +76,7 @@ const ActiveSessions = ({
     try {
       setLoading(true);
       await removeAllExecptThis().then(() =>
-        getAllSessions().then(res => setSessions(res.items))
+        getAllSessions().then((res) => setSessions(res.items))
       );
     } catch (error) {
       toastr.error(error);
@@ -86,12 +86,12 @@ const ActiveSessions = ({
     }
   };
 
-  const onClickRemoveSession = async id => {
-    const foundSession = sessions.find(s => s.id === id);
+  const onClickRemoveSession = async (id) => {
+    const foundSession = sessions.find((s) => s.id === id);
     try {
       setLoading(true);
       await removeSession(foundSession.id).then(() =>
-        getAllSessions().then(res => setSessions(res.items))
+        getAllSessions().then((res) => setSessions(res.items))
       );
       toastr.success(
         t("Profile:SuccessLogout", {
@@ -107,7 +107,7 @@ const ActiveSessions = ({
     }
   };
 
-  const convertTime = date => {
+  const convertTime = (date) => {
     return new Date(date).toLocaleString(locale);
   };
   const tableCell = (platform, browser) =>
@@ -126,21 +126,24 @@ const ActiveSessions = ({
         </span>
       </>
     );
+  if (!sessionsIsInit) return <Loaders.ProfileFooter isProfileFooter />;
   return (
     <StyledFooter>
-      <Text fontSize="16px" fontWeight={700}>
+      <Text fontSize="16px" fontWeight={700} lineHeight="22px">
         {t("Profile:ActiveSessions")}
       </Text>
       <Box
         displayProp="flex"
         alignItems="center"
         justifyContent="flex-start"
-        marginProp="10px 0 0">
+        marginProp="10px 0 0"
+      >
         <Link
           className="session-logout"
           type="action"
           isHovered
-          onClick={() => setLogoutAllVisible(true)}>
+          onClick={() => setLogoutAllVisible(true)}
+        >
           {t("Profile:LogoutAllActiveSessions")}
         </Link>
         <HelpButton
@@ -156,7 +159,7 @@ const ActiveSessions = ({
       {isMobile ? (
         <Table>
           <TableBody>
-            {sessions.map(session => (
+            {sessions.map((session) => (
               <TableRow key={session.id}>
                 <TableDataCell style={{ borderTop: "0" }}>
                   {tableCell(session.platform, session.browser)}
@@ -179,7 +182,8 @@ const ActiveSessions = ({
                       platform: session.platform,
                       browser: session.browser,
                     });
-                  }}>
+                  }}
+                >
                   {currentSession !== session.id ? removeIcon : null}
                 </TableDataCell>
               </TableRow>
@@ -196,7 +200,7 @@ const ActiveSessions = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {sessions.map(session => (
+            {sessions.map((session) => (
               <TableRow key={session.id}>
                 <TableDataCell>
                   {tableCell(session.platform, session.browser)}
@@ -212,7 +216,8 @@ const ActiveSessions = ({
                       platform: session.platform,
                       browser: session.browser,
                     });
-                  }}>
+                  }}
+                >
                   {currentSession !== session.id ? removeIcon : null}
                 </TableDataCell>
               </TableRow>
@@ -258,6 +263,10 @@ export default inject(({ auth, setup }) => {
     logoutAllVisible,
     setLogoutAllVisible,
     removeAllExecptThis,
+    sessionsIsInit,
+    sessions,
+    currentSession,
+    getSessions,
   } = setup;
   return {
     locale,
@@ -269,5 +278,9 @@ export default inject(({ auth, setup }) => {
     logoutAllVisible,
     setLogoutAllVisible,
     removeAllExecptThis,
+    sessionsIsInit,
+    sessions,
+    currentSession,
+    getSessions,
   };
 })(observer(withTranslation(["Profile", "Common"])(ActiveSessions)));

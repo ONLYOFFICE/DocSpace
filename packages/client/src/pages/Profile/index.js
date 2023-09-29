@@ -2,11 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Section from "@docspace/common/components/Section";
 
-import {
-  SectionHeaderContent,
-  SectionBodyContent,
-  SectionFooterContent,
-} from "./Section";
+import { SectionHeaderContent, SectionBodyContent } from "./Section";
 
 import Dialogs from "../Home/Section/AccountsBody/Dialogs";
 
@@ -94,10 +90,6 @@ class Profile extends React.Component {
           <Section.SectionBody>
             <SectionBodyContent profile={profile} />
           </Section.SectionBody>
-
-          <Section.SectionFooter>
-            <SectionFooterContent profile={profile} />
-          </Section.SectionFooter>
         </Section>
         <Dialogs />
       </>

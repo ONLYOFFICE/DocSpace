@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Text from "@docspace/components/text";
 import { NotificationsType } from "@docspace/common/constants";
@@ -11,15 +12,13 @@ import UsefulTipsContainer from "./sub-components/UsefulTipsContainer";
 import RoomsActionsContainer from "./sub-components/RoomsActionsContainer";
 import DailyFeedContainer from "./sub-components/DailyFeedContainer";
 import RoomsActivityContainer from "./sub-components/RoomsActivityContainer";
-import {
-  StyledSectionBodyContent,
-  StyledTextContent,
-} from "../../StyledComponent";
+import { StyledSectionBodyContent, StyledTextContent } from "./StyledComponent";
 
-let timerId = null;
 const { Badges, RoomsActivity, DailyFeed, UsefulTips } = NotificationsType;
 
-const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
+const Notifications = ({ setSubscriptions, isFirstSubscriptionsLoad }) => {
+  const { t, ready } = useTranslation("Notifications");
+
   const [isLoading, setIsLoading] = useState(false);
   const [isContentLoaded, setIsContentLoaded] = useState(false);
 
@@ -43,9 +42,6 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
         tips.isEnabled
       );
 
-      clearTimeout(timerId);
-      timerId = null;
-
       setIsLoading(false);
       setIsContentLoaded(true);
     } catch (e) {
@@ -54,24 +50,24 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
   };
 
   useEffect(() => {
-    timerId = setTimeout(() => {
+    if (isFirstSubscriptionsLoad) {
       setIsLoading(true);
-    }, 400);
-
-    getData();
+      getData();
+    }
   }, []);
 
   const isLoadingContent = isLoading || !ready;
 
-  if (!isLoading && !isContentLoaded) return <></>;
+  //if (!isLoading && !isContentLoaded) return <></>;
 
   const textProps = {
-    fontSize: "14px",
+    fontSize: "13px",
     fontWeight: "600",
     noSelect: true,
   };
   const textDescriptionsProps = {
-    fontSize: "12px",
+    fontSize: "13px",
+    fontWeight: "400",
     className: "notification-container_description",
   };
 
@@ -81,7 +77,7 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
         {isLoadingContent ? (
           <Loaders.Rectangle height={"22px"} width={"57px"} />
         ) : (
-          <Text fontSize={"16px"} fontWeight={700}>
+          <Text fontSize={"14px"} fontWeight={600}>
             {t("Badges")}
           </Text>
         )}
@@ -106,7 +102,7 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
         {isLoadingContent ? (
           <Loaders.Rectangle height={"22px"} width={"57px"} />
         ) : (
-          <Text fontSize={"16px"} fontWeight={700}>
+          <Text fontSize={"14px"} fontWeight={600} className="email-title">
             {t("Common:Email")}
           </Text>
         )}
@@ -114,7 +110,7 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
       {isLoadingContent ? (
         <Loaders.Notifications count={3} />
       ) : (
-        <>
+        <div className="badges-container">
           <RoomsActivityContainer
             t={t}
             textProps={textProps}
@@ -130,7 +126,7 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
             textProps={textProps}
             textDescriptionsProps={textDescriptionsProps}
           />
-        </>
+        </div>
       )}
     </>
   );
@@ -146,9 +142,10 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
 export default inject(({ peopleStore }) => {
   const { targetUserStore } = peopleStore;
 
-  const { setSubscriptions } = targetUserStore;
+  const { setSubscriptions, isFirstSubscriptionsLoad } = targetUserStore;
 
   return {
     setSubscriptions,
+    isFirstSubscriptionsLoad,
   };
-})(observer(SectionBodyContent));
+})(observer(Notifications));

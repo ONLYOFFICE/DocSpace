@@ -200,7 +200,7 @@ const ClientRoutes = [
               </PrivateRoute>
             ),
           },
-          {
+          /*{
             path: "settings",
             element: (
               <PrivateRoute withCollaborator restricted>
@@ -223,15 +223,7 @@ const ClientRoutes = [
                 <SettingsView />
               </PrivateRoute>
             ),
-          },
-          {
-            path: "settings/plugins",
-            element: (
-              <PrivateRoute>
-                <SettingsView />
-              </PrivateRoute>
-            ),
-          },
+          },*/
         ],
       },
 

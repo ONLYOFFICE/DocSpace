@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Studio.IntegrationEvents;
+
 namespace ASC.Studio.Notify;
 
 public class Startup : BaseWorkerStartup
@@ -35,7 +37,7 @@ public class Startup : BaseWorkerStartup
     }
 
     public override void ConfigureServices(IServiceCollection services)
-    {   
+    {
         base.ConfigureServices(services);
 
         services.AddHttpClient();
@@ -46,5 +48,6 @@ public class Startup : BaseWorkerStartup
         DIHelper.TryAdd<ServiceLauncher>();
         NotifyConfigurationExtension.Register(DIHelper);
         DIHelper.TryAdd<EmailSenderSink>();
+        DIHelper.TryAdd<NotifyItemIntegrationEventHandler>();
     }
 }
