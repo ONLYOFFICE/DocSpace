@@ -28,7 +28,7 @@ const StyledBox = styled(Box)`
       css`
         path {
           fill: #ffffff;
-          opacity: ${props.isSet ? 1 : 0.16};
+          opacity: ${props.canSet ? 1 : props.isSet ? 0.16 : 1};
         }
         ${props.isLinkedIn &&
         css`
@@ -81,6 +81,7 @@ class ConsumerItem extends React.Component {
           widthProp="100%"
         >
           <StyledBox
+            canSet={consumer.canSet}
             isSet={isSet}
             isLinkedIn={consumer.name === "linkedin"}
             isThirdPartyAvailable={isThirdPartyAvailable}
