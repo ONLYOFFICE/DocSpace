@@ -9,7 +9,7 @@ import Text from "@docspace/components/text";
 
 export const StyledWrapper = styled.div`
   width: 100%;
-  max-width: 100%;
+  max-width: 660px;
 
   display: flex;
   padding: 24px 24px 18px 24px;
@@ -21,6 +21,10 @@ export const StyledWrapper = styled.div`
 
   .avatar {
     min-width: 124px;
+  }
+
+  @media ${tablet} {
+    max-width: 100%;
   }
 
   @media ${smallTablet} {

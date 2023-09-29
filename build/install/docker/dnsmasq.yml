@@ -1,8 +1,8 @@
 version: "3.8"
 services:
-  onlyoffice-dns:
+  dnsmasq:
     image: jpillora/dnsmasq
-    container_name: onlyoffice-dns
+    container_name: dnsmasq
     restart: always
     expose:
       - "5380"

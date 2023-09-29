@@ -38,7 +38,6 @@ BASE_DIR="/app/$PACKAGE_SYSNAME";
 PROXY_YML="${BASE_DIR}/proxy.yml"
 STATUS=""
 DOCKER_TAG=""
-GIT_BRANCH="master"
 INSTALLATION_TYPE="ENTERPRISE"
 IMAGE_NAME="${PACKAGE_SYSNAME}/${PRODUCT}-api"
 CONTAINER_NAME="${PACKAGE_SYSNAME}-api"
@@ -1142,10 +1141,6 @@ set_installation_type_data () {
 }
 
 download_files () {
-	if ! command_exists svn; then
-		install_service svn subversion
-	fi
-
 	if ! command_exists jq ; then
 		if command_exists yum; then 
 			rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.rpm
@@ -1163,7 +1158,23 @@ download_files () {
 	[[ "${APP_URL_PORTAL}" == *${PACKAGE_SYSNAME}-proxy* ]] && APP_URL_PORTAL=""
 
 	echo -n "Downloading configuration files to the ${BASE_DIR} directory..."
-	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR} >/dev/null
+
+	if [ -z "${GIT_BRANCH}" ]; then
+		if ! command_exists tar; then
+			install_service tar
+		fi
+		[ -d "${BASE_DIR}" ] && rm -rf "${BASE_DIR}"
+		mkdir -p ${BASE_DIR}
+		curl -s -O https://download.onlyoffice.com/${PRODUCT}/docker.tar.gz
+		tar -xzvf docker.tar.gz -C ${BASE_DIR} >/dev/null
+		rm -rf docker.tar.gz
+	else
+		if ! command_exists svn; then
+			install_service svn subversion
+		fi
+		svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR} >/dev/null
+	fi
+	
 	echo "OK"
 
 	reconfigure STATUS ${STATUS}
