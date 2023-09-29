@@ -47,6 +47,9 @@ class PluginStore {
   pluginDialogVisible = false;
   pluginDialogProps = null;
 
+  deletePluginDialogVisible = false;
+  deletePluginDialogProps = null;
+
   constructor(authStore, selectedFolderStore) {
     this.authStore = authStore;
     this.selectedFolderStore = selectedFolderStore;
@@ -77,6 +80,14 @@ class PluginStore {
 
   setPluginDialogProps = (value) => {
     this.pluginDialogProps = value;
+  };
+
+  setDeletePluginDialogVisible = (value) => {
+    this.deletePluginDialogVisible = value;
+  };
+
+  setDeletePluginDialogProps = (value) => {
+    this.deletePluginDialogProps = value;
   };
 
   updatePluginStatus = (id, name, system) => {
@@ -158,29 +169,49 @@ class PluginStore {
   updatePlugins = async () => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
-    this.plugins = [];
+    try {
+      this.plugins = [];
 
-    const plugins = await api.plugins.getPlugins(
-      !isAdmin && !isOwner ? true : null
-    );
+      const plugins = await api.plugins.getPlugins(
+        !isAdmin && !isOwner ? true : null
+      );
 
-    plugins.forEach((plugin) => this.initPlugin(plugin));
+      plugins.forEach((plugin) => this.initPlugin(plugin));
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   addPlugin = async (data) => {
-    const plugin = await api.plugins.addPlugin(data);
+    try {
+      const plugin = await api.plugins.addPlugin(data);
 
-    this.initPlugin(plugin);
+      this.initPlugin(plugin);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  uninstallPlugin = async (name) => {
-    this.deactivatePlugin(name);
-    const pluginIdx = this.plugins.findIndex((p) => p.name === name);
+  uninstallPlugin = async (id, name, system) => {
+    const pluginIdx = system
+      ? this.plugins.findIndex((p) => p.name === name)
+      : this.plugins.findIndex((p) => p.id === id);
 
-    if (pluginIdx !== -1) {
-      this.plugins.splice(pluginIdx, 1);
+    try {
+      if (system) {
+        await api.plugins.deleteSystemPlugin(name);
+      } else {
+        await api.plugins.deletePlugin(id);
+      }
+
+      this.deactivatePlugin(id, name, system);
+
+      if (pluginIdx !== -1) {
+        this.plugins.splice(pluginIdx, 1);
+      }
+    } catch (e) {
+      console.log(e);
     }
-    await api.plugins.deletePlugin(name);
   };
 
   initPlugin = (plugin, callback) => {
@@ -271,17 +302,19 @@ class PluginStore {
   };
 
   changePluginStatus = async (id, name, status, system) => {
-    if (status) {
-      this.activatePlugin(id, name, system);
-    } else {
-      this.deactivatePlugin(id, name, system);
-    }
+    try {
+      const plugin = system
+        ? await api.plugins.activateSystemPlugin(name, status)
+        : await api.plugins.activatePlugin(id, status);
 
-    const plugin = system
-      ? api.plugins.activateSystemPlugin(name, status)
-      : await api.plugins.activatePlugin(id, status);
+      if (status) {
+        this.activatePlugin(id, name, system);
+      } else {
+        this.deactivatePlugin(id, name, system);
+      }
 
-    return plugin;
+      return plugin;
+    } catch (e) {}
   };
 
   activatePlugin = async (id, name, system) => {

@@ -37,6 +37,7 @@ import MoveToPublicRoom from "./MoveToPublicRoom";
 import SettingsPluginDialog from "./SettingsPluginDialog";
 import ReportDialog from "./ReportDialog";
 import PluginDialog from "./PluginDialog";
+import DeletePluginDialog from "./DeletePluginDialog";
 
 export {
   EmptyTrashDialog,
@@ -78,4 +79,5 @@ export {
   SettingsPluginDialog,
   ReportDialog,
   PluginDialog,
+  DeletePluginDialog,
 };

@@ -31,6 +31,7 @@ import {
   MoveToPublicRoom,
   SettingsPluginDialog,
   PluginDialog,
+  DeletePluginDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
@@ -84,6 +85,7 @@ const Panels = (props) => {
     pluginDialogVisible,
     leaveRoomDialogVisible,
     changeRoomOwnerIsVisible,
+    deletePluginDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -97,6 +99,12 @@ const Panels = (props) => {
       <SettingsPluginDialog
         isVisible={settingsPluginDialogVisible}
         key={"settings-plugin-dialog"}
+      />
+    ),
+    deletePluginDialogVisible && (
+      <DeletePluginDialog
+        isVisible={deletePluginDialogVisible}
+        key={"delete-plugin-dialog"}
       />
     ),
     pluginDialogVisible && (
@@ -241,7 +249,11 @@ export default inject(
     const { hotkeyPanelVisible } = auth.settingsStore;
     const { confirmDialogIsLoading } = createEditRoomStore;
 
-    const { settingsPluginDialogVisible, pluginDialogVisible } = pluginStore;
+    const {
+      settingsPluginDialogVisible,
+      deletePluginDialogVisible,
+      pluginDialogVisible,
+    } = pluginStore;
 
     return {
       preparationPortalDialogVisible,
@@ -285,6 +297,7 @@ export default inject(
       pluginDialogVisible,
       leaveRoomDialogVisible,
       changeRoomOwnerIsVisible,
+      deletePluginDialogVisible,
     };
   }
 )(observer(Panels));

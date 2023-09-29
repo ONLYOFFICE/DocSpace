@@ -1,6 +1,3 @@
-import React from "react";
-import styled from "styled-components";
-
 import Heading from "@docspace/components/heading";
 import IconButton from "@docspace/components/icon-button";
 import ToggleButton from "@docspace/components/toggle-button";
@@ -13,69 +10,7 @@ import PluginDefaultLogoUrl from "PUBLIC_DIR/images/plugin.default-logo.png";
 import { getPluginUrl } from "SRC_DIR/helpers/plugins/utils";
 import { PluginScopes } from "SRC_DIR/helpers/plugins/constants";
 
-const StyledPluginItem = styled.div`
-  width: 100%;
-  max-width: 500px;
-
-  height: auto;
-
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: 64px 1fr;
-
-  gap: 20px;
-
-  border: 1px solid #d0d5da;
-  border-radius: 12px;
-
-  padding: 24px;
-
-  box-sizing: border-box;
-
-  .plugin-logo {
-    width: 64px;
-    height: 64px;
-
-    border-radius: 4px;
-  }
-
-  .plugin-info {
-    width: 100%;
-    height: auto;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 8px;
-  }
-`;
-
-const StyledPluginHeader = styled.div`
-  width: 100%;
-  height: 22px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  .plugin-name {
-    margin: 0;
-    padding: 0;
-  }
-
-  .plugin-controls {
-    height: 100%;
-
-    display: flex;
-    gap: 16px;
-
-    .plugin-toggle-button {
-      position: relative;
-
-      gap: 0;
-    }
-  }
-`;
+import { StyledPluginItem, StyledPluginHeader } from "../StyledPlugins";
 
 const PluginItem = ({
   id,
@@ -94,8 +29,6 @@ const PluginItem = ({
   url,
 
   system,
-
-  ...rest
 }) => {
   const imgSrc = image ? getPluginUrl(url, `/assets/${image}`) : null;
 
@@ -110,7 +43,7 @@ const PluginItem = ({
   };
 
   return (
-    <StyledPluginItem>
+    <StyledPluginItem description={description}>
       <img
         className="plugin-logo"
         src={imgSrc || PluginDefaultLogoUrl}
@@ -142,8 +75,13 @@ const PluginItem = ({
           noHover={true}
           backgroundColor={"#22C386"}
         />
+
         {imgSrc && description && (
-          <Text fontWeight={400} lineHeight={"20px"}>
+          <Text
+            className={"plugin-description"}
+            fontWeight={400}
+            lineHeight={"20px"}
+          >
             {description}
           </Text>
         )}

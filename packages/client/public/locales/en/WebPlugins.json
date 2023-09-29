@@ -1,8 +1,13 @@
 {
-  "Description": "You can embed software modules to extend the functionality of DocSpace. Click download plugin and select a file in zip archive format.",
+  "Description": "You can add plugins to extend the functionality of DocSpace with extra features. Click Upload plugin and select the plugin file in the ZIP archive.",
   "Plugins": "Plugins",
   "UploadPlugin": "Upload plugin",
   "Metadata": "Metadata",
   "NeedSettings": "Need enter settings",
-  "NotNeedSettings": "Not need enter settings"
+  "NotNeedSettings": "Not need enter settings",
+  "NoPlugins": "No plugins added",
+  "PluginsHelp": "Plugins allow you to extend the functionality of DocSpace",
+  "DeletePlugin": "Delete plugin",
+  "DeletePluginTitle": "Delete plugin?",
+  "DeletePluginDescription": "This plugin will no longer be available to DocSpace users. Are you sure you want to continue?"
 }

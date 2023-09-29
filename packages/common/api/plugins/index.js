@@ -59,6 +59,6 @@ export const activateSystemPlugin = async (name, enabled) => {
 export const deleteSystemPlugin = async (name) => {
   request({
     method: "DELETE",
-    url: `/settings/webplugins/${name}`,
+    url: `/settings/webplugins/system/${name}`,
   });
 };

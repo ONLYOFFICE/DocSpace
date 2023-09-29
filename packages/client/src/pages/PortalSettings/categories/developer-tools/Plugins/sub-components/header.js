@@ -30,7 +30,7 @@ const StyledHeader = styled.div`
   }
 `;
 
-const Header = ({ t, currentColorScheme }) => {
+const Header = ({ t, currentColorScheme, learnMoreLink }) => {
   return (
     <StyledHeader>
       <div className="header-container">
@@ -40,7 +40,7 @@ const Header = ({ t, currentColorScheme }) => {
           offsetLeft={0}
           offsetRight={0}
           offsetTop={0}
-          tooltipContent={<>TODO: Plugin help button</>}
+          tooltipContent={t("PluginsHelp")}
         />
       </div>
       <div>
@@ -50,7 +50,7 @@ const Header = ({ t, currentColorScheme }) => {
             color={currentColorScheme?.main?.accent}
             type={"page"}
             target={"_blank"}
-            href={"/"}
+            href={learnMoreLink}
           >
             {t("Common:LearnMore")}
           </Link>

@@ -8,10 +8,10 @@ import Header from "./sub-components/header";
 import UploadButton from "./sub-components/button";
 import PluginItem from "./sub-components/plugin";
 
-import { StyledContainer } from "./StyledPlugins";
+import { PluginListContainer, StyledContainer } from "./StyledPlugins";
+import EmptyScreen from "./sub-components/EmptyScreen";
 
 const PluginPage = ({
-  withDelete,
   withUpload,
 
   pluginList,
@@ -21,47 +21,63 @@ const PluginPage = ({
   changePluginStatus,
 
   addPlugin,
-  uninstallPlugin,
 
   currentColorScheme,
+  theme,
 }) => {
-  const { t } = useTranslation(["WebPlugins", "Common", "FilesSettings"]);
+  const { t } = useTranslation(["WebPlugins", "Common"]);
 
   React.useEffect(() => {
     setDocumentTitle(t("Plugins"));
   }, []);
 
+  const learnMoreLink = "/";
+
   return (
-    <StyledContainer>
-      <Header t={t} currentColorScheme={currentColorScheme} />
-      {withUpload && <UploadButton t={t} addPlugin={addPlugin} />}
-      {pluginList.map((plugin) => (
-        <PluginItem
-          key={`plugin-${plugin.name}-${plugin.version}`}
-          withDelete={withDelete}
-          openSettingsDialog={openSettingsDialog}
-          uninstallPlugin={uninstallPlugin}
-          changePluginStatus={changePluginStatus}
-          {...plugin}
+    <>
+      {pluginList.length === 0 ? (
+        <EmptyScreen
+          t={t}
+          theme={theme}
+          onAddAction={addPlugin}
+          currentColorScheme={currentColorScheme}
+          learnMoreLink={learnMoreLink}
+          withUpload={withUpload}
         />
-      ))}
-    </StyledContainer>
+      ) : (
+        <StyledContainer>
+          <Header
+            t={t}
+            currentColorScheme={currentColorScheme}
+            learnMoreLink={learnMoreLink}
+          />
+          {withUpload && <UploadButton t={t} addPlugin={addPlugin} />}
+          <PluginListContainer>
+            {pluginList.map((plugin) => (
+              <PluginItem
+                key={`plugin-${plugin.name}-${plugin.version}`}
+                openSettingsDialog={openSettingsDialog}
+                changePluginStatus={changePluginStatus}
+                {...plugin}
+              />
+            ))}
+          </PluginListContainer>
+        </StyledContainer>
+      )}
+    </>
   );
 };
 
 export default inject(({ auth, pluginStore }) => {
-  const { pluginOptions, currentColorScheme } = auth.settingsStore;
+  const { pluginOptions, currentColorScheme, theme } = auth.settingsStore;
 
   const withUpload = pluginOptions.includes("upload");
-  const withDelete = pluginOptions.includes("delete");
 
   const {
     pluginList,
     changePluginStatus,
     setCurrentSettingsDialogPlugin,
     setSettingsPluginDialogVisible,
-
-    uninstallPlugin,
 
     addPlugin,
   } = pluginStore;
@@ -73,7 +89,6 @@ export default inject(({ auth, pluginStore }) => {
 
   return {
     withUpload,
-    withDelete,
 
     pluginList,
 
@@ -81,9 +96,9 @@ export default inject(({ auth, pluginStore }) => {
 
     openSettingsDialog,
 
-    uninstallPlugin,
     addPlugin,
 
     currentColorScheme,
+    theme,
   };
 })(observer(PluginPage));

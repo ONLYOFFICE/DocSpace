@@ -23,7 +23,6 @@ const Footer = ({
   setModalRequestRunning,
   onCloseAction,
 }) => {
-  console.log("render");
   return (
     <StyledContainer>
       <PluginComponent

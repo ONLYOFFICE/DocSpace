@@ -1,15 +1,17 @@
 import styled from "styled-components";
 
+import { Base } from "@docspace/components/themes";
+
 const StyledHeader = styled.div`
   display: flex;
   align-items: center;
 
   div {
-    color: #a3a9ae;
-
-    // margin-left: 2px;
+    color: ${(props) => props.theme.plugins.pluginName};
   }
 `;
+
+StyledHeader.defaultProps = { theme: Base };
 
 const Header = ({ t, name }) => {
   return (

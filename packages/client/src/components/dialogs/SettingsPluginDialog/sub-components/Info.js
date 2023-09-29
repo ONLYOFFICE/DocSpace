@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { getCookie } from "@docspace/common/utils";
 import { LANGUAGE } from "@docspace/common/constants";
@@ -9,9 +9,16 @@ import Link from "@docspace/components/link";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 
 import { PluginStatus } from "SRC_DIR/helpers/plugins/constants";
+import { Base } from "@docspace/components/themes";
 
 const StyledContainer = styled.div`
   width: 100%;
+
+  ${(props) =>
+    props.withDelete &&
+    css`
+      margin-bottom: 24px;
+    `}
 `;
 
 const StyledSeparator = styled.div`
@@ -20,8 +27,10 @@ const StyledSeparator = styled.div`
 
   margin: 24px 0;
 
-  background-color: #eceef1;
+  background-color: ${(props) => props.theme.plugins.borderColor};
 `;
+
+StyledSeparator.defaultProps = { theme: Base };
 
 const StyledInfo = styled.div`
   margin-top: 24px;
@@ -36,7 +45,7 @@ const StyledInfo = styled.div`
   gap: 8px 24px;
 `;
 
-const Info = ({ t, plugin }) => {
+const Info = ({ t, plugin, withDelete }) => {
   const locale = getCookie(LANGUAGE) || "en";
   const uploadDate = plugin.createOn && getCorrectDate(locale, plugin.createOn);
 
@@ -46,7 +55,7 @@ const Info = ({ t, plugin }) => {
       : t("NeedSettings");
 
   return (
-    <StyledContainer>
+    <StyledContainer withDelete={withDelete}>
       <StyledSeparator />
       <Text fontSize={"14px"} fontWeight={600} lineHeight={"16px"} noSelect>
         {t("Metadata")}

@@ -32,7 +32,7 @@ const UploadButton = ({ t, addPlugin }) => {
         className={"add-button"}
         label={t("UploadPlugin")}
         primary
-        size={"normal"}
+        size={"small"}
         scale={false}
         onClick={onAddAction}
       />

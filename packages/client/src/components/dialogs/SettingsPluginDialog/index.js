@@ -10,10 +10,11 @@ import WrappedComponent from "SRC_DIR/helpers/plugins/WrappedComponent";
 import Header from "./sub-components/Header";
 import Info from "./sub-components/Info";
 import Footer from "./sub-components/Footer";
+import Button from "@docspace/components/button";
 
 const SettingsPluginDialog = ({
   plugin,
-
+  withDelete,
   onLoad,
 
   settings,
@@ -22,6 +23,7 @@ const SettingsPluginDialog = ({
   settingsPluginDialogVisible,
 
   onClose,
+  onDelete,
 
   ...rest
 }) => {
@@ -55,6 +57,13 @@ const SettingsPluginDialog = ({
     onClose();
   };
 
+  const onDeleteAction = () => {
+    if (modalRequestRunning) return;
+    onClose();
+
+    onDelete();
+  };
+
   return (
     <ModalDialog
       visible={settingsPluginDialogVisible}
@@ -79,7 +88,15 @@ const SettingsPluginDialog = ({
           setSaveButtonProps={setSaveButtonProps}
           setModalRequestRunning={setModalRequestRunning}
         />
-        <Info t={t} plugin={plugin} />
+        <Info t={t} plugin={plugin} withDelete={!withDelete} />
+        {!withDelete && (
+          <Button
+            label={t("DeletePlugin")}
+            onClick={onDeleteAction}
+            scale
+            size={"normal"}
+          />
+        )}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Footer
@@ -97,20 +114,26 @@ const SettingsPluginDialog = ({
   );
 };
 
-export default inject(({ pluginStore }) => {
+export default inject(({ auth, pluginStore }) => {
   const {
     pluginList,
     settingsPluginDialogVisible,
     setSettingsPluginDialogVisible,
     currentSettingsDialogPlugin,
     setCurrentSettingsDialogPlugin,
+    setDeletePluginDialogVisible,
+    setDeletePluginDialogProps,
   } = pluginStore;
+
+  const { pluginOptions } = auth.settingsStore;
 
   const { pluginId, pluginSystem, pluginName } = currentSettingsDialogPlugin;
 
   const plugin = pluginSystem
     ? pluginList.find((p) => p.name === pluginName)
     : pluginList.find((p) => p.id === pluginId);
+
+  const withDelete = pluginOptions.includes("delete") && !pluginSystem;
 
   const pluginSettings = plugin?.getAdminPluginSettings();
 
@@ -119,11 +142,18 @@ export default inject(({ pluginStore }) => {
     setCurrentSettingsDialogPlugin(null);
   };
 
+  const onDelete = () => {
+    setDeletePluginDialogVisible(true);
+    setDeletePluginDialogProps({ pluginId, pluginSystem, pluginName });
+  };
+
   return {
     plugin,
+    withDelete,
     ...pluginSettings,
     settingsPluginDialogVisible,
 
     onClose,
+    onDelete,
   };
 })(observer(SettingsPluginDialog));
