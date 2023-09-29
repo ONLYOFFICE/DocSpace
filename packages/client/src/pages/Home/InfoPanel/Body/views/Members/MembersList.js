@@ -5,33 +5,12 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-scrollbars-virtual-list";
 import InfiniteLoader from "react-window-infinite-loader";
 import User from "./User";
-import { tablet, mobile, isMobile } from "@docspace/components/utils/device";
+import { isMobile } from "@docspace/components/utils/device";
+import throttle from "lodash/throttle";
+import Loaders from "@docspace/common/components/Loaders";
 
 const StyledMembersList = styled.div`
-  height: ${({ withBanner, isPublicRoomType }) =>
-    isPublicRoomType
-      ? withBanner
-        ? "calc(100vh - 442px)"
-        : "calc(100vh - 286px)"
-      : "calc(100vh - 266px)"};
-
-  @media ${tablet} {
-    height: ${({ withBanner, isPublicRoomType }) =>
-      isPublicRoomType
-        ? withBanner
-          ? "calc(100vh - 362px)"
-          : "calc(100vh - 206px)"
-        : "calc(100vh - 186px)"};
-  }
-
-  @media ${mobile} {
-    height: ${({ withBanner, isPublicRoomType }) =>
-      isPublicRoomType
-        ? withBanner
-          ? "calc(100vh - 426px)"
-          : "calc(100vh - 270px)"
-        : "calc(100vh - 250px)"};
-  }
+  height: ${({ offsetTop }) => `calc(100vh - ${offsetTop})`};
 `;
 
 const Item = memo(({ data, index, style }) => {
@@ -52,6 +31,18 @@ const Item = memo(({ data, index, style }) => {
   } = data;
 
   const user = members[index];
+
+  if (!user) {
+    return (
+      <div style={{ ...style, width: "calc(100% - 8px)", margin: "0 -16px" }}>
+        <Loaders.SelectorRowLoader
+          isMultiSelect={false}
+          isContainer={true}
+          isUser={true}
+        />
+      </div>
+    );
+  }
 
   return (
     <div key={user.id} style={{ ...style, width: "calc(100% - 8px)" }}>
@@ -96,20 +87,33 @@ const MembersList = (props) => {
     itemCount,
     onRepeatInvitation,
     loadNextPage,
-    isPublicRoomType,
-    withBanner,
   } = props;
 
-  const itemsCount = members.length;
+  const itemsCount = hasNextPage ? members.length + 1 : members.length;
 
   const canInviteUserInRoomAbility = security?.EditAccess;
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
   const [isMobileView, setIsMobileView] = useState(isMobile());
 
-  const onResize = () => {
+  const [offsetTop, setOffsetTop] = useState(0);
+
+  const onResize = throttle(() => {
     const isMobileView = isMobile();
     setIsMobileView(isMobileView);
+    setOffset();
+  }, 300);
+
+  const setOffset = () => {
+    const rect = document
+      .getElementById("infoPanelMembersList")
+      ?.getBoundingClientRect();
+
+    setOffsetTop(Math.ceil(rect?.top) + 2 + "px");
   };
+
+  useEffect(() => {
+    setOffset();
+  }, [members]);
 
   useEffect(() => {
     window.addEventListener("resize", onResize);
@@ -138,10 +142,7 @@ const MembersList = (props) => {
   );
 
   return (
-    <StyledMembersList
-      withBanner={withBanner}
-      isPublicRoomType={isPublicRoomType}
-    >
+    <StyledMembersList id="infoPanelMembersList" offsetTop={offsetTop}>
       <AutoSizer>
         {({ height, width }) => (
           <InfiniteLoader
