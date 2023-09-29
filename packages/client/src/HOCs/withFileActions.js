@@ -88,6 +88,9 @@ export default function withFileActions(WrappedFileItem) {
         e.target.classList.contains("item-file-name") ||
         e.target.classList.contains("row-content-link");
 
+      if ((isRoomsFolder || isArchiveFolder) && isFileName && !isSelected)
+        setBufferSelection(item);
+
       if (
         isPrivacy ||
         isTrashFolder ||
