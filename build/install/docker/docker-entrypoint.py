@@ -35,7 +35,7 @@ OAUTH_REDIRECT_URL = os.environ["OAUTH_REDIRECT_URL"] if environ.get("OAUTH_REDI
 APP_STORAGE_ROOT = os.environ["APP_STORAGE_ROOT"] if environ.get("APP_STORAGE_ROOT") else BASE_DIR + "/data/"
 APP_KNOWN_PROXIES = os.environ["APP_KNOWN_PROXIES"]
 APP_KNOWN_NETWORKS = os.environ["APP_KNOWN_NETWORKS"]
-LOG_LEVEL = os.environ["LOG_LEVEL"] if environ.get("LOG_LEVEL") else None
+LOG_LEVEL = os.environ["LOG_LEVEL"].lower() if environ.get("LOG_LEVEL") else None
 DEBUG_INFO = os.environ["DEBUG_INFO"] if environ.get("DEBUG_INFO") else "false"
 SAMESITE = os.environ["SAMESITE"] if environ.get("SAMESITE") else "None"
 
