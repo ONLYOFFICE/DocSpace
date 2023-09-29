@@ -92,7 +92,7 @@ public class TextileStyler : IPatternStyler
 
     private static string GetTemplate(NoticeMessage message)
     {
-        var template = NotifyTemplateResource.HtmlMasterV2;
+        var template = NotifyTemplateResource.HtmlMaster;
 
         var templateTag = message.GetArgument("MasterTemplate");
         if (templateTag != null)
@@ -293,7 +293,7 @@ public class TextileStyler : IPatternStyler
 
         var rootPath = message.GetArgument("__VirtualRootPath").Value;
 
-        return string.Format(NotifyTemplateResource.TextForFooterUnsubsribeDocSpaceV2, rootPath, unsubscribeLink);
+        return string.Format(NotifyTemplateResource.TextForFooterUnsubsribeDocSpace, rootPath, unsubscribeLink);
     }
 
     private string GetPortalUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
