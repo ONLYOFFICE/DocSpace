@@ -61,6 +61,22 @@ const DeveloperToolsWrapper = (props) => {
     </Box>
   );
 
+  const pluginLabel = (
+    <Box displayProp="flex" style={{ gap: "8px" }}>
+      {t("WebPlugins:Plugins")}
+      <Box>
+        <Badge
+          label={t("Settings:BetaLabel")}
+          backgroundColor="#7763F0"
+          fontSize="9px"
+          borderRadius="50px"
+          noHover={true}
+          isHovered={false}
+        />
+      </Box>
+    </Box>
+  );
+
   const data = [
     {
       id: "api",
@@ -82,7 +98,7 @@ const DeveloperToolsWrapper = (props) => {
   if (enablePlugins) {
     data.push({
       id: "plugins",
-      name: t("WebPlugins:Plugins"),
+      name: pluginLabel,
       content: <PluginPage />,
     });
   }
