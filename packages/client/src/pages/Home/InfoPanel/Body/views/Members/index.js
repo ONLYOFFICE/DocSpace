@@ -8,7 +8,7 @@ import {
   RoomsType,
   ShareAccessRights,
 } from "@docspace/common/constants";
-
+import Loaders from "@docspace/common/components/Loaders";
 import MembersHelper from "../../helpers/MembersHelper";
 import PublicRoomBlock from "./sub-components/PublicRoomBlock";
 import MembersList from "./MembersList";
@@ -38,10 +38,11 @@ const Members = ({
   setExternalLinks,
   membersFilter,
   externalLinks,
+  members,
+  setMembersList,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const membersHelper = new MembersHelper({ t });
-
-  const [members, setMembers] = useState(null);
 
   const security = selectionParentRoom ? selectionParentRoom.security : {};
 
@@ -53,7 +54,12 @@ const Members = ({
       requests.push(getRoomLinks(roomId));
     }
 
+    let timerId;
+    if (clearFilter) timerId = setTimeout(() => setIsLoading(true), 300);
+
     const [data, links] = await Promise.all(requests);
+    clearFilter && setIsLoading(false);
+    clearTimeout(timerId);
 
     links && setExternalLinks(links);
 
@@ -134,8 +140,7 @@ const Members = ({
     if (!selection.isRoom) return;
 
     const fetchedMembers = await fetchMembers(selection.id);
-
-    setMembers(fetchedMembers);
+    setMembersList(fetchedMembers);
 
     setSelectionParentRoom({
       ...selection,
@@ -149,6 +154,10 @@ const Members = ({
     updateSelectionParentRoomActionSelection();
   }, [selection, updateSelectionParentRoomActionSelection]);
 
+  useEffect(() => {
+    setMembersList(null);
+  }, [selection]);
+
   const updateMembersAction = useCallback(async () => {
     if (!updateRoomMembers) return;
 
@@ -159,7 +168,7 @@ const Members = ({
       members: fetchedMembers,
     });
 
-    setMembers(fetchedMembers);
+    setMembersList(fetchedMembers);
   }, [selectionParentRoom, selection?.id, updateRoomMembers]);
 
   useEffect(() => {
@@ -179,12 +188,6 @@ const Members = ({
       .catch((err) => toastr.error(err));
   };
 
-  if (!selectionParentRoom || !members) return null;
-
-  const [currentMember] = members.administrators.filter(
-    (member) => member.id === selfId
-  );
-
   const loadNextPage = async () => {
     const roomId = selectionParentRoom.id;
     const fetchedMembers = await fetchMembers(roomId, false);
@@ -196,8 +199,15 @@ const Members = ({
       expected: [...members.expected, ...expected],
     };
 
-    setMembers(newMembers);
+    setMembersList(newMembers);
   };
+
+  if (isLoading) return <Loaders.InfoPanelViewLoader view="members" />;
+  else if (!members) return <></>;
+
+  const [currentMember] = members.administrators.filter(
+    (member) => member.id === selfId
+  );
 
   const { administrators, users, expected } = members;
   const membersList = [...administrators, ...users, ...expected];
@@ -224,11 +234,11 @@ const Members = ({
         changeUserType={changeUserType}
         setIsScrollLocked={setIsScrollLocked}
         hasNextPage={membersList.length - headersCount < membersFilter.total}
-        itemCount={membersFilter.total}
+        itemCount={membersFilter.total + headersCount}
         onRepeatInvitation={onRepeatInvitation}
         isPublicRoomType={isPublicRoomType}
         withBanner={isPublicRoomType && externalLinks.length > 0}
-        setMembers={setMembers}
+        setMembers={setMembersList}
       />
     </>
   );
@@ -238,7 +248,6 @@ export default inject(
   ({ auth, filesStore, peopleStore, selectedFolderStore, publicRoomStore }) => {
     const {
       selectionParentRoom,
-      selection,
       setSelectionParentRoom,
       setView,
       roomsView,
@@ -247,6 +256,8 @@ export default inject(
       setUpdateRoomMembers,
 
       setIsScrollLocked,
+      membersList,
+      setMembersList,
     } = auth.infoPanelStore;
     const {
       getRoomMembers,
@@ -289,6 +300,8 @@ export default inject(
       setExternalLinks,
       membersFilter,
       externalLinks: roomLinks,
+      members: membersList,
+      setMembersList,
     };
   }
 )(

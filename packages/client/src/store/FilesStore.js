@@ -2437,7 +2437,7 @@ class FilesStore {
   };
 
   getRoomMembers = (id, clearFilter = true) => {
-    let newFilter = this.membersFilter;
+    let newFilter = clone(this.membersFilter);
 
     if (clearFilter) {
       newFilter = this.getDefaultMembersFilter();
@@ -2453,7 +2453,6 @@ class FilesStore {
     };
 
     return api.rooms.getRoomMembers(id, membersFilters).then((res) => {
-      const newFilter = clone(this.membersFilter);
       newFilter.total = res.total;
       this.setMembersFilter(newFilter);
 
