@@ -256,7 +256,8 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Mute,
                     FilesSecurityActions.EditAccess,
                     FilesSecurityActions.Duplicate,
-                    FilesSecurityActions.Download
+                    FilesSecurityActions.Download,
+                    FilesSecurityActions.CopySharedLink
                 }
             }
     };
@@ -508,6 +509,7 @@ public class FileSecurity : IFileSecurity
     {
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Convert);
     }
+    
     public async Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
     {
         return await WhoCanAsync(entry, FilesSecurityActions.Read);
@@ -1246,6 +1248,12 @@ public class FileSecurity : IFileSecurity
                     return true;
                 }
                 break;
+            case FilesSecurityActions.CopySharedLink:
+                if (e.Access == FileShare.RoomAdmin || (e.Access != FileShare.Restrict && e.Shared))
+                {
+                    return true;
+                }
+                break;
         }
 
         if (e.Access != FileShare.Restrict &&
@@ -1953,6 +1961,7 @@ public class FileSecurity : IFileSecurity
         Duplicate,
         SubmitToFormGallery,
         Download,
-        Convert
+        Convert,
+        CopySharedLink
     }
 }
