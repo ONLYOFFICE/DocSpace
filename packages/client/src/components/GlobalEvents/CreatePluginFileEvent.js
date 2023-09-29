@@ -36,8 +36,6 @@ const CreatePluginFile = ({
   updateEventListenerItems,
   updateFileItems,
 }) => {
-  console.log(pluginName);
-
   const { t } = useTranslation(["Translations", "Common", "Files"]);
 
   const onSaveAction = async (e, value) => {
