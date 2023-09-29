@@ -2558,8 +2558,6 @@ public class FileStorageService //: IFileStorageService
 
         entry.NotFoundIfNull();
 
-        ErrorIf(!await _fileSecurity.CanEditAccessAsync(entry), FilesCommonResource.ErrorMassage_SecurityException);
-
         var link = await _fileSharing.GetPureSharesAsync(entry, ShareFilterType.PrimaryExternalLink, null, 0, 1)
             .FirstOrDefaultAsync();
 
