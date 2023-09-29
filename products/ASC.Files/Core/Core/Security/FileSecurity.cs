@@ -895,6 +895,11 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
+                if (action == FilesSecurityActions.CopySharedLink && folder.FolderType is not (FolderType.CustomRoom or FolderType.PublicRoom))
+                {
+                    return false;
+                }
+
                 if (action is FilesSecurityActions.Copy or FilesSecurityActions.Duplicate && isRoom)
                 {
                     return false;
