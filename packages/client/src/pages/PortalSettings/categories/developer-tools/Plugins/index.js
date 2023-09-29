@@ -66,9 +66,9 @@ export default inject(({ auth, pluginStore }) => {
     addPlugin,
   } = pluginStore;
 
-  const openSettingsDialog = (pluginId) => {
+  const openSettingsDialog = (pluginId, pluginName, pluginSystem) => {
     setSettingsPluginDialogVisible(true);
-    setCurrentSettingsDialogPlugin(pluginId);
+    setCurrentSettingsDialogPlugin({ pluginId, pluginName, pluginSystem });
   };
 
   return {

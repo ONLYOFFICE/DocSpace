@@ -16,11 +16,14 @@ const StyledContainer = styled.div`
 const Footer = ({
   t,
   id,
+  pluginName,
+  pluginSystem,
   saveButtonProps,
   modalRequestRunning,
   setModalRequestRunning,
   onCloseAction,
 }) => {
+  console.log("render");
   return (
     <StyledContainer>
       <PluginComponent
@@ -39,6 +42,8 @@ const Footer = ({
           },
         }}
         pluginId={id}
+        pluginName={pluginName}
+        pluginSystem={pluginSystem}
       />
       <Button
         scale={true}

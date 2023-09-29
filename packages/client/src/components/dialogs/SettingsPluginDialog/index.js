@@ -69,6 +69,8 @@ const SettingsPluginDialog = ({
       <ModalDialog.Body>
         <WrappedComponent
           pluginId={plugin.id}
+          pluginName={plugin.name}
+          pluginSystem={plugin.system}
           component={{
             component: PluginComponents.box,
             props: customSettingsProps,
@@ -83,6 +85,8 @@ const SettingsPluginDialog = ({
         <Footer
           t={t}
           id={plugin?.id}
+          pluginName={plugin.name}
+          pluginSystem={plugin.system}
           saveButtonProps={saveButtonProps}
           setModalRequestRunning={setModalRequestRunning}
           onCloseAction={onCloseAction}
@@ -102,7 +106,11 @@ export default inject(({ pluginStore }) => {
     setCurrentSettingsDialogPlugin,
   } = pluginStore;
 
-  const plugin = pluginList.find((p) => p.id === currentSettingsDialogPlugin);
+  const { pluginId, pluginSystem, pluginName } = currentSettingsDialogPlugin;
+
+  const plugin = pluginSystem
+    ? pluginList.find((p) => p.name === pluginName)
+    : pluginList.find((p) => p.id === pluginId);
 
   const pluginSettings = plugin?.getAdminPluginSettings();
 

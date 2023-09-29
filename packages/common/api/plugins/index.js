@@ -40,3 +40,25 @@ export const deletePlugin = async (id) => {
     url: `/settings/webplugins/${id}`,
   });
 };
+
+export const getSystemPlugin = async (name) => {
+  return request({
+    method: "GET",
+    url: `/settings/webplugins/system/${name}`,
+  });
+};
+
+export const activateSystemPlugin = async (name, enabled) => {
+  return request({
+    method: "PUT",
+    url: `/settings/webplugins/system/${name}`,
+    data: { enabled },
+  });
+};
+
+export const deleteSystemPlugin = async (name) => {
+  request({
+    method: "DELETE",
+    url: `/settings/webplugins/${name}`,
+  });
+};

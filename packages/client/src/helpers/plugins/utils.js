@@ -12,6 +12,9 @@ export const messageActions = (
   setElementProps,
 
   pluginId,
+  pluginName,
+  pluginSystem,
+
   setSettingsPluginDialogVisible,
   setCurrentSettingsDialogPlugin,
   updatePluginStatus,
@@ -44,7 +47,8 @@ export const messageActions = (
         break;
 
       case PluginActions.updateStatus:
-        updatePluginStatus && updatePluginStatus(pluginId);
+        updatePluginStatus &&
+          updatePluginStatus(pluginId, pluginName, pluginSystem);
 
         break;
 
@@ -71,11 +75,15 @@ export const messageActions = (
         break;
 
       case PluginActions.showSettingsModal:
-        if (pluginId) {
+        if (pluginId || (pluginName && pluginSystem)) {
           setSettingsPluginDialogVisible &&
             setSettingsPluginDialogVisible(true);
           setCurrentSettingsDialogPlugin &&
-            setCurrentSettingsDialogPlugin(pluginId);
+            setCurrentSettingsDialogPlugin({
+              pluginId,
+              pluginName,
+              pluginSystem,
+            });
         }
         break;
 
@@ -90,7 +98,13 @@ export const messageActions = (
 
       case PluginActions.showCreateDialogModal:
         if (message.createDialogProps) {
-          const payload = { ...message.createDialogProps, pluginId };
+          const payload = {
+            ...message.createDialogProps,
+            pluginId,
+            pluginId,
+            pluginName,
+            pluginSystem,
+          };
 
           const event = new Event(Events.CREATE_PLUGIN_FILE);
 
@@ -115,27 +129,32 @@ export const messageActions = (
         break;
 
       case PluginActions.updateContextMenuItems:
-        updateContextMenuItems && updateContextMenuItems(pluginId);
+        updateContextMenuItems &&
+          updateContextMenuItems(pluginId, pluginName, pluginSystem);
 
         break;
       case PluginActions.updateInfoPanelItems:
-        updateInfoPanelItems && updateInfoPanelItems(pluginId);
+        updateInfoPanelItems &&
+          updateInfoPanelItems(pluginId, pluginName, pluginSystem);
 
         break;
       case PluginActions.updateMainButtonItems:
-        updateMainButtonItems && updateMainButtonItems(pluginId);
+        updateMainButtonItems &&
+          updateMainButtonItems(pluginId, pluginName, pluginSystem);
 
         break;
       case PluginActions.updateProfileMenuItems:
-        updateProfileMenuItems && updateProfileMenuItems(pluginId);
+        updateProfileMenuItems &&
+          updateProfileMenuItems(pluginId, pluginName, pluginSystem);
 
         break;
       case PluginActions.updateEventListenerItems:
-        updateEventListenerItems && updateEventListenerItems(pluginId);
+        updateEventListenerItems &&
+          updateEventListenerItems(pluginId, pluginName, pluginSystem);
 
         break;
       case PluginActions.updateFileItems:
-        updateFileItems && updateFileItems(pluginId);
+        updateFileItems && updateFileItems(pluginId, pluginName, pluginSystem);
 
         break;
 

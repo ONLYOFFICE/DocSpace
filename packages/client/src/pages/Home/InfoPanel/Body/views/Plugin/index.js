@@ -4,10 +4,12 @@ import { inject, observer } from "mobx-react";
 import WrappedComponent from "SRC_DIR/helpers/plugins/WrappedComponent";
 import { PluginComponents } from "SRC_DIR/helpers/plugins/constants";
 
-const Plugin = ({ boxProps, pluginId }) => {
+const Plugin = ({ boxProps, pluginId, pluginName, pluginSystem }) => {
   return (
     <WrappedComponent
       pluginId={pluginId}
+      pluginName={pluginName}
+      pluginSystem={pluginSystem}
       component={{ component: PluginComponents.box, props: boxProps }}
     />
   );
@@ -25,5 +27,7 @@ export default inject(({ pluginStore }, { isRooms, fileView, roomsView }) => {
   return {
     boxProps: value.body,
     pluginId: value.pluginId,
+    pluginName: value.name,
+    pluginSystem: value.system,
   };
 })(observer(Plugin));

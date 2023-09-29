@@ -96,7 +96,7 @@ const Info = ({ t, plugin }) => {
           </>
         )}
 
-        {plugin.createBy && (
+        {!plugin.system && (
           <>
             <Text
               fontSize={"13px"}
@@ -118,7 +118,7 @@ const Info = ({ t, plugin }) => {
           </>
         )}
 
-        {uploadDate && (
+        {!plugin.system && uploadDate && (
           <>
             <Text
               fontSize={"13px"}

@@ -17,6 +17,9 @@ const PluginDialog = ({
   eventListeners,
 
   pluginId,
+  pluginName,
+  pluginSystem,
+
   setSettingsPluginDialogVisible,
   setCurrentSettingsDialogPlugin,
   updatePluginStatus,
@@ -51,6 +54,9 @@ const PluginDialog = ({
       null,
 
       pluginId,
+      pluginName,
+      pluginSystem,
+
       setSettingsPluginDialogVisible,
       setCurrentSettingsDialogPlugin,
       updatePluginStatus,
@@ -78,6 +84,9 @@ const PluginDialog = ({
             null,
 
             pluginId,
+            pluginName,
+            pluginSystem,
+
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
@@ -128,6 +137,8 @@ const PluginDialog = ({
       <ModalDialog.Body>
         <WrappedComponent
           pluginId={pluginId}
+          pluginName={pluginName}
+          pluginSystem={pluginSystem}
           component={{
             component: PluginComponents.box,
             props: dialogBodyProps,
@@ -139,6 +150,8 @@ const PluginDialog = ({
         <ModalDialog.Footer>
           <WrappedComponent
             pluginId={pluginId}
+            pluginName={pluginName}
+            pluginSystem={pluginSystem}
             component={{
               component: PluginComponents.box,
               props: dialogFooterProps,

@@ -22,6 +22,8 @@ const PropsContext = React.createContext({});
 const ComponentPure = ({
   component,
   pluginId,
+  pluginName,
+  pluginSystem,
   setSettingsPluginDialogVisible,
   setCurrentSettingsDialogPlugin,
   updatePluginStatus,
@@ -70,6 +72,8 @@ const ComponentPure = ({
               key={`box-${index}-${item.component}`}
               component={item}
               pluginId={pluginId}
+              pluginName={pluginName}
+              pluginSystem={pluginSystem}
             />
           )
         );
@@ -94,6 +98,9 @@ const ComponentPure = ({
             setElementProps,
 
             pluginId,
+            pluginName,
+            pluginSystem,
+
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
@@ -122,6 +129,9 @@ const ComponentPure = ({
             setElementProps,
 
             pluginId,
+            pluginName,
+            pluginSystem,
+
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
@@ -150,6 +160,9 @@ const ComponentPure = ({
             setElementProps,
 
             pluginId,
+            pluginName,
+            pluginSystem,
+
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
@@ -178,6 +191,9 @@ const ComponentPure = ({
             setElementProps,
 
             pluginId,
+            pluginName,
+            pluginSystem,
+
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
@@ -225,6 +241,9 @@ const ComponentPure = ({
             setElementProps,
 
             pluginId,
+            pluginName,
+            pluginSystem,
+
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
@@ -283,6 +302,9 @@ const ComponentPure = ({
             setElementProps,
 
             pluginId,
+            pluginName,
+            pluginSystem,
+
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
@@ -356,6 +378,8 @@ export const PluginComponent = inject(({ pluginStore }) => {
 
 const WrappedComponent = ({
   pluginId,
+  pluginName,
+  pluginSystem,
 
   component,
 
@@ -389,7 +413,12 @@ const WrappedComponent = ({
         setModalRequestRunning,
       }}
     >
-      <PluginComponent component={component} pluginId={pluginId} />
+      <PluginComponent
+        component={component}
+        pluginId={pluginId}
+        pluginName={pluginName}
+        pluginSystem={pluginSystem}
+      />
     </PropsContext.Provider>
   );
 };

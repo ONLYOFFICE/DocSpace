@@ -93,6 +93,8 @@ const PluginItem = ({
   image,
   url,
 
+  system,
+
   ...rest
 }) => {
   const imgSrc = image ? getPluginUrl(url, `/assets/${image}`) : null;
@@ -100,11 +102,11 @@ const PluginItem = ({
   const withSettings = scopes.includes(PluginScopes.Settings);
 
   const onChangeStatus = () => {
-    changePluginStatus && changePluginStatus(id, !enabled);
+    changePluginStatus && changePluginStatus(id, name, !enabled, system);
   };
 
   const onOpenSettingsDialog = () => {
-    openSettingsDialog && openSettingsDialog(id);
+    openSettingsDialog && openSettingsDialog(id, name, system);
   };
 
   return (

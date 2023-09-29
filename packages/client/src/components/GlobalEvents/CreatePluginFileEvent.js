@@ -18,7 +18,11 @@ const CreatePluginFile = ({
   selectedOption,
   onSelect,
   extension,
+
   pluginId,
+  pluginName,
+  pluginSystem,
+
   updatePluginStatus,
   setCurrentSettingsDialogPlugin,
   setSettingsPluginDialogVisible,
@@ -32,6 +36,8 @@ const CreatePluginFile = ({
   updateEventListenerItems,
   updateFileItems,
 }) => {
+  console.log(pluginName);
+
   const { t } = useTranslation(["Translations", "Common", "Files"]);
 
   const onSaveAction = async (e, value) => {
@@ -44,6 +50,9 @@ const CreatePluginFile = ({
       null,
 
       pluginId,
+      pluginName,
+      pluginSystem,
+
       setSettingsPluginDialogVisible,
       setCurrentSettingsDialogPlugin,
       updatePluginStatus,
@@ -75,6 +84,9 @@ const CreatePluginFile = ({
       null,
 
       pluginId,
+      pluginName,
+      pluginSystem,
+
       setSettingsPluginDialogVisible,
       setCurrentSettingsDialogPlugin,
       updatePluginStatus,

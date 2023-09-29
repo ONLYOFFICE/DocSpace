@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-import Text from "@docspace/components/text";
-
 const StyledHeader = styled.div`
   display: flex;
   align-items: center;
