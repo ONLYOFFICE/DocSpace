@@ -47,7 +47,7 @@ override_dh_auto_build:
 	find ${SRC_PATH}/config/ -type f -regex '.*\.\(test\|dev\).*' -delete
 	json -I -f ${SRC_PATH}/config/appsettings.json -e "this.core.notify.postman=\"services\"" -e "this.Logging.LogLevel.Default=\"Warning\"" -e "this['debug-info'].enabled=\"false\"" -e "this.web.samesite=\"None\""
 	json -I -f ${SRC_PATH}/config/apisystem.json -e "this.core.notify.postman=\"services\""
-	sed 's_\(minlevel=\)".*"_\1"Warn"_g' -i ${SRC_PATH}/config/nlog.config
+	sed 's_\(minlevel=\)"[^"]*"_\1"Warn"_g' -i ${SRC_PATH}/config/nlog.config
 
 	sed 's_etc/nginx_etc/openresty_g' -i ${SRC_PATH}/config/nginx/*.conf
 	sed 's/teamlab.info/onlyoffice.com/g' -i ${SRC_PATH}/config/autofac.consumers.json
