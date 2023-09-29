@@ -7,7 +7,7 @@ BUILD_PATH=${BUILD_PATH:-${SRC_PATH}/publish}
 BUILD_DOTNET_CORE_ARGS=${BUILD_DOTNET_CORE_ARGS:-"false"}
 PROPERTY_BUILD=${PROPERTY_BUILD:-"all"}
 
-BACKEND_NODEJS_SERVICES=${BACKEND_NODEJS_SERVICES:-"ASC.Socket.IO, ASC.SsoAuth"}
+BACKEND_NODEJS_SERVICES=${BACKEND_NODEJS_SERVICES:-"ASC.Socket.IO, ASC.SsoAuth, ASC.TelegramReports"}
 BACKEND_DOTNETCORE_SERVICES=${BACKEND_DOTNETCORE_SERVICES:-"ASC.Files, ASC.People, ASC.Data.Backup, ASC.Files.Service, ASC.Notify, \
 ASC.Studio.Notify, ASC.Web.Api, ASC.Web.Studio, ASC.Data.Backup.BackgroundTasks, ASC.ClearEvents, ASC.ApiSystem, ASC.Web.HealthChecks.UI"}
 SELF_CONTAINED=${SELF_CONTAINED:-"false"}
@@ -179,6 +179,12 @@ function backend-nodejs-publish {
     yarn install --cwd ${SRC_PATH}/common/${ARRAY_NAME_SERVICES[$i]} --frozen-lockfile && \
     mkdir -p ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/ && \
     cp -rfv ${SRC_PATH}/common/${ARRAY_NAME_SERVICES[$i]}/* ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
+
+    if [[ ${ARRAY_NAME_SERVICES[$i]} == "ASC.TelegramReports" ]]
+    then
+      # build before run
+      yarn --cwd ${BUILD_PATH}/services/ASC.TelegramReports/service/ build
+    fi
     if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
     then
        echo "== ADD ${DOCKER_ENTRYPOINT} to ${ARRAY_NAME_SERVICES[$i]} =="

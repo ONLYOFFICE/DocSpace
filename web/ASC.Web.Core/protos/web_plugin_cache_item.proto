@@ -1,0 +1,8 @@
+﻿
+syntax = "proto3";
+
+package ASC.Web.Core;
+
+message WebPluginCacheItem {
+    string key = 1;
+}

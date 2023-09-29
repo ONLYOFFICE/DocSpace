@@ -133,8 +133,8 @@ const ClientContent = (props) => {
 
   return (
     <>
-      <GlobalEvents />
       <FilesPanels />
+      <GlobalEvents />
       {!isFormGallery ? (
         isFrame ? (
           showMenu && <ClientArticle />
@@ -154,7 +154,7 @@ const ClientContent = (props) => {
 };
 
 const Client = inject(
-  ({ auth, clientLoadingStore, filesStore, peopleStore }) => {
+  ({ auth, clientLoadingStore, filesStore, peopleStore, pluginStore }) => {
     const {
       frameConfig,
       isFrame,
@@ -162,6 +162,7 @@ const Client = inject(
       encryptionKeys,
       setEncryptionKeys,
       isEncryptionSupport,
+      enablePlugins,
       isDesktopClientInit,
       setIsDesktopClientInit,
     } = auth.settingsStore;
@@ -170,13 +171,12 @@ const Client = inject(
 
     const { isVisitor } = auth.userStore.user;
 
-    const {
-      isLoading,
-      setIsSectionFilterLoading,
-      setIsSectionHeaderLoading,
-    } = clientLoadingStore;
+    const { isLoading, setIsSectionFilterLoading, setIsSectionHeaderLoading } =
+      clientLoadingStore;
 
     const withMainButton = !isVisitor;
+
+    const { isInit: isInitPlugins, initPlugins } = pluginStore;
 
     return {
       isDesktop: isDesktopClient,
@@ -199,6 +199,8 @@ const Client = inject(
         const actions = [];
         actions.push(filesStore.initFiles());
         actions.push(peopleStore.init());
+
+        if (enablePlugins && !isInitPlugins) actions.push(initPlugins());
         await Promise.all(actions);
       },
     };

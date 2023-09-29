@@ -13,7 +13,7 @@ import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
 
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
-import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
+
 import { ZendeskAPI } from "@docspace/common/components/Zendesk";
 import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
@@ -35,6 +35,7 @@ class ProfileActionsStore {
   peopleStore = null;
   treeFoldersStore = null;
   selectedFolderStore = null;
+  pluginStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
   isShowLiveChat = false;
@@ -45,13 +46,15 @@ class ProfileActionsStore {
     filesStore,
     peopleStore,
     treeFoldersStore,
-    selectedFolderStore
+    selectedFolderStore,
+    pluginStore
   ) {
     this.authStore = authStore;
     this.filesStore = filesStore;
     this.peopleStore = peopleStore;
     this.treeFoldersStore = treeFoldersStore;
     this.selectedFolderStore = selectedFolderStore;
+    this.pluginStore = pluginStore;
 
     this.isShowLiveChat = this.getStateLiveChat();
 
@@ -208,7 +211,7 @@ class ProfileActionsStore {
       ? {
           key: "user-menu-settings",
           icon: CatalogSettingsReactSvgUrl,
-          label: t("Common:SettingsDocSpace"),
+          label: t("Common:Settings"),
           onClick: () => this.onSettingsClick(settingsUrl),
         }
       : null;
@@ -287,7 +290,7 @@ class ProfileActionsStore {
       //   onClick: this.onVideoGuidesClick,
       // },
       hotkeys,
-      {
+      !isMobile && {
         isSeparator: true,
         key: "separator2",
       },
@@ -311,19 +314,13 @@ class ProfileActionsStore {
       !window.navigator.userAgent.includes("ZoomWebKit") &&
       !window.navigator.userAgent.includes("ZoomApps")
     ) {
-      actions.push(
-        {
-          isSeparator: true,
-          key: "separator3",
-        },
-        {
-          key: "user-menu-logout",
-          icon: LogoutReactSvgUrl,
-          label: t("Common:LogoutButton"),
-          onClick: this.onLogoutClick,
-          isButton: true,
-        }
-      );
+      actions.push({
+        key: "user-menu-logout",
+        icon: LogoutReactSvgUrl,
+        label: t("Common:LogoutButton"),
+        onClick: this.onLogoutClick,
+        isButton: true,
+      });
     }
 
     if (debugInfo) {
@@ -335,17 +332,13 @@ class ProfileActionsStore {
       });
     }
 
-    if (enablePlugins) {
-      const pluginActions = getProfileMenuItems();
-
-      if (pluginActions) {
-        pluginActions.forEach((option) => {
-          actions.splice(option.value.position, 0, {
-            key: option.key,
-            ...option.value,
-          });
+    if (this.pluginStore.profileMenuItemsList && enablePlugins) {
+      this.pluginStore.profileMenuItemsList.forEach((option) => {
+        actions.splice(option.value.position, 0, {
+          key: option.key,
+          ...option.value,
         });
-      }
+      });
     }
 
     return this.checkEnabledActions(actions);

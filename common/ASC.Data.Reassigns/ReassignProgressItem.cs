@@ -47,8 +47,6 @@ public class ReassignProgressItem : DistributedTaskProgress
     private bool _notify;
     private bool _deleteProfile;
 
-    private CancellationToken _cancellationToken;
-
     public ReassignProgressItem(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
@@ -68,13 +66,6 @@ public class ReassignProgressItem : DistributedTaskProgress
         Exception = null;
         Percentage = 0;
         IsCompleted = false;
-    }
-
-    public override async Task RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
-    {
-        _cancellationToken = cancellationToken;
-
-        await base.RunJob(distributedTask, cancellationToken);
     }
 
     protected override async Task DoJob()
@@ -167,7 +158,7 @@ public class ReassignProgressItem : DistributedTaskProgress
             PublishChanges();
         }
 
-        _cancellationToken.ThrowIfCancellationRequested();
+        CancellationToken.ThrowIfCancellationRequested();
     }
 
     private async Task SendSuccessNotifyAsync(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
-import { useNavigate } from "react-router-dom";
+
 import Error520 from "client/Error520";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
@@ -28,42 +28,42 @@ const StyledContainer = styled.div`
 const SectionBodyContent = ({ isErrorSettings, user }) => {
   const { t } = useTranslation(["FilesSettings", "Common"]);
 
-  const navigate = useNavigate();
+  // const commonSettings = {
+  //   id: "personal",
+  //   name: t("Common:SettingsPersonal"),
+  //   content: <PersonalSettings t={t} />,
+  // };
 
-  const setting = window.location.pathname.endsWith("/settings/personal")
-    ? "personal"
-    : "general";
+  // const adminSettings = {
+  //   id: "general",
+  //   name: t("Common:SettingsGeneral"),
+  //   content: <GeneralSettings t={t} />,
+  // };
 
-  const commonSettings = {
-    id: "personal",
-    name: t("Common:SettingsPersonal"),
-    content: <PersonalSettings t={t} />,
-  };
+  // const data = [commonSettings];
 
-  const adminSettings = {
-    id: "general",
-    name: t("Common:SettingsGeneral"),
-    content: <GeneralSettings t={t} />,
-  };
+  // const showAdminSettings = user.isAdmin || user.isOwner;
 
-  const data = [adminSettings, commonSettings];
+  // if (showAdminSettings) {
+  //   data.unshift(adminSettings);
+  // }
 
-  const onSelect = useCallback(
-    (e) => {
-      const { id } = e;
+  // const onSelect = useCallback(
+  //   (e) => {
+  //     const { id } = e;
 
-      if (id === setting) return;
+  //     if (id === setting) return;
 
-      navigate(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          `/settings/${id}`
-        )
-      );
-    },
-    [setting, navigate]
-  );
+  //     navigate(
+  //       combineUrl(
+  //         window.DocSpaceConfig?.proxy?.url,
+  //         config.homepage,
+  //         `/settings/${id}`
+  //       )
+  //     );
+  //   },
+  //   [setting, navigate]
+  // );
 
   //const showAdminSettings = user.isAdmin || user.isOwner;
 
@@ -71,19 +71,11 @@ const SectionBodyContent = ({ isErrorSettings, user }) => {
     <Error520 />
   ) : (
     <StyledContainer>
-      {/* {!showAdminSettings ? ( */}
       <PersonalSettings
         t={t}
         showTitle={true}
         showAdminSettings={false} //showAdminSettings
       />
-      {/* ) : (
-         <Submenu
-           data={data}
-           startSelect={setting === "common" ? commonSettings : adminSettings}
-           onSelect={onSelect}
-         />
-       )} */}
     </StyledContainer>
   );
 };

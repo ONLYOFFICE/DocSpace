@@ -416,6 +416,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Protobuf Include="protos\web_plugin_cache_item.proto" />
     <Protobuf Include="protos\sms_key_cache_key.proto" />
     <Protobuf Include="protos\tenant_logo_cache_item.proto" />
     <Protobuf Include="protos\mail_service_helper_cache.proto" />

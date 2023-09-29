@@ -15,8 +15,7 @@ const useOperations = ({
   itemsSelectionTitle,
   secondaryProgressDataStoreIcon,
   itemsSelectionLength,
-  isAccountsPage,
-  isSettingsPage,
+
   setItemsSelectionTitle,
 }) => {
   const prevProps = React.useRef({

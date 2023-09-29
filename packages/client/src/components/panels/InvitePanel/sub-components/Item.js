@@ -149,6 +149,7 @@ const Item = ({
           filteredAccesses={filteredAccesses}
           setIsOpenItemAccess={setIsOpenItemAccess}
           isMobileView={isMobileView}
+          noBorder
         />
       )}
     </>

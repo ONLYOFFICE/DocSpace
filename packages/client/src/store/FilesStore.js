@@ -26,10 +26,12 @@ import {
   getCategoryTypeByFolderType,
 } from "SRC_DIR/helpers/utils";
 import { isDesktop } from "@docspace/components/utils/device";
-import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
-import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
+
+import { PluginFileType } from "SRC_DIR/helpers/plugins/constants";
+
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import debounce from "lodash.debounce";
+import clone from "lodash/clone";
 import Queue from "queue-promise";
 
 const { FilesFilter, RoomsFilter } = api;
@@ -57,6 +59,8 @@ class FilesStore {
   accessRightsStore;
   publicRoomStore;
 
+  pluginStore;
+
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
 
@@ -80,8 +84,9 @@ class FilesStore {
   bufferSelection = null;
   selected = "close";
 
-  filter = FilesFilter.getDefault(); //TODO: FILTER
+  filter = FilesFilter.getDefault();
   roomsFilter = RoomsFilter.getDefault();
+  membersFilter = { page: 0, pageCount: 100, total: 0 };
 
   categoryType = getCategoryType(window.location);
 
@@ -146,6 +151,7 @@ class FilesStore {
     thirdPartyStore,
     accessRightsStore,
     clientLoadingStore,
+    pluginStore,
     publicRoomStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
@@ -160,6 +166,7 @@ class FilesStore {
     this.thirdPartyStore = thirdPartyStore;
     this.accessRightsStore = accessRightsStore;
     this.clientLoadingStore = clientLoadingStore;
+    this.pluginStore = pluginStore;
     this.publicRoomStore = publicRoomStore;
 
     this.roomsController = new AbortController();
@@ -1807,7 +1814,7 @@ class FilesStore {
     const { isDesktopClient } = this.authStore.settingsStore;
 
     const pluginAllKeys =
-      enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
+      enablePlugins && this.pluginStore.getContextMenuKeysByType();
 
     const canRenameItem = item.security?.Rename;
 
@@ -2022,17 +2029,55 @@ class FilesStore {
       //   ]);
       // }
 
-      if (!isRecycleBinFolder)
+      if (!isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, ["restore"]);
 
-      if (enablePlugins && !isRecycleBinFolder) {
-        const pluginFilesKeys = getContextMenuKeysByType(
-          PluginContextMenuItemType.Files
-        );
+        if (enablePlugins) {
+          if (
+            !item.viewAccessability.MediaView &&
+            !item.viewAccessability.ImageView
+          ) {
+            const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+              PluginFileType.Files,
+              item.fileExst
+            );
 
-        pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));
-        pluginFilesKeys &&
-          pluginFilesKeys.forEach((key) => fileOptions.push(key));
+            pluginAllKeys &&
+              pluginAllKeys.forEach((key) => fileOptions.push(key));
+            pluginFilesKeys &&
+              pluginFilesKeys.forEach((key) => fileOptions.push(key));
+          }
+
+          if (
+            !item.viewAccessability.MediaView &&
+            item.viewAccessability.ImageView
+          ) {
+            const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+              PluginFileType.Image,
+              item.fileExst
+            );
+
+            pluginAllKeys &&
+              pluginAllKeys.forEach((key) => fileOptions.push(key));
+            pluginFilesKeys &&
+              pluginFilesKeys.forEach((key) => fileOptions.push(key));
+          }
+
+          if (
+            item.viewAccessability.MediaView &&
+            !item.viewAccessability.ImageView
+          ) {
+            const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+              PluginFileType.Video,
+              item.fileExst
+            );
+
+            pluginAllKeys &&
+              pluginAllKeys.forEach((key) => fileOptions.push(key));
+            pluginFilesKeys &&
+              pluginFilesKeys.forEach((key) => fileOptions.push(key));
+          }
+        }
       }
 
       if (!this.canShareOwnerChange(item)) {
@@ -2180,8 +2225,8 @@ class FilesStore {
         roomOptions = this.removeOptions(roomOptions, ["unarchive-room"]);
 
         if (enablePlugins) {
-          const pluginRoomsKeys = getContextMenuKeysByType(
-            PluginContextMenuItemType.Rooms
+          const pluginRoomsKeys = this.pluginStore.getContextMenuKeysByType(
+            PluginFileType.Rooms
           );
 
           pluginAllKeys &&
@@ -2278,8 +2323,8 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["restore"]);
 
         if (enablePlugins) {
-          const pluginFoldersKeys = getContextMenuKeysByType(
-            PluginContextMenuItemType.Folders
+          const pluginFoldersKeys = this.pluginStore.getContextMenuKeysByType(
+            PluginFileType.Folders
           );
 
           pluginAllKeys &&
@@ -2428,9 +2473,47 @@ class FilesStore {
     return api.rooms.removeLogoFromRoom(id);
   }
 
-  getRoomMembers(id) {
-    return api.rooms.getRoomMembers(id);
-  }
+  getDefaultMembersFilter = () => {
+    return { page: 0, pageCount: 100, total: 0 };
+  };
+
+  setRoomMembersFilter = (roomMembersFilter) => {
+    this.roomMembersFilter = roomMembersFilter;
+  };
+
+  getRoomMembers = (id, clearFilter = true) => {
+    let newFilter = clone(this.membersFilter);
+
+    if (clearFilter) {
+      newFilter = this.getDefaultMembersFilter();
+    } else {
+      newFilter.page += 1;
+    }
+    this.setRoomMembersFilter(newFilter);
+
+    const membersFilters = {
+      startIndex: newFilter.page * newFilter.pageCount,
+      count: newFilter.pageCount,
+      filterType: 0, // 0 (Members)
+    };
+
+    return api.rooms.getRoomMembers(id, membersFilters).then((res) => {
+      newFilter.total = res.total;
+      this.setMembersFilter(newFilter);
+
+      return res.items;
+    });
+  };
+
+  setMembersFilter = (filter) => {
+    this.membersFilter = filter;
+  };
+
+  getRoomLinks = (id) => {
+    return api.rooms
+      .getRoomMembers(id, { filterType: 2 }) // 2 (External link)
+      .then((res) => res.items);
+  };
 
   updateRoomMemberRole(id, data) {
     return api.rooms.updateRoomMemberRole(id, data);
@@ -2815,6 +2898,9 @@ class FilesStore {
     const { getIcon } = this.filesSettingsStore;
     //return [...this.folders, ...this.files];
 
+    const { fileItemsList } = this.pluginStore;
+    const { enablePlugins } = this.authStore.settingsStore;
+
     const newFolders = [...this.folders];
 
     newFolders.sort((a, b) => {
@@ -2952,6 +3038,15 @@ class FilesStore {
           )
         : undefined;
 
+      let fileTypeName = null;
+
+      if (enablePlugins && fileItemsList) {
+        fileItemsList.forEach(({ key, value }) => {
+          if (value.extension === fileExst && value.fileTypeName)
+            fileTypeName = value.fileTypeName;
+        });
+      }
+
       return {
         access,
         daysRemaining: autoDelete && getDaysRemaining(autoDelete),
@@ -3015,6 +3110,7 @@ class FilesStore {
         providerType,
         security,
         viewAccessability,
+        fileTypeName,
         inRoom,
       };
     });
@@ -3625,16 +3721,16 @@ class FilesStore {
     return Math.floor(sectionWidth / minTileWidth);
   };
 
-  setInvitationLinks = async (roomId, linkId, title, access) => {
+  setInvitationLinks = async (roomId, title, access, linkId) => {
     return await api.rooms.setInvitationLinks(roomId, linkId, title, access);
   };
 
-  resendEmailInvitations = async (id, usersIds) => {
-    return await api.rooms.resendEmailInvitations(id, usersIds);
+  resendEmailInvitations = async (id, resendAll) => {
+    return await api.rooms.resendEmailInvitations(id, resendAll);
   };
 
   getRoomSecurityInfo = async (id) => {
-    return await api.rooms.getRoomSecurityInfo(id);
+    return await api.rooms.getRoomSecurityInfo(id).then((res) => res.items);
   };
 
   setRoomSecurity = async (id, data) => {

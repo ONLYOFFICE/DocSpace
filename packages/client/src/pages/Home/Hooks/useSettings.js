@@ -2,7 +2,12 @@ import React from "react";
 
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 
-const useSettings = ({ t, isSettingsPage, setIsLoading }) => {
+const useSettings = ({
+  t,
+  isSettingsPage,
+
+  setIsLoading,
+}) => {
   React.useEffect(() => {
     if (!isSettingsPage) return;
 

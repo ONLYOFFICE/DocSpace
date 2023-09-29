@@ -17,7 +17,7 @@ import {
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
-import { initPluginStore } from "../../client/src/helpers/plugins";
+
 import { wrongPortalNameUrl } from "@docspace/common/constants";
 import { ARTICLE_ALERTS } from "@docspace/client/src/helpers/constants";
 import toastr from "@docspace/components/toast/toastr";
@@ -461,13 +461,11 @@ class SettingsStore {
         const url = new URL(wrongPortalNameUrl);
         url.searchParams.append("url", window.location.hostname);
         url.searchParams.append("ref", window.location.href);
-        return window.location.replace(url);
+        // return window.location.replace(url);
       }
     });
 
     if (origSettings?.plugins?.enabled) {
-      initPluginStore();
-
       this.enablePlugins = origSettings.plugins.enabled;
       this.pluginOptions = origSettings.plugins.allow;
     }
