@@ -444,50 +444,7 @@ public class PortalController : ControllerBase
     [HttpGet("get")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
-    public async Task<IActionResult> GetPortalsAsync([FromQuery] TenantModel model)
-    {
-        if (!_coreBaseSettings.Standalone)
-        {
-            return StatusCode(StatusCodes.Status403Forbidden, new
-            {
-                error = "error",
-                message = "Method for server edition only."
-            });
-        }
-
-        try
-        {
-            var tenants = await _commonMethods.GetTenantsAsync(model);
-
-            var tenantsWrapper = tenants
-                .Distinct()
-                .Where(t => t.Status == TenantStatus.Active)
-                .OrderBy(t => t.Id)
-                .Select(_commonMethods.ToTenantWrapper)
-                .ToList();
-
-            return Ok(new
-            {
-                tenants = tenantsWrapper
-            });
-        }
-        catch (Exception ex)
-        {
-            _log.LogError(ex, "GetPortalsAsync");
-
-            return StatusCode(StatusCodes.Status500InternalServerError, new
-            {
-                error = "error",
-                message = ex.Message,
-                stacktrace = ex.StackTrace
-            });
-        }
-    }
-
-    [HttpGet("quotausage")]
-    [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
-    public async Task<IActionResult> GetPortalsQuotaUsage([FromQuery] TenantModel model)
+    public async Task<IActionResult> GetPortalsAsync([FromQuery] TenantModel model, [FromQuery] bool statistics)
     {
         if (!_coreBaseSettings.Standalone)
         {
@@ -501,26 +458,27 @@ public class PortalController : ControllerBase
         try
         {
             var tenants = (await _commonMethods.GetTenantsAsync(model))
-                    .Distinct()
-                    .Where(t => t.Status == TenantStatus.Active);
+                .Distinct()
+                .Where(t => t.Status == TenantStatus.Active)
+                .OrderBy(t => t.Id);
 
-            var result = new List<QuotaUsageDto>();
+            var tenantsWrapper = new List<object>();
 
-            foreach (var tenant in tenants)
+            foreach (var t in tenants)
             {
-                var quotaUsage = await _quotaUsageManager.Get(tenant);
+                var quotaUsage = statistics ? (await _quotaUsageManager.Get(t)) : null;
 
-                result.Add(quotaUsage);
+                tenantsWrapper.Add(_commonMethods.ToTenantWrapper(t, quotaUsage));
             }
 
             return Ok(new
             {
-                quotausage = result
+                tenants = tenantsWrapper
             });
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "GetQuotaUsed");
+            _log.LogError(ex, "GetPortalsAsync");
 
             return StatusCode(StatusCodes.Status500InternalServerError, new
             {
