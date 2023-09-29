@@ -2707,13 +2707,13 @@ public class FileStorageService //: IFileStorageService
     }
 
     public async Task<AceWrapper> SetExternalLinkAsync<T>(T entryId, FileEntryType entryType, Guid linkId, string title, FileShare share, DateTime expirationDate = default,
-        string password = null, bool disabled = false, bool denyDownload = false)
+        string password = null, bool denyDownload = false)
     {
         FileEntry<T> entry = entryType == FileEntryType.File 
             ? await GetFileDao<T>().GetFileAsync(entryId)
             : await GetFolderDao<T>().GetFolderAsync(entryId);
 
-        return await SetExternalLinkAsync(entry.NotFoundIfNull(), linkId, share, title, expirationDate, password, disabled, denyDownload);
+        return await SetExternalLinkAsync(entry.NotFoundIfNull(), linkId, share, title, expirationDate, password, denyDownload);
     }
 
     public async Task<bool> SetAceLinkAsync<T>(T fileId, FileShare share)
@@ -3497,12 +3497,11 @@ public class FileStorageService //: IFileStorageService
     }
     
     private async Task<AceWrapper> SetExternalLinkAsync<T>(FileEntry<T> entry, Guid linkId, FileShare share, string title, DateTime expirationDate = default,
-        string password = null, bool disabled = false, bool denyDownload = false, bool primary = false)
+        string password = null, bool denyDownload = false, bool primary = false)
     {
         var options = new FileShareOptions
         {
             Title = !string.IsNullOrEmpty(title) ? title : FilesCommonResource.DefaultExternalLinkTitle,
-            Disabled = disabled,
             DenyDownload = denyDownload
         };
         

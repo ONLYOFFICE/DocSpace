@@ -53,11 +53,7 @@ public class LinkRequestDto
     /// <summary></summary>
     /// <type>System.String, System</type>
     public string Password { get; set; }
-
-    /// <summary></summary>
-    /// <type>System.Boolean, System</type>
-    public bool Disabled { get; set; }
-
+    
     /// <summary></summary>
     /// <type>System.Boolean, System</type>
     public bool DenyDownload { get; set; }

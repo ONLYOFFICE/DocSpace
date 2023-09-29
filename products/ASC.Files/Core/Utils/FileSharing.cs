@@ -161,7 +161,6 @@ public class FileSharingAceHelper
 
                 if (w.SubjectType == SubjectType.PrimaryExternalLink && w.FileShareOptions != null)
                 {
-                    w.FileShareOptions.Disabled = false;
                     w.FileShareOptions.ExpirationDate = default;
                 }
             }

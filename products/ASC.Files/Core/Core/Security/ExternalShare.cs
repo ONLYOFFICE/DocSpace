@@ -81,11 +81,6 @@ public class ExternalShare
             return Status.Expired;
         }
 
-        if (record.Options.Disabled)
-        {
-            return Status.Invalid;
-        }
-
         if (string.IsNullOrEmpty(record.Options.Password))
         {
             return Status.Ok;
