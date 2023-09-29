@@ -85,26 +85,13 @@ namespace ASC.Notify.Textile.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;body style=&quot;margin: 0; padding: 0; text-align: center; width: 100%; font-family: Arial, sans-serif; font-size: 14px; color: #333;&quot;&gt;
-        ///&lt;div style=&quot;background-color: #fff; width: 600px; margin: 0 auto; text-align: left;&quot;&gt;
-        ///    &lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; style=&quot;font-family: Arial; font-size: 14px; color: #333; background: #fff; text-align: center; width: 600px; margin: 0; padding: 0; border: 0 none; border-collapse: collapse; empty-cells: show; border-spacing: 0;&quot;&gt;
-        ///      &lt;tbody&gt;
-        ///        &lt;tr border=&quot;0 [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string HtmlMaster {
-            get {
-                return ResourceManager.GetString("HtmlMaster", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;body style=&quot;margin: 0; padding: 0; text-align: center; width: 100%; font-family: &apos;Open Sans&apos;, Helvetica, Arial, Tahoma, sans-serif; color: #333; font-size: 18px;&quot;&gt;
         ///&lt;div style=&quot;background-color: #fff; width: 600px; margin: 0 auto; text-align: center;&quot;&gt;
         ///    &lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; style=&quot;font-family: Arial; font-size: 14px; color: #333; background: #fff; text-align: center; width: 600px; margin: 0; padding: 0; border: 0 none; border-collapse: collapse; empty-cells: show; border-spacing: 0;&quot;&gt; [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string HtmlMasterV2 {
+        public static string HtmlMaster {
             get {
-                return ResourceManager.GetString("HtmlMasterV2", resourceCulture);
+                return ResourceManager.GetString("HtmlMaster", resourceCulture);
             }
         }
         
@@ -124,37 +111,11 @@ namespace ASC.Notify.Textile.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;tr border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
-        ///          &lt;td style=&quot;width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 155px;&quot;&gt;
-        ///              &lt;a href=&quot;https://www.facebook.com/pages/OnlyOffice/833032526736775&quot; style=&quot;width: 40px; height: 40px; display: block; margin: 0; padding: 0;&quot; target=&quot;_blank&quot;&gt;
-        ///                  &lt;img src=&quot;%IMAGEPATH%/social-fb-40.png&quot; alt=&quot;Facebook&quot; style=&quot;width: 40px; height: 40px;&quot; /&gt;
-        ///              &lt;/a&gt;
-        ///          &lt;/td&gt;
-        ///          &lt;td style=&quot;width: 40px; vertical-a [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string SocialNetworksFooterV10 {
-            get {
-                return ResourceManager.GetString("SocialNetworksFooterV10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This email is generated automatically and you do not need to answer it.&lt;br /&gt;You received this email because you are a registered user of&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt; DocSpace&lt;/a&gt;.
-        ///&lt;br /&gt; Click here to unsubscribe from the DocSpace notification emails: &lt;a href=&quot;{1}&quot;  target=&quot;_blank&quot;&gt;Unsubscribe&lt;/a&gt;
-        ///&lt;br /&gt;.
+        ///   Looks up a localized string similar to For any purchase questions, email us at &lt;a style=&quot;color: #FF6F3D; text-decoration: underline;&quot; target=&quot;_blank&quot; href=&quot;mailto:sales@onlyoffice.com&quot;&gt;sales@onlyoffice.com&lt;/a&gt;.&lt;br /&gt; In case of technical problems please contact our &lt;a style=&quot;color: #FF6F3D; text-decoration: underline;&quot; target=&quot;_blank&quot; href=&quot;https://www.onlyoffice.com/support-contact-form.aspx&quot;&gt;support team&lt;/a&gt;.&lt;br /&gt; &lt;a href=&quot;{1}&quot; style=&quot;color: #FF6F3D; text-decoration: underline; white-space: nowrap;&quot; target=&quot;_blank&quot;&gt;Click here to unsubscribe&lt;/ [rest of string was truncated]&quot;;.
         /// </summary>
         public static string TextForFooterUnsubsribeDocSpace {
             get {
                 return ResourceManager.GetString("TextForFooterUnsubsribeDocSpace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to For any purchase questions, email us at &lt;a style=&quot;color: #FF6F3D; text-decoration: underline;&quot; target=&quot;_blank&quot; href=&quot;mailto:sales@onlyoffice.com&quot;&gt;sales@onlyoffice.com&lt;/a&gt;.&lt;br /&gt; In case of technical problems please contact our &lt;a style=&quot;color: #FF6F3D; text-decoration: underline;&quot; target=&quot;_blank&quot; href=&quot;https://www.onlyoffice.com/support-contact-form.aspx&quot;&gt;support team&lt;/a&gt;.&lt;br /&gt; &lt;a href=&quot;{1}&quot; style=&quot;color: #FF6F3D; text-decoration: underline; white-space: nowrap;&quot; target=&quot;_blank&quot;&gt;Click here to unsubscribe&lt;/ [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string TextForFooterUnsubsribeDocSpaceV2 {
-            get {
-                return ResourceManager.GetString("TextForFooterUnsubsribeDocSpaceV2", resourceCulture);
             }
         }
         
