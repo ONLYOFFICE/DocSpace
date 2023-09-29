@@ -1,16 +1,20 @@
 ﻿import InfoPanelRoomEmptyScreenSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
 import InfoPanelRoomEmptyScreenDarkSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate_dark.svg?url";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 
 import { StyledNoItemContainer } from "../../styles/noItem";
 
-const NoRoomItem = ({ t, theme }) => {
+const NoRoomItem = ({ t, theme, setMembersList }) => {
   const imageSrc = theme.isBase
     ? InfoPanelRoomEmptyScreenSvgUrl
     : InfoPanelRoomEmptyScreenDarkSvgUrl;
+
+  useEffect(() => {
+    setMembersList(null);
+  }, []);
 
   return (
     <StyledNoItemContainer className="info-panel_gallery-empty-screen">
@@ -27,5 +31,6 @@ const NoRoomItem = ({ t, theme }) => {
 export default inject(({ auth }) => {
   return {
     theme: auth.settingsStore.theme,
+    setMembersList: auth.infoPanelStore.setMembersList,
   };
 })(observer(NoRoomItem));

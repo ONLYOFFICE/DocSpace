@@ -113,7 +113,9 @@ const MembersList = (props) => {
 
   useEffect(() => {
     setOffset();
+  }, [members]);
 
+  useEffect(() => {
     window.addEventListener("resize", onResize);
 
     return () => {

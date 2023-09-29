@@ -47,6 +47,7 @@ const Members = ({
   const security = selectionParentRoom ? selectionParentRoom.security : {};
 
   const fetchMembers = async (roomId, clearFilter = true) => {
+    if (isLoading) return;
     const isPublic = selection?.roomType ?? selectionParentRoom?.roomType;
     const requests = [getRoomMembers(roomId, clearFilter)];
 
@@ -137,7 +138,7 @@ const Members = ({
   };
 
   const updateSelectionParentRoomActionSelection = useCallback(async () => {
-    if (!selection.isRoom) return;
+    if (!selection.isRoom || selection.id === members?.roomId) return;
 
     const fetchedMembers = await fetchMembers(selection.id);
     setMembersList(fetchedMembers);
@@ -153,10 +154,6 @@ const Members = ({
   useEffect(() => {
     updateSelectionParentRoomActionSelection();
   }, [selection, updateSelectionParentRoomActionSelection]);
-
-  useEffect(() => {
-    setMembersList(null);
-  }, [selection]);
 
   const updateMembersAction = useCallback(async () => {
     if (!updateRoomMembers) return;
