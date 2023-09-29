@@ -183,6 +183,7 @@ const Items = ({
 
   activeItemId,
   emptyTrashInProgress,
+
   isCommunity,
   isPaymentPageAvailable,
 }) => {

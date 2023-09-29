@@ -38,9 +38,13 @@ import PublicRoomStore from "./PublicRoomStore";
 import WebhooksStore from "./WebhooksStore";
 import ClientLoadingStore from "./ClientLoadingStore";
 
+import PluginStore from "./PluginStore";
+
 const oformsStore = new OformsStore(authStore);
 
 const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
+
+const pluginStore = new PluginStore(authStore, selectedFolderStore);
 
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();
@@ -62,7 +66,9 @@ const clientLoadingStore = new ClientLoadingStore();
 const settingsStore = new SettingsStore(
   thirdPartyStore,
   treeFoldersStore,
-  publicRoomStore
+  publicRoomStore,
+  pluginStore,
+  authStore
 );
 
 const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
@@ -75,6 +81,7 @@ const filesStore = new FilesStore(
   thirdPartyStore,
   accessRightsStore,
   clientLoadingStore,
+  pluginStore,
   publicRoomStore
 );
 
@@ -124,7 +131,8 @@ const filesActionsStore = new FilesActionsStore(
   mediaViewerDataStore,
   accessRightsStore,
   clientLoadingStore,
-  publicRoomStore
+  publicRoomStore,
+  pluginStore
 );
 
 const contextOptionsStore = new ContextOptionsStore(
@@ -138,7 +146,8 @@ const contextOptionsStore = new ContextOptionsStore(
   versionHistoryStore,
   settingsStore,
   selectedFolderStore,
-  publicRoomStore
+  publicRoomStore,
+  pluginStore
 );
 
 const hotkeyStore = new HotkeyStore(
@@ -156,7 +165,8 @@ const profileActionsStore = new ProfileActionsStore(
   filesStore,
   peopleStore,
   treeFoldersStore,
-  selectedFolderStore
+  selectedFolderStore,
+  pluginStore
 );
 
 peopleStore.profileActionsStore = profileActionsStore;
@@ -223,6 +233,8 @@ const store = {
   webhooksStore,
   clientLoadingStore,
   publicRoomStore,
+
+  pluginStore,
 };
 
 export default store;

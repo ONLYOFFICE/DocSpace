@@ -3157,6 +3157,11 @@ const Dark = {
     backgroundArchive: "#FFFFFF",
     opacityBackground: "0.1",
   },
+
+  plugins: {
+    borderColor: "#474747",
+    pluginName: "#A3A9AE",
+  },
 };
 
 export default Dark;

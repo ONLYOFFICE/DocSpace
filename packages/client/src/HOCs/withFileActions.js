@@ -34,13 +34,8 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
-      const {
-        t,
-        dragging,
-        setDragging,
-        startUpload,
-        uploadEmptyFolders,
-      } = this.props;
+      const { t, dragging, setDragging, startUpload, uploadEmptyFolders } =
+        this.props;
 
       dragging && setDragging(false);
 

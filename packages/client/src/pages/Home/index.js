@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, Outlet } from "react-router-dom";
+import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -21,7 +21,6 @@ import MediaViewer from "./MediaViewer";
 import FilesSelectionArea from "./SelectionArea/FilesSelectionArea";
 import AccountsSelectionArea from "./SelectionArea/AccountsSelectionArea";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
-import { RoomSearchArea } from "@docspace/common/constants";
 
 import {
   useFiles,
@@ -113,6 +112,7 @@ const PureHome = (props) => {
 
     showFilterLoader,
 
+    enablePlugins,
     getSettings,
     logout,
     login,
@@ -126,8 +126,10 @@ const PureHome = (props) => {
 
   const location = useLocation();
 
+  const isSettingsPage =
+    location.pathname.includes("settings") &&
+    !location.pathname.includes("settings/plugins");
   const isAccountsPage = location.pathname.includes("/accounts");
-  const isSettingsPage = location.pathname.includes("settings");
 
   const { onDrop } = useFiles({
     t,
@@ -169,8 +171,7 @@ const PureHome = (props) => {
     itemsSelectionTitle,
     secondaryProgressDataStoreIcon,
     itemsSelectionLength,
-    isAccountsPage,
-    isSettingsPage,
+
     setItemsSelectionTitle,
   });
 
@@ -186,7 +187,12 @@ const PureHome = (props) => {
     setPortalTariff,
   });
 
-  useSettings({ t, isSettingsPage, setIsLoading });
+  useSettings({
+    t,
+    isSettingsPage,
+
+    setIsLoading,
+  });
 
   useSDK({
     frameConfig,
@@ -446,6 +452,7 @@ export default inject(
       isFrame,
       withPaging,
       showCatalog,
+      enablePlugins,
       getSettings,
     } = settingsStore;
 
@@ -492,6 +499,8 @@ export default inject(
       selectionLength,
       isProgressFinished,
       selectionTitle,
+
+      enablePlugins,
 
       itemsSelectionLength,
       setItemsSelectionTitle,

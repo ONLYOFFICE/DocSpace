@@ -375,6 +375,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     whiteLabelLogoUrls,
     standalone,
   } = settingsStore;
+
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
 
