@@ -158,17 +158,6 @@ services:
       onlyoffice-migration-runner:
         condition: service_completed_successfully
 
-  onlyoffice-telegramreports:
-    <<: *x-profiles-local
-    image: ${Baseimage_Nodejs_Run}
-    working_dir: ${BUILD_PATH}/services/ASC.TelegramReports/
-    command: ["dist/index.js", "ASC.TelegramReports"]
-    volumes:
-      - ${SRC_PATH}/ASC.TelegramReports/service:${BUILD_PATH}/services/ASC.TelegramReports/
-    depends_on:
-      onlyoffice-migration-runner:
-        condition: service_completed_successfully
-
   onlyoffice-migration-runner:
     image: ${Baseimage_Dotnet_Run}
     entrypoint: ${BUILD_PATH}/services/ASC.Migration.Runner/docker-migration-entrypoint.sh
