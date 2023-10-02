@@ -1,7 +1,12 @@
-[submodule "products/ASC.Files/Server/DocStore"]
-	path = products/ASC.Files/Server/DocStore
-	url = https://github.com/ONLYOFFICE/document-templates
-	branch = main/community-server
-[submodule "common/Tests/Frontend.Translations.Tests/dictionaries"]
-	path = common/Tests/Frontend.Translations.Tests/dictionaries
-	url = https://github.com/ONLYOFFICE/dictionaries
+[submodule "client"]
+	path = client
+	url = https://github.com/ONLYOFFICE/DocSpace-client
+	branch = release/separation
+[submodule "build"]
+	path = build
+	url = https://github.com/ONLYOFFICE/DocSpace-buildtools
+    branch = release/separation
+[submodule "server"]
+	path = server
+	url = https://github.com/ONLYOFFICE/DocSpace-server
+    branch = release/separation
