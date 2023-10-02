@@ -34,7 +34,7 @@ public class LinkRequestDto
     /// <type>System.Guid, System</type>
     public Guid LinkId { get; set; }
 
-    /// <summary>External link name</summary>
+    /// <summary>Link name</summary>
     /// <type>System.String, System</type>
     public string Title { get; set; }
 
@@ -42,19 +42,19 @@ public class LinkRequestDto
     /// <type>ASC.Files.Core.Security.FileShare, ASC.Files.Core</type>
     public FileShare Access { get; set; }
 
-    /// <summary></summary>
+    /// <summary>Link expiration date</summary>
     /// <type>System.DateTime, System</type>
     public DateTime? ExpirationDate { get; set; }
 
-    /// <summary></summary>
+    /// <summary>Link type</summary>
     /// <type>ASC.Files.Core.ApiModels.ResponseDto.LinkType, ASC.Files.Core</type>
     public LinkType LinkType { get; set; }
 
-    /// <summary></summary>
+    /// <summary>Link password</summary>
     /// <type>System.String, System</type>
     public string Password { get; set; }
     
-    /// <summary></summary>
+    /// <summary>Disable downloading</summary>
     /// <type>System.Boolean, System</type>
     public bool DenyDownload { get; set; }
 }
