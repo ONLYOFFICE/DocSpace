@@ -29,6 +29,9 @@ import {
   DeleteLinkDialog,
   RoomSharingDialog,
   MoveToPublicRoom,
+  SettingsPluginDialog,
+  PluginDialog,
+  DeletePluginDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
@@ -78,8 +81,11 @@ const Panels = (props) => {
     embeddingPanelIsVisible,
     roomSharingPanelVisible,
     moveToPublicRoomVisible,
+    settingsPluginDialogVisible,
+    pluginDialogVisible,
     leaveRoomDialogVisible,
     changeRoomOwnerIsVisible,
+    deletePluginDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -89,6 +95,21 @@ const Panels = (props) => {
   };
 
   return [
+    settingsPluginDialogVisible && (
+      <SettingsPluginDialog
+        isVisible={settingsPluginDialogVisible}
+        key={"settings-plugin-dialog"}
+      />
+    ),
+    deletePluginDialogVisible && (
+      <DeletePluginDialog
+        isVisible={deletePluginDialogVisible}
+        key={"delete-plugin-dialog"}
+      />
+    ),
+    pluginDialogVisible && (
+      <PluginDialog isVisible={pluginDialogVisible} key={"plugin-dialog"} />
+    ),
     uploadPanelVisible && <UploadPanel key="upload-panel" />,
     sharingPanelVisible && (
       <SharingPanel
@@ -179,6 +200,7 @@ export default inject(
     versionHistoryStore,
     backup,
     createEditRoomStore,
+    pluginStore,
   }) => {
     const {
       sharingPanelVisible,
@@ -227,6 +249,12 @@ export default inject(
     const { hotkeyPanelVisible } = auth.settingsStore;
     const { confirmDialogIsLoading } = createEditRoomStore;
 
+    const {
+      settingsPluginDialogVisible,
+      deletePluginDialogVisible,
+      pluginDialogVisible,
+    } = pluginStore;
+
     return {
       preparationPortalDialogVisible,
       sharingPanelVisible,
@@ -265,8 +293,11 @@ export default inject(
       embeddingPanelIsVisible,
       roomSharingPanelVisible,
       moveToPublicRoomVisible,
+      settingsPluginDialogVisible,
+      pluginDialogVisible,
       leaveRoomDialogVisible,
       changeRoomOwnerIsVisible,
+      deletePluginDialogVisible,
     };
   }
 )(observer(Panels));

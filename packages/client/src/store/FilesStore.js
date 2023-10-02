@@ -26,8 +26,9 @@ import {
   getCategoryTypeByFolderType,
 } from "SRC_DIR/helpers/utils";
 import { isDesktop } from "@docspace/components/utils/device";
-import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
-import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
+
+import { PluginFileType } from "SRC_DIR/helpers/plugins/constants";
+
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import debounce from "lodash.debounce";
 import clone from "lodash/clone";
@@ -57,6 +58,8 @@ class FilesStore {
 
   accessRightsStore;
   publicRoomStore;
+
+  pluginStore;
 
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
@@ -148,6 +151,7 @@ class FilesStore {
     thirdPartyStore,
     accessRightsStore,
     clientLoadingStore,
+    pluginStore,
     publicRoomStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
@@ -162,6 +166,7 @@ class FilesStore {
     this.thirdPartyStore = thirdPartyStore;
     this.accessRightsStore = accessRightsStore;
     this.clientLoadingStore = clientLoadingStore;
+    this.pluginStore = pluginStore;
     this.publicRoomStore = publicRoomStore;
 
     this.roomsController = new AbortController();
@@ -338,6 +343,8 @@ class FilesStore {
     //console.log("onResolveNewFiles", { fileInfo });
 
     if (this.files.findIndex((x) => x.id === fileInfo.id) > -1) return;
+
+    if (this.selectedFolderStore.id !== fileInfo.folderId) return;
 
     console.log("[WS] create new file", { fileInfo });
 
@@ -1807,7 +1814,7 @@ class FilesStore {
     const { isDesktopClient } = this.authStore.settingsStore;
 
     const pluginAllKeys =
-      enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
+      enablePlugins && this.pluginStore.getContextMenuKeysByType();
 
     const canRenameItem = item.security?.Rename;
 
@@ -2022,17 +2029,55 @@ class FilesStore {
       //   ]);
       // }
 
-      if (!isRecycleBinFolder)
+      if (!isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, ["restore"]);
 
-      if (enablePlugins && !isRecycleBinFolder) {
-        const pluginFilesKeys = getContextMenuKeysByType(
-          PluginContextMenuItemType.Files
-        );
+        if (enablePlugins) {
+          if (
+            !item.viewAccessability.MediaView &&
+            !item.viewAccessability.ImageView
+          ) {
+            const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+              PluginFileType.Files,
+              item.fileExst
+            );
 
-        pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));
-        pluginFilesKeys &&
-          pluginFilesKeys.forEach((key) => fileOptions.push(key));
+            pluginAllKeys &&
+              pluginAllKeys.forEach((key) => fileOptions.push(key));
+            pluginFilesKeys &&
+              pluginFilesKeys.forEach((key) => fileOptions.push(key));
+          }
+
+          if (
+            !item.viewAccessability.MediaView &&
+            item.viewAccessability.ImageView
+          ) {
+            const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+              PluginFileType.Image,
+              item.fileExst
+            );
+
+            pluginAllKeys &&
+              pluginAllKeys.forEach((key) => fileOptions.push(key));
+            pluginFilesKeys &&
+              pluginFilesKeys.forEach((key) => fileOptions.push(key));
+          }
+
+          if (
+            item.viewAccessability.MediaView &&
+            !item.viewAccessability.ImageView
+          ) {
+            const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+              PluginFileType.Video,
+              item.fileExst
+            );
+
+            pluginAllKeys &&
+              pluginAllKeys.forEach((key) => fileOptions.push(key));
+            pluginFilesKeys &&
+              pluginFilesKeys.forEach((key) => fileOptions.push(key));
+          }
+        }
       }
 
       if (!this.canShareOwnerChange(item)) {
@@ -2180,8 +2225,8 @@ class FilesStore {
         roomOptions = this.removeOptions(roomOptions, ["unarchive-room"]);
 
         if (enablePlugins) {
-          const pluginRoomsKeys = getContextMenuKeysByType(
-            PluginContextMenuItemType.Rooms
+          const pluginRoomsKeys = this.pluginStore.getContextMenuKeysByType(
+            PluginFileType.Rooms
           );
 
           pluginAllKeys &&
@@ -2278,8 +2323,8 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["restore"]);
 
         if (enablePlugins) {
-          const pluginFoldersKeys = getContextMenuKeysByType(
-            PluginContextMenuItemType.Folders
+          const pluginFoldersKeys = this.pluginStore.getContextMenuKeysByType(
+            PluginFileType.Folders
           );
 
           pluginAllKeys &&
@@ -2437,7 +2482,7 @@ class FilesStore {
   };
 
   getRoomMembers = (id, clearFilter = true) => {
-    let newFilter = this.membersFilter;
+    let newFilter = clone(this.membersFilter);
 
     if (clearFilter) {
       newFilter = this.getDefaultMembersFilter();
@@ -2453,7 +2498,6 @@ class FilesStore {
     };
 
     return api.rooms.getRoomMembers(id, membersFilters).then((res) => {
-      const newFilter = clone(this.membersFilter);
       newFilter.total = res.total;
       this.setMembersFilter(newFilter);
 
@@ -2854,6 +2898,9 @@ class FilesStore {
     const { getIcon } = this.filesSettingsStore;
     //return [...this.folders, ...this.files];
 
+    const { fileItemsList } = this.pluginStore;
+    const { enablePlugins } = this.authStore.settingsStore;
+
     const newFolders = [...this.folders];
 
     newFolders.sort((a, b) => {
@@ -2991,6 +3038,15 @@ class FilesStore {
           )
         : undefined;
 
+      let fileTypeName = null;
+
+      if (enablePlugins && fileItemsList) {
+        fileItemsList.forEach(({ key, value }) => {
+          if (value.extension === fileExst && value.fileTypeName)
+            fileTypeName = value.fileTypeName;
+        });
+      }
+
       return {
         access,
         daysRemaining: autoDelete && getDaysRemaining(autoDelete),
@@ -3054,6 +3110,7 @@ class FilesStore {
         providerType,
         security,
         viewAccessability,
+        fileTypeName,
         inRoom,
       };
     });

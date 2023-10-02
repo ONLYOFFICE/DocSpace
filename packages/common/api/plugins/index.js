@@ -1,30 +1,64 @@
 import { request } from "../client";
 
-export const getPlugins = async () => {
+export const getPlugins = async (enabled) => {
+  const url = enabled
+    ? `/settings/webplugins?enabled=${enabled}`
+    : `/settings/webplugins`;
+
   return request({
     method: "GET",
-    url: `/plugins`,
+    url,
   });
 };
 
-export const activatePlugin = async (id) => {
-  return request({
-    method: "PUT",
-    url: `/plugins/activate/${id}`,
-  });
-};
-
-export const uploadPlugin = async (formData) => {
+export const addPlugin = async (data) => {
   return request({
     method: "POST",
-    url: `/plugins/upload`,
-    data: formData,
+    url: `/settings/webplugins`,
+    data,
+  });
+};
+
+export const getPlugin = async (id) => {
+  return request({
+    method: "GET",
+    url: `/settings/webplugins/${id}`,
+  });
+};
+
+export const activatePlugin = async (id, enabled) => {
+  return request({
+    method: "PUT",
+    url: `/settings/webplugins/${id}`,
+    data: { enabled },
   });
 };
 
 export const deletePlugin = async (id) => {
   request({
     method: "DELETE",
-    url: `/plugins/delete/${id}`,
+    url: `/settings/webplugins/${id}`,
+  });
+};
+
+export const getSystemPlugin = async (name) => {
+  return request({
+    method: "GET",
+    url: `/settings/webplugins/system/${name}`,
+  });
+};
+
+export const activateSystemPlugin = async (name, enabled) => {
+  return request({
+    method: "PUT",
+    url: `/settings/webplugins/system/${name}`,
+    data: { enabled },
+  });
+};
+
+export const deleteSystemPlugin = async (name) => {
+  request({
+    method: "DELETE",
+    url: `/settings/webplugins/system/${name}`,
   });
 };

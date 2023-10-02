@@ -4,6 +4,7 @@ import { withTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import queryString from "query-string";
 import MediaViewer from "@docspace/common/components/MediaViewer";
+import { PluginFileType } from "SRC_DIR/helpers/plugins/constants";
 
 const FilesMediaViewer = (props) => {
   const {
@@ -56,6 +57,9 @@ const FilesMediaViewer = (props) => {
     activeFiles,
     activeFolders,
     onClickDownloadAs,
+    setActiveFiles,
+    pluginContextMenuItems,
+    someDialogIsOpen,
   } = props;
 
   const navigate = useNavigate();
@@ -223,6 +227,8 @@ const FilesMediaViewer = (props) => {
         onChangeUrl={onChangeUrl}
         nextMedia={nextMedia}
         prevMedia={prevMedia}
+        pluginContextMenuItems={pluginContextMenuItems}
+        setActiveFiles={setActiveFiles}
       />
     )
   );
@@ -238,6 +244,7 @@ export default inject(
     treeFoldersStore,
     contextOptionsStore,
     clientLoadingStore,
+    pluginStore,
   }) => {
     const {
       firstLoad,
@@ -263,6 +270,8 @@ export default inject(
       setAlreadyFetchingRooms,
       activeFiles,
       activeFolders,
+
+      setActiveFiles,
     } = filesStore;
     const {
       visible,
@@ -295,6 +304,27 @@ export default inject(
       onPreviewClick,
       onCopyLink,
     } = contextOptionsStore;
+
+    const { contextMenuItemsList, getContextMenuKeysByType } = pluginStore;
+
+    const item = playlist.find((p) => p.fileId === currentMediaFileId);
+
+    const fileExst = item?.fileExst;
+
+    const pluginContextMenuKeys = [
+      ...(getContextMenuKeysByType() || []),
+      ...(getContextMenuKeysByType(PluginFileType.Image, fileExst) || []),
+      ...(getContextMenuKeysByType(PluginFileType.Video, fileExst) || []),
+    ];
+
+    const pluginContextMenuItems =
+      contextMenuItemsList?.filter((i) => {
+        if (pluginContextMenuKeys.includes(i.key)) {
+          return true;
+        }
+
+        return false;
+      }) || [];
 
     return {
       files,
@@ -343,6 +373,8 @@ export default inject(
       getFirstUrl,
       activeFiles,
       activeFolders,
+      setActiveFiles,
+      pluginContextMenuItems,
     };
   }
 )(withTranslation(["Files", "Translations"])(observer(FilesMediaViewer)));

@@ -1,7 +1,0 @@
-{
-  "app": {
-    "port": 5014,
-    "appsettings": "../../../../config",
-    "environment": "Development"
-  }
-}

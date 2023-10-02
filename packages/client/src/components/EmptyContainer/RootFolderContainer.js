@@ -182,7 +182,10 @@ const RootFolderContainer = (props) => {
         return {
           headerText: emptyScreenHeader,
           descriptionText: trashDescription,
-          style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
+          style: {
+            gridColumnGap: "39px",
+            marginTop: 32,
+          },
           imageSrc: theme.isBase
             ? EmptyScreenTrashSvgUrl
             : EmptyScreenTrashSvgDarkUrl,
@@ -395,12 +398,8 @@ export default inject(
     selectedFolderStore,
     clientLoadingStore,
   }) => {
-    const {
-      isDesktopClient,
-      isEncryptionSupport,
-      organizationName,
-      theme,
-    } = auth.settingsStore;
+    const { isDesktopClient, isEncryptionSupport, organizationName, theme } =
+      auth.settingsStore;
 
     const { setIsSectionFilterLoading } = clientLoadingStore;
 

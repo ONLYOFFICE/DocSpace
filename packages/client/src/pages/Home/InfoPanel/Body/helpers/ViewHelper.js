@@ -7,6 +7,7 @@ import Gallery from "../views/Gallery";
 import Accounts from "../views/Accounts";
 import NoItem from "../views/NoItem";
 import SeveralItems from "../views/SeveralItems";
+import Plugin from "../views/Plugin";
 
 class ViewHelper {
   constructor(props) {
@@ -16,6 +17,7 @@ class ViewHelper {
     this.detailsProps = props.detailsProps;
     this.accountsProps = props.accountsProps;
     this.galleryProps = props.galleryProps;
+    this.pluginProps = props.pluginProps;
   }
 
   MembersView = () => {
@@ -44,6 +46,10 @@ class ViewHelper {
 
   SeveralItemsView = () => {
     return <SeveralItems {...this.defaultProps} />;
+  };
+
+  PluginView = () => {
+    return <Plugin {...this.pluginProps} />;
   };
 }
 

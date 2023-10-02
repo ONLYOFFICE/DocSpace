@@ -385,6 +385,7 @@ export const Events = Object.freeze({
   ROOM_EDIT: "edit_room",
   CHANGE_COLUMN: "change_column",
   CHANGE_USER_TYPE: "change_user_type",
+  CREATE_PLUGIN_FILE: "create_plugin_file",
 });
 
 /**

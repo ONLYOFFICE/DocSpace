@@ -127,6 +127,23 @@
             "virtualpath": "~/studio/{0}/userphotos/temp"
           }
         ]
+      },
+      {
+        "name": "webplugins",
+        "data": "00000000-0000-0000-0000-000000000000",
+        "type": "disc",
+        "path": "$STORAGE_ROOT\\Studio\\{0}\\webplugins",
+        "virtualpath": "~/studio/{0}/webplugins"
+      },
+      {
+        "name": "systemwebplugins",
+        "data": "00000000-0000-0000-0000-000000000000",
+        "type": "disc",
+        "path": "$STORAGE_ROOT\\Studio\\webplugins",
+        "virtualpath": "~/studio/webplugins",
+        "appendTenantId": false,
+        "disableMigrate": true,
+        "disableEncryption": true
       }
     ]
   }

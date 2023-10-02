@@ -603,7 +603,8 @@ export function copyToFolder(
   folderIds,
   fileIds,
   conflictResolveType,
-  deleteAfter
+  deleteAfter,
+  content = false
 ) {
   const data = {
     destFolderId,
@@ -611,6 +612,7 @@ export function copyToFolder(
     fileIds,
     conflictResolveType,
     deleteAfter,
+    content,
   };
   return request({ method: "put", url: "/files/fileops/copy", data });
 }

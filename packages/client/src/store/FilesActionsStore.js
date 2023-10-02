@@ -22,6 +22,7 @@ import {
   removeShareFiles,
   createFolder,
   moveToFolder,
+  getFolder,
 } from "@docspace/common/api/files";
 import {
   ConflictResolveType,
@@ -82,7 +83,8 @@ class FilesActionStore {
     mediaViewerDataStore,
     accessRightsStore,
     clientLoadingStore,
-    publicRoomStore
+    publicRoomStore,
+    pluginStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -96,6 +98,7 @@ class FilesActionStore {
     this.accessRightsStore = accessRightsStore;
     this.clientLoadingStore = clientLoadingStore;
     this.publicRoomStore = publicRoomStore;
+    this.pluginStore = pluginStore;
   }
 
   setIsBulkDownload = (isBulkDownload) => {
@@ -2071,6 +2074,9 @@ class FilesActionStore {
   openFileAction = (item) => {
     const { openDocEditor, isPrivacyFolder, setSelection } = this.filesStore;
 
+    const { fileItemsList } = this.pluginStore;
+    const { enablePlugins } = this.authStore.settingsStore;
+
     const { isLoading } = this.clientLoadingStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
     const { setMediaViewerData } = this.mediaViewerDataStore;
@@ -2158,6 +2164,22 @@ class FilesActionStore {
         window.DocSpace.navigate(url);
         return;
       }
+
+      if (fileItemsList && enablePlugins) {
+        let currPluginItem = null;
+
+        fileItemsList.forEach((i) => {
+          if (i.key === item.fileExst) currPluginItem = i.value;
+        });
+
+        if (currPluginItem) {
+          currPluginItem.onClick(item);
+
+          return;
+        }
+      }
+
+      return;
 
       return window.open(viewUrl, "_self");
     }
@@ -2317,6 +2339,71 @@ class FilesActionStore {
 
   setGroupMenuBlocked = (blocked) => {
     this.isGroupMenuBlocked = blocked;
+  };
+
+  preparingDataForCopyingToRoom = async (destFolderId, t) => {
+    const { selection, bufferSelection } = this.filesStore;
+
+    let fileIds = [];
+    let folderIds = [];
+
+    const selections =
+      selection.length > 0 && selection[0] != null
+        ? selection
+        : bufferSelection != null
+        ? [bufferSelection]
+        : [];
+
+    if (!selections.length) return;
+    const oneFolder = selections.length === 1 && selections[0].isFolder;
+
+    if (oneFolder) {
+      folderIds = [selections[0].id];
+
+      try {
+        const selectedFolder = await getFolder(selections[0].id);
+        const { folders, files, total } = selectedFolder;
+
+        if (total > 1) this.setSelectedItems(false, total);
+
+        if (total === 1) {
+          const title = !!folders.length ? folders[0].title : files[0].title;
+          this.setSelectedItems(title, total);
+        }
+
+        if (total === 0) {
+          this.filesStore.setSelection([]);
+          this.filesStore.setBufferSelection(null);
+          return;
+        }
+      } catch (err) {
+        toastr.error(err);
+      }
+    }
+
+    !oneFolder &&
+      selections.map((item) => {
+        if (item.fileExst || item.contentLength) fileIds.push(item.id);
+        else folderIds.push(item.id);
+      });
+
+    !oneFolder && this.setSelectedItems();
+    this.filesStore.setSelection([]);
+    this.filesStore.setBufferSelection(null);
+
+    const operationData = {
+      destFolderId,
+      folderIds: folderIds,
+      fileIds,
+      deleteAfter: false,
+      isCopy: true,
+      translations: {
+        copy: t("Common:CopyOperation"),
+      },
+      content: oneFolder,
+    };
+
+    this.uploadDataStore.itemOperationToFolder(operationData);
   };
 }
 

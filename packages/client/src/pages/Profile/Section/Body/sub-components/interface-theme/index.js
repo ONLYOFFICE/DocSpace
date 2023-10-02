@@ -16,9 +16,11 @@ import { showLoader, getSystemTheme } from "@docspace/common/utils";
 import ThemePreview from "./theme-preview";
 
 const StyledWrapper = styled.div`
+  width: 100%;
+  max-width: 660px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 
   .system-theme-checkbox {
     display: inline-flex;
@@ -26,7 +28,7 @@ const StyledWrapper = styled.div`
 
   .checkbox {
     height: 20px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 8px !important;
@@ -37,9 +39,12 @@ const StyledWrapper = styled.div`
   }
 
   .system-theme-description {
-    padding: 0px 0 4px 24px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    padding-left: 24px;
     max-width: 295px;
-    color: ${props => props.theme.profile.themePreview.descriptionColor};
+    color: ${(props) => props.theme.profile.themePreview.descriptionColor};
   }
 
   .themes-container {
@@ -100,10 +105,6 @@ const InterfaceTheme = (props) => {
 
   return (
     <StyledWrapper>
-      <Text fontSize="16px" fontWeight={700}>
-        {t("InterfaceTheme")}
-      </Text>
-
       <div>
         <Checkbox
           className="system-theme-checkbox"

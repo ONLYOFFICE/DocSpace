@@ -217,7 +217,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 
         PublishChanges();
 
-        var filesMessageService = _serviceProvider.GetRequiredService<FilesMessageService>();
+        var filesMessageService = scope.ServiceProvider.GetRequiredService<FilesMessageService>();
         foreach (var file in filesForSend)
         {
             var key = file.Id;

@@ -14,7 +14,7 @@ import {
 import { StyledWrapper } from "./styled-login-settings";
 
 const LoginSettings = (props) => {
-  const { t } = useTranslation(["Profile", "Common"]);
+  const { t } = useTranslation(["Profile", "Settings", "Common"]);
 
   const {
     profile,
@@ -25,15 +25,14 @@ const LoginSettings = (props) => {
     setBackupCodes,
   } = props;
   const [resetAppDialogVisible, setResetAppDialogVisible] = useState(false);
-  const [backupCodesDialogVisible, setBackupCodesDialogVisible] = useState(
-    false
-  );
+  const [backupCodesDialogVisible, setBackupCodesDialogVisible] =
+    useState(false);
 
   return (
     <StyledWrapper>
       <div className="header">
-        <Text fontSize="16px" fontWeight={700}>
-          {t("TfaLoginSettings")}
+        <Text fontSize="16px" fontWeight={700} lineHeight="22px">
+          {t("Settings:TwoFactorAuth")}
         </Text>
         <Text color="#A3A9AE">{t("TwoFactorDescription")}</Text>
       </div>

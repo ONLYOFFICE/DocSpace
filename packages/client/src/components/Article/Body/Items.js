@@ -183,6 +183,7 @@ const Items = ({
 
   activeItemId,
   emptyTrashInProgress,
+
   isCommunity,
   isPaymentPageAvailable,
 }) => {
@@ -351,7 +352,7 @@ const Items = ({
         );
       });
 
-      if (!firstLoad && !isVisitor)
+      /*if (!firstLoad && !isVisitor)
         items.splice(
           3,
           0,
@@ -360,7 +361,7 @@ const Items = ({
             onClick={onClick}
             isActive={activeItemId === "settings"}
           />
-        );
+        );*/
       if (!isVisitor && !isCollaborator)
         items.splice(
           3,

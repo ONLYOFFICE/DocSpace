@@ -33,6 +33,7 @@ import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.s
 import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
+import PluginActionsSvgUrl from "PUBLIC_DIR/images/plugin.actions.react.svg?url";
 import LeaveRoomSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
 import CatalogRoomsReactSvgUrl from "PUBLIC_DIR/images/catalog.rooms.react.svg?url";
 
@@ -49,7 +50,7 @@ import {
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 import { Events } from "@docspace/common/constants";
-import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
+
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { getOAuthToken } from "@docspace/common/utils";
 import api from "@docspace/common/api";
@@ -71,6 +72,7 @@ class ContextOptionsStore {
   settingsStore;
   selectedFolderStore;
   publicRoomStore;
+  pluginStore;
 
   linksIsLoading = false;
 
@@ -85,7 +87,8 @@ class ContextOptionsStore {
     versionHistoryStore,
     settingsStore,
     selectedFolderStore,
-    publicRoomStore
+    publicRoomStore,
+    pluginStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -99,6 +102,7 @@ class ContextOptionsStore {
     this.settingsStore = settingsStore;
     this.selectedFolderStore = selectedFolderStore;
     this.publicRoomStore = publicRoomStore;
+    this.pluginStore = pluginStore;
   }
 
   onOpenFolder = (item) => {
@@ -979,6 +983,48 @@ class ContextOptionsStore {
 
     const withOpen = item.id !== this.selectedFolderStore.id;
 
+    const pluginItems = [];
+
+    if (enablePlugins && this.pluginStore.contextMenuItemsList) {
+      this.pluginStore.contextMenuItemsList.forEach((option) => {
+        if (contextOptions.includes(option.key)) {
+          const value = option.value;
+
+          const onClick = async () => {
+            if (value.withActiveItem) {
+              const { setActiveFiles } = this.filesStore;
+
+              setActiveFiles([item.id]);
+
+              await value.onClick(item.id);
+
+              setActiveFiles([]);
+            } else {
+              value.onClick(item.id);
+            }
+          };
+
+          if (value.fileExt) {
+            if (value.fileExt.includes(item.fileExst)) {
+              pluginItems.push({
+                key: option.key,
+                label: value.label,
+                icon: value.icon,
+                onClick,
+              });
+            }
+          } else {
+            pluginItems.push({
+              key: option.key,
+              label: value.label,
+              icon: value.icon,
+              onClick,
+            });
+          }
+        }
+      });
+    }
+
     const optionsModel = [
       {
         id: "option_select",
@@ -1301,37 +1347,15 @@ class ContextOptionsStore {
 
     const options = this.filterModel(optionsModel, contextOptions);
 
-    if (enablePlugins) {
-      const pluginOptions = getContextMenuItems();
-
-      if (pluginOptions) {
-        pluginOptions.forEach((option) => {
-          if (contextOptions.includes(option.key)) {
-            const value = option.value;
-            if (!value.onClick) {
-              options.splice(value.position, 0, {
-                key: option.key,
-                ...value,
-              });
-            } else {
-              options.splice(value.position, 0, {
-                key: option.key,
-                label: value.label,
-                icon: value.icon,
-                onClick: () => value.onClick(item),
-              });
-            }
-          }
-        });
-      }
-    }
-
-    if (options[0]?.isSeparator) {
-      options.shift();
-    }
-
-    if (options[options.length - 1]?.isSeparator) {
-      options.pop();
+    if (pluginItems.length > 0) {
+      options.splice(1, 0, {
+        id: "option_plugin-actions",
+        key: "plugin_actions",
+        label: t("Common:Actions"),
+        icon: PluginActionsSvgUrl,
+        disabled: false,
+        items: pluginItems,
+      });
     }
 
     return options;

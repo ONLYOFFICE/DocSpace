@@ -32,10 +32,17 @@ const Layout = ({
   children,
   addUsers,
   isGeneralPage,
+  enablePlugins,
+  isInitPlugins,
+  initPlugins,
 }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
   }, [language, currentProductId, setCurrentProductId]);
+
+  useEffect(() => {
+    if (enablePlugins && !isInitPlugins) initPlugins();
+  }, [enablePlugins, isInitPlugins, initPlugins]);
 
   const { id, eventId } = useParams();
 
@@ -70,13 +77,21 @@ const Layout = ({
   );
 };
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, pluginStore }) => {
   const { language, settingsStore } = auth;
   const { addUsers } = setup.headerAction;
 
+  const { setCurrentProductId, enablePlugins } = settingsStore;
+
+  const { isInit: isInitPlugins, initPlugins } = pluginStore;
+
   return {
     language,
-    setCurrentProductId: settingsStore.setCurrentProductId,
+    setCurrentProductId,
     addUsers,
+
+    enablePlugins,
+    isInitPlugins,
+    initPlugins,
   };
 })(withLoading(observer(Layout)));

@@ -38,6 +38,7 @@ class InfoPanelStore {
   filesStore = null;
   selectedFolderStore = null;
   treeFoldersStore = null;
+  membersList = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -76,6 +77,7 @@ class InfoPanelStore {
     this.roomsView = view;
     this.fileView = view === "info_members" ? "info_history" : view;
     this.isScrollLocked = false;
+    this.setMembersList(null);
   };
 
   setUpdateRoomMembers = (updateRoomMembers) => {
@@ -328,6 +330,10 @@ class InfoPanelStore {
   getIsTrash = (givenPathName) => {
     const pathname = givenPathName || window.location.pathname.toLowerCase();
     return pathname.indexOf("files/trash") !== -1;
+  };
+
+  setMembersList = (membersList) => {
+    this.membersList = membersList;
   };
 }
 
