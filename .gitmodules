@@ -3,7 +3,7 @@
 	url = https://github.com/ONLYOFFICE/DocSpace-client
 	branch = release/separation
 [submodule "build"]
-	path = build
+	path = buildtools
 	url = https://github.com/ONLYOFFICE/DocSpace-buildtools
     branch = release/separation
 [submodule "server"]
