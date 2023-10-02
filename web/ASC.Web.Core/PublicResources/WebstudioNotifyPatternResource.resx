@@ -210,7 +210,7 @@ Dear $OwnerName,
 
 A backup file containing data from your "${__VirtualRootPath}":"${__VirtualRootPath}" portal has been created.
 
-To learn more on the backup procedure please refer to our "Data backup":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" user guide.
+To learn more on the backup procedure please refer to our "Data backup":"${__HelpLink}/administration/docspace-settings.aspx#CreatingBackup_block" user guide.
 
 
 If you have any questions or need assistance please feel free to contact us at "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -312,7 +312,7 @@ Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</value>
     <comment>h1. (Welcome) to ONLYOFFICE DocSpace!
@@ -332,7 +332,7 @@ Make use of the AI helper plugin: summarize and translate texts, generate images
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</comment>
   </data>
@@ -368,7 +368,7 @@ Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</value>
     <comment>h1. (Welcome) to ONLYOFFICE DocSpace!
@@ -388,7 +388,7 @@ Make use of the AI helper plugin: summarize and translate texts, generate images
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</comment>
   </data>
@@ -461,7 +461,7 @@ $OrangeButton
 An error has occurred while migrating to the $RegionName region. Please, try once again later.
 Your portal is now available at the old address "$PortalUrl":"$PortalUrl"
 
-If you have any questions or need assistance please feel free to contact us at "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+If you have any questions or need assistance please feel free to contact us at "${__SalesEmail}":"mailto:${__SalesEmail}"
 
 $TrulyYours
 
@@ -473,7 +473,7 @@ $TrulyYours
 An error has occurred while migrating to another region. Please, try once again later.
 Your portal is now available at the old address "$PortalUrl":"$PortalUrl"
 
-If you have any questions or need assistance please feel free to contact us at "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+If you have any questions or need assistance please feel free to contact us at "${__SalesEmail}":"mailto:${__SalesEmail}"
 
 $TrulyYours
 
@@ -486,7 +486,7 @@ The portal migration to the $RegionName region is started. It might take some ti
 
 *Note*: the portal will not be available during the migration process. After the migration is complete the portal URL will be changed and all the shared documents links will be inaccessible.
 
-If you have any questions or need assistance please feel free to contact us at "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+If you have any questions or need assistance please feel free to contact us at "${__SalesEmail}":"mailto:${__SalesEmail}"
 
 $TrulyYours</value>
   </data>
@@ -535,7 +535,7 @@ Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</value>
     <comment>h1. (Welcome) to ONLYOFFICE DocSpace!
@@ -555,7 +555,7 @@ Make use of the AI helper plugin: summarize and translate texts, generate images
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</comment>
   </data>
@@ -634,11 +634,11 @@ $OrangeButton
 
 *Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our "Privacy statement":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
 
-"Read more about account termination":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+"Read more about account termination":"${__HelpLink}/administration/configuration.aspx"
 
 Ignore this email if you do not want to proceed. 
 
-If you have any questions, please contact us at "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+If you have any questions, please contact us at "${__SalesEmail}":"mailto:${__SalesEmail}"
 
 $TrulyYours</value>
   </data>
@@ -656,7 +656,7 @@ $OrangeButton
 You can reactivate your portal any time by clicking the following link:
 p=. "Reactivate Portal":"$ActivateUrl" (this link has no time limit)
 
-If you have any questions or need assistance please feel free to contact us at "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+If you have any questions or need assistance please feel free to contact us at "${__SalesEmail}":"mailto:${__SalesEmail}"
 
 $TrulyYours</value>
   </data>
@@ -674,7 +674,7 @@ _Note_: this link is valid for 7 days only. Please complete the portal deactivat
 You can reactivate your portal any time by clicking the following link:
 [Reactivate Portal]($ActivateUrl) (this link has no time limit)
 
-If you have any questions or need assistance please feel free to contact us at [support@onlyoffice.com](mailto:support@onlyoffice.com)
+If you have any questions or need assistance please feel free to contact us at [${__SalesEmail}](mailto:${__SalesEmail})
 
 Best regards,
 ONLYOFFICE™ Support Team
@@ -699,7 +699,7 @@ $OrangeButton
 
 *Note*: this link is valid for 7 days only. Please complete the portal deletion process within that period.
 
-If you have any questions or need assistance please feel free to contact us at "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+If you have any questions or need assistance please feel free to contact us at "${__SalesEmail}":"mailto:${__SalesEmail}"
 
 $TrulyYours</value>
   </data>
@@ -722,7 +722,7 @@ $OrangeButton
 
 _Note_: this link is valid for 7 days only. Please complete the portal deletion process within that period.
 
-If you have any questions or need assistance please feel free to contact us at [support@onlyoffice.com](mailto:support@onlyoffice.com)
+If you have any questions or need assistance please feel free to contact us at [${__SalesEmail}](mailto:${__SalesEmail})
 
 Best regards,
 ONLYOFFICE™ Support Team
@@ -883,7 +883,7 @@ The portal restoration is started. It might take some time depending on your dat
 
 *Note*: the portal will not be available during the restoration process.
 
-If you have any questions or need assistance please feel free to contact us at "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+If you have any questions or need assistance please feel free to contact us at "${__SalesEmail}":"mailto:${__SalesEmail}"
 
 $TrulyYours
 
@@ -921,7 +921,7 @@ Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</value>
     <comment>h1. (Welcome) to ONLYOFFICE DocSpace!
@@ -941,7 +941,7 @@ Make use of the AI helper plugin: summarize and translate texts, generate images
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</comment>
   </data>
@@ -1759,7 +1759,7 @@ Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</value>
     <comment>h1. (Welcome) to ONLYOFFICE DocSpace!
@@ -1779,7 +1779,7 @@ Make use of the AI helper plugin: summarize and translate texts, generate images
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</comment>
   </data>
@@ -1802,7 +1802,7 @@ Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</value>
     <comment>h1. (Welcome) to ONLYOFFICE DocSpace!
@@ -1822,7 +1822,7 @@ Make use of the AI helper plugin: summarize and translate texts, generate images
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</comment>
   </data>
@@ -1845,7 +1845,7 @@ Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</value>
     <comment>h1. (Welcome) to ONLYOFFICE DocSpace!
@@ -1865,7 +1865,7 @@ Make use of the AI helper plugin: summarize and translate texts, generate images
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</comment>
   </data>
@@ -1905,7 +1905,7 @@ Since you have decided not to use it anymore, your ONLYOFFICE DocSpace and all t
 
 &lt;table cellspacing="0" cellpadding="0" background="#ffffff" style="background-color: #ffffff; border: 0 none; border-spacing: 0; -moz-border-radius: 8px; -webkit-border-radius: 8px; border-radius: 8px; color: #333333; empty-cells: show; height: 0px; margin: 0 auto; max-width: 520px; padding: 0; vertical-align: top; width: 100%; text-align: left; border: 1px solid #FF6F3D; border-radius: 8px;"&gt;&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;&lt;td style="color: #333333; font-family: 'Open Sans', Helvetica, Arial, Tahoma, sans-serif; font-size: 18px; line-height: 29px; margin: 0; padding-left: 40px; padding-right: 40px; padding-top: 40px; padding-bottom: 24px; text-align: center;"&gt;We would appreciate your feedback. Why have you decided to stop using ONLYOFFICE DocSpace?&lt;/td&gt;&lt;/tr&gt;&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;&lt;td style="font-family: 'Open Sans', Helvetica, Arial, Tahoma; font-size: 16px; font-weight: bold; line-height: 22px; margin: 0; padding-bottom: 40px; padding-top: 0; text-align: center;"&gt;$OrangeButton&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-If you think this is a mistake and want to continue using ONLYOFFICE DocSpace, please contact our "support team":"https://www.onlyoffice.com/support-contact-form.aspx". 
+If you think this is a mistake and want to continue using ONLYOFFICE DocSpace, please contact our "support team":"${__SupportContact}". 
 
 $TrulyYours</value>
     <comment>h1. Your ONLYOFFICE DocSpace will be deleted
@@ -1918,7 +1918,7 @@ We would appreciate your feedback. Why have you decided to stop using ONLYOFFICE
 
 $OrangeButton
 
-If you think this is a mistake and want to continue using ONLYOFFICE DocSpace, please contact our "support team":"https://www.onlyoffice.com/support-contact-form.aspx". 
+If you think this is a mistake and want to continue using ONLYOFFICE DocSpace, please contact our "support team":"${__SupportContact}". 
 
 $TrulyYours</comment>
   </data>
@@ -1941,7 +1941,7 @@ Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</value>
     <comment>h1. (Welcome) to ONLYOFFICE DocSpace!
@@ -1961,7 +1961,7 @@ Make use of the AI helper plugin: summarize and translate texts, generate images
 
 $OrangeButton
 
-If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"${__SupportContact}".
 
 $TrulyYours</comment>
   </data>
@@ -2122,7 +2122,7 @@ Adjust security settings of your ONLYOFFICE DocSpace to make it more secure:
 
 $OrangeButton
 
-Visit our "Help Center":"https://helpcenter.onlyoffice.com/" to learn more about configuring and managing your ONLYOFFICE DocSpace. You are also welcome to consult it when you have questions about the functionality.
+Visit our "Help Center":"${__HelpLink}" to learn more about configuring and managing your ONLYOFFICE DocSpace. You are also welcome to consult it when you have questions about the functionality.
 
 $TrulyYours</value>
     <comment>h1. Configure your ONLYOFFICE DocSpace
@@ -2147,7 +2147,7 @@ Do data backups
 
 $OrangeButton
 
-Visit our "Help Center":"https://helpcenter.onlyoffice.com/" to learn more about configuring and managing your ONLYOFFICE DocSpace. You are also welcome to consult it when you have questions about the functionality.
+Visit our "Help Center":"${__HelpLink}" to learn more about configuring and managing your ONLYOFFICE DocSpace. You are also welcome to consult it when you have questions about the functionality.
 
 $TrulyYours</comment>
   </data>

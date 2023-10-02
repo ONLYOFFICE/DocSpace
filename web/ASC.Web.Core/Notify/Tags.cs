@@ -119,6 +119,9 @@ public static class CommonTags
 
     public const string HelpLink = "__HelpLink";
 
+    public const string SalesEmail = "__SalesEmail";
+
+    public const string SupportContact = "__SupportContact";
     public const string WithoutUnsubscribe = "WithoutUnsubscribe";
 
     public const string LetterLogo = "LetterLogo";

@@ -528,6 +528,28 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
         return GetRegionalUrl(url, inCurrentCulture ? CultureInfo.CurrentCulture.TwoLetterISOLanguageName : null);
     }
+    public string GetSupportContactLink(MailWhiteLabelSettingsHelper mailWhiteLabelSettings)
+    {
+        var url = mailWhiteLabelSettings.DefaultMailSiteUrl;
+
+        if (string.IsNullOrEmpty(url))
+        {
+            return string.Empty;
+        }
+
+        return url + "/support-contact-form.aspx";
+    }
+    public string GetMailSalesEmail(AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelper)
+    {
+        var mail = additionalWhiteLabelSettingsHelper.DefaultMailSalesEmail;
+
+        if (string.IsNullOrEmpty(mail))
+        {
+            return string.Empty;
+        }
+
+        return mail;
+    }
 
     public string GetFeedbackAndSupportLink(SettingsManager settingsManager, bool inCurrentCulture = true)
     {

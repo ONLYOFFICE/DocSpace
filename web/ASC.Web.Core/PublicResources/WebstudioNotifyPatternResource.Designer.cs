@@ -507,10 +507,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///A backup file containing data from your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal has been created.
         ///
-        ///To learn more on the backup procedure please refer to our &quot;Data backup&quot;:&quot;https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block&quot; user guide.
+        ///To learn more on the backup procedure please refer to our &quot;Data backup&quot;:&quot;${__HelpLink}/administration/docspace-settings.aspx#CreatingBackup_block&quot; user guide.
         ///
         ///
-        ///If you have any questions or need assistance please feel free to contact us at &quot;support.onlyoffice.com&quot;:&quot;http://support. [rest of string was truncated]&quot;;.
+        ///If you have any questions or need assistance please feel free to contact us at &quot;support.onlyoffice.com&quot;:&quot;http://support.onlyoffice.com&quot;
+        ///
+        ///$ [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_backup_created {
             get {
@@ -1006,7 +1008,7 @@ namespace ASC.Web.Core.PublicResources {
         ///An error has occurred while migrating to the $RegionName region. Please, try once again later.
         ///Your portal is now available at the old address &quot;$PortalUrl&quot;:&quot;$PortalUrl&quot;
         ///
-        ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;
+        ///If you have any questions or need assistance please feel free to contact us at &quot;${__SalesEmail}&quot;:&quot;mailto:${__SalesEmail}&quot;
         ///
         ///$TrulyYours
         ///
@@ -1024,7 +1026,7 @@ namespace ASC.Web.Core.PublicResources {
         ///An error has occurred while migrating to another region. Please, try once again later.
         ///Your portal is now available at the old address &quot;$PortalUrl&quot;:&quot;$PortalUrl&quot;
         ///
-        ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;
+        ///If you have any questions or need assistance please feel free to contact us at &quot;${__SalesEmail}&quot;:&quot;mailto:${__SalesEmail}&quot;
         ///
         ///$TrulyYours
         ///
@@ -1043,7 +1045,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: the portal will not be available during the migration process. After the migration is complete the portal URL will be changed and all the shared documents links will be inaccessible.
         ///
-        ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;
+        ///If you have any questions or need assistance please feel free to contact us at &quot;${__SalesEmail}&quot;:&quot;mailto:${__SalesEmail}&quot;
         ///
         ///$TrulyYours.
         /// </summary>
@@ -1663,7 +1665,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: the portal will not be available during the restoration process.
         ///
-        ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;
+        ///If you have any questions or need assistance please feel free to contact us at &quot;${__SalesEmail}&quot;:&quot;mailto:${__SalesEmail}&quot;
         ///
         ///$TrulyYours
         ///
