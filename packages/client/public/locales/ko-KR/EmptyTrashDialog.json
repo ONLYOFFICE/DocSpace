@@ -1,8 +1,0 @@
-{
-  "DeleteForeverButton": "영구 삭제",
-  "DeleteForeverNote": "휴지통의 모든 항목이 영구 삭제되며, 복구할 수 없습니다.",
-  "DeleteForeverNoteArchive": "아카이브의 모든 항목이 영구히 삭제됩니다. 삭제되면 복원할 수 없습니다.",
-  "DeleteForeverTitle": "영구 삭제하시겠습니까?",
-  "SuccessEmptyArchived": "아카이브가 비었습니다",
-  "SuccessEmptyTrash": "휴지통이 비워졌습니다"
-}

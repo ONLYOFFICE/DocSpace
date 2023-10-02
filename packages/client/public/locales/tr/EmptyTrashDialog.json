@@ -1,8 +1,0 @@
-{
-  "DeleteForeverButton": "Kalıcı olarak sil",
-  "DeleteForeverNote": "Çöp Kutusu'ndaki tüm öğeler kalıcı olarak silinecek. Onları geri yükleyemezsiniz.",
-  "DeleteForeverNoteArchive": "Arşivlenen tüm öğeler kalıcı olarak silinecektir. Onları geri yükleyemezsiniz.",
-  "DeleteForeverTitle": "Kalıcı olarak sil?",
-  "SuccessEmptyArchived": "Arşivlenenler boşaltıldı",
-  "SuccessEmptyTrash": "Çökp kutusu boşaltıldı"
-}

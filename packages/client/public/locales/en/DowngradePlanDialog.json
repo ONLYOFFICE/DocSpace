@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "You cannot change your plan because the used storage volume or the number of admins/power users exceeds the limitations of the selected plan:",
-  "ChangePricingPlan": "Change pricing plan",
-  "PlanStorageLimit": "New tariff's limitation is <1>{{storageValue}}</1> of storage, and your current used storage is <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "You wish to downgrade the team to <1>{{usersCount}}</1> admins/power users, and current number of such users in your DocSpace is <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Please eliminate the mismatch in the conflicting parameter to proceed or keep your active pricing plan."
-}

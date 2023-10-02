@@ -1,7 +1,0 @@
-{
-  "ChooseFormatText": "Choose the format for each file to be downloaded",
-  "ConvertMessage": "If you choose to convert the file to a format different from the original, some data might be lost.",
-  "ConvertToZip": "Files will be compressed into the <strong>.zip file</strong>",
-  "CustomFormat": "Custom format",
-  "OriginalFormat": "Original format"
-}

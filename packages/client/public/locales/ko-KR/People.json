@@ -1,7 +1,0 @@
-{
-  "LblInviteAgain": "다시 초대",
-  "MessageEmailActivationInstuctionsSentOnEmail": "이메일 활성화 방법이 <1>{{email}}</1> 이메일 주소로 전송되었습니다.",
-  "NotFoundUsers": "사용자를 찾을 수 없습니다",
-  "NotFoundUsersDescription": "필터와 일치하는 사람을 표시할 수 없습니다. 다른 필터 옵션을 선택하거나 이 섹션의 모든 사람을 보려면 필터를 지우세요.",
-  "UserStatus": "상태"
-}

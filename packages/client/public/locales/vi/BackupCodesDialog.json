@@ -1,8 +1,0 @@
-{
-  "BackupCodesDescription": "Sử dụng mã dự phòng để đăng nhập khi bạn không có quyền truy cập vào điện thoại của mình.",
-  "BackupCodesSecondDescription": "Mỗi mã có thể được sử dụng một lần. Bạn có thể nhận mã mới bất kỳ lúc nào. Chỉ những mã được tạo sau cùng mới hợp lệ.",
-  "BackupCodesTitle": "Mã dự phòng",
-  "CodesCounter": "mã:",
-  "PrintButton": "In",
-  "RequestNewButton": "Yêu cầu mới"
-}

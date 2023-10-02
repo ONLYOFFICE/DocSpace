@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Data.Backup.Contracts;
-
-message DeleteSchedule {
-    int32 tenant_id = 1;
-}

@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Et voi muuttaa ohjelmaasi, koska käytetyn muistin määrä tai ylläpitäjien/tehokäyttäjien määrä ylittää valitun ohjelman rajoitukset:",
-  "ChangePricingPlan": "Muuta hinnoitteluohjelmaa",
-  "PlanStorageLimit": "Uuden tariffin rajoitus on <1>{{storageValue}}</1> muistista ja käytetyn muistin määrä on  <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "Haluat alentaa tiimin<1>{{usersCount}}</1>ylläpitäjiksi/tehokäyttäjiksi ja nykyinen määrä sellaisia käyttäjiä DocSpacessasi on <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "DocSpacen omistajana, sinun tulee siirtää omistajuus toiselle käyttäjälle ennen kuin voit poistaa tilisi. Ole hyvä ja valitse uusi omistaja jatkaaksesi."
-}

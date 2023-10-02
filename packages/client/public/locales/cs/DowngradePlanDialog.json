@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Tarif nelze změnit, protože použitý objem úložiště nebo počet správců/oprávněných uživatelů přesahuje omezení zvoleného tarifu:",
-  "ChangePricingPlan": "Změnit cenový tarif",
-  "PlanStorageLimit": "Omezení nového tarifu je <1>{{storageValue}}</1> úložného prostoru a váš aktuální využívaný úložný prostor je <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "Přejete si snížit úroveň týmu na <1>{{usersCount}}</1> administrátorů/správců a aktuální počet těchto uživatelů ve vašem prostoru DocSpace je <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Chcete-li pokračovat, odstraňte prosím nesoulad v konfliktním parametru nebo si ponechte svůj aktivní cenový tarif."
-}

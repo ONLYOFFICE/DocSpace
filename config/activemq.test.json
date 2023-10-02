@@ -1,5 +1,0 @@
-{
-  "ActiveMQ": {
-    "Uri": "amqp://127.0.0.1:5672?nms.username=guest&nms.password=password"
-  }
-}

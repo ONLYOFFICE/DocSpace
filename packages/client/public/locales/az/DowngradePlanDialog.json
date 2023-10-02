@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "İstifadə olunan yaddaşın həcmi və ya admin/ekspert istifadəçilərin sayı seçilmiş planın məhdudiyyətlərini keçdiyi üçün planınızı dəyişə bilməzsiniz:",
-  "ChangePricingPlan": "Qiymət planını dəyişdirin",
-  "PlanStorageLimit": "Yeni tarifin məhdudiyyəti <1>{{storageValue}}</1> yaddaş və cari istifadə etdiyiniz yaddaş <1>{{currentStorageValue}}</1>-dir.",
-  "PlanUsersLimit": "Siz komandanı <1>{{usersCount}}</1> admin/ekspert istifadəçi səviyyəsinə endirmək istəyirsiniz və DocSpace-də belə istifadəçilərin cari sayı <1>{{currentUsersCount}}</1>-dir.",
-  "SaveOrChange": "Bu DocSpace-in sahibi olaraq, hesabınızı silməzdən əvvəl sahibliyi başqa istifadəçiyə ötürməlisiniz. Davam etmək üçün yeni sahibkar seçin."
-}

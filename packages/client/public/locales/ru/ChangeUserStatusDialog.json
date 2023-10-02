@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "разблокированы",
-  "ChangeUsersDisableStatus": "заблокированы",
-  "ChangeUserStatusDialog": "Пользователи со статусом '{{ userStatus }}' будут {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Изменение статуса",
-  "ChangeUserStatusDialogMessage": "Вы не можете изменить статус владельца DocSpace и свой собственный статус."
-}

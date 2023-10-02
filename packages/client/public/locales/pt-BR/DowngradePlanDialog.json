@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Você não pode alterar seu plano porque o volume de armazenamento usado ou o número de administradores/usuários avançados excede as limitações do plano selecionado:",
-  "ChangePricingPlan": "Alterar plano de preços",
-  "PlanStorageLimit": "A limitação da nova tarifa é <1>{{storageValue}}</1> de armazenamento, e seu armazenamento atual usado é <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "Você deseja rebaixar a equipe para <1>{{usersCount}}</1> administradores/usuários avançados, e o número atual desses usuários em seu DocSpace é <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Elimine a incompatibilidade no parâmetro conflitante para prosseguir ou manter seu plano de preços ativo."
-}

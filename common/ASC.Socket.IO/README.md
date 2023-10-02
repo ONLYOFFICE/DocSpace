@@ -1,3 +1,0 @@
-﻿# ASC.Socket.IO
-
-

@@ -1,8 +1,0 @@
-{
-  "BackupCodesDescription": "Käytä varakoodeja kirjautuaksesi sisään, kun sinulla ei ole pääsyä puhelimeesi.",
-  "BackupCodesSecondDescription": "Jokaista koodia voidaan käyttää kerran. Voit saada uusia koodeja milloin tahansa. Vain viimeksi luodut koodit ovat kelvollisia.",
-  "BackupCodesTitle": "Varakoodit",
-  "CodesCounter": "Koodit:",
-  "PrintButton": "Tulosta",
-  "RequestNewButton": "Pyydä uusi"
-}

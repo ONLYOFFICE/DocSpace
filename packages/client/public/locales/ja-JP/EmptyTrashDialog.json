@@ -1,8 +1,0 @@
-{
-  "DeleteForeverButton": "永久削除",
-  "DeleteForeverNote": "ゴミ箱のアイテムはすべて永久に削除されます。復元することはできません。",
-  "DeleteForeverNoteArchive": "アーカイブされたアイテムはすべて永久に削除されます。  復元することができなくなります。",
-  "DeleteForeverTitle": "永久削除？",
-  "SuccessEmptyArchived": "アーカイブを空にしました",
-  "SuccessEmptyTrash": "ゴミ箱を空にする"
-}

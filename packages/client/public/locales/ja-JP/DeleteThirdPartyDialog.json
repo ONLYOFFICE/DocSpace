@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "「文書」モジュールから{{service}}を削除してもよろしいですか？これは、どのような方法であなたの{{account}}アカウントには影響",
-  "DisconnectCloudTitle": "クラウドの接続解除",
-  "SuccessDeleteThirdParty": "第三方の{{service}}が削除されました。"
-}

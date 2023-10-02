@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Non puoi modificare il tuo piano perché il volume di archiviazione utilizzato o il numero di amministratori/power user supera i limiti del piano selezionato:",
-  "ChangePricingPlan": "Cambia piano tariffario",
-  "PlanStorageLimit": "Il limite della nuova tariffa è <1>{{storageValue}}</1> di spazio di archiviazione e lo spazio di archiviazione utilizzato attualmente è <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "Desideri eseguire il downgrade del team a <1>{{usersCount}}</1> amministratori/utenti avanzati e il numero attuale di tali utenti nel tuo DocSpace è <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Ti preghiamo di eliminare la mancata corrispondenza nel parametro in conflitto per procedere o mantenere il tuo piano tariffario attivo."
-}

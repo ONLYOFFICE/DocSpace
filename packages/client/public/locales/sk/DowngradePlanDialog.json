@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Nemôžete zmeniť plán, pretože používaná kapacita úložiska alebo počet administrátorov/pokročilých používateľov prekračuje limity vybraného plánu:",
-  "ChangePricingPlan": "Zmeniť cenový plán",
-  "PlanStorageLimit": "Nový limit rýchlosti je <1>{{storageValue}}</1> úložiska a váš aktuálne využívaný objem úložiska je <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "Chcete znížiť počet členov tímu na <1>{{usersCount}}</1> administrátorov/pokročilých používateľov a aktuálny počet takýchto používateľov vo vašom DocSpace je <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Znížte požadovaný parameter alebo zachovajte aktuálny cenový plán."
-}

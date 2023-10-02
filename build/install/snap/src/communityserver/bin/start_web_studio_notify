@@ -1,5 +1,0 @@
-#!/bin/bash
-
-echo "RUN ASC.Studio.Notify"
-
-exec dotnet run --project ${SNAP_DATA}\common\services\ASC.Studio.Notify\ASC.Studio.Notify.csproj --no-build

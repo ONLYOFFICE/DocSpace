@@ -1,7 +1,0 @@
-{
-  "LblInviteAgain": "Pozvať znova",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na <1>{{email}}</1> e-mail.",
-  "NotFoundUsers": "Používatelia sa nenašli",
-  "NotFoundUsersDescription": "Nie je možné zobraziť ľudí vyhovujúcich vášmu filtru. Ak chcete zobraziť všetkých ľudí v tejto sekcii, vyberte iné možnosti filtra alebo zrušte filter.",
-  "UserStatus": "Stav"
-}

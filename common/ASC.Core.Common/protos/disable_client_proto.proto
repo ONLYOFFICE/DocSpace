@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Core.Common.Notify;
-
-message DisableClientProto {
-    int32 tenant_id= 1;
-}

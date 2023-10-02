@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "enabled",
-  "ChangeUsersDisableStatus": "disabled",
-  "ChangeUserStatusDialog": "The users with the '{{ userStatus }}' will be {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Change status",
-  "ChangeUserStatusDialogMessage": "You can't change the status for the DocSpace owner and for yourself."
-}

@@ -1,8 +1,0 @@
-{
-  "ChangeUserTypeButton": "Փոխել տեսակը",
-  "ChangeUserTypeHeader": "Փոխել օգտվողի տեսակը",
-  "ChangeUserTypeMessage": "'{{ firstType }}'տեսակի օգտատերերը կտեղափոխվեն '{{ secondType }}' տեսակի.",
-  "ChangeUserTypeMessageMulti": "Ընտրված օգտվողները կտեղափոխվեն '{{ secondType }}' տեսակի:",
-  "ChangeUserTypeMessageWarning": "Դուք չեք կարող փոխել տեսակը DocSpace-ի ադմինիստրատորների և ձեզ համար",
-  "SuccessChangeUserType": "Օգտատիրոջ տեսակը հաջողությամբ փոխվել է"
-}

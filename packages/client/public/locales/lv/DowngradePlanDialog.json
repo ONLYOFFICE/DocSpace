@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Plānu nevar mainīt, jo izmantotais krātuves apjoms vai administratoru/prasmīgo lietotāju skaits pārsniedz atlasītā plāna ierobežojumus:",
-  "ChangePricingPlan": "Mainīt cenu plānu",
-  "PlanStorageLimit": "Jaunā tarifa ierobežojums ir <1>{{storageValue}}</1> no krātuves, un pašreizējā izmantotā krātuve ir <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "Jūs vēlaties pazemināt darba grupu līdz <1>{{usersCount}}</1> administratoru (-iem)/pieredzējušu (-iem) lietotāju (-iem), un pašreizējais šādu lietotāju skaits jūsu DocSpace ir <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Lai varētu izdzēst savu kontu, jums kā šī DocSpace īpašniekam (-cei) ir jānodod īpašumtiesības citam lietotājam (-i). Lai turpinātu, lūdzu, izvēlieties jaunu īpašnieku (-ci)."
-}

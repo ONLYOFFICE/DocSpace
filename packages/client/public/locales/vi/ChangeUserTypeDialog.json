@@ -1,8 +1,0 @@
-{
-  "ChangeUserTypeButton": "Thay đổi loại",
-  "ChangeUserTypeHeader": "Thay đổi loại người dùng",
-  "ChangeUserTypeMessage": "Người dùng loại '{{ firstType }}' sẽ được chuyển sang loại '{{ secondType }}'.",
-  "ChangeUserTypeMessageMulti": "Người dùng đã chọn sẽ được chuyển sang loại '{{ secondType }}'.",
-  "ChangeUserTypeMessageWarning": "Bạn không thể thay đổi kiểu cho người quản trị DocSpace và cho chính mình.",
-  "SuccessChangeUserType": "Loại người dùng đã được thay đổi thành công"
-}

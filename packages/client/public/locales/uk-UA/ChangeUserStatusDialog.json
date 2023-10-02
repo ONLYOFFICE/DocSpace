@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "увімкнено",
-  "ChangeUsersDisableStatus": "вимкнено",
-  "ChangeUserStatusDialog": "Користувача зі статусом '{{ userStatus }}' буде {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Змінити статус",
-  "ChangeUserStatusDialogMessage": "Ви не можете змінити статус для власника DocSpace та для себе."
-}

@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "Θέλετε σίγουρα να καταργήσετε την υπηρεσία {{service}}; Αυτό δεν θα επηρεάσει τον λογαριασμό σας {{account}} με κανέναν τρόπο.",
-  "DisconnectCloudTitle": "Αποσύνδεση cloud",
-  "SuccessDeleteThirdParty": "Η υπηρεσία {{service}} τρίτου μέρους διαγράφηκε"
-}

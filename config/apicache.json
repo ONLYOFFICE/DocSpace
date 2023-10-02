@@ -1,8 +1,0 @@
-{
-	"auth" : {
-		"allowskip" : {
-			"default" : false,
-			"registerportal": true
-		}
-	}
-}

@@ -1,8 +1,0 @@
-{
-  "ChangeUserTypeButton": "Wijzig type",
-  "ChangeUserTypeHeader": "Wijzig gebruiker type",
-  "ChangeUserTypeMessage": "Gebruikers met de '{{ firstType }}' type worden verplaatst naar '{{ secondType }}' type.",
-  "ChangeUserTypeMessageMulti": "De geselecteerde gebruikers worden verplaatst naar het type '{{ secondType }}'.",
-  "ChangeUserTypeMessageWarning": "U kunt het type niet veranderen voor de DocSpace-beheerders en voor uzelf.",
-  "SuccessChangeUserType": "Het gebruikerstype werd met succes gewijzigd"
-}

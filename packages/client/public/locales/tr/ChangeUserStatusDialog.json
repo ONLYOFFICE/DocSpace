@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "etkinleştirildi",
-  "ChangeUsersDisableStatus": "devre dışı bırakıldı",
-  "ChangeUserStatusDialog": "'{{ userStatus }} durumuna sahip kullanıcılar {{ status }} olacak.",
-  "ChangeUserStatusDialogHeader": "Kullanıcı durumunu değiştir",
-  "ChangeUserStatusDialogMessage": "DocSpace sahibi ve kendiniz için durumu değiştiremezsiniz."
-}

@@ -1,9 +1,0 @@
-{
-  "Error401Text": "抱歉，资源目前无法访问。",
-  "Error403Text": "对不起，拒绝访问。",
-  "Error404Text": "对不起，找不到资源。",
-  "ErrorDeactivatedText": "该协作空间已停用",
-  "ErrorEmptyResponse": "空响应",
-  "ErrorOfflineText": "未找到网络连接。",
-  "ErrorUnavailableText": "协作空间不可用"
-}

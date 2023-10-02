@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "Sei sicuro di voler rimuovere il {{service}} dai 'Documenti'? Ciò non avrà alcun effetto sul tuo account {{account}}.",
-  "DisconnectCloudTitle": "Scollegare il cloud",
-  "SuccessDeleteThirdParty": "Il servizio di terze parti {{service}} è stato cancellato"
-}

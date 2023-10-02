@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "Möchten Sie wirklich {{service}} aus 'Dokumente' entfernen? Dies wird Ihr Konto {{account}} nicht beeinflussen.",
-  "DisconnectCloudTitle": "Cloud-Verbindung trennen",
-  "SuccessDeleteThirdParty": "{{service}} wurde deaktiviert"
-}

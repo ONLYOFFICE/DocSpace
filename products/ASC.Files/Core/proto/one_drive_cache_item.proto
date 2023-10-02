@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package ASC.Files.Thirdparty.OneDrive;
-
-message OneDriveCacheItem {
-    bool reset_all = 1;
-    string key = 2;
-}

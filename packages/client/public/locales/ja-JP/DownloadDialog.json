@@ -1,7 +1,0 @@
-{
-  "ChooseFormatText": "ダウンロードする各ファイルの形式を選択します。",
-  "ConvertMessage": "元のファイルとは異なる形式に変換した場合、一部のデータが失われる可能性があります。",
-  "ConvertToZip": "ファイルは<strong>.zipファイル</strong>に圧縮されます",
-  "CustomFormat": "カスタム形式",
-  "OriginalFormat": "オリジナル形式"
-}

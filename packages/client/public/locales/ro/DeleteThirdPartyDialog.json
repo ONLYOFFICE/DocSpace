@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "Sigur doriţi să eliminaţi {{service}}? Acest lucru nu va afecta în niciun fel contul dvs {{account}}.",
-  "DisconnectCloudTitle": "Deconectare de la cloud",
-  "SuccessDeleteThirdParty": "Serviciul de parte terță {{service}} este eliminat"
-}

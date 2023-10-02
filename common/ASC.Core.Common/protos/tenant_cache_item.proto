@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Core.Caching;
-
-message TenantCacheItem {
-    int32 tenant_id  = 1;
-}

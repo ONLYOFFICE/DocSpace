@@ -1,8 +1,0 @@
-{
-  "ChangeUserTypeButton": "Modifier le type",
-  "ChangeUserTypeHeader": "Changer le type d'utilisateur",
-  "ChangeUserTypeMessage": "Les utilisateurs du type '{{ firstType }}' seront transférés vers le type '{{ secondType }}'.",
-  "ChangeUserTypeMessageMulti": "Les utilisateurs sélectionnés seront déplacés vers le type '{{ secondType }}'.",
-  "ChangeUserTypeMessageWarning": "Vous ne pouvez pas changer le type pour les administrateurs de DocSpace ainsi que pour vous même.",
-  "SuccessChangeUserType": "Le type de l'utilisateur a été modifié avec succès"
-}

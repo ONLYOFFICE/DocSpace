@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "Iespējots",
-  "ChangeUsersDisableStatus": "atspējots",
-  "ChangeUserStatusDialog": "Lietotāji ar '{{ userStatus }}' statusu tiks {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Mainiet lietotāja statusu",
-  "ChangeUserStatusDialogMessage": "Jūs nevarat mainīt statusu DocSpace īpašnieka un sev."
-}

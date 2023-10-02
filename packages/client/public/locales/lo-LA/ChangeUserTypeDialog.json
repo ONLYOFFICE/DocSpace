@@ -1,8 +1,0 @@
-{
-  "ChangeUserTypeButton": "ປ່ຽນປະເພດ",
-  "ChangeUserTypeHeader": "ປ່ຽນປະເພດຜູ້ໃຊ້",
-  "ChangeUserTypeMessage": "ຜູ້ໃຊ້ທີ່ມີປະເພດ '{{firstType}}' ຈະຖືກຍ້າຍໄປປະເພດ '{{secondType}}'.",
-  "ChangeUserTypeMessageMulti": "ຜູ້ໃຊ້ທີ່ເລືອກຈະຖືກຍ້າຍໄປໃສ່ປະເພດ '{{ secondType }}'.",
-  "ChangeUserTypeMessageWarning": "ທ່ານບໍ່ສາມາດປ່ຽນປະເພດ ສຳລັບຜູ້ບໍລິຫານ DocSpace ແລ ະຕົວທ່ານເອງ.",
-  "SuccessChangeUserType": "ປະເພດຜູ້ໃຊ້ຖືກປ່ຽນແປງສຳເລັດຜົນແລ້ວ."
-}

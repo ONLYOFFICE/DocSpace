@@ -1,4 +1,0 @@
-#!/bin/bash
-
-echo "RUN ASC.Web.Studio"
-exec set BROWSER=none&&npm start --prefix ${SNAP_DATA}/web/ASC.Web.Client/

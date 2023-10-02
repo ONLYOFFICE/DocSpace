@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Kullanılan depolama hacmi veya yönetici/uzman kullanıcı sayısı seçilen planın limitlerini aştığı için planınızı değiştiremezsiniz:",
-  "ChangePricingPlan": "Fiyatlandırma planını değiştir",
-  "PlanStorageLimit": "Yeni tarifenin sınırlaması <1>{{storageValue}}</1> depolama alanı ve mevcut kullanılan depolama alanınız <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "Ekibi <1>{{usersCount}}</1> yönetici/uzman kullanıcı sayısına düşürmek istiyorsunuz ve DocSpace'inizdeki bu tür kullanıcıların mevcut sayısı <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Devam etmek veya aktif fiyatlandırma planınızı sürdürmek için lütfen çakışan parametredeki uyuşmazlığı giderin."
-}
