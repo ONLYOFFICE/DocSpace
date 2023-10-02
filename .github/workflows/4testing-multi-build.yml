@@ -40,10 +40,9 @@ jobs:
       - name: Build 4testing
         run: |
           cd .${DOCKER_PATH}
+          DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b\|^feature\b/s/release.*\/\|hotfix.*\/\|feature.*\///; s/-git-action$//; s/^v//').${{github.run_number}}
           if [ "${GITHUB_REF_NAME}" = "mydev-test" ]; then
             DOCKER_TAG="2.0.0"
-          else
-            DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b\|^feature\b/s/release.*\/\|hotfix.*\/\|feature.*\///; s/-git-action$//; s/^v//').${{github.run_number}}
           fi
           export DOCKER_TAG
 
