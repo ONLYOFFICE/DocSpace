@@ -1023,9 +1023,9 @@ public class FileSecurity : IFileSecurity
 
         FileShareRecord ace;
 
-        if (!isRoom && e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive && 
-            (_cachedRecords.TryGetValue(GetCacheKey(e.ParentId, userId), out var value)) || 
-            _cachedRecords.TryGetValue(GetCacheKey(e.ParentId, await _externalShare.GetLinkIdAsync()), out value))
+        if (e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive && 
+            (_cachedRecords.TryGetValue(GetCacheKey(e.ParentId, userId, isRoom), out var value)) || 
+            _cachedRecords.TryGetValue(GetCacheKey(e.ParentId, await _externalShare.GetLinkIdAsync(), isRoom), out value))
         {
             ace = value.Clone();
             ace.EntryId = e.Id;
@@ -1064,12 +1064,12 @@ public class FileSecurity : IFileSecurity
                     .FirstOrDefault();
             }
             
-            if (!isRoom && e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive && 
-                ace is { SubjectType: SubjectType.User or SubjectType.ExternalLink })
+            if (e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive && 
+                ace is { SubjectType: SubjectType.User or SubjectType.ExternalLink or SubjectType.PrimaryExternalLink })
             {
-                var id = ace.SubjectType == SubjectType.ExternalLink ? ace.Subject : userId;
+                var id = ace.SubjectType is SubjectType.ExternalLink or SubjectType.PrimaryExternalLink ? ace.Subject : userId;
 
-                _cachedRecords.TryAdd(GetCacheKey(e.ParentId, id), ace);
+                _cachedRecords.TryAdd(GetCacheKey(e.ParentId, id, isRoom), ace);
             }
         }
 
@@ -1902,9 +1902,16 @@ public class FileSecurity : IFileSecurity
         return false;
     }
 
-    private string GetCacheKey<T>(T parentId, Guid userId)
+    private string GetCacheKey<T>(T entryId, Guid userId, bool isRoom)
     {
-        return $"{_tenantManager.GetCurrentTenant().Id}-{userId}-{parentId}";
+        var key = $"{_tenantManager.GetCurrentTenant().Id}-{userId}-{entryId}";
+
+        if (isRoom)
+        {
+            key += $"-room";
+        }
+
+        return key;
     }
 
     private string GetCacheKey<T>(T parentId)
