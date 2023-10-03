@@ -1,12 +1,15 @@
 [submodule "client"]
 	path = client
 	url = ../DocSpace-client.git
+	branch = .
 	update = merge
 [submodule "build"]
 	path = buildtools
 	url = ../DocSpace-buildtools.git
+	branch = .
 	update = merge
 [submodule "server"]
 	path = server
 	url = ../DocSpace-server.git
+	branch = .
 	update = merge
