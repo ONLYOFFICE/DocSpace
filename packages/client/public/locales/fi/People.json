@@ -1,7 +1,0 @@
-{
-  "LblInviteAgain": "Kutsu uudelleen",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <1>{{email}}</1>.",
-  "NotFoundUsers": "Käyttäjiä ei löytynyt",
-  "NotFoundUsersDescription": "Suodatintasi vastaavia ihmisiä ei voida näyttää. Ole hyvä ja valitse suodattimeen toiset valinnat nähdäksi kaikki ihmiset tässä osiossa.",
-  "UserStatus": "Tila"
-}

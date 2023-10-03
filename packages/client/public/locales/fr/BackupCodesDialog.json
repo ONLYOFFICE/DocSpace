@@ -1,8 +1,0 @@
-{
-  "BackupCodesDescription": "Utilisez des codes de sauvegarde pour vous connecter lorsque vous n'avez pas accès à votre téléphone.",
-  "BackupCodesSecondDescription": "Chaque code peut être utilisé une fois. Vous pouvez obtenir de nouveaux codes à tout moment. Seuls les codes générés en dernier sont valables.",
-  "BackupCodesTitle": "Codes de sauvegarde",
-  "CodesCounter": "Codes:",
-  "PrintButton": "Imprimer",
-  "RequestNewButton": "Demander de nouvelles"
-}

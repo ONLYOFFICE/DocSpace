@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "Weet u zeker dat u {{service}} wilt verwijderen? Dit heeft geen enkele invloed op uw {{account}} account.",
-  "DisconnectCloudTitle": "Verbreek de verbinding met de cloud",
-  "SuccessDeleteThirdParty": "Externe partij {{service}} is verwijderd"
-}

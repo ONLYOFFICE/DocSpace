@@ -1,5 +1,0 @@
-{
-  "DeleteUser": "Poista käyttäjä",
-  "DeleteUserMessage": "{{userCaption}} <strong>{{user}}</strong> poistetaan. Käyttäjän henkilökohtaiset dokumentit, jotka on saatavilla muille, poistetaan. Haluatko varmasti jatkaa?",
-  "SuccessfullyDeleteUserInfoMessage": "Käyttäjä on poistettu onnistuneesti"
-}

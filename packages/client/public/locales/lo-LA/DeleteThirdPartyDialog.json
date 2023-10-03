@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ {{service}} ອອກ? ອັນນີ້ຈະບໍ່ສົ່ງຜົນກະທົບຕໍ່ບັນຊີ {{account}} ຂອງທ່ານໃນທາງໃດກໍ່ຕາມ.",
-  "DisconnectCloudTitle": "ຕັດການເຊື່ອມຕໍ່ຄລາວ",
-  "SuccessDeleteThirdParty": "ລົບ {{service}} ຂອງບຸກຄົນທີສາມແລ້ວ"
-}

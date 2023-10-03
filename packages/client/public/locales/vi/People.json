@@ -1,7 +1,0 @@
-{
-  "LblInviteAgain": "Mời lại",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Email hướng dẫn kích hoạt đã được gửi đến địa chỉ email <1>{{email}}</1>.",
-  "NotFoundUsers": "Không tìm thấy người dùng",
-  "NotFoundUsersDescription": "Không có người phù hợp với bộ lọc của bạn để hiển thị. Xin vui lòng chọn các tùy chọn bộ lọc khác hoặc xóa bộ lọc để xem tất cả những người trong phần này.",
-  "UserStatus": "Trạng thái"
-}

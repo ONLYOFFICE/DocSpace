@@ -1,7 +1,0 @@
-{
-  "LblInviteAgain": "もう一度招待する",
-  "MessageEmailActivationInstuctionsSentOnEmail": "電子メールによるアクティベーションの指示は、<1>{{email}}</1>のメールアドレスに送信されています。",
-  "NotFoundUsers": "ユーザーが見つかりません",
-  "NotFoundUsersDescription": "フィルターに一致する人は表示できません。このセクションのすべての人を表示するには、他のフィルタオプションを選択するか、フィルタをクリアしてください。",
-  "UserStatus": "ステータス"
-}

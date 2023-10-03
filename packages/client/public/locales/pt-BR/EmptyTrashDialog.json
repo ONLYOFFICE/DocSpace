@@ -1,8 +1,0 @@
-{
-  "DeleteForeverButton": "EXCLUIR definitivamente",
-  "DeleteForeverNote": "Todos os itens do Lixo serão apagados para sempre. Você não será capaz de restaurá-los.",
-  "DeleteForeverNoteArchive": "Todos os itens arquivados serão excluídos para sempre. Você não poderá restaurá-los.",
-  "DeleteForeverTitle": "Eliminar para sempre?",
-  "SuccessEmptyArchived": "Arquivado esvaziado",
-  "SuccessEmptyTrash": "Lixo esvaziado"
-}

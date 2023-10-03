@@ -1,5 +1,0 @@
-{
-  "DeleteUser": "Dzēst lietotāju",
-  "DeleteUserMessage": "{{userCaption}} <strong>{{user}}</strong> tiks izdzēsts. Lietotāja personas dokumenti, kas ir pieejami citiem, tiks izdzēsti. Vai tiešām vēlaties turpināt?",
-  "SuccessfullyDeleteUserInfoMessage": "Lietotājs ir veiksmīgi izdzēsts"
-}

@@ -1,5 +1,0 @@
-{
-  "DeleteUser": "Șterge utilizatorul",
-  "DeleteUserMessage": "{{userCaption}} <strong>{{user}}</strong> va fi şters. Documentele personale ai utilizatorului care sunt disponibile altor utilizatori vor fi şterse. Sigur doriţi să continuați?",
-  "SuccessfullyDeleteUserInfoMessage": "Utilizatorul a fost șters cu succes"
-}

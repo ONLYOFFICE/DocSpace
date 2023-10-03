@@ -1,8 +1,0 @@
-{
-  "Error401Text": "Üzgünüz, kaynak şu anda ulaşılabilir değil.",
-  "Error403Text": "Üzgünüz, erişim reddedildi.",
-  "Error404Text": "Üzgünüz, kaynak bulunamadı.",
-  "ErrorEmptyResponse": "Boş yanıt",
-  "ErrorOfflineText": "İnternet bağlantısı bulunamadı",
-  "ErrorUnavailableText": "DocSpace kullanılamıyor"
-}

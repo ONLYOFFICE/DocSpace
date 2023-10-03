@@ -1,8 +1,0 @@
-{
-  "BackupCodesDescription": "Use códigos de cópia de segurança para iniciar sessão quando não tiver acesso ao seu telefone.",
-  "BackupCodesSecondDescription": "Cada código pode ser usado uma vez. Você pode obter novos códigos a qualquer momento. Apenas os códigos gerados por último são válidos.",
-  "BackupCodesTitle": "Códigos de cópia de segurança",
-  "CodesCounter": "códigos:",
-  "PrintButton": "Imprimir",
-  "RequestNewButton": "Solicitar novo"
-}

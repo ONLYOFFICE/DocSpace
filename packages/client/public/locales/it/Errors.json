@@ -1,9 +1,0 @@
-{
-  "Error401Text": "Spiacente, la risorsa non è attualmente accessibile.",
-  "Error403Text": "Spiacente, accesso negato.",
-  "Error404Text": "Spiacente, impossibile trovare la risorsa.",
-  "ErrorDeactivatedText": "Questo DocSpace è disattivato",
-  "ErrorEmptyResponse": "Risposta vuota",
-  "ErrorOfflineText": "Nessuna connessione a internet trovata",
-  "ErrorUnavailableText": "DocSpace non disponibile"
-}

@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package ASC.Files.Thirdparty.SharePoint;
-
-message SharePointProviderCacheItem {
-    string file_key = 1;
-    string folder_key = 2;
-}

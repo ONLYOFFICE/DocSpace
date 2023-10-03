@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "使用するストレージ容量や管理者/パワーユーザー数が選択したプランの制限を超えているため、プランを変更することができません：",
-  "ChangePricingPlan": "料金プランの変更",
-  "PlanStorageLimit": "新料金プランの制限は、<1>{{storageValue}}</1>のストレージで、現在使用しているストレージは<1>{{currentStorageValue}}</1>です。",
-  "PlanUsersLimit": "チームを <1>{{usersCount}}</1>人の管理者/パワーユーザーにダウングレードしようとしていますが、DocSpaceの現在のユーザー数は<1>{{currentUsersCount}}</1>になっています。",
-  "SaveOrChange": "競合するパラメーターの不一致を解消して、手続きを進めるか、有効な料金プランを維持してください。"
-}

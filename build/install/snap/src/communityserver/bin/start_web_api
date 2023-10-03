@@ -1,4 +1,0 @@
-#!/bin/bash
-
-echo "RUN ASC.Web.Api"
-exec dotnet run --project ${SNAP_DATA}\web\ASC.Web.Api\ASC.Web.Api.csproj --no-build

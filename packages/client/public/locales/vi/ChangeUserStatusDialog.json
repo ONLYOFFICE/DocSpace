@@ -1,7 +1,0 @@
-{
-  "ChangeUsersActiveStatus": "Đã bật",
-  "ChangeUsersDisableStatus": "Đã tắt",
-  "ChangeUserStatusDialog": "Người dùng có trạng thái '{{ userStatus }}' sẽ bị {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Thay đổi trạng thái người dùng",
-  "ChangeUserStatusDialogMessage": "Bạn không thể thay đổi trạng thái cho chủ sở hữu DocSpace và cho chính mình."
-}

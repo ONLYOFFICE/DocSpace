@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "정말로 {{service}} 서비스를 삭제하시겠습니까? 이는 {{account}} 계정에 어떤 식으로든 영향을 미치지 않습니다.",
-  "DisconnectCloudTitle": "클라우드 연결 해제",
-  "SuccessDeleteThirdParty": "제3자 {{service}} 서비스가 삭제되었습니다"
-}

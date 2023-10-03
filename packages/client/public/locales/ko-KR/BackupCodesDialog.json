@@ -1,8 +1,0 @@
-{
-  "BackupCodesDescription": "휴대 전화를 이용할 수 없을 때 백업 코드를 사용하여 로그인하세요.",
-  "BackupCodesSecondDescription": "각 코드는 한 번만 사용할 수 있으며, 언제든지 새 코드를 받을 수 있습니다. 마지막으로 생성된 코드만 유효합니다.",
-  "BackupCodesTitle": "백업 코드",
-  "CodesCounter": "코드:",
-  "PrintButton": "인쇄",
-  "RequestNewButton": "새로 요청"
-}

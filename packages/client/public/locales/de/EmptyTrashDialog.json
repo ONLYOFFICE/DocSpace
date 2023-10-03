@@ -1,8 +1,0 @@
-{
-  "DeleteForeverButton": "permanent löschen",
-  "DeleteForeverNote": "Alle Objekte aus dem Papierkorb werden für immer gelöscht. Sie können sie nicht wiederherstellen.",
-  "DeleteForeverNoteArchive": "Alle archivierten Objekte werden für immer gelöscht. Sie können sie nicht mehr wiederherstellen.",
-  "DeleteForeverTitle": "löschen? (dies kann nicht rückgängig gemacht werden)",
-  "SuccessEmptyArchived": "Archiv geleert",
-  "SuccessEmptyTrash": "Papierkorb wurde geleert"
-}

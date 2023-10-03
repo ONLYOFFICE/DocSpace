@@ -1,7 +1,0 @@
-{
-  "LblInviteAgain": "Πρόσκληση ξανά",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Οι οδηγίες ενεργοποίησης μέσω email έχουν σταλεί στη διεύθυνση email <1>{{email}}</1>",
-  "NotFoundUsers": "Δεν βρέθηκαν χρήστες",
-  "NotFoundUsersDescription": "Δεν μπορούν να εμφανιστούν άτομα που ταιριάζουν με το φίλτρο σας. Επιλέξτε άλλα φίλτρα ή καθαρίστε το φίλτρο για να δείτε όλα τα άτομα σε αυτό το τμήμα.",
-  "UserStatus": "Κατάσταση"
-}

@@ -1,9 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Core;
-
-message DataStoreCacheItem {
-    string module  = 1;
-
-    string tenant_id = 2;
-}

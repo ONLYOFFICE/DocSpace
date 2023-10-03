@@ -1,7 +1,0 @@
-{
-  "ChooseFormatText": "Wybierz format dla każdego pobieranego pliku",
-  "ConvertMessage": "Jeśli zdecydujesz się na konwersję pliku do innego formatu, niż oryginalny, ryzykujesz utratę części danych.",
-  "ConvertToZip": "Pliki zostaną skompresowane do formatu <strong>.zip</strong>",
-  "CustomFormat": "Niestandardowy format",
-  "OriginalFormat": "Oryginalny format"
-}

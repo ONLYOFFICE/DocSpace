@@ -1,8 +1,0 @@
-{
-  "BackupCodesDescription": "当您无法使用手机时可通过备用代码进行登录。",
-  "BackupCodesSecondDescription": "每个代码都仅能使用一次。您可随时获取新代码。只有最后生成的代码才有效。",
-  "BackupCodesTitle": "备份代码",
-  "CodesCounter": "代码：",
-  "PrintButton": "打印",
-  "RequestNewButton": "请求新的"
-}

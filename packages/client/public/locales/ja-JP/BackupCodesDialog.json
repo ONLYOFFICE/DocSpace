@@ -1,8 +1,0 @@
-{
-  "BackupCodesDescription": "携帯電話にアクセスできないときは、バックアップコードを使ってサインインしてください。",
-  "BackupCodesSecondDescription": "各コードは一度だけ使用できます。新しいコードはいつでも入手できます。最後に生成されたコードのみが有効です。",
-  "BackupCodesTitle": "バックアップコード",
-  "CodesCounter": "コード:",
-  "PrintButton": "プリント",
-  "RequestNewButton": "新規リクエスト"
-}

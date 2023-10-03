@@ -1,7 +1,0 @@
-{
-  "LblInviteAgain": "Povabi znova",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Navodila za aktivacijo e-mail naslova so bila poslana na <1>{{email}}</1> email naslov.",
-  "NotFoundUsers": "Ni najdenih uporabnikov",
-  "NotFoundUsersDescription": "Ni mogoče prikazati oseb, ki ustrezajo vašemu filtru. Izberite druge možnosti filtra ali počistite filter, da si ogledate vse osebe v tem razdelku.",
-  "UserStatus": "Status"
-}

@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Common.Threading;
-
-message DistributedTaskCancelation {
-    string id = 1;
-}

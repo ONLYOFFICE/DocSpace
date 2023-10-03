@@ -1,5 +1,0 @@
-{
-  "DeleteUser": "ユーザーを削除します",
-  "DeleteUserMessage": "{{userCaption}}<strong>{{user}}</strong>が削除されるようになります。別のユーザーに利用可能なユーザーの個人文書も削除されるようになります。続行してもよろしいですか？",
-  "SuccessfullyDeleteUserInfoMessage": "ユーザーの削除に成功しました。"
-}

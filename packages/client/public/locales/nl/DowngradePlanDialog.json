@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "U kunt uw plan niet aanpassen omdat het gebruikte opslagvolume of het aantal beheerders/machtige gebruikers de beperkingen van het geselecteerde plan overschrijdt:",
-  "ChangePricingPlan": "Wijzig prijsplan",
-  "PlanStorageLimit": "De beperking van het nieuwe tarief is <1>{{storageValue}}</1> aan opslag, en uw huidige gebruikte opslag is <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "U wilt het team downgraden naar <1>{{usersCount}}</1> beheerders/power users, en het huidige aantal van deze gebruikers in uw DocSpace is <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Verhelp de discrepantie in de conflicterende parameter om door te gaan of behoud uw actieve prijsplan."
-}

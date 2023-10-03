@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package ASC.Web.Webhooks;
-
-message WebhookRequest {
-    int32 id = 1;
-};

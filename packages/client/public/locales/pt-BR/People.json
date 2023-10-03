@@ -1,7 +1,0 @@
-{
-  "LblInviteAgain": "Convidar novamente",
-  "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <1>{{email}}</1>.",
-  "NotFoundUsers": "Usuários não encontrados",
-  "NotFoundUsersDescription": "Nenhuma pessoa que corresponda ao seu filtro pode ser exibida. Selecione outras opções de filtro ou limpe o filtro para ver todas as pessoas nesta seção.",
-  "UserStatus": "Status"
-}

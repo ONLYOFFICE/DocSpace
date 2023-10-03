@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Bạn không thể thay đổi gói dịch vụ của mình vì dung lượng lưu trữ đã sử dụng hoặc số lượng quản trị viên/người dùng cấp cao vượt quá giới hạn của gói dịch vụ đã chọn:",
-  "ChangePricingPlan": "Đổi gói dịch vụ có mức phí khác",
-  "PlanStorageLimit": "Giới hạn của mức phí mới là <1>{{storageValue}}</1> dung lượng lưu trữ và dung lượng lưu trữ đã sử dụng hiện tại của bạn là <1>{{currentStorageValue}} </1>.",
-  "PlanUsersLimit": "Bạn muốn hạ cấp nhóm xuống <1>{{usersCount}} </1> quản trị viên/người dùng cấp cao và số lượng người dùng hiện tại trong DocSpace của bạn là <1>{{currentUsersCount}} </1>.",
-  "SaveOrChange": "Xin vui lòng loại bỏ sự không phù hợp trong tham số xung đột để tiếp tục hoặc duy trì gói dịch vụ có phí hiện tại của bạn."
-}

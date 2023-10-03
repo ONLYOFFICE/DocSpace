@@ -1,5 +1,0 @@
-{
-  "DeleteUser": "İstifadəçini sil",
-  "DeleteUserMessage": "{{userCaption}} <strong>{{user}}</strong> silinəcək. Başqalarına açıq olan istifadəçinin şəxsi sənədləri silinəcək. Davam etmək istədiyinizə əminsiniz?",
-  "SuccessfullyDeleteUserInfoMessage": "İstifadəçi müvəffəqiyyətlə silinmişdir"
-}

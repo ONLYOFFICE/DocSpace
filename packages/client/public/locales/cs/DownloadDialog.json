@@ -1,7 +1,0 @@
-{
-  "ChooseFormatText": "Zvolte formát každého stahovaného souboru",
-  "ConvertMessage": "Pokud zvolíte převod souboru do jiného formátu než původního, může dojít ke ztrátě některých dat.",
-  "ConvertToZip": "Soubory budou zkomprimovány do <strong>souboru .zip</strong>",
-  "CustomFormat": "Vlastní formát",
-  "OriginalFormat": "Původní formát"
-}

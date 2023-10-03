@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Core.Caching;
-
-message UserPhotoCacheItem {
-    string key  = 1;
-}

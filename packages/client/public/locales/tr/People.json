@@ -1,7 +1,0 @@
-{
-  "LblInviteAgain": "Yeniden davet et",
-  "MessageEmailActivationInstuctionsSentOnEmail": "E-posta etkinleştirme talimatları <1>{{email}}</1> e-posta adresine gönderildi.",
-  "NotFoundUsers": "Kullanıcı bulunamadı",
-  "NotFoundUsersDescription": "Filtrenizle eşleşen hiç kimse görüntülenemiyor. Lütfen diğer filtre seçeneklerini seçin veya bu bölümdeki tüm kişileri görüntülemek için filtreyi temizleyin.",
-  "UserStatus": "Durum"
-}

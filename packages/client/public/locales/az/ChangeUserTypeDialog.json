@@ -1,8 +1,0 @@
-{
-  "ChangeUserTypeButton": "Növün dəyişdirilməsi",
-  "ChangeUserTypeHeader": "İstifadəçi növünün dəyişdirilməsi",
-  "ChangeUserTypeMessage": "'{{ firstType }}' tipinə malik olan istifadəçilər '{{ secondType }}' istifadəçi tipinə dəyişdirildi.",
-  "ChangeUserTypeMessageMulti": "Seçilmiş istifadəçilər '{{ secondType }}' növünə köçürüləcək.",
-  "ChangeUserTypeMessageWarning": "DocSpace inzibatçının və özüvüzün istifadəçi tipini dəyişdirə bilməzsiniz.",
-  "SuccessChangeUserType": "İstifadəçi tipi müvəffəqiyyətlə dəyişdirildi"
-}

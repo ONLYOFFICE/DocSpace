@@ -1,8 +1,0 @@
-﻿
-syntax = "proto3";
-
-package ASC.Web.Core;
-
-message MailServiceHelperCache {
-	string key = 1;
-}

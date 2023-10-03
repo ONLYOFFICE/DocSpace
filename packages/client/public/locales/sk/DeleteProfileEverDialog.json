@@ -1,5 +1,0 @@
-{
-  "DeleteUser": "Odstrániť používateľa",
-  "DeleteUserMessage": "{{userCaption}} <strong>{{user}}</strong> bude vymazaný. Osobné dokumenty používateľa, ktoré sú dostupné iným používateľom budú vymazané. Ste si istý, že chcete pokračovať?",
-  "SuccessfullyDeleteUserInfoMessage": "Používateľ bol úspešne odstránený"
-}

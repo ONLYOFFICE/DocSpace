@@ -1,9 +1,0 @@
-{
-  "Error401Text": "Desculpe, o recurso não está atualmente acessível.",
-  "Error403Text": "Desculpe, acesso negado.",
-  "Error404Text": "Desculpe, o recurso não pode ser encontrado.",
-  "ErrorDeactivatedText": "Este DocSpace está desativado",
-  "ErrorEmptyResponse": "Resposta vazia",
-  "ErrorOfflineText": "Nenhuma conexão com a Internet foi encontrada",
-  "ErrorUnavailableText": "DocSpace indisponível"
-}

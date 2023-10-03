@@ -1,8 +1,0 @@
-{
-  "Error401Text": "Ne pare rău, sursa nu este accesibilă.",
-  "Error403Text": "Ne pare rău, accesul este refuzat.",
-  "Error404Text": "Ne pare rău, sursa nu s-a găsit.",
-  "ErrorEmptyResponse": "Răspunsul necompletat",
-  "ErrorOfflineText": "Nu există nicio conexiune la Internet",
-  "ErrorUnavailableText": "DocSpace nu este disponibil"
-}

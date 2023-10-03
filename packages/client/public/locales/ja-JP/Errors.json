@@ -1,8 +1,0 @@
-{
-  "Error401Text": "申し訳ありませんが、このリソースは現在アクセスできません。",
-  "Error403Text": "申し訳ありませんが、アクセスが拒否されました。",
-  "Error404Text": "申し訳ありませんが、リソースが見つかりません。",
-  "ErrorEmptyResponse": "反応なし",
-  "ErrorOfflineText": "インターネットに接続されていません。",
-  "ErrorUnavailableText": "DocSpaceは現在、ご利用いただけません"
-}

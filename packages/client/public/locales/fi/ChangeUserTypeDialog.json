@@ -1,8 +1,0 @@
-{
-  "ChangeUserTypeButton": "Vaihda tyyppiä",
-  "ChangeUserTypeHeader": "Muuta käyttäjän tyyppiä",
-  "ChangeUserTypeMessage": "Käyttäjät, joiden tyyppi on ’{{firstType}}’, siirretään tyypiksi ’{{secondType}}’.",
-  "ChangeUserTypeMessageMulti": "Valitut käyttäjät siirretään '{{secondType}}.",
-  "ChangeUserTypeMessageWarning": "Et voi muuttaa DocSpace-järjestelmänvalvojien tai omaa tilaasi.",
-  "SuccessChangeUserType": "Käyttäjän tila muutettu onnistuneesti"
-}

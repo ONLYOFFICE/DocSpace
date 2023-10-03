@@ -1,7 +1,0 @@
-{
-  "ChooseFormatText": "选择要下载的文件格式",
-  "ConvertMessage": "如果您选择将文件转换为与原始格式不同的格式，则可能会丢失一些数据。",
-  "ConvertToZip": "文件将被压缩成<strong>.zip文件</strong>",
-  "CustomFormat": "自定义格式",
-  "OriginalFormat": "原始格式"
-}

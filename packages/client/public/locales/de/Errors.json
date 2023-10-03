@@ -1,9 +1,0 @@
-{
-  "Error401Text": "Die Ressource kann zurzeit nicht zugegriffen werden.",
-  "Error403Text": "Zugriff verweigert.",
-  "Error404Text": "Die Ressource kann nicht gefunden werden.",
-  "ErrorDeactivatedText": "Dieser DocSpace ist deaktiviert",
-  "ErrorEmptyResponse": "Leere Antwort",
-  "ErrorOfflineText": "Keine Internetverbindung gefunden",
-  "ErrorUnavailableText": "DocSpace nicht verfügbar"
-}

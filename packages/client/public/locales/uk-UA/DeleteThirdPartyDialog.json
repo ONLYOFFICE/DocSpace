@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "Ви впевнені, що бажаєте видалити {{service}}? Це жодним чином не вплине на ваш обліковий запис {{account}}.",
-  "DisconnectCloudTitle": "Від’єднати хмару",
-  "SuccessDeleteThirdParty": "Сторонню службу {{service}} видалено"
-}

@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "Naozaj chcete odstrániť {{service}}? To nijako neovplyvní váš účet {{account}}.",
-  "DisconnectCloudTitle": "Odpojiť Cloud",
-  "SuccessDeleteThirdParty": "Služba {{service}} tretej strany bola odstránená"
-}

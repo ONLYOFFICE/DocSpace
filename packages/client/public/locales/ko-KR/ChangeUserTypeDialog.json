@@ -1,8 +1,0 @@
-{
-  "ChangeUserTypeButton": "유형 변경",
-  "ChangeUserTypeHeader": "사용자 유형 변경",
-  "ChangeUserTypeMessage": "'{{ firstType }}' 유형 사용자가 '{{ secondType }}' 유형으로 이동됩니다.",
-  "ChangeUserTypeMessageMulti": "선택한 사용자가 '{{ secondType }}' 유형으로 이동됩니다.",
-  "ChangeUserTypeMessageWarning": "DocSpace관리자 및 자신의 유형을 변경할 수 없습니다.",
-  "SuccessChangeUserType": "사용자 유형이 성공적으로 변경되었습니다"
-}

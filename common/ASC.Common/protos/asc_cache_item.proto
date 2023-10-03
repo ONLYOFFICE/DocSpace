@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Common;
-
-message AscCacheItem {
-    string id = 1;
-}
