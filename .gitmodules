@@ -1,12 +1,12 @@
 [submodule "client"]
 	path = client
-	url = git@github.com:ONLYOFFICE/DocSpace-client.git
-	branch = release/separation
+	url = ../DocSpace-client.git
+	update = merge
 [submodule "build"]
 	path = buildtools
-	url = git@github.com:ONLYOFFICE/DocSpace-buildtools.git
-    branch = release/separation
+	url = ../DocSpace-buildtools.git
+	update = merge
 [submodule "server"]
 	path = server
-	url = git@github.com:ONLYOFFICE/DocSpace-server.git
-    branch = release/separation
+	url = ../DocSpace-server.git
+	update = merge
