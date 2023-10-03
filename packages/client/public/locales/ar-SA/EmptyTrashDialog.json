@@ -1,8 +1,0 @@
-{
-  "DeleteForeverButton": "احذف للأبد",
-  "DeleteForeverNote": "سيتم حذف جميع العناصر من المهملات إلى الأبد. لن تتمكن من استعادتها.",
-  "DeleteForeverNoteArchive": "سيتم حذف جميع العناصر من الأرشيف إلى الأبد.لن تتمكن من استعادتها.",
-  "DeleteForeverTitle": "هل تريد الحذف للأبد؟",
-  "SuccessEmptyArchived": "تم تفريغ الأرشيف",
-  "SuccessEmptyTrash": "تم إفراغ سلة المهملات"
-}

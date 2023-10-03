@@ -1,8 +1,0 @@
-{
-  "DeleteForeverButton": "Supprimer définitivement",
-  "DeleteForeverNote": "Tous les fichiers de la Corbeille seront supprimés à jamais. Vous ne pourrez pas les restaurer.",
-  "DeleteForeverNoteArchive": "Tous les éléments archivés seront définitivement supprimés. Vous ne pourrez pas les restaurer.",
-  "DeleteForeverTitle": "Supprimer définitivement ?",
-  "SuccessEmptyArchived": "Archive vidée",
-  "SuccessEmptyTrash": "Corbeille vidée"
-}

@@ -1,8 +1,0 @@
-{
-  "Error401Text": "عذرا، المورد غير متاح حاليا.",
-  "Error403Text": "نأسف، الوصول مرفوض.",
-  "Error404Text": "عذرا، لا يمكن العثور على المورد.",
-  "ErrorEmptyResponse": "رد فارغ",
-  "ErrorOfflineText": "لا يوجد اتصال بالإنترنت",
-  "ErrorUnavailableText": "DocSpace غير متوفر"
-}

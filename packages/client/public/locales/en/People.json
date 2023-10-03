@@ -1,7 +1,0 @@
-{
-  "LblInviteAgain": "Invite again",
-  "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address.",
-  "NotFoundUsers": "No users found",
-  "NotFoundUsersDescription": "No users match your search. Please adjust your search parameters or clear the search field to view the full list of users.",
-  "UserStatus": "Status"
-}

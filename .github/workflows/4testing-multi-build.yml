@@ -7,7 +7,7 @@ on:
       - 'release/v**'
       - 'feature/v*-git-action'
 env:
-    DOCKER_PATH: "/build/install/docker"
+    DOCKER_PATH: "/buildtools/install/docker"
     REPO: "onlyoffice"
     DOCKER_IMAGE_PREFIX: "4testing-docspace"
     DOCKERFILE: "Dockerfile.app"

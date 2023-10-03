@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "您确定要从\"文件\"中删除{{service}}吗？这不会影响您的{{account}}账户。",
-  "DisconnectCloudTitle": "断开云端的连接",
-  "SuccessDeleteThirdParty": "第三方{{service}}已删除"
-}

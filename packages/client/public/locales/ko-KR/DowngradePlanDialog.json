@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "사용 중인 저장 공간 또는 관리자/고급 사용자 수가 선택한 요금제의 한도를 초과하기 때문에 요금제를 변경할 수 없습니다:",
-  "ChangePricingPlan": "요금제 변경",
-  "PlanStorageLimit": "새 요금제의 한도는 저장 공간 <1>{{storageValue}}</1>이며 현재 사용 중인 저장 공간은 <1>{{currentStorageValue}}</1>입니다.",
-  "PlanUsersLimit": "팀을 관리자/고급 사용자 <1>{{usersCount}}</1>명으로 다운그레이드하려고 하며, DocSpace의 현재관리자/고급 사용자는 <1>{{currentUsersCount}}</1>명입니다.",
-  "SaveOrChange": "이 DocSpace의 소유자로서 계정을 삭제하기 전에 반드시 다른 사용자에게 소유권을 이전해야 합니다. 계속하려면 새 소유자를 선택하세요."
-}

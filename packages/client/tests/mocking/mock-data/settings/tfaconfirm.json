@@ -1,6 +1,0 @@
-{
-  "count": 1,
-  "response": "http://localhost:8092/confirm/TfaActivation",
-  "status": 0,
-  "statusCode": 200
-}

@@ -1,7 +1,0 @@
-{
-  "ChooseFormatText": "Escolha o formato para cada ficheiro a ser transferido",
-  "ConvertMessage": "Se optar por converter o ficheiro para um formato diferente do original, alguns dados poderão perder-se.",
-  "ConvertToZip": "Os ficheiros serão comprimidos para o <strong>ficheiro .zip</strong>",
-  "CustomFormat": "Formato personalizado",
-  "OriginalFormat": "Formato original"
-}

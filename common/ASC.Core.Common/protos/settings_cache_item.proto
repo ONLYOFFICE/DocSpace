@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Core.Data;
-
-message SettingsCacheItem {
-    string key  = 1;
-}

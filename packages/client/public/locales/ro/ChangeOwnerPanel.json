@@ -1,4 +1,0 @@
-{
-  "ChangeOwner": "Schimbarea proprietarului ({{fileName}})",
-  "ChangeOwnerDescription": "După schimbarea proprietarului, drepturile și permisiunile proprietarului actual se stabilesc la același nivel ca și pentru alți membri ai grupului."
-}

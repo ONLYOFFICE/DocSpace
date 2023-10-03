@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Nu vă puteți schimba abonamentul deoarece volumul de stocare utilizat sau numărul de administratori/utilizatori avansați depășește limitele abonamentului selectat:",
-  "ChangePricingPlan": "Schimbare abonament",
-  "PlanStorageLimit": "O limită la abonamentul nou este <1>{{storageValue}}</1> de spațiu de stocare, și spațiul de stocare ocupat  este de  <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "Doriți să retrogradați echipa la <1>{{usersCount}}</1> administratori/utilizatori avansați, numărul curent astfel de utilizatori din spațiul dvs DocSpace este <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Eliminați nepotrivirea în parametrul de conflict pentru a continua sau mențineți abonamentul dvs actual."
-}

@@ -1,8 +1,0 @@
-{
-  "Error401Text": "Təəssüf ki, resurs hal-hazırda əlçatan deyil.",
-  "Error403Text": "Təəssüf ki, giriş rədd edilmişdir.",
-  "Error404Text": "Təəssüf ki, resurs tapıla bilmir.",
-  "ErrorEmptyResponse": "Boş cavab",
-  "ErrorOfflineText": "İnternet bağlantısı tapılmadı",
-  "ErrorUnavailableText": "DocSpace əlçatan deyil"
-}

@@ -1,6 +1,0 @@
-{
-  "LblInviteAgain": "もう一度招待する",
-  "MessageEmailActivationInstuctionsSentOnEmail": "電子メールによるアクティベーションの指示は、<1>{{email}}</1>のメールアドレスに送信されています。",
-  "NotFoundUsers": "ユーザーが見つかりません",
-  "UserStatus": "ステータス"
-}

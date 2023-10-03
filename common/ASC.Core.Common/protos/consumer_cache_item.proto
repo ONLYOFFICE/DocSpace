@@ -1,8 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Core.Common.Configuration;
-
-message ConsumerCacheItem {
-    string name  = 1;
-    int32 tenant_id = 2;
-}

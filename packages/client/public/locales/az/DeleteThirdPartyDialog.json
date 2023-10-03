@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "{{service}} hizmetini kaldırmak istediğinizden emin misiniz? Bu, {{account}} hesabınızı hiçbir şekilde etkilemeyecektir.",
-  "DisconnectCloudTitle": "Buludla bağlantını dayandırın",
-  "SuccessDeleteThirdParty": "Üçüncü tərəf {{service}} silinir "
-}

@@ -1,9 +1,0 @@
-## COPY PUBLIC ##
-../../../build/install/common/{{product}}-ssl-setup                 usr/bin
-../../../build/install/docker/config/nginx/templates/*.template     etc/onlyoffice/{{product}}/openresty
-../../../build/install/docker/config/nginx/onlyoffice*              etc/openresty/conf.d
-../../../config/nginx/onlyoffice*.conf                              etc/openresty/conf.d
-../../../build/install/docker/config/nginx/letsencrypt*             etc/openresty/includes
-../../../config/nginx/includes/onlyoffice*.conf                     etc/openresty/includes
-../../../build/deploy/public/*                                      var/www/{{product}}/public
-../../../build/deploy/client/*                                      var/www/{{product}}/client

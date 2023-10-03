@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.IPSecurity;
-
-message IPRestrictionItem {
-    int32 tenant_id = 1;
-}

@@ -1,5 +1,0 @@
-{
-  "error": { "message": "User authentication failed", "hresult": 0 },
-  "status": 1,
-  "statusCode": 401
-}

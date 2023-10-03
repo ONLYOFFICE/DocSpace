@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Não pode alterar o seu plano porque o volume de armazenamento utilizado ou o número de administradores/utilizadores com poder excede as limitações do plano selecionado:",
-  "ChangePricingPlan": "Alterar o plano de preços",
-  "PlanStorageLimit": "O limite de armazenamento do novo plano de preços é <1>{{storageValue}}</1>, e está atualmente a utilizar <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "Deseja diminuir a equipa para <1>{{usersCount}}</1> administradores/utilizadores com poder, e o número atual deste tipo de utilizadores no seu DocSpace é <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Tendo em conta que é um dos proprietários deste DocSpace, deve transferir a propriedade para outro utilizador antes de poder apagar a sua conta. Por favor, escolha um novo proprietário para prosseguir."
-}

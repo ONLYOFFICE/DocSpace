@@ -1,8 +1,0 @@
-{
-  "ChangeUserTypeButton": "Spremeni tip",
-  "ChangeUserTypeHeader": "Spremeni tip uporabnika",
-  "ChangeUserTypeMessage": "Uporabniki tipa '{{ firstType }}' bodo premaknjeni v '{{ secondType }}' tip.",
-  "ChangeUserTypeMessageMulti": "Izbrani uporabniki bodo premaknjeni v '{{ secondType }}' tip.",
-  "ChangeUserTypeMessageWarning": "Za skrbnike DocSpace in zase ne morete spremeniti vrste.",
-  "SuccessChangeUserType": "Vrsta uporabnika je bila uspešno spremenjena"
-}

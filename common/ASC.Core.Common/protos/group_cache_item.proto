@@ -1,8 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Core.Caching;
-
-message GroupCacheItem {
-    string id  = 1;
-    int32 tenant  = 2;
-}

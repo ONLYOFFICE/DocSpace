@@ -1,7 +1,0 @@
-{
-  "ChooseFormatText": "Valitse kunkin ladattavan tiedoston muoto",
-  "ConvertMessage": "Jos päätät muuntaa tiedoston muuhun muotoon kuin alkuperäinen, jotkut tiedot saattavat kadota.",
-  "ConvertToZip": "Tiedostot pakataan <strong>.zip -tiedostoon</strong>",
-  "CustomFormat": "Muokattu muoto",
-  "OriginalFormat": "Alkuperäinen muoto"
-}

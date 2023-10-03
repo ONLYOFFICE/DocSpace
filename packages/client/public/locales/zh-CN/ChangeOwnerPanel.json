@@ -1,4 +1,0 @@
-{
-  "ChangeOwner": "变更所有者（{{fileName}}）",
-  "ChangeOwnerDescription": "所有者更改后，当前所有者将获得与其群组中其他成员相同的访问权限级别。"
-}

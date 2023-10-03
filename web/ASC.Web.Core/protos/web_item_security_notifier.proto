@@ -1,8 +1,0 @@
-﻿
-syntax = "proto3";
-
-package ASC.Web.Core;
-
-message WebItemSecurityNotifier {
-    int32 tenant = 1;
-}

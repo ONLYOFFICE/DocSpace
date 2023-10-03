@@ -1,8 +1,0 @@
-{
-  "Error401Text": "Je nám ľúto, zdroj nie je momentálne dostupný.",
-  "Error403Text": "Prepáčte, prístup odmietnutý.",
-  "Error404Text": "Prepáčte, zdroj sa nedá nájsť.",
-  "ErrorEmptyResponse": "Prázdna odpoveď",
-  "ErrorOfflineText": "Nenašlo sa žiadne internetové pripojenie",
-  "ErrorUnavailableText": "DocSpace je nedostupný"
-}

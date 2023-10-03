@@ -1,8 +1,0 @@
-{
-  "Error401Text": "Žal vir trenutno ni dostopen.",
-  "Error403Text": "Žal je dostop zavrnjen.",
-  "Error404Text": "Žal vira ni mogoče najti.",
-  "ErrorEmptyResponse": "Prazen odziv",
-  "ErrorOfflineText": "Internetne povezave ni bilo mogoče najti",
-  "ErrorUnavailableText": "DocSpace ni na voljo"
-}

@@ -1,5 +1,0 @@
-{
-  "DisconnectCloudMessage": "Are you sure you want to remove the {{service}}? This will not affect your {{account}} account in any way.",
-  "DisconnectCloudTitle": "Disconnect cloud",
-  "SuccessDeleteThirdParty": "Third-party {{service}} is deleted"
-}

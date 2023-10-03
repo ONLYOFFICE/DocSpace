@@ -1,8 +1,0 @@
-{
-  "DeleteForeverButton": "Șterge definitiv",
-  "DeleteForeverNote": "Toate fișierele din coșul de gunoi vor fi șterse definitiv. Va fi imposibil să le recuperați.",
-  "DeleteForeverNoteArchive": "Toate elemente din folderul Arhivate vor fi şterse pentru totdeauna. Nu le veţi putea restaura.",
-  "DeleteForeverTitle": "Sigur că doriți să ștergeți definitiv?",
-  "SuccessEmptyArchived": "Folderul Arhivate a fost golit",
-  "SuccessEmptyTrash": "Coșul de gunoi a fost golit"
-}

@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Nie możesz zmienić swojego planu, ponieważ zużyta pamięć lub liczba administratorów/użytkowników z większą liczbą uprawnień przekroczyły limit wybranego planu:",
-  "ChangePricingPlan": "Zmień plan cenowy",
-  "PlanStorageLimit": "Limit dla nowej taryfy wynosi <1>{{storageValue}}</1> pamięci, obecnie zużyto <1>{{currentStorageValue}}</1> pamięci.",
-  "PlanUsersLimit": "Chcesz zmniejszyć zespół do <1>{{usersCount}}</1> adminów/użytkowników z większą liczbą uprawnień, obecnie masz ich <1>{{currentUsersCount}}</1> w swoim DocSpace.",
-  "SaveOrChange": "Wyeliminuj rozbieżność w sprzecznym parametrze, aby kontynuować lub zachowaj swój aktywny plan cenowy."
-}

@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package ASC.Web.Files.Utils;
-
-message FileMarkerCacheItem {
-    string key = 1;
-}

@@ -1,4 +1,0 @@
-../../../config/*.json                  etc/onlyoffice/{{product}}
-../../../config/*.config                etc/onlyoffice/{{product}}
-../common/{{product}}-configuration     usr/bin
-../common/logrotate/{{product}}-common  etc/logrotate.d

@@ -1,7 +1,0 @@
-{
-  "CannotChangePlan": "Svojega paketa ne morete spremeniti, ker uporabljena količina prostora za shranjevanje ali število skrbnikov/naprednih uporabnikov presega omejitve izbranega paketa:",
-  "ChangePricingPlan": "Zamenjaj cenovni paket",
-  "PlanStorageLimit": "Nova tarifna omejitev je <1>{{storageValue}}</1> prostora za shranjevanje in vaš trenutni prostor je <1>{{currentStorageValue}}</1>.",
-  "PlanUsersLimit": "Želite znižati nivo ekipe na <1>{{usersCount}}</1> skrbnikov/naprednih uporabnikov in trenutno število teh uporabnikov v vašem DocSpace je <1>{{currentUsersCount}}</1>.",
-  "SaveOrChange": "Prosimo, da odpravite neujemanje pri problematičnem parametru, če želite nadaljevati ali ohraniti aktiven cenovni paket."
-}

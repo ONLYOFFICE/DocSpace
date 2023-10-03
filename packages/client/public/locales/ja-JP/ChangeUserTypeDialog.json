@@ -1,8 +1,0 @@
-{
-  "ChangeUserTypeButton": "タイプの変更",
-  "ChangeUserTypeHeader": "ユーザータイプの変更",
-  "ChangeUserTypeMessage": "「{{ firstType }}」タイプのユーザーは、「{{ secondType }}」タイプに移動します。",
-  "ChangeUserTypeMessageMulti": "選択されたユーザーは「'{{ secondType }}'」タイプに移動します。",
-  "ChangeUserTypeMessageWarning": "DocSpaceの管理者用と自分用のタイプを変更することはできません。",
-  "SuccessChangeUserType": "ユーザータイプの変更に成功しました。"
-}

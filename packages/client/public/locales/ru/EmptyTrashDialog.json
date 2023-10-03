@@ -1,8 +1,0 @@
-{
-  "DeleteForeverButton": "Удалить навсегда",
-  "DeleteForeverNote": "Все объекты из корзины будут удалены навсегда. Вы не сможете их восстановить.",
-  "DeleteForeverNoteArchive": "Все элементы из архива будут удалены навсегда. Вы не сможете их восстановить.",
-  "DeleteForeverTitle": "Удалить навсегда?",
-  "SuccessEmptyArchived": "Архив очищен",
-  "SuccessEmptyTrash": "Корзина успешно очищена"
-}

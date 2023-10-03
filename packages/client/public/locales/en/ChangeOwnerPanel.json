@@ -1,4 +1,0 @@
-{
-  "ChangeOwner": "Change owner ({{fileName}})",
-  "ChangeOwnerDescription": "Once the owner is changed, the current owner gets the same access level as other members of their group."
-}

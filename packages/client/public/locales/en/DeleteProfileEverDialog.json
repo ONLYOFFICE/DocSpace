@@ -1,9 +1,0 @@
-{
-  "DeleteGroupUsersSuccessMessage": "Users have been successfully deleted.",
-  "DeleteMyDocumentsUser": "All personal files and folders in My documents section of this user will be permanently deleted.",
-  "DeleteReassignDescriptionUser": "{{warningMessageMyDocuments}} Rooms created by this user and documents stored in these rooms will be reassigned automatically to an admin performing the deletion: <strong>{{userPerformedDeletion}} ({{userYou}})</strong>. Reassign data manually to choose another destination user for reassignment.",
-  "DeleteUser": "Delete user",
-  "DeleteUserMessage": "{{userCaption}} <strong>{{user}}</strong> will be deleted. This action cannot be undone.",
-  "ReassignDataToAnotherUser": "Reassign data to another user",
-  "SuccessfullyDeleteUserInfoMessage": "The user has been successfully deleted"
-}
