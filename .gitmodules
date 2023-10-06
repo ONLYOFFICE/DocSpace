@@ -1,6 +1,6 @@
 [submodule "client"]
 	path = client
-	url = ../DocSpace-client.git
+	url = https://github.com/ONLYOFFICE/DocSpace-client.git
 	branch = .
 	update = merge
 [submodule "build"]
@@ -10,6 +10,6 @@
 	update = merge
 [submodule "server"]
 	path = server
-	url = ../DocSpace-server.git
+	url = https://github.com/ONLYOFFICE/DocSpace-server.git
 	branch = .
 	update = merge
