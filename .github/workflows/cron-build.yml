@@ -26,8 +26,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          submodules: 'recursive'
           ref: ${{ steps.release-branch-finder.outputs.release-branch }}
+          submodules: 'recursive'
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
