@@ -48,7 +48,7 @@ jobs:
         run: |
           cd .${DOCKER_PATH}
           GITHUB_REF_NAME=${{ steps.release-branch-finder.outputs.release-branch }}
-          DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b\|^feature\b/s/release.*\/\|hotfix.*\/\|feature.*\///; s/-git-action$//; s/^v//').${{github.run_number}}
+          DOCKER_TAG=2.0.0.${{github.run_number}}
           export DOCKER_TAG
 
           docker buildx bake -f build.yml \
