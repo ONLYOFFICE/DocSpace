@@ -2,10 +2,10 @@ name: 4testing multiarch-build
 
 on:
   schedule:
-    - cron: '0 */12 * * *' 
+    - cron: '0 20 * * *' 
 env:
   DOCKER_PATH: "/buildtools/install/docker"
-  REPO: "lemmav"
+  REPO: "onlyoffice"
   DOCKER_IMAGE_PREFIX: "4testing-docspace"
   DOCKERFILE: "Dockerfile.app"
 
