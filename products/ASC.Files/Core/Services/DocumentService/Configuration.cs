@@ -32,7 +32,6 @@ public enum EditorType
     Desktop,
     Mobile,
     Embedded,
-    External,
 }
 
 /// <summary>
@@ -575,7 +574,7 @@ public class InfoConfig<T>
     {
         get
         {
-            if (Type == EditorType.Embedded || Type == EditorType.External)
+            if (Type == EditorType.Embedded)
             {
                 return null;
             }
@@ -599,7 +598,6 @@ public class InfoConfig<T>
         get
         {
             if (Type == EditorType.Embedded
-                || Type == EditorType.External
                 || !_fileSharing.CanSetAccessAsync(_file).Result)
             {
                 return null;
@@ -802,7 +800,7 @@ public class CustomizationConfig<T>
     {
         get
         {
-            if (_configuration.EditorType == EditorType.Embedded || _configuration.EditorType == EditorType.External)
+            if (_configuration.EditorType == EditorType.Embedded)
             {
                 return null;
             }
