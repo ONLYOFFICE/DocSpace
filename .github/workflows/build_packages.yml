@@ -91,21 +91,19 @@ jobs:
         if: matrix.packageType == 'deb'
         run: |
           wget -O buildtools.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-buildtools/archive/$BRANCH_BUILDTOOLS.tar.gz"
-          tar -xvf buildtools.tar.gz && mv $PRODUCT-buildtools-$(echo "$BRANCH_BUILDTOOLS" | tr '/' '-') buildtools
+          tar -xvf buildtools.tar.gz --transform="s/${PRODUCT}-buildtools-$(echo "${BRANCH_BUILDTOOLS}" | tr '/' '-')/buildtools/"
           
           wget -O client.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-client/archive/$BRANCH_CLIENT.tar.gz"
-          tar -xvf client.tar.gz && mv $PRODUCT-client-$(echo "$BRANCH_CLIENT" | tr '/' '-') client
+          tar -xvf client.tar.gz --transform="s/$PRODUCT-client-$(echo "$BRANCH_CLIENT" | tr '/' '-')/client/"
           
           wget -O server.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-server/archive/$BRANCH_SERVER.tar.gz"
-          tar -xvf server.tar.gz && mv $PRODUCT-server-$(echo "$BRANCH_SERVER" | tr '/' '-') server
+          tar -xvf server.tar.gz --transform="s/$PRODUCT-server-$(echo "$BRANCH_SERVER" | tr '/' '-')/server/"
 
           wget -O dictionaries.tar.gz "https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz"
-          tar -xvf dictionaries.tar.gz -C ./client/common/Tests/Frontend.Translations.Tests
-          mv -f ./client/common/Tests/Frontend.Translations.Tests/dictionaries-master ./client/common/Tests/Frontend.Translations.Tests/dictionaries
+          tar -xvf dictionaries.tar.gz -C ./client/common/Tests/Frontend.Translations.Tests --transform="s/dictionaries-master/dictionaries/"
 
           wget -O DocStore.tar.gz "https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz" 
-          tar -xvf DocStore.tar.gz -C ./server/products/ASC.Files/Server
-          mv -f ./server/products/ASC.Files/Server/document-templates-main-community-server ./server/products/ASC.Files/Server/DocStore
+          tar -xvf DocStore.tar.gz -C ./server/products/ASC.Files/Server --transform="s/document-templates-main-community-server/DocStore/"
 
           rm -rf *.tar.gz
 
