@@ -90,26 +90,15 @@ jobs:
       - name: Build DEB Packages
         if: matrix.packageType == 'deb'
         run: |
-          wget -O buildtools.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-buildtools/archive/$BRANCH_BUILDTOOLS.tar.gz"
-          tar -xvf buildtools.tar.gz --transform="s/${PRODUCT}-buildtools-$(echo "${BRANCH_BUILDTOOLS}" | tr '/' '-')/buildtools/"
-          
-          wget -O client.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-client/archive/$BRANCH_CLIENT.tar.gz"
-          tar -xvf client.tar.gz --transform="s/$PRODUCT-client-$(echo "$BRANCH_CLIENT" | tr '/' '-')/client/"
-          
-          wget -O server.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-server/archive/$BRANCH_SERVER.tar.gz"
-          tar -xvf server.tar.gz --transform="s/$PRODUCT-server-$(echo "$BRANCH_SERVER" | tr '/' '-')/server/"
+          cd install/deb/
+          wget -q -O ./debian/source/buildtools.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-buildtools/archive/${BRANCH_BUILDTOOLS}.tar.gz"
+          wget -q -O ./debian/source/client.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-client/archive/${BRANCH_CLIENT}.tar.gz"
+          wget -q -O ./debian/source/server.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-server/archive/${BRANCH_SERVER}.tar.gz"
+          wget -q -O ./debian/source/dictionaries.tar.gz "https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz"
+          wget -q -O ./debian/source/DocStore.tar.gz "https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz"
 
-          wget -O dictionaries.tar.gz "https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz"
-          tar -xvf dictionaries.tar.gz -C ./client/common/Tests/Frontend.Translations.Tests --transform="s/dictionaries-master/dictionaries/"
-
-          wget -O DocStore.tar.gz "https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz" 
-          tar -xvf DocStore.tar.gz -C ./server/products/ASC.Files/Server --transform="s/document-templates-main-community-server/DocStore/"
-
-          rm -rf *.tar.gz
-
-          cd buildtools/install/deb/
-          rename -f -v "s/product([^\/]*)$/$(${{ env.PRODUCT_LOW }})\$1/g" debian/* ../common/* ../common/logrotate/*
-          find ../ -type f -exec sed -i "s/{{product}}/$(${{ env.PRODUCT_LOW }})/g" {} ';'
+          rename -f -v "s/product([^\/]*)$/$(${{ env.PRODUCT_LOW }})\$1/g" debian/*
+          find debian/ -type f -exec sed -i "s/{{product}}/$(${{ env.PRODUCT_LOW }})/g" {} ';'
           sed -i "s/{{package_header_tag_version}}/$(${{ env.PRODUCT_VERSION }}).${{ env.BUILD_NUMBER }}/g" debian/changelog debian/control
           dpkg-buildpackage -uc -k${{ steps.gpg_step.outputs.fingerprint }}
 
@@ -153,7 +142,7 @@ jobs:
       - name: Upload DEB Packages
         if: matrix.packageType == 'deb'
         run: |
-          for deb_package in ${{ env.PACKAGE_DIRECTORY }}/buildtools/install/*.deb; do
+          for deb_package in ${{ env.PACKAGE_DIRECTORY }}/install/*.deb; do
             echo $deb_package
             curl --verbose \
                   --user ${{ secrets.REPO_LOGIN }}:${{ secrets.REPO_PASS }} \
@@ -173,7 +162,7 @@ jobs:
       - name: Checking the DEB package for errors
         if: matrix.packageType == 'deb'
         run: |
-          lintian --profile debian ${{ env.PACKAGE_DIRECTORY }}/buildtools/install/*.deb | tee -a LINTIAN
+          lintian --profile debian ${{ env.PACKAGE_DIRECTORY }}/install/*.deb | tee -a LINTIAN
           if grep -qE '^(W:|E:)' LINTIAN; then
             echo "::warning Noticedeb=lintian::$(cat LINTIAN | awk '/^W:/ { ws += 1 } /^E:/ { es += 1 } END { print "Warnings:", ws, "Errors:", es }')"
           fi
