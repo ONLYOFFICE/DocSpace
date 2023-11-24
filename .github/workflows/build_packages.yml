@@ -106,22 +106,14 @@ jobs:
         if: matrix.packageType == 'rpm'
         run: |
           cd install/rpm/SPECS
+          wget -q -O ./SOURCES/buildtools.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-buildtools/archive/${BRANCH_BUILDTOOLS}.tar.gz"
+          wget -q -O ./SOURCES/client.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-client/archive/${BRANCH_CLIENT}.tar.gz"
+          wget -q -O ./SOURCES/server.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-server/archive/${BRANCH_SERVER}.tar.gz"
+          wget -q -O ./SOURCES/dictionaries.tar.gz "https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz"
+          wget -q -O ./SOURCES/DocStore.tar.gz "https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz"
           mv ./SOURCES/product.rpmlintrc ./SOURCES/$(${{ env.PRODUCT_LOW }}).rpmlintrc
-          wget https://github.com/ONLYOFFICE/${{ env.PRODUCT }}-buildtools/archive/${{ env.BRANCH_BUILDTOOLS }}.tar.gz \
-            -O ./SOURCES/${{ env.PRODUCT }}-buildtools-$(echo ${{ env.BRANCH_BUILDTOOLS }} | tr '/' '-').tar.gz
-          wget https://github.com/ONLYOFFICE/${{ env.PRODUCT }}-client/archive/${{ env.BRANCH_CLIENT }}.tar.gz \
-            -O ./SOURCES/${{ env.PRODUCT }}-client-$(echo ${{ env.BRANCH_CLIENT }} | tr '/' '-').tar.gz
-          wget https://github.com/ONLYOFFICE/${{ env.PRODUCT }}-server/archive/${{ env.BRANCH_SERVER }}.tar.gz \
-            -O ./SOURCES/${{ env.PRODUCT }}-server-$(echo ${{ env.BRANCH_SERVER }} | tr '/' '-').tar.gz
-          wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz \
-            -O ./SOURCES/document-templates-main-community-server.tar.gz
-          wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz \
-            -O ./SOURCES/dictionaries-master.tar.gz
           sed -i -e '/BuildRequires/d' product.spec
           rpmbuild -D "packager Ascensio System SIA <support@onlyoffice.com>" \
-                   -D "BRANCH_BUILDTOOLS $(echo ${{ env.BRANCH_BUILDTOOLS }} | tr '/' '-')" \
-                   -D "BRANCH_CLIENT $(echo ${{ env.BRANCH_CLIENT }} | tr '/' '-')" \
-                   -D "BRANCH_SERVER $(echo ${{ env.BRANCH_SERVER }} | tr '/' '-')" \
                    -D "_topdir $(pwd)" \
                    -D "version $(${{ env.PRODUCT_VERSION }})" \
                    -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
