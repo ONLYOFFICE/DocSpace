@@ -1,0 +1,88 @@
+---
+name: Scanning DocSpace with ZAP
+
+run-name: > 
+     ZAP scanning DocSpace ver: ${{ github.event.inputs.version }} from branch: ${{ github.event.inputs.branch }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Set branch for which OCI script will be used for deploy'
+        type: string
+        required: true
+      version:
+        description: 'Set DocSpace version that will be deployed'
+        type: string
+        required: true
+jobs:
+  zap:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    name: Scan DocSpace with zap
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: build-tools
+          ref: ${{ github.event.inputs.branch }}
+          
+      - name: Run and prepare DocSpace
+        id: prepare
+        env:
+          DOCKER_TAG: ${{ github.event.inputs.version }}
+          STATUS: "4testing-"
+        run: |
+           # Get gh-action runner local ip
+           LOCAL_IP=$(hostname -I | awk '{print $1}')
+           echo "local-ip=${LOCAL_IP}" >> "$GITHUB_OUTPUT"
+
+           # Run 4testing DocSpace with tag from previous build
+           cd ./build-tools/install/OneClickInstall
+           sudo printf "Y" | sudo bash ./docspace-install.sh docker -skiphc true --makeswap false --localscripts true -dsv ${DOCKER_TAG} -s ${STATUS}
+           sleep 300
+
+           # Get Wizzard token and pwd hash for complete wizzard
+           WIZZARD_TOKEN=$(curl --request GET http://${LOCAL_IP}/api/2.0/settings | jq -r .response.wizardToken)
+           PWD_HASH=$(curl --request GET http://${LOCAL_IP}/api/2.0/settings | jq -r .response.passwordHash.salt)
+           EMAIL="example@mail.com"
+           USER_PWD="test666pass"
+
+           ## Complete wizard
+           curl -v -D output.txt --request PUT -H "confirm: ${WIZZARD_TOKEN}" \
+                                               -H "Accept: application/json" \
+                                               -H "Content-Type: application/json" \
+                                               --data '{"Email":"'"${EMAIL}"'","PasswordHash":"'"${PWD_HASH}"'"}' \
+                                               http://${LOCAL_IP}/api/2.0/settings/wizard/complete
+
+           # Get cookie and user-id
+           COOKIE=$(cat ./output.txt | egrep -i asc_auth_key=* | cut -d '=' -f 2-) && COOKIE=${COOKIE%%;*}
+           USER_ID=$(curl --request GET -H "Accept: application/json" \
+                                        -H "Content-Type: application/json" \
+                                        -H "Authorization: ${COOKIE}" \
+                                        http://${LOCAL_IP}/api/2.0/people/email?email=${EMAIL} | jq -r .response.id)
+
+           # Set new admin-user pwd
+           curl -v --request PUT -H "Accept: application/json" \
+                                 -H "Content-Type: application/json" \
+                                 -H "Authorization: ${COOKIE}" \
+                                 --data '{"Password":"'"${USER_PWD}"'"}' \
+                                 "http://${LOCAL_IP}/api/2.0/people/${USER_ID}/password"
+
+           # Get new admin-user auth-token and authenticate the user
+           TOKEN=$(curl -v --request POST -H "Accept: application/json" \
+                                  -H "Content-Type: application/json" \
+                                  --data '{"userName":"'"${EMAIL}"'","password":"'"${USER_PWD}"'"}' \
+                                  "http://${LOCAL_IP}/api/2.0/authentication" | jq -r .response.token)
+
+           # Set new auth-token for zap header
+           echo "ZAP_AUTH_HEADER_VALUE=${TOKEN}" >> "$GITHUB_ENV"
+
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@v0.8.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
+          target: 'http://${{ steps.prepare.outputs.local-ip }}/'
+          cmd_options: '-j'
