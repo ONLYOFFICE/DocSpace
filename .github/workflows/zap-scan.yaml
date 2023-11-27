@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: build-tools
+          repository: ONLYOFFICE/DocSpace-buildtools
           ref: ${{ github.event.inputs.branch }}
           
       - name: Run and prepare DocSpace
