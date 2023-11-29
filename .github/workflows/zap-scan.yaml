@@ -64,30 +64,30 @@ jobs:
 
            ## Complete wizard
            curl -k -v -D output.txt --request PUT -H "confirm: ${WIZZARD_TOKEN}" \
-                                                  -H "Accept: application/json" \
-                                                  -H "Content-Type: application/json" \
-                                                  --data '{"Email":"'"${EMAIL}"'","PasswordHash":"'"${PWD_HASH}"'"}' \
-                                                  ${PROTO}://${LOCAL_IP}/api/2.0/settings/wizard/complete
+                                               -H "Accept: application/json" \
+                                               -H "Content-Type: application/json" \
+                                               --data '{"Email":"'"${EMAIL}"'","PasswordHash":"'"${PWD_HASH}"'"}' \
+                                               ${PROTO}://${LOCAL_IP}/api/2.0/settings/wizard/complete
 
            # Get cookie and user-id
            COOKIE=$(cat ./output.txt | egrep -i asc_auth_key=* | cut -d '=' -f 2-) && COOKIE=${COOKIE%%;*}
            USER_ID=$(curl -k --request GET -H "Accept: application/json" \
-                                           -H "Content-Type: application/json" \
-                                           -H "Authorization: ${COOKIE}" \
-                                           ${PROTO}://${LOCAL_IP}/api/2.0/people/email?email=${EMAIL} | jq -r .response.id)
+                                        -H "Content-Type: application/json" \
+                                        -H "Authorization: ${COOKIE}" \
+                                        ${PROTO}://${LOCAL_IP}/api/2.0/people/email?email=${EMAIL} | jq -r .response.id)
 
            # Set new admin-user pwd
            curl -k -v --request PUT -H "Accept: application/json" \
-                                    -H "Content-Type: application/json" \
-                                    -H "Authorization: ${COOKIE}" \
-                                    --data '{"Password":"'"${USER_PWD}"'"}' \
-                                    "${PROTO}://${LOCAL_IP}/api/2.0/people/${USER_ID}/password"
+                                 -H "Content-Type: application/json" \
+                                 -H "Authorization: ${COOKIE}" \
+                                 --data '{"Password":"'"${USER_PWD}"'"}' \
+                                 "${PROTO}://${LOCAL_IP}/api/2.0/people/${USER_ID}/password"
 
            # Get new admin-user auth-token and authenticate the user
            TOKEN=$(curl -k -v --request POST -H "Accept: application/json" \
-                                             -H "Content-Type: application/json" \
-                                             --data '{"userName":"'"${EMAIL}"'","password":"'"${USER_PWD}"'"}' \
-                                             "${PROTO}://${LOCAL_IP}/api/2.0/authentication" | jq -r .response.token)
+                                  -H "Content-Type: application/json" \
+                                  --data '{"userName":"'"${EMAIL}"'","password":"'"${USER_PWD}"'"}' \
+                                  "${PROTO}://${LOCAL_IP}/api/2.0/authentication" | jq -r .response.token)
 
            # Set new auth-token for zap header
            echo "ZAP_AUTH_HEADER_VALUE=${TOKEN}" >> "$GITHUB_ENV"
