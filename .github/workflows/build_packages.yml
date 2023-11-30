@@ -78,7 +78,7 @@ jobs:
           sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nodesource.gpg --import
           sudo chmod 644 /usr/share/keyrings/nodesource.gpg
           sudo apt-get -y update
-          sudo apt install -y dotnet-sdk-7.0 yarn nodejs rename
+          sudo apt install -y dotnet-sdk-8.0 yarn nodejs rename
           sudo npm install -g json
           if [[ "${{ matrix.packageType }}" == "rpm" ]]; then
             sudo apt install -y python3-rpm python3-pip
