@@ -1,0 +1,43 @@
+name: storybook build/publish
+
+on:
+  push:
+    branches: 
+     - develop
+    paths:
+      - 'public/**'
+      - 'packages/components/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [linux/amd64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - run: yarn
+      - run: yarn storybook-build
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload storybook files
+        run: | 
+             aws s3 cp ./packages/components/storybook-static/ ${{ secrets.AWS_BUCKER_URL }}/ \
+             --recursive 
+     
+      - name: Invalidate AWS CLOUDFRONT cache
+        run: |
+             aws cloudfront create-invalidation \
+                -- --paths "/*" \
+                --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }}

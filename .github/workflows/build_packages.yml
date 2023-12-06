@@ -1,16 +1,20 @@
 name: Build packages
 
 on:
-  push:
-    branches:
-      - release/*
-      - develop
-      - hotfix/*
-    paths:
-      - build/install/deb**
-      - build/install/rpm**
-      - build/install/common**
   workflow_dispatch:
+    inputs:
+      branch-buildtools:
+        description: 'Branch for buildtools repository'
+        required: true
+        default: 'develop'
+      branch-client:
+        description: 'Branch for client repository'
+        required: true
+        default: 'develop'
+      branch-server:
+        description: 'Branch for server repository'
+        required: true
+        default: 'develop'
 
 concurrency:
   group: ${{ github.ref }}
@@ -19,10 +23,12 @@ concurrency:
 env:
   PRODUCT: ${{ github.event.repository.name }}
   PRODUCT_LOW: echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]'
-  PRODUCT_VERSION: echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo '1.1.3'
+  PRODUCT_VERSION: echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo '2.0.0'
   BUILD_NUMBER: ${{ github.run_number }}
-  BRANCH_NAME: echo ${GITHUB_REF#refs/heads/}
-  PACKAGE_DIRECTORY: "/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/build/install"
+  PACKAGE_DIRECTORY: "/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}"
+  BRANCH_BUILDTOOLS: ${{ github.event.inputs.branch-buildtools }}
+  BRANCH_CLIENT: ${{ github.event.inputs.branch-client }}
+  BRANCH_SERVER: ${{ github.event.inputs.branch-server }}
 
 jobs:
   build:
@@ -49,9 +55,11 @@ jobs:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASS }}
 
-      - name: Get files from repository
-        uses: actions/checkout@v3
+      - name: Checkout ${{ env.PRODUCT }}-buildtools
+        uses: actions/checkout@v4
         with:
+          repository: ONLYOFFICE/${{ env.PRODUCT }}-buildtools
+          ref: ${{ env.BRANCH_BUILDTOOLS }}
           submodules: 'recursive'
 
       - name: Prepare build
@@ -82,26 +90,31 @@ jobs:
       - name: Build DEB Packages
         if: matrix.packageType == 'deb'
         run: |
-          cd build/install/deb/
-          rename -f -v "s/product([^\/]*)$/$(${{ env.PRODUCT_LOW }})\$1/g" debian/* ../common/* ../common/logrotate/*
-          find ../ -type f -exec sed -i "s/{{product}}/$(${{ env.PRODUCT_LOW }})/g" {} ';'
+          cd install/deb/
+          wget -q -O ./debian/source/buildtools.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-buildtools/archive/${BRANCH_BUILDTOOLS}.tar.gz"
+          wget -q -O ./debian/source/client.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-client/archive/${BRANCH_CLIENT}.tar.gz"
+          wget -q -O ./debian/source/server.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-server/archive/${BRANCH_SERVER}.tar.gz"
+          wget -q -O ./debian/source/dictionaries.tar.gz "https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz"
+          wget -q -O ./debian/source/DocStore.tar.gz "https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz"
+
+          rename -f -v "s/product([^\/]*)$/$(${{ env.PRODUCT_LOW }})\$1/g" debian/*
+          find debian/ -type f -exec sed -i "s/{{product}}/$(${{ env.PRODUCT_LOW }})/g" {} ';'
           sed -i "s/{{package_header_tag_version}}/$(${{ env.PRODUCT_VERSION }}).${{ env.BUILD_NUMBER }}/g" debian/changelog debian/control
           dpkg-buildpackage -uc -k${{ steps.gpg_step.outputs.fingerprint }}
 
       - name: Build RPM Packages
         if: matrix.packageType == 'rpm'
         run: |
-          cd build/install/rpm/SPECS
+          cd install/rpm/SPECS
+          wget -q -O ./SOURCES/buildtools.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-buildtools/archive/${BRANCH_BUILDTOOLS}.tar.gz"
+          wget -q -O ./SOURCES/client.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-client/archive/${BRANCH_CLIENT}.tar.gz"
+          wget -q -O ./SOURCES/server.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-server/archive/${BRANCH_SERVER}.tar.gz"
+          wget -q -O ./SOURCES/dictionaries.tar.gz "https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz"
+          wget -q -O ./SOURCES/DocStore.tar.gz "https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz"
           mv ./SOURCES/product.rpmlintrc ./SOURCES/$(${{ env.PRODUCT_LOW }}).rpmlintrc
-          wget https://github.com/ONLYOFFICE/${{ env.PRODUCT }}/archive/$(${{ env.BRANCH_NAME }}).tar.gz \
-            -O ./SOURCES/${{ env.PRODUCT }}-$(${{ env.BRANCH_NAME }} | tr '/' '-').tar.gz
-          wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz \
-            -O ./SOURCES/document-templates-main-community-server.tar.gz
-          wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz \
-            -O ./SOURCES/dictionaries-master.tar.gz
           sed -i -e '/BuildRequires/d' product.spec
           rpmbuild -D "packager Ascensio System SIA <support@onlyoffice.com>" \
-                   -D "GIT_BRANCH $(${{ env.BRANCH_NAME }}| tr '/' '-')" -D "_topdir $(pwd)" \
+                   -D "_topdir $(pwd)" \
                    -D "version $(${{ env.PRODUCT_VERSION }})" \
                    -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
 
@@ -116,12 +129,12 @@ jobs:
           EOF
           gpg --export --armor --output onlyoffice-gpgkey.pub
           rpm --import onlyoffice-gpgkey.pub
-          rpm --addsign ${{ env.PACKAGE_DIRECTORY }}/rpm/SPECS/RPMS/noarch/*.rpm
+          rpm --addsign ${{ env.PACKAGE_DIRECTORY }}/install/rpm/SPECS/RPMS/noarch/*.rpm
 
       - name: Upload DEB Packages
         if: matrix.packageType == 'deb'
         run: |
-          for deb_package in ${{ env.PACKAGE_DIRECTORY }}/*.deb; do
+          for deb_package in ${{ env.PACKAGE_DIRECTORY }}/install/*.deb; do
             echo $deb_package
             curl --verbose \
                   --user ${{ secrets.REPO_LOGIN }}:${{ secrets.REPO_PASS }} \
@@ -132,7 +145,7 @@ jobs:
       - name: Upload RPM Packages
         if: matrix.packageType == 'rpm'
         run: |
-          for rpm_package in ${{ env.PACKAGE_DIRECTORY }}/rpm/SPECS/RPMS/noarch/*.rpm; do
+          for rpm_package in ${{ env.PACKAGE_DIRECTORY }}/install/rpm/SPECS/RPMS/noarch/*.rpm; do
             curl --verbose \
                   --user ${{ secrets.REPO_LOGIN }}:${{ secrets.REPO_PASS }} \
                   --upload-file "$rpm_package" ${{ secrets.REPO_URL_4TESTING_RPM }}
@@ -141,7 +154,7 @@ jobs:
       - name: Checking the DEB package for errors
         if: matrix.packageType == 'deb'
         run: |
-          lintian --profile debian ${{ env.PACKAGE_DIRECTORY }}/*.deb | tee -a LINTIAN
+          lintian --profile debian ${{ env.PACKAGE_DIRECTORY }}/install/*.deb | tee -a LINTIAN
           if grep -qE '^(W:|E:)' LINTIAN; then
             echo "::warning Noticedeb=lintian::$(cat LINTIAN | awk '/^W:/ { ws += 1 } /^E:/ { es += 1 } END { print "Warnings:", ws, "Errors:", es }')"
           fi
@@ -149,8 +162,8 @@ jobs:
       - name: Checking the RPM package for errors
         if: matrix.packageType == 'rpm'
         run: |
-          for rpm_package in ${{ env.PACKAGE_DIRECTORY }}/rpm/SPECS/RPMS/noarch/*.rpm; do
-            rpmlint --ignore-unused-rpmlintrc --rpmlintrc ${{ env.PACKAGE_DIRECTORY }}/rpm/SPECS/SOURCES/$(${{ env.PRODUCT_LOW }}).rpmlintrc $rpm_package | tee -a RPM_LINT
+          for rpm_package in ${{ env.PACKAGE_DIRECTORY }}/install/rpm/SPECS/RPMS/noarch/*.rpm; do
+            rpmlint --ignore-unused-rpmlintrc --rpmlintrc ${{ env.PACKAGE_DIRECTORY }}/install/rpm/SPECS/SOURCES/$(${{ env.PRODUCT_LOW }}).rpmlintrc $rpm_package | tee -a RPM_LINT
           done
           if grep -qE '(W:|E:)' RPM_LINT; then
             echo "::warning Noticerpm=rpmlint::$(cat RPM_LINT | awk '/W:/ { ws += 1 } /E:/ { es += 1 } END { print "Warnings:", ws, "Errors:", es }')"
