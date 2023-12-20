@@ -54,7 +54,7 @@ jobs:
 
            # Replace SSL certs
            sudo cp ${{ github.workspace }}/onlyofficekey.pem ${{ github.workspace }}/onlyofficecert.pem /app/onlyoffice/
-           sudo bash /app/onlyoffice/config/docspace-ssl-setup -f /app/onlyoffice/onlyofficecert.pem /app/onlyoffice/onlyofficekey.pem
+           sudo bash /app/onlyoffice/config/docspace-ssl-setup -f zapdocspace.com /app/onlyoffice/onlyofficecert.pem /app/onlyoffice/onlyofficekey.pem
            sleep 60
 
            # Get Wizzard token and pwd hash for complete wizzard
