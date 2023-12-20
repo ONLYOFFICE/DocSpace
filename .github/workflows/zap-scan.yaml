@@ -45,7 +45,7 @@ jobs:
            openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 \
                                                           -keyout ${{ github.workspace }}/onlyofficekey.pem \
                                                           -out ${{ github.workspace }}/onlyofficecert.pem \
-                                                          -subj "/C=RU/ST=NizhObl/L=NizhNov/O=RK-Tech/OU=TestUnit/CN=docspace.local"
+                                                          -subj "/C=RU/ST=NizhObl/L=NizhNov/O=RK-Tech/OU=TestUnit/CN=docspace.localhost"
            
            # Run 4testing DocSpace with tag from previous build
            cd ./build-tools/install/OneClickInstall
@@ -54,7 +54,7 @@ jobs:
 
            # Replace SSL certs
            sudo cp ${{ github.workspace }}/onlyofficekey.pem ${{ github.workspace }}/onlyofficecert.pem /app/onlyoffice/
-           sudo bash /app/onlyoffice/config/docspace-ssl-setup -f docspace.local /app/onlyoffice/onlyofficecert.pem /app/onlyoffice/onlyofficekey.pem
+           sudo bash /app/onlyoffice/config/docspace-ssl-setup -f docspace.localhost /app/onlyoffice/onlyofficecert.pem /app/onlyoffice/onlyofficekey.pem
            sleep 60
 
            # Get Wizzard token and pwd hash for complete wizzard
