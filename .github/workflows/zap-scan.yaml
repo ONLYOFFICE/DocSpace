@@ -18,6 +18,8 @@ on:
 jobs:
   zap:
     runs-on: ubuntu-latest
+    env:
+      PROTO: https
     permissions:
       issues: write
     name: Scan DocSpace with zap
@@ -34,7 +36,6 @@ jobs:
         env:
           DOCKER_TAG: ${{ github.event.inputs.version }}
           STATUS: "4testing-"
-          PROTO: "https"
         run: |
            # Get gh-action runner local ip
            LOCAL_IP=$(hostname -I | awk '{print $1}')
@@ -44,7 +45,7 @@ jobs:
            openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 \
                                                           -keyout ${{ github.workspace }}/onlyofficekey.pem \
                                                           -out ${{ github.workspace }}/onlyofficecert.pem \
-                                                          -subj "/C=RU/ST=NizhObl/L=NizhNov/O=RK-Tech/OU=TestUnit/CN=TestName"
+                                                          -subj "/C=RU/ST=NizhObl/L=NizhNov/O=RK-Tech/OU=TestUnit/CN=docspace.localhost"
            
            # Run 4testing DocSpace with tag from previous build
            cd ./build-tools/install/OneClickInstall
@@ -53,7 +54,7 @@ jobs:
 
            # Replace SSL certs
            sudo cp ${{ github.workspace }}/onlyofficekey.pem ${{ github.workspace }}/onlyofficecert.pem /app/onlyoffice/
-           sudo bash /app/onlyoffice/config/docspace-ssl-setup -f /app/onlyoffice/onlyofficecert.pem /app/onlyoffice/onlyofficekey.pem
+           sudo bash /app/onlyoffice/config/docspace-ssl-setup -f docspace.localhost /app/onlyoffice/onlyofficecert.pem /app/onlyoffice/onlyofficekey.pem
            sleep 60
 
            # Get Wizzard token and pwd hash for complete wizzard
@@ -97,6 +98,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
-          target: 'https://${{ steps.prepare.outputs.local-ip }}/'
+          target: '${{ env.PROTO }}://${{ steps.prepare.outputs.local-ip }}/'
           allow_issue_writing: false
           cmd_options: '-j'
