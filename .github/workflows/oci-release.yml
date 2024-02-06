@@ -67,11 +67,11 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID_OCI }} \
             --paths \
-            "/$(${{ env.PRODUCT_LOW }})-install.sh" \
-            "/$(${{ env.PRODUCT_LOW }})-enterprise-install.sh" \
-            "/install-RedHat.sh" \
-            "/install-RedHat/*" \
-            "/install-Debian.sh" \
-            "/install-Debian/*" \
-            "/install-Docker.sh" \
-            "/docker.tar.gz"
+            "/$(${{ env.PRODUCT_LOW }})/$(${{ env.PRODUCT_LOW }})-install.sh" \
+            "/$(${{ env.PRODUCT_LOW }})/$(${{ env.PRODUCT_LOW }})-enterprise-install.sh" \
+            "/$(${{ env.PRODUCT_LOW }})/install-RedHat.sh" \
+            "/$(${{ env.PRODUCT_LOW }})/install-RedHat/*" \
+            "/$(${{ env.PRODUCT_LOW }})/install-Debian.sh" \
+            "/$(${{ env.PRODUCT_LOW }})/install-Debian/*" \
+            "/$(${{ env.PRODUCT_LOW }})/install-Docker.sh" \
+            "/$(${{ env.PRODUCT_LOW }})/docker.tar.gz"
