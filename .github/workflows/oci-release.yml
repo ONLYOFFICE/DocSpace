@@ -1,32 +1,36 @@
 name: Upload OneСlickInstall scripts on S3
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - 'build/install/OneClickInstall/**'
-      - 'build/install/docker/**'
   workflow_dispatch:
+    inputs:
+      branch-buildtools:
+        description: 'Branch for buildtools repository'
+        required: true
+        default: 'develop'
 
 env:
-  PRODUCT: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
+  PRODUCT: ${{ github.event.repository.name }}
+  PRODUCT_LOW: echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]'
+  BRANCH_BUILDTOOLS: ${{ github.event.inputs.branch-buildtools }}
 
 jobs:
   release:
     name: Scripts release
     runs-on: ubuntu-latest
     env:
-      DOCKER_DIR: "$GITHUB_WORKSPACE/build/install/docker"
-      SCRIPT_DIR: "$GITHUB_WORKSPACE/build/install/OneClickInstall"
+      DOCKER_DIR: "$GITHUB_WORKSPACE/install/docker"
+      SCRIPT_DIR: "$GITHUB_WORKSPACE/install/OneClickInstall"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE/${{ env.PRODUCT }}-buildtools
+          ref: ${{ env.BRANCH_BUILDTOOLS }}
 
       - name: Creating an enterprise script
         run: |
-          cp ${{ env.SCRIPT_DIR }}/${{ env.PRODUCT }}-install.sh ${{ env.SCRIPT_DIR }}/${{ env.PRODUCT }}-enterprise-install.sh
-          sed -i 's/\(PARAMETERS -it\).*";/\1 ENTERPRISE";/' ${{ env.SCRIPT_DIR }}/${{ env.PRODUCT }}-enterprise-install.sh
+          cp ${{ env.SCRIPT_DIR }}/$(${{ env.PRODUCT_LOW }})-install.sh ${{ env.SCRIPT_DIR }}/$(${{ env.PRODUCT_LOW }})-enterprise-install.sh
+          sed -i 's/\(PARAMETERS -it\).*";/\1 ENTERPRISE";/' ${{ env.SCRIPT_DIR }}/$(${{ env.PRODUCT_LOW }})-enterprise-install.sh
 
       - name: Create Docker Tarball
         run: |
@@ -49,8 +53,8 @@ jobs:
             --content-type application/x-sh \
             --metadata-directive REPLACE \
             --exclude '*' \
-            --include="${{ env.PRODUCT }}-install.sh" \
-            --include="${{ env.PRODUCT }}-enterprise-install.sh" \
+            --include="$(${{ env.PRODUCT_LOW }})-install.sh" \
+            --include="$(${{ env.PRODUCT_LOW }})-enterprise-install.sh" \
             --include="install-RedHat.sh" \
             --include="install-RedHat/*" \
             --include="install-Debian.sh" \
@@ -63,8 +67,8 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID_OCI }} \
             --paths \
-            "/${{ env.PRODUCT }}-install.sh" \
-            "/${{ env.PRODUCT }}-enterprise-install.sh" \
+            "/$(${{ env.PRODUCT_LOW }})-install.sh" \
+            "/$(${{ env.PRODUCT_LOW }})-enterprise-install.sh" \
             "/install-RedHat.sh" \
             "/install-RedHat/*" \
             "/install-Debian.sh" \
