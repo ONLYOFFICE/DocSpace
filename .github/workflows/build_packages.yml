@@ -73,7 +73,7 @@ jobs:
           tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
           curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
-          sudo apt install -y dotnet-sdk-7.0 yarn nodejs rename
+          sudo apt install -y dotnet-sdk-8.0 yarn nodejs rename
           sudo npm install -g json
           if [[ "${{ matrix.packageType }}" == "rpm" ]]; then
             sudo apt install -y python3-rpm python3-pip
