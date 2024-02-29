@@ -23,7 +23,7 @@ concurrency:
 env:
   PRODUCT: ${{ github.event.repository.name }}
   PRODUCT_LOW: echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]'
-  PRODUCT_VERSION: echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo '2.0.0'
+  PRODUCT_VERSION: echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo '2.5.0'
   BUILD_NUMBER: ${{ github.run_number }}
   PACKAGE_DIRECTORY: "/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}"
   BRANCH_BUILDTOOLS: ${{ github.event.inputs.branch-buildtools }}
