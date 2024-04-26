@@ -2,11 +2,11 @@ name: storybook build/publish
 
 on:
   push:
-    branches: 
-     - develop
+    branches:
+      - develop
     paths:
-      - 'public/**'
-      - 'packages/components/**'
+      - "public/**"
+      - "packages/shared/**"
 
 jobs:
   build:
@@ -17,13 +17,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
+
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: "20.x"
       - run: yarn
       - run: yarn storybook-build
-      
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -32,12 +32,12 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload storybook files
-        run: | 
-             aws s3 cp ./packages/components/storybook-static/ ${{ secrets.AWS_BUCKER_URL }}/ \
-             --recursive 
-     
+        run: |
+          aws s3 cp ./packages/shared/storybook-static/ ${{ secrets.AWS_BUCKER_URL }}/ \
+          --recursive
+
       - name: Invalidate AWS CLOUDFRONT cache
         run: |
-             aws cloudfront create-invalidation \
-                -- --paths "/*" \
-                --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }}
+          aws cloudfront create-invalidation \
+             -- --paths "/*" \
+             --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }}
