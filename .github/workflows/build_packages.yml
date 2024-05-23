@@ -23,7 +23,7 @@ concurrency:
 env:
   PRODUCT: ${{ github.event.repository.name }}
   PRODUCT_LOW: echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]'
-  PRODUCT_VERSION: echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo '2.0.0'
+  PRODUCT_VERSION: echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo '2.5.0'
   BUILD_NUMBER: ${{ github.run_number }}
   PACKAGE_DIRECTORY: "/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}"
   BRANCH_BUILDTOOLS: ${{ github.event.inputs.branch-buildtools }}
@@ -72,12 +72,7 @@ jobs:
           wget https://packages.microsoft.com/config/$(lsb_release -is | \
           tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
-          echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | \
-          sudo tee /etc/apt/sources.list.d/nodesource.list
-          wget -O - https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | \
-          sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nodesource.gpg --import
-          sudo chmod 644 /usr/share/keyrings/nodesource.gpg
-          sudo apt-get -y update
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
           sudo apt install -y dotnet-sdk-8.0 yarn nodejs rename
           sudo npm install -g json
           if [[ "${{ matrix.packageType }}" == "rpm" ]]; then
@@ -96,6 +91,7 @@ jobs:
           wget -q -O ./debian/source/server.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-server/archive/${BRANCH_SERVER}.tar.gz"
           wget -q -O ./debian/source/dictionaries.tar.gz "https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz"
           wget -q -O ./debian/source/DocStore.tar.gz "https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz"
+          wget -q -O ./debian/source/campaigns.tar.gz "https://github.com/ONLYOFFICE/ASC.Web.Campaigns/archive/master.tar.gz"
 
           rename -f -v "s/product([^\/]*)$/$(${{ env.PRODUCT_LOW }})\$1/g" debian/*
           find debian/ -type f -exec sed -i "s/{{product}}/$(${{ env.PRODUCT_LOW }})/g" {} ';'
@@ -111,6 +107,7 @@ jobs:
           wget -q -O ./SOURCES/server.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-server/archive/${BRANCH_SERVER}.tar.gz"
           wget -q -O ./SOURCES/dictionaries.tar.gz "https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz"
           wget -q -O ./SOURCES/DocStore.tar.gz "https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz"
+          wget -q -O ./SOURCES/campaigns.tar.gz "https://github.com/ONLYOFFICE/ASC.Web.Campaigns/archive/master.tar.gz"
           mv ./SOURCES/product.rpmlintrc ./SOURCES/$(${{ env.PRODUCT_LOW }}).rpmlintrc
           sed -i -e '/BuildRequires/d' product.spec
           rpmbuild -D "packager Ascensio System SIA <support@onlyoffice.com>" \
