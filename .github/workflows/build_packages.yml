@@ -23,7 +23,7 @@ concurrency:
 env:
   PRODUCT: ${{ github.event.repository.name }}
   PRODUCT_LOW: echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]'
-  PRODUCT_VERSION: echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo '2.5.0'
+  PRODUCT_VERSION: echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo '3.0.0'
   BUILD_NUMBER: ${{ github.run_number }}
   PACKAGE_DIRECTORY: "/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}"
   BRANCH_BUILDTOOLS: ${{ github.event.inputs.branch-buildtools }}
@@ -49,7 +49,7 @@ jobs:
           sudo docker image prune --all --force
 
       - name: Import GPG
-        uses: crazy-max/ghaction-import-gpg@v5
+        uses: crazy-max/ghaction-import-gpg@v6
         id: gpg_step
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -73,7 +73,10 @@ jobs:
           tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
           curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
-          sudo apt install -y dotnet-sdk-8.0 yarn nodejs rename
+          sudo apt install -y dotnet-sdk-8.0 yarn nodejs rename unzip maven openjdk-21-jdk-headless
+          JAVA_PATH=$(find /usr/lib/jvm/ -name "java" -path "*java-${JAVA_VERSION}*" | head -1)
+          sudo update-alternatives --install /usr/bin/java java "$JAVA_PATH" 100 && sudo update-alternatives --set java "$JAVA_PATH"
+          echo "JAVA_HOME=$(dirname $(dirname "$JAVA_PATH"))" >> $GITHUB_ENV
           sudo npm install -g json
           if [[ "${{ matrix.packageType }}" == "rpm" ]]; then
             sudo apt install -y python3-rpm python3-pip
@@ -89,9 +92,9 @@ jobs:
           wget -q -O ./debian/source/buildtools.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-buildtools/archive/${BRANCH_BUILDTOOLS}.tar.gz"
           wget -q -O ./debian/source/client.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-client/archive/${BRANCH_CLIENT}.tar.gz"
           wget -q -O ./debian/source/server.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-server/archive/${BRANCH_SERVER}.tar.gz"
-          wget -q -O ./debian/source/dictionaries.tar.gz "https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz"
           wget -q -O ./debian/source/DocStore.tar.gz "https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz"
           wget -q -O ./debian/source/campaigns.tar.gz "https://github.com/ONLYOFFICE/ASC.Web.Campaigns/archive/master.tar.gz"
+          wget -q -O ./debian/source/plugins.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-plugins/archive/master.tar.gz"
 
           rename -f -v "s/product([^\/]*)$/$(${{ env.PRODUCT_LOW }})\$1/g" debian/*
           find debian/ -type f -exec sed -i "s/{{product}}/$(${{ env.PRODUCT_LOW }})/g" {} ';'
@@ -105,9 +108,9 @@ jobs:
           wget -q -O ./SOURCES/buildtools.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-buildtools/archive/${BRANCH_BUILDTOOLS}.tar.gz"
           wget -q -O ./SOURCES/client.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-client/archive/${BRANCH_CLIENT}.tar.gz"
           wget -q -O ./SOURCES/server.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-server/archive/${BRANCH_SERVER}.tar.gz"
-          wget -q -O ./SOURCES/dictionaries.tar.gz "https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz"
           wget -q -O ./SOURCES/DocStore.tar.gz "https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz"
           wget -q -O ./SOURCES/campaigns.tar.gz "https://github.com/ONLYOFFICE/ASC.Web.Campaigns/archive/master.tar.gz"
+          wget -q -O ./SOURCES/plugins.tar.gz "https://github.com/ONLYOFFICE/$PRODUCT-plugins/archive/master.tar.gz"
           mv ./SOURCES/product.rpmlintrc ./SOURCES/$(${{ env.PRODUCT_LOW }}).rpmlintrc
           sed -i -e '/BuildRequires/d' product.spec
           rpmbuild -D "packager Ascensio System SIA <support@onlyoffice.com>" \
