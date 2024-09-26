@@ -1,0 +1,239 @@
+# Change log
+
+## 2.6.0
+
+### New features
+
+#### General changes
+
+* Added banners about reaching the disk space limit for Room Admins/Power users.
+* Added hiding/appearing behavior for the scrollbar.
+* In the content part, the scroll is set from the beginning of the page. In the room members panel, the scroll is set from the beginning of the block.
+* Fixed the direction of the sorting arrow.
+* Added the ability to create new folders in the Move to / Copy to / Restore / Save copy as dialog windows. When opening an input field, the following hotkeys are supported: Enter for creating the folder, Esc for closing the input field.
+* Fixed user avatars in the version history and co-editing.
+* Backup now has smoother progress and uses less memory.
+* Written a new component for tabs. Added the ability to automatically scroll when clicking on a tab that is not fully visible. Added blur to the container edges.
+* Changed email messages, added new ones, reworked texts and links.
+* Localized logos and product names for China.
+* Renamed Guest to Anonymous in the Audit Trail settings.
+
+#### Settings
+
+* Changed translations and page styles on the Bonus page in the Community edition. Added the Bonus page in the Space Management section in the Community edition.
+* Added the LDAP Settings section to the Integration settings. This setting allows importing users and groups via the LDAP protocol from a third-party LDAP Server.
+* Removed the BETA badge from the Plugins section.
+* Removed the 'Storage period' field in the Audit Trail, Login History settings.
+* Added the button to return back when entering a specific preset in Javascript SDK.
+
+#### Login page
+
+* Implemented changing the language on the login and confirmation pages by adding a combo box in the upper right corner. Now users will be able to sign in or sign up using the selected language.
+* Added reCaptcha on the login page. It appears if the Brute Force Protection Settings are configured and a certain number of incorrect logins are made, and a public key and type are added to appsettings.json.
+* Changed work of invitation links.
+
+#### Documents
+
+* Viewing images will be done through the 3840x2160 (4K) thumbnails to speed up loading and flipping through large images.
+* Reworked thumbnail mechanism: one image of the single 1280x720 size will be shown instead of 12 different images to reduce the number of requests and reduce the load on the thumbnail generation service.
+* Added links for connecting non-activated third-party storages in a public room. When clicking on a non-activated storage, the Integration page with a modal window for activating a third-party service will open.
+* Added a new room type: Form filling. In these rooms, users can create forms on the base of PDF templates and invite other users to fill out these forms. Once the forms are completed, the data from them is automatically analyzed and compiled into a spreadsheet.
+* Changed room icons in the room creation panel. Added effects when hovering a cursor over a button, the button border now matches the portal theme.
+* Added the ability to open a media file / image via an external link.
+* Added a context menu for creating new items instead of the standard browser menu.
+* Added the ability to copy a link to a folder for external users in Public rooms.
+* Fixed a bug with the incorrect table in Rooms.
+* Added the ability to open a document in the same tab.
+* Renamed the My Documents section to Documents, updated its icon.
+* In a mobile browser, the ONLYOFFICE logo will not be displayed when opening the editor if the license allows (Docs v8.1 and later required).
+* Added support for new entries in the file and room history (for files: converting files; for files and folders: renaming, moving, copying files and folders; for rooms: renaming rooms, changing a logo, adding/removing tags, adding/renaming/removing links, changing roles/removing users, changing roles/adding/removing groups).
+* Added the ability to embed Public rooms and documents from them.
+* Implemented duplication for rooms and folders. Changed the duplication method for files. When duplicating rooms, the icon and tags are copied, users are deleted. Duplicated items have an index at the end of the name.
+* Added a limit on the number of pinned rooms - 10.
+* Added a hotkey for renaming files/folders - F2.
+* Added scrolling of the file list when selecting with the mouse while holding the left mouse button.
+* It's no longer possible to convert from docx to docxf.
+* Changed colors of badges and third-party services icons for the dark theme.
+
+#### Accounts
+
+* Added support for 'ArrowUp' and 'ArrowDown' hotkeys for the list. 'Enter', 'Backspace' for groups.
+* Changed the work of the filter by user status.
+* Added a country and city to IP in the Location column in the profile for the SaaS version.
+
+### Fixes
+
+* Fixed display of images when flipping
+* The clickable area size for the copy links button has been increased.
+* Changed scrollbar color for dark theme
+* Fixed display of history from the previous room
+* Fixed authorization via ADFS server
+* Fixed display of info panel after changing user type
+* Fixed display of the document creation menu in the horizontal position of mobile devices
+* Fixed the description of the role in the room for the owner
+* Fixed account selection when clicking on name
+* Fixed browser backspace navigation
+* MySQL Server updated to version 8.0.37
+* Added user type description to profile
+* Fixed file selection in horizontal position on mobile devices
+* Fixed deletion of files on the server after deleting a user from the portal
+* Fixed opening PDF on preview. A copy of the file is no longer created
+* Added automatic installation of docker on RedHat
+* Fixed display of error about insufficient rights to view the room
+* Fixed changing user type on the invite panel
+* Hidden status line in user info for server version
+* The elasticsearch service has been removed from startup
+* Fixed following links from notifications under an authorized user
+* Added a record to the room history when deleting an external link
+* Added a link to the portal in the topic of notifications What's New
+* Added field names for brute force protection settings
+* Fixed transition inside a group by Enter
+* Fixed low logo resolution for "use as logo" setting
+* Fixed filter when viewing user's room list
+* Fixed rewinding of media files on the server version
+* Fixed restore process for server version
+* Fixed sorting when navigating through folders.
+* Fixed embedding of password protected documents
+* Fixed "rate limit" for simultaneous upload of multiple large files
+* Fixed modification date when editing documents
+* Added a record to the history of the destination folder about moving/copying a file to it
+* Fixed page scrolling when selecting elements and drag'n'drop
+* Fixed room history entry about adding existing tags
+* Added a record to the audit trail about changing quotas
+* Added a button to return to the general list of presets JS SDK
+* Fixed saving empty company name in branding
+* Fixed the appearance of authorization buttons via third-party services on the login page
+* Added confirmation window for restoring LDAP settings
+* Fixed default port changing when switching to ssl for LDAP settings
+* Fixed authorization via ldap server
+* Fixed disabling of "Feedback & Support" and "Show link to Help Center" links in branding
+* Fixed CSP error for plugins on the server version
+* Fixed quota change on mobile devices
+* Fixed work with document server when using spaces
+* Fixed license reset when restoring one of the space portals
+* Fixed access to the room after filling out the embedded form
+* Fixed license reset when restoring one of the spaces portals
+* Fixed lock of file opened for editing in inactive browser tab
+* Fixed connection of Sharepoint via webdav to public room
+* Fixed installation of docker version on custom port
+* Fixed installation of docker version without documentserver
+* Fixed sorting set in compact view mode
+* Fixed element selection when clicking on a type
+* Fixed restore from backup list
+* Fixed account activation when registering via social networks
+* Fixed embedding of PDF form (filling was not available)
+
+## 2.5.0
+
+### New features
+
+#### General changes
+
+* Switching to .net 8 and yarn v4.
+* Added distributed locking based on Redis/ZooKeeper.
+* The confirmation window for the selected Google account always appears: when logging in, connecting and on the backup page.
+* Changed scrolling of pages, panels, etc.
+* Added a mechanism for working with Google Tag Manager, it works automatically if there is an corresponding setting in the server configuration.
+* Styled the NGINX standard errors.
+
+#### Settings
+
+* Added presets for Javascript SDK: DocSpace, Public room, Editor, Viewer, Room selector, File selector, Custom.
+* Added a mechanism for forwarding the editor customization config.
+* Adjusted the behavior of internal checks for the CSP mechanism.
+* Changed the loader for the SDK.
+* Fixed the mechanism of synchronizing the color scheme transmitted to the SDK for the editor.
+* Added work with the type of opened editor (restored the mechanism of the embedded display).
+* Added a new view for the selector mode - a button that opens the selector window.
+* Added the ability to upload files using drag and drop in the Plugins list.
+* Added validation and notifications about errors when changing the portal name in the DNS settings.
+* Implemented migration from ONLYOFFICE Workspace, Google Workspace and Nextcloud: added the ability to migrate users with files, groups and shared files/folders.
+* Changed the display of buttons in the portal settings on mobile devices.
+* Added users and rooms quotas (a default quota, which can be set in the portal settings, and a custom quota, which can be set in the info panel, in the corresponding column of the table, through the menu and in the editing/creating room dialog window).
+* Added the new Storage Management page which displays statistics on storage space used.
+
+#### Accounts
+
+* Changed the page for inviting users to a portal/room: redesigned the form, divided into steps. The first step is to enter the email. If the user with such email exists on the portal, the second step is to go to the modified login page. If the user does not exist, the second step is to enter a name and create a password. It's also possible to return to the previous step using the Back button and enter a different email.
+* Changed social network buttons.
+* Added tabs to the Accounts page.
+* Added the new Group column to the group table.
+* Added the new way to sort/filter users – by groups.
+* Added a table to display groups.
+* Changed HeaderMenu and MainButton in the Accounts section.
+* Added the new panel for creating/editing groups.
+* Added group filtering by members.
+* Added the new Info panel which displays information about the group.
+* Added new data about groups when displaying user information in the Info panel.
+* Added the ability to enter a group as if it were a folder, the table for users in the group, and navigation back to accounts.
+* Removed the ability to edit an already uploaded photo (change zoom and aspect) in the Avatar Editor.
+* A larger image is now uploaded to the server to improve quality when zooming in on large screens.
+
+#### Documents
+
+* Moved long operations to ASC.Files.Service.
+* Optimized conversion.
+* Changed width calculation when adding new table columns.
+* Changed the URL to view media files: /media/view is used instead of /products/files/#preview.
+* Redesigned the info panel: fixed the context menu, actions with the selected element, display of the element in the panel.
+* Added asynchronous file upload.
+* The Overwrite Confirmation dialog window is now shown every time without a separate setting.
+* Added the ability to share files from My Documents.
+* Added the Share tab in the Info panel to assign permissions to links.
+* Added empty file templates for ar-SA and sr-Latn-RS cultures.
+* Accelerated loading of large files (chunks are now loaded in several threads).
+* Restored the ability to create rooms based on third-party storages (for Public rooms only).
+* Added additional information about users in the Info panel.
+* Changed the tariff banner and moved it to the header.
+* Added the “Share room” button to the navigation for public rooms (copies the link to the public room and shows it).
+* Removed the “Additional links” header for public rooms now additional links are included in one list).
+* Changed “Copy general link” to “Copy shared link” for public rooms (“General link” to “Shared links”).
+* Changed the “Megaphone” icon to “Planet” for public rooms.
+* Replaced the ONLYOFFICE Sample Form.oform file with ONLYOFFICE Sample Form.pdf.
+* Changed work of the InviteInput field.
+* Added the ability to invite groups to rooms for free roles.
+* Added the ability to jointly search for users and/or groups within a room in the info panel.
+* Added the safe area for mobile devices with “bangs”.
+* Now the last set room filter is not reset when switching to other sections (in Rooms/Archive).
+* Added the new advertising banner.
+* Added new icons for the xlsb format.
+* Added the "Create a new folder in the storage" checkbox when creating a room with the connection of a third-party resource.
+* Rewrote Document Editor to the NextJS library. Accelerated opening documents.
+* Rewrote all selectors (files, room and people) to a more optimal working scheme.
+* Changed drag for the Tiles view (now dragging files/folders occurs over the entire tile area).
+* Added a new state in all selectors with users. If a user is blocked, he is always displayed in the list, but it's not possible to take actions with him. If a user is already added, he is displayed with the 'Invited' label in the selector for inviting users to a room.
+
+#### Management
+
+* Added a new Management client (Standalone only) for managing DocSpace spaces: it allows you to configure the current portal and manage other portals, set up branding for all portals, perform backup/restore of all portals, go to the payments page.
+* Added a new modal window to Management: after configuring the portal, a window appears where you are asked to go to the domain or stay in the settings.
+
+### Fixes
+
+* Fixed downloading files from the public room
+* Added content search for PDF files
+* Fixed saving SSO settings from drop-down lists
+* Fixed blocking of document editing when opening the save/share panel, and closing them by esc
+* Fixed adding an existing tag for rooms
+* Fixed search in Chinese (by content too)
+* Fixed display of the Branding section when mobile devices are in a vertical position
+* Fixed closing Copy/Move panels by esc
+* Fixed display of content when logging in via social networks
+* Fixed folder counting in the Info/Details panel
+* Fixed sending a letter "Forgot password" for users with non-activated mail
+* Fixed display of the user invitation panel on smartphones
+* Fixed display of links in notifications for Chinese language
+* Fixed display of the context menu for folders and rooms on smartphones
+* Fixed display of content on iPad when changing position multiple times
+* Fixed generation of thumbnails for media files
+* Corrected access rights for the Reviewer/Commenter role in the room
+* Fixed display of a removed room in a frame
+* Fixed loading files in a room in a frame
+* Fixed an error when converting password protected files
+* Fixed display of plugin keys after deleting them
+* Fixed opening the payment page from the portal settings for community edition(Standalone)
+* Add installation on Fedora by oneclick scripts(Standalone)
+* Fixed the ability to specify an incorrect document server address in the portal settings(Standalone)
+* Fixed the use of self-signed certificates(Standalone)
+* Fixed indication of custom port in notification links(Standalone)
+* Fixed updating of Letsencrypt certificates for Windows(Standalone)
