@@ -1,5 +1,18 @@
 # Change log
 
+## 2.6.3
+
+### Fixes
+* Fixed redirection to mobile app when opening documents via deeplink
+* Added duplication function for the form filling room
+* Fixed display of history for users without rights in the form filling room
+* Fixed the ability to see other people's forms in the form filling room
+* Fixed display of more than 100 users in a group on mobile devices
+* Fixed copy link option for non-editable formats
+* Fixed display of PDF and forms when opened on mobile devices
+* Fixed display of secret codes for 2FA
+* Fixed opening of the form via a link with a password for an authorized user
+
 ## 2.6.0
 
 ### New features
