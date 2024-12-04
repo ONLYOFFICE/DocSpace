@@ -1,5 +1,106 @@
 # Change log
 
+## 3.0.0
+
+### New features
+
+#### General changes
+
+* Restored the mobile app advertising banner.
+* Changed the licensing scheme. The Branding functionality is blocked for the enterprise_license without the customization parameter. Branding is available for the developer_license with the customization parameter. The About window is hidden for the developer_plus_license. There is no the Branding tab in the free Community version.
+* Fixed loading of only the first 1000 records in the Info -> History panel, now the remaining records are also loaded when scrolling.
+* Changed file format icons.
+
+#### Settings
+
+* Added a new OAuth2.0 section: Settings -> Developer Tools -> OAuth2. Added new login and profile pages.
+* Added a warning before migrating if the quota is enabled.
+* Fixed logo sizes in Branding.
+
+#### Login page
+
+* Added OAuth support for Login.
+* Added the ability to select the necessary portal if a user has more than 1 portal according to the entered data.
+* Added the 'instance ID' field to the setup wizard.
+* Added the checkbox about the newsletter subscription to the registration page.
+
+#### Documents
+
+* Added a dialog window for converting XML files. Added the ability to convert XML files to the docx or xlsx format.
+* Rewrote the logic for applying Right-to-Left styles to logical CSS properties.
+* Added the shardkey parameter to all editor requests (api.js loading, conversion, builder, command execution) to work with the cluster version that supports sharding.
+* Added the ability to share a Public Room for editing.
+* Changed the context menu. Added nesting in the mobile view.
+* Added new empty screens.
+* Added an option to display file extensions to the Profile -> File management section.
+* Added requirements for the public link password.
+* Added an hourglass icon for unverified users.
+* Changed the Share feature in the Documents section: moved the Remove link option, added a new toast about copying the link, fixed minor bugs.
+* Added the ability to set a custom logo for a room.
+* Changed the design for the profile and room avatar editor.
+* Added a new room type: Virtual Data Room. Implemented new capabilities for working with data in this type of room: indexing of data with the ability to change the index and generate a summary report on the file structure of the room, setting the lifetime of files, prohibition on copying and downloading files, setting watermarks.
+* Added a toast about the view-only mode and an authorization button in the public room.
+* Increased the original size of room avatars by 2 times to support 4k displays.
+* Changed the panel with information about latest new files in rooms.
+* When creating a new document for the en-US language, a template with the Letter page format is used. If there are no templates for a language, a document with the A4 page format is used.
+* Added empty files templates for creation in the following languages: fi-FI, he-IL, nb-NO, sl-SI.
+* Starting documents have titles in the corresponding language.
+* Added the ability to display public rooms shared via link in the room list.
+* Optimized queries when saving changes in the room editing panel and when creating a room: all parameters are passed in one method.
+* Added new types of records to the Info -> History panel.
+
+#### Management
+
+* Redesigned the Management section.
+* Added the ability to quickly delete a portal (if the wizard is not completed, the portal will be deleted without confirmation).
+
+#### Accounts
+
+* Renamed the Accounts section to Contacts. Added a new Guests tab to it. Renamed the People tab to Members.
+* The DocSpace Owner/Admin has read-only access to rooms he was not invited to, but he can change the owner for such a room or archive it.
+* Any role can be assigned to the DocSpace Owner/Admin and he will work in the room according to the role.
+* The Room Admin role is renamed to Room Manager. He can invite only Users and Guests to the portal (via rooms) and cannot promote the type of other contacts higher than the User.
+* The Power User type is a free type, which is renamed to User.
+* The Power User role is renamed to Content Creator. The Content Creator role allows creating/uploading/deleting files/folders even for Guests.
+* The User type renamed to Guest. Guests can only be invited via rooms.
+* Changed the Info -> History panel, now the focus is on actions, not the user name.
+* Changed the appearance of the element for insertion when entering an email in the invitation.
+
+### Fixes
+* Added the ability to use keyboard actions in modal windows
+* Fixed display of support button (live chat)
+* Added notification about enabled quota when migration starts
+* Added the ability to select the user type when connecting to the SSO server
+* Added notification when trying to copy a document other than PDF into the form room
+* Added reset to default settings for brute force protection
+* Fixed extra browser window when copying a link on Safari
+* Fixed message when adding users over the tariff limit
+* Added the ability to edit files in a public room without authorization
+* Fixed an error in the browser console for the user when creating a room by the administrator
+* Fixed setting the filter when clicking on the portal logo
+* Fixed double click on room in copy window
+* Fixed an error if a folder/room for auto backup was deleted
+* Fixed switcher color in portal settings for dark theme
+* Fixed errors in logs after installing the standalone version
+* Fixed storage of files without extension
+* Fixed creation of new documents according to the selected language
+* Fixed creation of sample documents according to the selected language
+* Fixed focus on search field after results are displayed
+* Fixed connection of public room in frame for server version
+* Fixed automatic update of LetsEncrypt certificates in the server version
+* Fixed emails when registering via social networks
+* Added sand clock icon for accounts that have not accepted an invitation in the group selector
+* Added a message about exceeding the quota limit before the file upload starts
+* Fixed adding users with underscore in email
+* Fixed favicon on tab after form submission
+* Added a message when trying to edit PDF forms on mobile devices
+* Twitter has been replaced by X
+* Fixed creation of a new CSV report after deleting it in the form filling room
+* Fixed the appearance of the new badge for the room owner when filling out the form
+* Fixed display of diacritic characters on the groups tab
+* Removed the role of filler forms in the custom room
+* Added the ability to connect Egnyte as a third-party storage via WebDav
+
 ## 2.6.3
 
 ### Fixes
