@@ -1,5 +1,24 @@
 # Change log
 
+## 3.0.1
+
+### Fixes
+* Fixed the work of OAuth2 in the US region
+* Fixed viewing document versions in someone else's room for the administrator
+* Fixed opening editors for docker with self-signed certificates(Standalone)
+* Fixed opening editors after update when using self-signed certificates(Standalone)
+* Fixed default value in user type field on ldap settings page after update
+* Removed description of user type on payments page
+* Fixed dialog for choosing the method of opening a document on mobile devices under an unauthorized user
+* Fixed registration on the portal for guests via social networks
+* Fixed closing of Action required window when copying file again
+* Fixed uploading/downloading files without extension
+* Fixed the ability to insert a document from a form room into WordPress
+* Fixed authorization on the portal after an update if an ldap server with the user type "power user" was
+* Added guest user type to ldap server connection settings
+* Fixed access rights in public rooms for dockspace administrators
+* Fixed email activation for ldap users
+
 ## 3.0.0
 
 ### New features
