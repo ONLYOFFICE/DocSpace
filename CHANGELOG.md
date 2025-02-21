@@ -1,5 +1,21 @@
 # Change log
 
+## 3.0.4
+
+### Fixes
+* Fixed adding users with a dot in the email
+* Fixed context menu for creating files with screen width 1000px
+* Fixed update external links in spreadsheet for anonymus user
+* Fixed performance and timeout errors
+
+## 3.0.3
+
+* No public release.
+
+## 3.0.2
+
+* No public release.
+
 ## 3.0.1
 
 ### Fixes
