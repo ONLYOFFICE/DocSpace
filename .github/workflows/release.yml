@@ -1,0 +1,62 @@
+name: 2/ Release Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+        default: 'vX.X.X'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository with submodules
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Update submodules
+        run: |
+          git submodule update --remote --merge
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -am "Update submodules"
+            git push origin HEAD
+          else
+            echo "No changes in the submodules were detected."
+          fi
+
+      - name: Create tag for release
+        run: |
+          git tag ${{ github.event.inputs.version }}
+          git push origin ${{ github.event.inputs.version }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.event.inputs.version }}
+          name: ${{ github.event.inputs.version }}
+          body: See changes at [CHANGELOG.md](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md)
+          draft: false
+          prerelease: false
+
+  trigger_docker_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger workflow to release Docker
+        run: |
+          VERSION="${{ github.event.inputs.version }}"; VERSION="${VERSION#v}"
+          TAG_RESP=$(curl -s "https://hub.docker.com/v2/repositories/onlyoffice/4testing-docspace-api/tags?page_size=100")
+          DOCKER_VERSION=$(echo "$TAG_RESP" | jq -r --arg BASE "$BASE" '.results[] | select(.name|startswith($BASE)) | .name' \
+              | grep "$VERSION" | sort -nr | head -n1)
+
+          curl -X POST \
+              -u "${{ secrets.USERNAME }}:${{ secrets.TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository_owner }}/DocSpace-buildtools/actions/workflows/106393860/dispatches" \
+              -H "Accept: application/vnd.github.everest-preview+json" \
+              --data "{\"ref\": \"${{ github.ref_name }}\", \"inputs\": {\"release_version\": \"${version}\", \"source_version\": \"${DOCKER_VERSION}\"}}"

@@ -1,0 +1,44 @@
+name: 3/ Create Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch name to create'
+        required: true
+        default: 'release/vX.X.X'
+      source_branch:
+        description: 'Source branch'
+        required: false
+        default: 'develop'
+
+jobs:
+  create_branch:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: [ 'DocSpace', 'DocSpace-buildtools', 'DocSpace-client', 'DocSpace-server' ]
+    outputs:
+      failed: ${{ steps.track_failures.outputs.failed }}
+    steps:
+      - name: Checkout repository ${{ matrix.repo }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/${{ matrix.repo }}
+          token: ${{ secrets.TOKEN }}
+          fetch-depth: 0
+
+      - name: Сreate target branch in ${{ matrix.repo }}
+        run: |
+          git ls-remote --exit-code --heads origin ${{ github.event.inputs.source_branch }} && \
+            { echo "Source branch exists" } || { echo " Error: Source branch not found in ${{ matrix.repo }}"; exit 1; }
+
+          if ! git ls-remote --exit-code --heads origin ${{ github.event.inputs.branch }}; then
+            echo "Creating branch '${{ github.event.inputs.branch }}' from '${{ github.event.inputs.source_branch }}'..."
+            git fetch origin ${{ github.event.inputs.source_branch }}
+            git checkout -b ${{ github.event.inputs.branch }} origin/${{ github.event.inputs.source_branch }}
+            git push origin ${{ github.event.inputs.branch }}
+          else
+            echo "Target branch already exists. Skipping creation"
+          fi

@@ -1,0 +1,43 @@
+name: 1/ Create PRs for Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Release branch'
+        required: true
+        default: 'release/vX.X.X'
+      target_branch:
+        description: 'Target branch'
+        required: true
+        default: 'master'
+
+jobs:
+  release:
+    name: Create PR for ${{ matrix.repo }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: [ "DocSpace", "DocSpace-buildtools", "DocSpace-client", "DocSpace-server" ]
+    outputs:
+      failed: ${{ steps.track_failures.outputs.failed }}
+    steps:
+      - name: Checkout ${{ matrix.repo }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/${{ matrix.repo }}
+          token: ${{ secrets.TOKEN }}
+          fetch-depth: 0
+
+      - name: Check branch existence in ${{ matrix.repo }}
+        run: |
+          git ls-remote --exit-code origin "${{ github.event.inputs.branch }}" || \
+            { echo "Branch ${{ github.event.inputs.branch }} does not exist in repository ${{ matrix.repo }}"; exit 1; }
+
+      - name: Create Pull Request in ${{ matrix.repo }}
+        run: |
+          PR_URL=$(gh pr create -t "Merge ${{ github.event.inputs.branch }} into ${{ github.event.inputs.target_branch }}" -b '' -B ${{ github.event.inputs.target_branch }} -H "${{ github.event.inputs.branch }}")
+          echo "::notice::Pull request for ${{ matrix.repo }}: $PR_URL"
+        env:
+          GITHUB_TOKEN: $${{ secrets.TOKEN }}
