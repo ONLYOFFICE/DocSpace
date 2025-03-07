@@ -1,0 +1,297 @@
+name: Release Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+        default: 'vX.X.X'
+      branch:
+        description: 'Release branch'
+        required: true
+        default: 'release/vX.X.X'
+      target_branch:
+        description: 'Target branch'
+        required: true
+        default: 'master'
+      trigger_release:
+        type: boolean
+        description: 'GitHub Release'
+        required: true
+        default: true
+      trigger_docker_release:
+        type: boolean
+        description: 'Docker images release'
+        required: true
+        default: true
+      docker_version:
+        description: 'Source Docker version'
+        required: true
+        default: 'X.X.X.XXXX'
+      trigger_packages_release:
+        type: boolean
+        description: 'Packages release'
+        required: true
+        default: true
+      deb_build_number:
+        description: 'deb package build number'
+        required: true
+        default: 'XXXX'
+      rpm_build_number:
+        description: 'rpm package build number'
+        required: true
+        default: 'XXX'
+      exe_build_number:
+        description: 'exe package build number'
+        required: true
+        default: 'XXXX'
+
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+jobs:
+  trigger_docker_release:
+    if: ${{ github.event.inputs.trigger_docker_release == 'true' }}
+    name: Trigger Docker release
+    runs-on: ubuntu-latest
+    outputs:
+      docker_run_id: ${{ steps.docker_release.outputs.docker_run_id }}
+    steps:
+      - name: Trigger Docker release
+        id: docker_release
+        run: |
+          DOCKER_VERSION="${{ github.event.inputs.version }}"
+          DOCKER_VERSION="${DOCKER_VERSION#v}.1"
+
+          WORKFLOW_ID=$(gh api repos/${{ github.repository }}-buildtools/actions/workflows \
+            --jq '.workflows[] | select(.path == ".github/workflows/release-docspace.yaml") | .id')
+
+          gh api /repos/${{ github.repository }}-buildtools/actions/workflows/${WORKFLOW_ID}/dispatches -X POST \
+            -f "ref=${{ github.ref_name }}" -f "inputs[release_version]=${DOCKER_VERSION}" -f "inputs[source_version]=${{ github.event.inputs.docker_version }}"
+
+          until [ -n "${DOCKER_RUN_ID}" ]; do
+            DOCKER_RUN_ID=$(gh api repos/${{ github.repository }}-buildtools/actions/runs \
+              --jq '.workflow_runs[] | select(.workflow_id=='"${WORKFLOW_ID}"' and (.status=="in_progress" or .status=="queued")) | .id' | head -n 1)
+            sleep 5
+          done
+
+          echo "docker_run_id=${DOCKER_RUN_ID}" >> $GITHUB_OUTPUT
+
+  trigger_packages_release:
+    if: ${{ github.event.inputs.trigger_packages_release == 'true' }}
+    name: Trigger Packages release
+    runs-on: ubuntu-latest
+    outputs:
+      deb_build_number: ${{ steps.package_release.outputs.deb_build_number }}
+      rpm_build_number: ${{ steps.package_release.outputs.rpm_build_number }}
+      exe_build_number: ${{ steps.package_release.outputs.exe_build_number }}
+    steps:
+      - name: Trigger Packages release
+        id: package_release
+        run: |
+          JENKINS_URL="${{ secrets.JENKINS_URL }}"; TOKEN="${{ secrets.JENKINS_TOKEN }}"; VERSION="${{ github.event.inputs.version }}"
+          declare -A NUM=([deb]="${{ github.event.inputs.deb_build_number }}" [rpm]="${{ github.event.inputs.rpm_build_number }} [exe]="${{ github.event.inputs.exe_build_number }}")
+
+          for TYPE in deb rpm exe; do
+            BUILD_NUM=${NUM[${TYPE}]}
+            curl -s -S -X POST -H "Content-Length: 0" -u "${TOKEN}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/toggleLogKeep"
+            curl -s -S -X POST -u "${TOKEN}" -d "description=${VERSION}.${BUILD_NUM}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/submitDescription"
+            curl -s -S -X POST -H "Content-Length: 0" -u "${TOKEN}" "${JENKINS_URL}/job/production.${TYPE}.publish/buildWithParameters"
+            sleep 10
+            echo "${TYPE}_build_number=$(curl -s -S -L -u "${TOKEN}" "${JENKINS_URL}/job/production.${TYPE}.publish/lastBuild/api/json" | jq '.number')" >> "$GITHUB_OUTPUT"
+          done
+
+  create_and_merge_pr:
+    name: Create/merge PRs ${{ matrix.repo }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo: [ "DocSpace", "DocSpace-buildtools", "DocSpace-client", "DocSpace-server" ]
+    steps:
+      - name: Check branch existence
+        run: |
+          if ! gh api repos/${{ github.repository_owner }}/${{ matrix.repo }}/git/ref/heads/${{ github.event.inputs.branch }} --silent; then
+            echo "::error::Branch '${{ github.event.inputs.branch }}' does not exist in repository ${{ matrix.repo }}" && exit 1
+          fi
+
+      - name: Check commits difference
+        run: |
+          AHEAD_BY=$(gh api repos/${{ github.repository_owner }}/${{ matrix.repo }}/compare/${{ github.event.inputs.target_branch }}...${{ github.event.inputs.branch }} --jq '.ahead_by')
+          if [[ "$AHEAD_BY" =~ ^[0-9]+$ ]] && [ "$AHEAD_BY" -eq 0 ]; then
+            echo "::warning::No commits to merge in ${{ matrix.repo }}, skipping PR creation"
+            echo "SKIP_PR=true" >> $GITHUB_ENV
+          fi
+
+      - name: Create Pull Request
+        if: ${{ env.SKIP_PR != 'true' }}
+        run: |
+          PR_NUMBER=$(gh pr list --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
+            --base ${{ github.event.inputs.target_branch }} \
+            --head ${{ github.event.inputs.branch }} \
+            --state open \
+            --json number --jq '.[0].number')
+
+          if [[ -n "$PR_NUMBER" ]]; then
+            echo "Pull request #$PR_NUMBER already exists in ${{ matrix.repo }}"
+          else
+            gh pr create --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
+              -t "Merge ${{ github.event.inputs.branch }} into ${{ github.event.inputs.target_branch }}" \
+              -b "Automatically created by Release Action" \
+              -B ${{ github.event.inputs.target_branch }} \
+              -H ${{ github.event.inputs.branch }}
+          fi
+
+      - name: Auto merge Pull Request
+        if: ${{ env.SKIP_PR != 'true' }}
+        run: |
+          PR_NUMBER=$(timeout 60 bash -c 'while :; do 
+            NUM=$(gh pr list --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
+              --base ${{ github.event.inputs.target_branch }} \
+              --head "${{ github.event.inputs.branch }}" \
+              --state open \
+              --json number --jq ".[0].number");
+            [[ -n "$NUM" && "$NUM" != "UNKNOWN" ]] && echo $NUM; sleep 2; exit 0; 
+          done;')
+
+          if [ -z "${PR_NUMBER}" ]; then
+            echo "::error::Failed to find open PR in ${{ matrix.repo }}" && exit 1
+          fi
+
+          MERGEABLE_STATUS=$(gh pr view "${PR_NUMBER}" \
+            --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
+            --json mergeable --jq '.mergeable')
+
+          if [ "${MERGEABLE_STATUS}" = "MERGEABLE" ]; then
+            gh pr merge "${PR_NUMBER}" --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
+              -t "Merge ${{ github.event.inputs.branch }} into ${{ github.event.inputs.target_branch }}" --merge
+          else
+            echo "::warning::PR #$PR_NUMBER in ${{ matrix.repo }} is not mergeable or contains conflicts."
+          fi
+
+  release:
+    if: ${{ github.event.inputs.trigger_release == 'true' }}
+    name: Release ${{ matrix.repo }}
+    runs-on: ubuntu-latest
+    needs: create_and_merge_pr
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: [ "DocSpace", "DocSpace-buildtools", "DocSpace-client", "DocSpace-server" ]
+    steps:
+      - name: Wait for all PR merges across repositories
+        env:
+          REPOS: "DocSpace DocSpace-client DocSpace-server DocSpace-buildtools"
+        run: |
+          echo "Waiting for PR merges in all repositories..."
+          while :; do
+            MERGED=0
+            for REPO in ${REPOS}; do
+              PR_INFO=$(gh pr list --repo ${{ github.repository_owner }}/${REPO} \
+                --base ${{ github.event.inputs.target_branch }} --head ${{ github.event.inputs.branch }} \
+                --state all --json state,url --jq '.[0] // {state: "NOT_FOUND", url: ""}')
+              PR_STATE=$(echo "${PR_INFO}" | jq -r '.state') 
+              PR_URL=$(echo "${PR_INFO}" | jq -r '.url')
+
+              echo "PR state for $REPO: ${PR_STATE} ($PR_URL)"
+
+              [ "${PR_STATE}" = "MERGED" ] && MERGED=$((MERGED + 1))
+              [ "${PR_STATE}" = "NOT_FOUND" ] && REPOS=$(xargs -n1 <<< "$REPOS" | grep -vx "$REPO" | xargs)
+            done
+            printf '%.0s-' {1..48}; echo
+            [ "${MERGED}" -eq "$(echo ${REPOS} | wc -w)" ] && break
+            sleep 5
+          done
+
+      - name: Checkout repository ${{ matrix.repo }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/${{ matrix.repo }}
+          token: ${{ secrets.GH_TOKEN }}
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Update submodules (DocSpace only)
+        if: ${{ matrix.repo == 'DocSpace' }}
+        run: |
+          git pull --recurse-submodules
+          git submodule update --remote --merge
+          if [ -n "$(git status --porcelain)" ]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -am "Update submodules"
+            git push origin HEAD
+          else
+            echo "::warning::No submodule changes detected."
+          fi
+
+      - name: Create Tag
+        run: |
+          TAG_NAME=${{ github.event.inputs.version }}$([ "${{ matrix.repo }}" != "DocSpace" ] && echo '-server' || echo '')
+          git fetch --tags
+          if git rev-parse "${TAG_NAME}" >/dev/null 2>&1; then
+            echo "::warning::Tag ${TAG_NAME} already exists. Skipping tag creation."
+          else
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git tag ${TAG_NAME} -m "${TAG_NAME}"
+            git push origin ${TAG_NAME}
+          fi
+        
+      - name: Create Release (DocSpace only)
+        if: ${{ matrix.repo == 'DocSpace' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          tag_name: ${{ github.event.inputs.version }}
+          name: ${{ github.event.inputs.version }}
+          body: See changes at [CHANGELOG.md](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md)
+          draft: false
+          prerelease: false
+
+  notify:
+    name: Notify Release
+    runs-on: ubuntu-latest
+    needs: [release, trigger_docker_release, trigger_packages_release ]
+    if: ${{ always() }}
+    steps:
+      - name: Notify Release
+        env:
+          REPOS: "DocSpace DocSpace-client DocSpace-server DocSpace-buildtools"
+          DOCKER_RUN_ID: ${{ needs.trigger_docker_release.outputs.docker_run_id }}
+          DEB_BUILD_NUMBER: ${{ needs.trigger_packages_release.outputs.deb_build_number }}
+          RPM_BUILD_NUMBER: ${{ needs.trigger_packages_release.outputs.rpm_build_number }}
+          EXE_BUILD_NUMBER: ${{ needs.trigger_packages_release.outputs.exe_build_number }}
+        run: |
+          JQ_TARGET=$([ "${{ github.event.inputs.trigger_release }}" = "true" ] && echo "Release" || echo "Create/merge PR")
+          JQ_FILTER=".jobs[] | select(.name | startswith(\"${JQ_TARGET}\")) | \"\\(.name | sub(\"^${JQ_TARGET}s? ?\"; \"\")) \\(.conclusion)\""
+          JOB_OUTPUT=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" --jq "${JQ_FILTER}")
+
+          for REPO in ${REPOS}; do
+            [[ "${JOB_OUTPUT}" =~ "${REPO} success" ]] && SUCCESS=$((SUCCESS+1)) && EMOJI="🟢" || EMOJI="🔴"
+            STATUS+=$'\n'"${EMOJI} [${REPO}](${{ github.server_url }}/${{ github.repository_owner }}/${REPO})"
+          done
+
+          MESSAGE="\[${SUCCESS:-0}/$(echo $REPOS | wc -w)] ${{ github.event.inputs.branch }} → ${{ github.event.inputs.target_branch }} ${STATUS}"
+          if ${{ github.event.inputs.trigger_docker_release == 'true' }} || ${{ github.event.inputs.trigger_packages_release == 'true' }}; then
+            MESSAGE+=$'\n'$'\n''Releases: '
+            if ${{ github.event.inputs.trigger_docker_release == 'true' }}; then
+              MESSAGE+='[Docker](${{ github.server_url }}/${{ github.repository }}-buildtools/actions/runs/${{ env.DOCKER_RUN_ID }}) | '
+            fi
+            if ${{ github.event.inputs.trigger_packages_release == 'true' }}; then
+              MESSAGE+='[DEB](${{ secrets.JENKINS_URL }}/job/production.deb.publish/${{ env.DEB_BUILD_NUMBER }}) | '
+              MESSAGE+='[RPM](${{ secrets.JENKINS_URL }}/job/production.rpm.publish/${{ env.RPM_BUILD_NUMBER }}) | '
+              MESSAGE+='[EXE](${{ secrets.JENKINS_URL }}/job/production.exe.publish/${{ env.EXE_BUILD_NUMBER }})'
+            fi
+          fi
+
+          JSON_PAYLOAD=$(jq -n --arg CHAT_ID "${{ secrets.TELEGRAM_TEAM_CHAT_ID }}" --arg TEXT "${MESSAGE}" \
+            '{chat_id: $CHAT_ID, text: $TEXT, parse_mode: "Markdown", disable_web_page_preview: true}')
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" -d "${JSON_PAYLOAD}"
+
+          if "${{ github.event.inputs.trigger_release }}" = "true" && ${{ github.event.inputs.trigger_docker_release == 'true' }} && ${{ github.event.inputs.trigger_packages_release == 'true' }}; then
+            curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+              -d chat_id=${{ secrets.TELEGRAM_RELEASE_NOTIFICATION_CHAT_ID }} -d parse_mode=Markdown \
+              -d "text=ONLYOFFICE DocSpace [${{ github.event.inputs.version }}](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) for Docker, Linux and Windows has been released"
+          fi
