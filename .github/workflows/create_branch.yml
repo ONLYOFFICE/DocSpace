@@ -1,0 +1,64 @@
+name: Create Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch name to create'
+        required: true
+        default: 'release/vX.X.X'
+      source_branch:
+        description: 'Source branch'
+        required: false
+        default: 'develop'
+
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+jobs:
+  create_branch:
+    name: Create branch in ${{ matrix.repo }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: [ 'DocSpace', 'DocSpace-buildtools', 'DocSpace-client', 'DocSpace-server' ]
+    steps:
+      - name: Create branch in ${{ matrix.repo }}
+        run: |
+          SOURCE_HASH=$(gh api /repos/${{ github.repository_owner }}/${{ matrix.repo }}/git/ref/heads/${{ github.event.inputs.source_branch }} --jq '.object.sha' 2>/dev/null || true)
+          [ -z "$SOURCE_HASH" ] && { echo "::error:: Source branch '${{ github.event.inputs.source_branch }}' not found"; exit 1; }
+
+          if ! gh api /repos/${{ github.repository_owner }}/${{ matrix.repo }}/git/ref/heads/${{ github.event.inputs.branch }} >/dev/null 2>&1; then
+            if gh api --method POST /repos/${{ github.repository_owner }}/${{ matrix.repo }}/git/refs -f ref="refs/heads/${{ github.event.inputs.branch }}" -f sha="${SOURCE_HASH}"; then
+              echo "Branch '${{ github.event.inputs.branch }}' created successfully."
+            else
+              echo "::error:: Error occurred while creating branch '${{ github.event.inputs.branch }}'." && exit 1
+            fi
+          else
+            echo "::warning:: Target branch '${{ github.event.inputs.branch }}' already exists, skipping creation."
+          fi
+
+  notify:
+    name: Notify Create branch
+    runs-on: ubuntu-latest
+    needs: [create_branch ]
+    if: ${{ always() }}
+    steps:
+      - name: Notify Create branch
+        run: |
+          JOB_OUTPUT=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs")
+          TOTAL=$(jq '[.jobs[] | select(.name | test("^Create branch in "))] | length' <<< "${JOB_OUTPUT}")
+          SUCCESS=$(jq '[.jobs[] | select((.name | test("^Create branch in ")) and (.conclusion=="success"))] | length' <<< "${JOB_OUTPUT}")
+
+          MESSAGE="\[${SUCCESS}/${TOTAL}] Created ${{ github.event.inputs.branch }} (base: ${{ github.event.inputs.source_branch }})"$'\n'
+          MESSAGE+=$(jq -r --arg OWNER "${{ github.repository_owner }}" --arg GIT_URL "${{ github.server_url }}" '
+            .jobs[]
+            | select(.name | test("^Create branch in "))
+            | (.name | sub("^Create branch in ";"")) as $REPO
+            | (.conclusion | if .=="success" then "🟢" else "🔴" end)
+              + " [" + $REPO + "](" + $GIT_URL + "/" + $OWNER + "/" + $REPO + ")"
+          ' <<< "${JOB_OUTPUT}")
+
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_TEAM_CHAT_ID }}" -d text="${MESSAGE}" -d parse_mode="Markdown" -d disable_web_page_preview=true
