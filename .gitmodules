@@ -13,3 +13,18 @@
 	url = ../DocSpace-server.git
 	branch = .
 	update = merge
+[submodule "tests/e2e-tests"]
+	path = tests/e2e-tests
+	url = ../DocSpace-e2e-tests.git
+        branch = .
+	update = merge
+[submodule "tests/stress-tests"]
+	path = tests/stress-tests
+	url = ../DocSpace-stress-tests.git
+        branch = .
+	update = merge
+[submodule "tests/api-tests"]
+	path = tests/api-tests
+	url = ../DocSpace-api-tests.git
+	branch = .
+	update = merge
