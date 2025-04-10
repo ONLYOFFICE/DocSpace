@@ -1,0 +1,187 @@
+x-service: &x-service-base
+ 
+  env_file: "./.env"
+  environment:
+    MYSQL_CONTAINER_NAME: ${MYSQL_CONTAINER_NAME}
+    MYSQL_HOST: ${MYSQL_HOST}
+    MYSQL_PORT: ${MYSQL_PORT}
+    MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    MYSQL_DATABASE: ${MYSQL_DATABASE}
+    MYSQL_USER: ${MYSQL_USER}
+    MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    DATABASE_MIGRATION: ${DATABASE_MIGRATION}
+    APP_DOTNET_ENV: ${APP_DOTNET_ENV}
+    APP_KNOWN_NETWORKS: ${APP_KNOWN_NETWORKS}
+    APP_KNOWN_PROXIES: ${APP_KNOWN_PROXIES}
+    APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN}
+    APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY}
+    APP_URL_PORTAL: ${APP_URL_PORTAL}
+    INSTALLATION_TYPE: ${INSTALLATION_TYPE}
+    OAUTH_REDIRECT_URL: ${OAUTH_REDIRECT_URL}
+    DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET}
+    DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER}
+    DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC}
+    DOCUMENT_CONTAINER_NAME: ${DOCUMENT_CONTAINER_NAME}
+    DOCUMENT_SERVER_URL_EXTERNAL: ${DOCUMENT_SERVER_URL_EXTERNAL}
+    ELK_CONTAINER_NAME: ${ELK_CONTAINER_NAME}
+    ELK_SHEME: ${ELK_SHEME}
+    ELK_HOST: ${ELK_HOST}
+    ELK_PORT: ${ELK_PORT}
+    REDIS_CONTAINER_NAME: ${REDIS_CONTAINER_NAME}
+    REDIS_HOST: ${REDIS_HOST}
+    REDIS_PORT: ${REDIS_PORT}
+    REDIS_USER_NAME: ${REDIS_USER_NAME}
+    REDIS_PASSWORD: ${REDIS_PASSWORD}
+    REDIS_DB: ${REDIS_DB}
+    RABBIT_CONTAINER_NAME: ${RABBIT_CONTAINER_NAME}
+    RABBIT_PROTOCOL: ${RABBIT_PROTOCOL}
+    RABBIT_HOST: ${RABBIT_HOST}
+    RABBIT_PORT: ${RABBIT_PORT}
+    RABBIT_VIRTUAL_HOST: ${RABBIT_VIRTUAL_HOST}
+    RABBIT_USER_NAME: ${RABBIT_USER_NAME}
+    RABBIT_PASSWORD: ${RABBIT_PASSWORD}
+    ROUTER_HOST: ${ROUTER_HOST}
+    LOG_LEVEL: ${LOG_LEVEL}
+    DEBUG_INFO: ${DEBUG_INFO}
+    CERTIFICATE_PATH: ${CERTIFICATE_PATH}
+    NODE_OPTIONS: ${NODE_OPTIONS}
+    WRONG_PORTAL_NAME_URL: ${WRONG_PORTAL_NAME_URL}
+    DASHBOARDS_CONTAINER_NAME: ${DASHBOARDS_CONTAINER_NAME}
+    DASHBOARDS_USERNAME: ${DASHBOARDS_USERNAME}
+    DASHBOARDS_PASSWORD: ${DASHBOARDS_PASSWORD}
+  volumes:
+    - ${VOLUMES_DIR:+${VOLUMES_DIR}/}app_data:/app/onlyoffice/data
+    - ${VOLUMES_DIR:+${VOLUMES_DIR}/}log_data:/var/log/onlyoffice
+
+services:
+  onlyoffice-docspace-services:
+    <<: [*x-service-base]
+    restart: always
+    ports:
+      - 8092:8092
+    depends_on:
+      onlyoffice-mysql-server:
+        condition: service_healthy
+      onlyoffice-rabbitmq:
+        condition: service_healthy     
+      onlyoffice-redis:  
+        condition: service_healthy
+    build:
+      context: ..
+      dockerfile: ./docker/dev.Dockerfile
+      target: build
+    extra_hosts:
+      - "host.docker.internal:${IP_HOST}" 
+    container_name: onlyoffice-docspace-services
+    image: "${REGISTRY}${REPO}/${DOCKER_IMAGE_PREFIX}docspace-services:${DOCKER_TAG}"
+
+  onlyoffice-migration-runner:
+    <<: [*x-service-base]
+    restart: "on-failure"
+    depends_on:
+      onlyoffice-mysql-server:
+        condition: service_healthy
+    build:
+      context: ..
+      dockerfile: "${DOCKERFILE}"
+      target: onlyoffice-migration-runner
+    container_name: onlyoffice-migration-runner
+    image: "${REGISTRY}${REPO}/${DOCKER_IMAGE_PREFIX}docspace-migration-runner:${DOCKER_TAG}"
+
+  onlyoffice-mysql-server:
+    image: ${REGISTRY}${MYSQL_IMAGE}
+    cap_add:
+      - SYS_NICE
+    container_name: ${MYSQL_CONTAINER_NAME}
+    restart: always
+    tty: true
+    user: mysql
+    expose:
+      - "3306"
+    ports:
+      - 33060:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysql", "-u", "${MYSQL_USER}", "--password=${MYSQL_PASSWORD}", "-e", ";"]
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    volumes:
+      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}mysql_data:/var/lib/mysql
+      - ./config/mysql/conf.d/:/etc/mysql/conf.d
+  
+  onlyoffice-redis:
+    image: ${REGISTRY}${REDIS_IMAGE_NAME}
+    container_name: ${REDIS_CONTAINER_NAME}
+    restart: always
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+ 
+  onlyoffice-rabbitmq:
+    image: ${REGISTRY}${RABBITMQ_IMAGE_NAME}
+    container_name: ${RABBIT_CONTAINER_NAME}
+    restart: always
+    expose:
+      - "5672"
+      - "80"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 10s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+  
+  onlyoffice-opensearch:
+    image: ${REGISTRY}${ELK_IMAGE_NAME}
+    container_name: ${ELK_CONTAINER_NAME}
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms4g -Xmx4g -Dlog4j2.formatMsgNoLookups=true"
+      - "indices.fielddata.cache.size=30%"
+      - "indices.memory.index_buffer_size=30%"
+      - "DISABLE_INSTALL_DEMO_CONFIG=true"
+      - "DISABLE_SECURITY_PLUGIN=true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    volumes:
+      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}os_data:/usr/share/opensearch/data
+    expose:
+      - "9200"
+      - "9600" # required for Performance Analyzer
+    ports:
+      - 127.0.0.1:9200:9200
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health?pretty"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+networks:
+  default:
+    name: onlyoffice
+    external: true
+
+volumes:
+  log_data:
+  app_data:
+  mysql_data:
+  os_data:
