@@ -196,7 +196,11 @@ EXPOSE 5032 5010 5027 5012 5007 5009 5005 5004 5006 5000 5003 5033 5099 5013 501
 ENTRYPOINT  [ "/docker-entrypoint.sh" ]
 
 ## ASC.Migration.Runner ##
-FROM dotnetrun AS onlyoffice-migration-runner
+FROM $DOTNET_RUN AS onlyoffice-migration-runner
+ARG BUILD_PATH
+ARG SRC_PATH
+ENV BUILD_PATH=${BUILD_PATH} \
+    SRC_PATH=${SRC_PATH}
 WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
 
 COPY --chown=onlyoffice:onlyoffice ./buildtools/install/docker/docker-migration-entrypoint.sh ./docker-migration-entrypoint.sh

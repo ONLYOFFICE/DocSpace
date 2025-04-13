@@ -7,7 +7,7 @@ APP_URL_PORTAL=${APP_URL_PORTAL:-"http://127.0.0.1:8092"}
 APP_CORE_MACHINEKEY=${APP_CORE_MACHINEKEY:-"your_core_machinekey"}
 DOCUMENT_CONTAINER_NAME=${DOCUMENT_CONTAINER_NAME:-"onlyoffice-document-server"}
 DOCUMENT_SERVER_URL_PUBLIC=${DOCUMENT_SERVER_URL_PUBLIC:-"/ds-vpath/"}
-DOCUMENT_SERVER_URL_EXTERNAL=${DOCUMENT_SERVER_URL_EXTERNAL:-"http://${DOCUMENT_CONTAINER_NAME}/"}
+DOCUMENT_SERVER_URL_EXTERNAL=${DOCUMENT_SERVER_URL_EXTERNAL:-"http://${DOCUMENT_CONTAINER_NAME}"}
 DOCUMENT_SERVER_JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET:-"your_jwt_secret"}
 DOCUMENT_SERVER_JWT_HEADER=${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}
 
@@ -34,12 +34,12 @@ sed -i "s!\"base-domain\".*,!\"base-domain\": \"${APP_CORE_BASE_DOMAIN}\",!g" ${
 sed -i "s!\"machinekey\".*,!\"machinekey\": \"${APP_CORE_MACHINEKEY}\",!g" ${PATH_TO_CONF}/appsettings.json
 sed -i "s!\"machinekey\".*,!\"machinekey\": \"${APP_CORE_MACHINEKEY}\",!g" ${PATH_TO_CONF}/apisystem.json
 sed -i "s!\"public\".*,!\"public\": \"${DOCUMENT_SERVER_URL_PUBLIC}\",!g" ${PATH_TO_CONF}/appsettings.json
-sed -i "s!\"internal\".*,!\"internal\": \"${DOCUMENT_SERVER_URL_EXTERNAL}\",!g" ${PATH_TO_CONF}/appsettings.json
+sed -i "s!\"internal\".*,!\"internal\": \"${DOCUMENT_SERVER_URL_EXTERNAL}/\\\",!g" ${PATH_TO_CONF}/appsettings.json
 sed -i "0,/\"value\"/s!\"value\".*,!\"value\": \"${DOCUMENT_SERVER_JWT_SECRET}\",!" ${PATH_TO_CONF}/appsettings.json
 sed -i "s!\"portal\".*!\"portal\": \"${APP_URL_PORTAL}\"!g" ${PATH_TO_CONF}/appsettings.json
 
 sed -i "s!\"Hostname\".*!\"Hostname\": \"${RABBIT_CONNECTION_HOST}\",!g" ${PATH_TO_CONF}/rabbitmq.json
 sed -i "s!\"Host\".*!\"Host\": \"${REDIS_CONNECTION_HOST}\",!g" ${PATH_TO_CONF}/redis.json
-sed -i "s!\"elastic\".*{!\"elastic\": {\n\"Scheme\": \"${ELK_SHEME}\",\n\"Host\": \"${ELK_HOST}\",\n\"Port\": \"${ELK_PORT}\",\n\"Threads\": \"${ELK_THREADS}\"!g" ${PATH_TO_CONF}/elastic.json
+sed -i "s!\"elastic\".*{!\"elastic\": {\"Scheme\": \"${ELK_SHEME}\",\"Host\": \"${ELK_HOST}\",\"Port\": \"${ELK_PORT}\",\"Threads\": \"${ELK_THREADS}\"!g" ${PATH_TO_CONF}/elastic.json
 
 supervisord -n
