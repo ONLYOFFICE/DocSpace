@@ -55,16 +55,34 @@ RUN mkdir -p /var/log/onlyoffice && \
         nvm install 22 && \
         curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg && \
         echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-        wget -O - https://openresty.org/package/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/openresty.gpg && \
-        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/debian bookworm openresty" | sudo tee /etc/apt/sources.list.d/openresty.list && \
         apt-get update && \
-        apt-get install -y yarn openresty && \
+        apt-get install -yq \
+		 yarn && \
         addgroup --system --gid 107 onlyoffice && \
-        adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
-        echo "--- clean up ---" && \
-        apt-get clean && \
-        rm -rf /var/lib/apt/lists/* \
-        /tmp/*
+        adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice 
+
+RUN <<EOF
+    #!/bin/bash
+    set -xe
+    ARCH_LINUX=$(lscpu | grep Architecture | awk '{print $2}')
+    echo "--- ADD necessary services arh: ${ARCH_LINUX} ---"
+    if [ "$ARCH_LINUX" = "x86_64" ] ; then
+	wget -O - https://openresty.org/package/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/openresty.gpg && \
+	echo "deb [arch=amd64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/debian bookworm openresty" | sudo tee /etc/apt/sources.list.d/openresty.list && \
+        apt update && \
+        apt install -y openresty
+    fi
+    if [ "$ARCH_LINUX" = "aarch64" ] ; then
+        wget -O - https://openresty.org/package/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/openresty.gpg && \
+        echo "deb [arch=arm64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/arm64/debian bookworm openresty" | sudo tee /etc/apt/sources.list.d/openresty.list && \
+        apt update && \
+        apt install -y openresty
+    fi
+    echo "--- clean up ---" && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* \
+    /tmp/*
+EOF
 
 #----------------------------------
 #              Get src             
