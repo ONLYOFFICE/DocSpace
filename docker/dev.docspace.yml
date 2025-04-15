@@ -156,6 +156,10 @@ services:
     <<: [*x-service-network]
     image: ${REGISTRY}${ELK_IMAGE_NAME}
     container_name: ${ELK_CONTAINER_NAME}
+    build:
+      context: ..
+      dockerfile: ./docker/dev.Dockerfile
+      target: onlyoffice-opensearch
     restart: always
     environment:
       - discovery.type=single-node

@@ -5,6 +5,7 @@ ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:9.0-noble"
 ARG APP_STORAGE_ROOT="/app/onlyoffice/data"
 ARG PATH_TO_CONF="/app/onlyoffice/config"
 ARG LOG_DIR="/var/log/onlyoffice"
+ARG ELK_VERSION="2.18.0"
 
 #----------------------------------
 #         Image SDK build         
@@ -225,3 +226,8 @@ COPY --chown=onlyoffice:onlyoffice ./buildtools/install/docker/docker-migration-
 COPY --from=build --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/services/ASC.Migration.Runner/service/ .
 
 ENTRYPOINT ["./docker-migration-entrypoint.sh"]
+
+## opensearch ingest-attachment##
+FROM opensearchproject/opensearch:$ELK_VERSION AS onlyoffice-opensearch
+
+RUN bin/opensearch-plugin install -s -b ingest-attachment
