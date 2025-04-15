@@ -50,6 +50,7 @@ x-service: &x-service-base
   volumes:
     - ${VOLUMES_DIR:+${VOLUMES_DIR}/}app_data:/app/onlyoffice/data
     - ${VOLUMES_DIR:+${VOLUMES_DIR}/}log_data:/var/log/onlyoffice
+    - ./config/nginx/onlyoffice-proxy-dev.conf:/etc/nginx/includes/onlyoffice-proxy-dev.conf:ro
 x-service-network: &x-service-network
   networks:
     - dev-onlyoffice
@@ -59,7 +60,7 @@ services:
     <<: [*x-service-base, *x-service-network]
     restart: always
     ports:
-      - 8080:8092
+      - 80:80
     depends_on:
       onlyoffice-mysql-server:
         condition: service_healthy
