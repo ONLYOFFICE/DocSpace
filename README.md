@@ -13,9 +13,35 @@ ONLYOFFICE DocSpace is a document hub where you can connect users and documents 
 
 ## Technology stack
 
-Backend: С# 11.0, .NET 7.0/.NET Core/ASP.NET Core/MySQL 8.0/Kafka/ElasticSearch
+Backend: С# 11.0, .NET 7.0/.NET Core/ASP.NET Core/MySQL 8.0/Rabbit/Redis/OpenSearch
 
 Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, Webpack 5
+
+## Recommended System Requirements
+
+* RAM: 8 GB or more
+* CPU: dual-core 2 GHz or higher
+* Swap: at least 2 GB
+* HDD: at least 30 GB of free space
+* Docker: version 25.2.0 or later
+* Docker Compose: version 2.28.0 or later
+
+## Simple Build and Running Test Example in Docker 
+
+1. Clone DocSpace repository with submodules:
+
+   ```bash
+   git clone --recurse-submodules -j8 https://github.com/ONLYOFFICE/DocSpace.git
+   cd ./DocSpace/docker/
+
+   ```
+2. Run Docker Images:
+ 
+   ```bash
+    docker compose -f dev.docspace.yml up -d
+
+   ```
+3. Open your web browser (Chrome, Opera, etc) and run: http://localhost
 
 ## Licensing 
 
