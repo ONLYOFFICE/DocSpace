@@ -1,5 +1,82 @@
 # Change log
 
+### General changes
+
+* Fixed a security issue in NextJS (Authorization Bypass in Next.js Middleware)
+* A new SSR client (/sdk) has been added for working with the JS-SDK,
+  which includes basic modules for working with DocSpace (file-selector,
+  room-selector, public-room)
+* Implemented basic functionality of the public room for the SDK client
+* Expanded methods for connecting the JS-SDK on the settings page
+* Added a key parameter to the URL of Filling Forms Room, Custom Room,
+  and Public Room. Now a link to a room can be copied directly from
+  the browser's address bar
+* Added a page with an error message for opening a file of an unsupported
+  format via an external link that is no longer available
+
+### Settings
+
+* Updated button colors for adding and changing the avatar in the profile
+* Added an error message to the main settings methods in the sections Backup
+  and Restore
+* The "Company Name" field in the Branding section has been replaced with
+  "Brand name" and "Generate logo from text"
+* Added a data storage region in Storage management for the cloud version
+* Added a setting for deep link
+* Added a setting to disable email activation for LDAP/SSO portal users
+* The DeveloperTools section is now available to all users except guests
+* Added triggers in the Developer tools – Webhooks section
+* Added a section for API keys in the Developer Tools
+* The form for configuring the document editing server service
+  in the Integration - Document Service section has been modified to allow
+  specifying a secret key and Authorization header
+
+### Login page
+
+* Added the ability to share guests. When selecting the "Share guest" option
+  in the Contacts/Guests section, the user receives a link to a new confirm
+  page called "GuestInviteForm"
+* The account is now automatically linked to the DocSpace account with the same
+  email address when logging in via social media
+
+### Documents
+
+* Added the ability to delete a file version in the version panel
+* Added the ability to create templates from rooms and rooms from templates
+* Implemented the ability to fill out the form based on user roles
+  in the Virtual Data Room
+* Added the ability to share PDF forms directly without rooms
+* Added a password input dialog when downloading a protected file in a format
+  different from the original
+* Updated the library for thumbnail generation
+* Links created in the Documents section are now created with no expiration
+  date and with Read only access by default
+* The search bar on mobile devices is now hiding when scrolling down
+* Settings for the "SearchInContent" and "WithSubfolders" document filters
+  have been removed and are now enabled by default
+* The report format in Filling Form Room has been changed to XLSX
+* Improved user interaction during operation progress
+* The appearance of the tiles near the rooms has been changed
+* Added a training system for the Form Filling Room
+* Added the ability to enable and disable custom filters for table
+* Added new document types (PDF Form and PDF Document) and filters
+  (PDF-forms and PDF-documents)
+* The design of the "Fill in as" and "Share to fill out" panels has been
+  unified in style
+* The "Share" button has been removed from the editor for PDF forms
+* The logic of the link creation in the editor has been moved from
+  "Share panel" to "Share to fill out"
+* The list of push notifications in the mobile app for events on the portal
+  has been expanded
+
+### Management
+
+* Added an ability to encrypt data at rest in the server version
+
+## Accounts
+
+* Added the ability to downgrade a type to User and to Guest
+
 ## 3.0.4
 
 ### Fixes
