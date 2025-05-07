@@ -98,11 +98,13 @@ jobs:
 
           for TYPE in deb rpm exe; do
             BUILD_NUM=${NUM[${TYPE}]}
+            PUBLISH_JOB=$([ "$TYPE" = "exe" ] && echo "production.docspace.${TYPE}.publish" || echo "production.${TYPE}.publish")
+
             curl -s -S -X POST -H "Content-Length: 0" -u "${TOKEN}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/toggleLogKeep"
             curl -s -S -X POST -u "${TOKEN}" -d "description=${VERSION}.${BUILD_NUM}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/submitDescription"
-            curl -s -S -X POST -H "Content-Length: 0" -u "${TOKEN}" "${JENKINS_URL}/job/production.${TYPE}.publish/buildWithParameters"
+            curl -s -S -X POST -H "Content-Length: 0" -u "${TOKEN}" "${JENKINS_URL}/job/${PUBLISH_JOB}/buildWithParameters"
             sleep 10
-            echo "${TYPE}_build_number=$(curl -s -S -L -u "${TOKEN}" "${JENKINS_URL}/job/production.${TYPE}.publish/lastBuild/api/json" | jq '.number')" >> "$GITHUB_OUTPUT"
+            echo "${TYPE}_build_number=$(curl -s -S -L -u "${TOKEN}" "${JENKINS_URL}/job/${PUBLISH_JOB}/lastBuild/api/json" | jq '.number')" >> "$GITHUB_OUTPUT"
           done
 
   create_and_merge_pr:
