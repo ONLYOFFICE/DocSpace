@@ -91,7 +91,11 @@ jobs:
         id: package_release
         run: |
           JENKINS_URL="${{ secrets.JENKINS_URL }}"; TOKEN="${{ secrets.JENKINS_TOKEN }}"; VERSION="${{ github.event.inputs.version }}"
-          declare -A NUM=([deb]="${{ github.event.inputs.deb_build_number }}" [rpm]="${{ github.event.inputs.rpm_build_number }} [exe]="${{ github.event.inputs.exe_build_number }}")
+          declare -A NUM=(
+            [deb]="${{ github.event.inputs.deb_build_number }}"
+            [rpm]="${{ github.event.inputs.rpm_build_number }}"
+            [exe]="${{ github.event.inputs.exe_build_number }}"
+          )
 
           for TYPE in deb rpm exe; do
             BUILD_NUM=${NUM[${TYPE}]}
