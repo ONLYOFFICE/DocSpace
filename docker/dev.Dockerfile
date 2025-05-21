@@ -48,6 +48,7 @@ RUN mkdir -p /var/log/onlyoffice && \
         adduser \
         nano \
         git \
+        wget \
         curl \
         vim \
         gnupg \
@@ -97,8 +98,8 @@ RUN <<EOF
     ARCH_LINUX=$(lscpu | grep Architecture | awk '{print $2}')
     echo "--- ADD necessary services arh: ${ARCH_LINUX} ---"
     if [ "$ARCH_LINUX" = "x86_64" ] ; then
-	wget -O - https://openresty.org/package/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/openresty.gpg && \
-	echo "deb [arch=amd64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/debian bookworm openresty" | sudo tee /etc/apt/sources.list.d/openresty.list && \
+	    wget -O - https://openresty.org/package/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/openresty.gpg && \
+	    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/debian bookworm openresty" | sudo tee /etc/apt/sources.list.d/openresty.list && \
         apt update && \
         apt install -y openresty
     fi
