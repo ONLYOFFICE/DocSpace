@@ -147,7 +147,8 @@ RUN git clone -b "master" --depth 1 https://github.com/ONLYOFFICE/docspace-plugi
 COPY --chown=onlyoffice:onlyoffice ./server/ ${SRC_PATH}/server/
 COPY --chown=onlyoffice:onlyoffice ./client/ ${SRC_PATH}/client/
 COPY --chown=onlyoffice:onlyoffice ./buildtools/config/ ${SRC_PATH}/buildtools/config/
-COPY --chown=onlyoffice:onlyoffice ./docker/*.sh /*.sh
+COPY --chown=onlyoffice:onlyoffice ./docker/docker-entrypoint.sh /docker-entrypoint.sh
+COPY --chown=onlyoffice:onlyoffice ./docker/init_db.sh /init_db.sh
 COPY --chown=onlyoffice:onlyoffice ./docker/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 #----------------------------------
