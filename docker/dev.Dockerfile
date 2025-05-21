@@ -1,7 +1,5 @@
 ARG SRC_PATH="/app/onlyoffice/src"
 ARG BUILD_PATH="/var/www"
-ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:9.0"
-ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:9.0-noble"
 ARG APP_STORAGE_ROOT="/app/onlyoffice/data"
 ARG PATH_TO_CONF="/app/onlyoffice/config"
 ARG LOG_DIR="/var/log/onlyoffice"
@@ -10,10 +8,10 @@ ARG ELK_VERSION="2.18.0"
 #----------------------------------
 #         Image SDK build         
 #----------------------------------
-FROM $DOTNET_SDK AS build
+FROM ubuntu:22.04 AS build
 ARG DEBIAN_FRONTEND=noninteractive
 ARG ENV_EXTENSION=""
-ARG VERSION=0
+ARG BUILD_DATE=""
 ARG BUILD_ARGS="build"
 ARG DEPLOY_ARGS="deploy"
 ARG REDIS_HOST="onlyoffice-redis"
@@ -23,7 +21,9 @@ ARG APP_STORAGE_ROOT
 ARG PATH_TO_CONF
 ARG LOG_DIR
 ARG COUNT_WORKER_CONNECTIONS=1024
-ENV DNS_NAMESERVER=127.0.0.11 \
+ARG MYSQL_ROOT_PASSWORD=my-secret-pw
+ENV DEBIAN_FRONTEND=noninteractive \
+    DNS_NAMESERVER=127.0.0.11 \
     COUNT_WORKER_CONNECTIONS=$COUNT_WORKER_CONNECTIONS \
     MAP_HASH_BUCKET_SIZE="" \
     SRC_PATH=${SRC_PATH} \
@@ -32,10 +32,13 @@ ENV DNS_NAMESERVER=127.0.0.11 \
     LOG_DIR=${LOG_DIR} \
     BUILD_PATH=${BUILD_PATH} \
     ENV_EXTENSION=${ENV_EXTENSION} \
-    REDIS_HOST=${REDIS_HOST}
+    REDIS_HOST=${REDIS_HOST} \
+    MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD \
+    BUILD_DATE=${BUILD_DATE} \
+    MIGRATION_TYPE="standalone=true"
 
 #----------------------------------
-#         Prepare instance         
+#       Install dependencies
 #----------------------------------
 RUN mkdir -p /var/log/onlyoffice && \
     mkdir -p /app/onlyoffice/data && \
@@ -44,24 +47,50 @@ RUN mkdir -p /var/log/onlyoffice && \
         sudo \
         adduser \
         nano \
+        git \
         curl \
         vim \
         gnupg \
         lsb-release \
         ca-certificates \
         gettext-base \
-        supervisor && \
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash && \
-        \. "$HOME/.nvm/nvm.sh" && \
-        nvm install 22 && \
-        curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg && \
-        echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-        apt-get update && \
-        apt-get install -yq \
-		 yarn && \
-        addgroup --system --gid 107 onlyoffice && \
-        adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice 
+        supervisor \
+        python3-launchpadlib \
+        apt-transport-https \
+        software-properties-common && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 1004 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice
 
+#----------------------------------
+#       Install .Net
+#----------------------------------
+RUN add-apt-repository -y ppa:dotnet/backports && \
+    apt-get -y update --fix-missing && \
+    apt-get install -yq \
+        dotnet-sdk-9.0
+
+#----------------------------------
+#       Install RabbitMQ
+#----------------------------------
+RUN add-apt-repository ppa:rabbitmq/rabbitmq-erlang-25 -y && \
+    apt-get update -y && \
+    apt-get install -y erlang-base \
+                        erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
+                        erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
+                        erlang-runtime-tools erlang-snmp erlang-ssl \
+                        erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl \
+                        rabbitmq-server -y --fix-missing
+
+#----------------------------------
+#       Install MySql
+#----------------------------------
+RUN apt-get update -y && \
+    apt-get install -yq \
+        mysql-server
+
+#----------------------------------
+#       Install Openresty
+#----------------------------------
 RUN <<EOF
     #!/bin/bash
     set -xe
@@ -79,12 +108,35 @@ RUN <<EOF
         apt update && \
         apt install -y openresty
     fi
-    echo "--- clean up ---" && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* \
-    /tmp/*
 EOF
 
+#----------------------------------
+#          Install Redis           
+#----------------------------------
+RUN add-apt-repository -y ppa:redislabs/redis && \
+    apt-get update && \
+    apt-get install -y redis-server 
+
+#----------------------------------
+#         clean up         
+#----------------------------------    
+RUN echo "--- delete temporary files ---" && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* \
+    /tmp/* 
+
+#----------------------------------
+#       Install Nodejs and yarn
+#----------------------------------
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
+    apt-get -y update && \
+    apt-get install -yq \
+	    yarn && \ 
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs && \
+    node -v    
+    
 #----------------------------------
 #              Get src             
 #----------------------------------
@@ -94,7 +146,7 @@ RUN git clone -b "master" --depth 1 https://github.com/ONLYOFFICE/docspace-plugi
 COPY --chown=onlyoffice:onlyoffice ./server/ ${SRC_PATH}/server/
 COPY --chown=onlyoffice:onlyoffice ./client/ ${SRC_PATH}/client/
 COPY --chown=onlyoffice:onlyoffice ./buildtools/config/ ${SRC_PATH}/buildtools/config/
-COPY --chown=onlyoffice:onlyoffice ./docker/docker-entrypoint.sh /docker-entrypoint.sh
+COPY --chown=onlyoffice:onlyoffice ./docker/*.sh /*.sh
 COPY --chown=onlyoffice:onlyoffice ./docker/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 #----------------------------------
@@ -105,6 +157,9 @@ WORKDIR ${SRC_PATH}/client
 RUN <<EOF
 #!/bin/bash
 echo "--- build/publish docspace-client node ---" && \
+nvm alias default 22
+node -v
+yarn --version
 yarn install
 node common/scripts/before-build.js
 
@@ -128,7 +183,9 @@ rm -rf ${SRC_PATH}/client/*
 EOF
 
 RUN echo "--- build/publish ASC.Socket.IO ---" && \ 
-    cd ${SRC_PATH}/server/common/ASC.Socket.IO &&\
+    cd ${SRC_PATH}/server/common/ASC.Socket.IO && \
+    pwd && \
+    yarn --version && \
     yarn install --immutable && \
     mkdir -p /app/onlyoffice/src/publish/services/ASC.Socket.IO/service && \
     cp -arf ${SRC_PATH}/server/common/ASC.Socket.IO/* ${SRC_PATH}/publish/services/ASC.Socket.IO/service/ && \
@@ -208,14 +265,15 @@ RUN chown -R onlyoffice:onlyoffice /etc/nginx/ && \
     chown -R onlyoffice:onlyoffice /run/ && \
     chown -R onlyoffice:onlyoffice /var/log/nginx/
 
-WORKDIR  /   
+WORKDIR  /
+RUN chmod +x *.sh
 
-EXPOSE 5032 5010 5027 5012 5007 5009 5005 5004 5006 5000 5003 5033 5099 5013 5011 9899 9834 8092
+EXPOSE 5032 5010 5027 5012 5007 5009 5005 5004 5006 5000 5003 5033 5099 5013 5011 9899 9834 8092 3306 6379 5672
 
 ENTRYPOINT  [ "/docker-entrypoint.sh" ]
 
 ## ASC.Migration.Runner ##
-FROM $DOTNET_RUN AS onlyoffice-migration-runner
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-noble AS onlyoffice-migration-runner
 ARG BUILD_PATH
 ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH} \

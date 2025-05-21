@@ -61,134 +61,17 @@ services:
     restart: always
     ports:
       - 80:80
-    depends_on:
-      onlyoffice-mysql-server:
-        condition: service_healthy
-      onlyoffice-rabbitmq:
-        condition: service_healthy     
-      onlyoffice-redis:  
-        condition: service_healthy
+      - 33060:3306
+    cap_add:
+      - SYS_NICE
+    tty: true
+    user: mysql
     build:
       context: ..
       dockerfile: ./docker/dev.Dockerfile
       target: build
     container_name: onlyoffice-docspace-services
     image: "${REGISTRY}${REPO}/${DOCKER_IMAGE_PREFIX}docspace-services:${DOCKER_TAG}"
-
-  onlyoffice-migration-runner:
-    <<: [*x-service-network]
-    environment:
-      MYSQL_CONTAINER_NAME: ${MYSQL_CONTAINER_NAME}
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_PORT: ${MYSQL_PORT}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    restart: "on-failure"
-    depends_on:
-      onlyoffice-mysql-server:
-        condition: service_healthy
-    build:
-      context: ..
-      dockerfile: ./docker/dev.Dockerfile
-      target: onlyoffice-migration-runner
-    container_name: onlyoffice-migration-runner-dev
-    image: "${REGISTRY}${REPO}/${DOCKER_IMAGE_PREFIX}docspace-migration-runner:${DOCKER_TAG}"
-
-  onlyoffice-mysql-server:
-    <<: [*x-service-network]
-    image: ${REGISTRY}${MYSQL_IMAGE}
-    cap_add:
-      - SYS_NICE
-    container_name: ${MYSQL_CONTAINER_NAME}
-    restart: always
-    tty: true
-    user: mysql
-    expose:
-      - "3306"
-    ports:
-      - 33060:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    healthcheck:
-      test: ["CMD", "mysql", "-u", "${MYSQL_USER}", "--password=${MYSQL_PASSWORD}", "-e", ";"]
-      interval: 10s
-      timeout: 5s
-      start_period: 10s
-      retries: 3
-    volumes:
-      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}mysql_data:/var/lib/mysql
-      - ./config/mysql/conf.d/:/etc/mysql/conf.d
-  
-  onlyoffice-redis:
-    <<: [*x-service-network]
-    image: ${REGISTRY}${REDIS_IMAGE_NAME}
-    container_name: ${REDIS_CONTAINER_NAME}
-    restart: always
-    expose:
-      - "6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      retries: 3
-      start_period: 10s
-      timeout: 10s
- 
-  onlyoffice-rabbitmq:
-    <<: [*x-service-network]
-    image: ${REGISTRY}${RABBITMQ_IMAGE_NAME}
-    container_name: ${RABBIT_CONTAINER_NAME}
-    restart: always
-    expose:
-      - "5672"
-      - "80"
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "status"]
-      interval: 10s
-      retries: 3
-      start_period: 10s
-      timeout: 10s
-  
-  onlyoffice-opensearch:
-    <<: [*x-service-network]
-    image: ${REGISTRY}${ELK_IMAGE_NAME}
-    container_name: ${ELK_CONTAINER_NAME}
-    build:
-      context: ..
-      dockerfile: ./docker/dev.Dockerfile
-      target: onlyoffice-opensearch
-    restart: always
-    environment:
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms4g -Xmx4g -Dlog4j2.formatMsgNoLookups=true"
-      - "indices.fielddata.cache.size=30%"
-      - "indices.memory.index_buffer_size=30%"
-      - "DISABLE_INSTALL_DEMO_CONFIG=true"
-      - "DISABLE_SECURITY_PLUGIN=true"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
-        hard: 65536
-    volumes:
-      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}os_data:/usr/share/opensearch/data
-    expose:
-      - "9200"
-      - "9600" # required for Performance Analyzer
-    ports:
-      - 127.0.0.1:9200:9200
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health?pretty"]
-      interval: 30s
-      retries: 3
-      start_period: 10s
-      timeout: 10s
 
   onlyoffice-document-server:
     <<: [*x-service-network]
@@ -223,5 +106,4 @@ networks:
 volumes:
   log_data:
   app_data:
-  mysql_data:
   os_data:
