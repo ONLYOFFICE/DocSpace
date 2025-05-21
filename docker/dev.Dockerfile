@@ -14,7 +14,9 @@ ARG ENV_EXTENSION=""
 ARG BUILD_DATE=""
 ARG BUILD_ARGS="build"
 ARG DEPLOY_ARGS="deploy"
-ARG REDIS_HOST="onlyoffice-redis"
+ARG REDIS_HOST="localhost"
+ARG RABBIT_HOST="localhost"
+ARG MYSQL_HOST="localhost"
 ARG SRC_PATH
 ARG BUILD_PATH
 ARG APP_STORAGE_ROOT
@@ -33,6 +35,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     BUILD_PATH=${BUILD_PATH} \
     ENV_EXTENSION=${ENV_EXTENSION} \
     REDIS_HOST=${REDIS_HOST} \
+    RABBIT_HOST=${RABBIT_HOST} \
+    MYSQL_HOST=${MYSQL_HOST} \
     MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD \
     BUILD_DATE=${BUILD_DATE} \
     MIGRATION_TYPE="standalone=true"
@@ -206,9 +210,6 @@ RUN echo "--- build/publishh docspace-server .net 9.0 ---" && \
     dotnet build ASC.Web.slnf && \
     dotnet build ASC.Migrations.sln --property:OutputPath=${SRC_PATH}/publish/services/ASC.Migration.Runner/service/ && \
     dotnet publish ASC.Web.slnf -p PublishProfile=ReleaseProfile && \
-    chown onlyoffice:onlyoffice /app/onlyoffice -R && \
-    chown onlyoffice:onlyoffice /var/log -R && \
-    chown onlyoffice:onlyoffice /var/www -R && \
     echo "--- clean up ---" && \
     rm -rf ${SRC_PATH}/server/*
 
@@ -262,10 +263,13 @@ RUN sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.c
         sed -i -e '/^user/s/^/#/' -e 's#/tmp/nginx.pid#nginx.pid#' -e 's#/etc/nginx/mime.types#mime.types#' /etc/nginx/nginx.conf.template 
 
 RUN chown -R onlyoffice:onlyoffice /etc/nginx/ && \
-    chown -R onlyoffice:onlyoffice /var/ && \
-    chown -R onlyoffice:onlyoffice /usr/ && \
-    chown -R onlyoffice:onlyoffice /run/ && \
-    chown -R onlyoffice:onlyoffice /var/log/nginx/
+    chown -R onlyoffice:onlyoffice /var/log/onlyoffice && \
+    chown -R onlyoffice:onlyoffice /var/log/nginx/  && \
+    chown -R onlyoffice:onlyoffice /app/onlyoffice  && \
+    chown -R mysql:mysql /var/log/mysql && \
+    chmod 600 /var/lib/rabbitmq/.erlang.cookie && \
+    chown rabbitmq:rabbitmq /var/log/rabbitmq && \
+    chown -R onlyoffice:onlyoffice /var/www  
 
 WORKDIR  /
 RUN chmod +x *.sh

@@ -1,6 +1,7 @@
 #!/bin/bash 
 
 PATH_TO_CONF=${PATH_TO_CONF:-"/app/onlyoffice/config"}
+SRC_PATH=${SRC_PATH:-"/app/onlyoffice/src"}
 APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-"localhost"}
 APP_URL_PORTAL=${APP_URL_PORTAL:-"http://127.0.0.1:8092"}
 
