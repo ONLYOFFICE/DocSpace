@@ -14,6 +14,6 @@ until mysqladmin ping -h ${MYSQL_HOST} --port=${MYSQL_PORT} -u root --silent; do
 done
 
 # Create the database if it doesn't exist
-mysql -h ${MYSQL_HOST} -u root --port=${MYSQL_PORT} -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
-mysql -h ${MYSQL_HOST} -u root --port=${MYSQL_PORT} -p${MYSQL_ROOT_PASSWORD} -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-mysql -h ${MYSQL_HOST} -u root --port=${MYSQL_PORT} -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL ON \`${MYSQL_DATABASE//_/\\_}\`.* TO '$MYSQL_USER'@'%' ;" 
+mysql -h localhost -u root --port=${MYSQL_PORT} -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+mysql -h localhost -u root --port=${MYSQL_PORT} -p${MYSQL_ROOT_PASSWORD} -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+mysql -h localhost -u root --port=${MYSQL_PORT} -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL ON \`${MYSQL_DATABASE//_/\\_}\`.* TO '$MYSQL_USER'@'%' ;" 

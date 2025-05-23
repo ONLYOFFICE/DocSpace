@@ -65,7 +65,7 @@ services:
     cap_add:
       - SYS_NICE
     tty: true
-    user: mysql
+    user: root
     build:
       context: ..
       dockerfile: ./docker/dev.Dockerfile
