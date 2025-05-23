@@ -26,7 +26,7 @@ ARG PATH_TO_CONF
 ARG LOG_DIR
 ARG COUNT_WORKER_CONNECTIONS=1024
 ARG MYSQL_ROOT_PASSWORD=my-secret-pw
-ENV DEBIAN_FRONTEND=noninteractive \
+ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
     DNS_NAMESERVER=127.0.0.11 \
     COUNT_WORKER_CONNECTIONS=$COUNT_WORKER_CONNECTIONS \
     MAP_HASH_BUCKET_SIZE="" \
@@ -270,7 +270,7 @@ RUN chown -R onlyoffice:onlyoffice /etc/nginx/ && \
     chown -R onlyoffice:onlyoffice /var/log/onlyoffice && \
     chown -R onlyoffice:onlyoffice /var/log/nginx/  && \
     chown -R onlyoffice:onlyoffice /app/onlyoffice  && \
-    chown -R mysql:mysql /var/log/mysql && \
+    chown -R mysql:mysql /var/log/mysql /var/lib/mysql /var/run/mysqld && \
     chmod 600 /var/lib/rabbitmq/.erlang.cookie && \
     chown rabbitmq:rabbitmq /var/log/rabbitmq && \
     chown -R onlyoffice:onlyoffice /var/www  
