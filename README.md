@@ -22,7 +22,7 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, We
 * RAM: 8 GB or more
 * CPU: dual-core 2 GHz or higher
 * Swap: at least 2 GB
-* HDD: at least 30 GB of free space
+* HDD: at least 40 GB of free space
 * Docker: version 25.2.0 or later
 * Docker Compose: version 2.28.0 or later
 
@@ -31,8 +31,7 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, We
 1. Clone DocSpace repository with submodules:
 
    ```bash
-   git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace
-   cd ./DocSpace/docker/
+   git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace && cd "$(basename "$_" .git)"
    git submodule foreach "git checkout develop"
    git pull --recurse-submodules
    git submodule status
@@ -40,7 +39,8 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, We
 2. Run Docker Images:
  
    ```bash
-    docker compose -f dev.docspace.yml up -d
+   # Ensure that your current directory is: ./DocSpace/docker/
+   docker compose -f dev.docspace.yml up -d
    ```
 3. Open your web browser (Chrome, Opera, etc) and run: http://localhost
 
