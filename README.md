@@ -31,15 +31,16 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, We
 1. Clone DocSpace repository with submodules:
 
    ```bash
-   git clone --recurse-submodules -j8 https://github.com/ONLYOFFICE/DocSpace.git
+   git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace
    cd ./DocSpace/docker/
-
+   git submodule foreach "git checkout develop"
+   git pull --recurse-submodules
+   git submodule status
    ```
 2. Run Docker Images:
  
    ```bash
     docker compose -f dev.docspace.yml up -d
-
    ```
 3. Open your web browser (Chrome, Opera, etc) and run: http://localhost
 
