@@ -33,13 +33,13 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, We
    ```bash
    git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace && \
    cd "$(basename "$_" .git)" && \
-   git submodule foreach "git checkout develop" && \
-   git pull --recurse-submodules && \
-   git submodule status
+   git submodule foreach "git checkout develop" 
    ```
 2. Run Docker Images:
  
    ```bash
+   # Change directory to the docker directory
+   cd ./docker
    # Ensure that your current directory is: ./DocSpace/docker/
    docker compose -f dev.docspace.yml up -d
    ```
