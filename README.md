@@ -13,7 +13,7 @@ ONLYOFFICE DocSpace is a document hub where you can connect users and documents 
 
 ## Technology stack
 
-Backend: С# 11.0, .NET 7.0/.NET Core/ASP.NET Core/MySQL 8.0/Rabbit/Redis/OpenSearch
+Backend: С# 13.0, .NET 9.0/.NET Core/ASP.NET Core/MySQL 8.3/Rabbit/Redis/OpenSearch
 
 Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, Webpack 5
 
@@ -31,9 +31,10 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, We
 1. Clone DocSpace repository with submodules:
 
    ```bash
-   git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace && cd "$(basename "$_" .git)"
-   git submodule foreach "git checkout develop"
-   git pull --recurse-submodules
+   git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace && \
+   cd "$(basename "$_" .git)" && \
+   git submodule foreach "git checkout develop" && \
+   git pull --recurse-submodules && \
    git submodule status
    ```
 2. Run Docker Images:
