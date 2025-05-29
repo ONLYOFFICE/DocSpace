@@ -1,5 +1,10 @@
 ﻿# ONLYOFFICE DocSpace
 
+> :warning: **Important Note**  
+> **This README contains a development version of ONLYOFFICE DocSpace.**  
+> The build instructions below produce a non-production environment suitable for **testing and development purposes only**.  
+> **DO NOT USE THIS VERSION IN PRODUCTION ENVIRONMENTS.**
+
 ## Overview
 
 ONLYOFFICE DocSpace is a document hub where you can connect users and documents in one place to boost collaboration. 
@@ -28,12 +33,29 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, We
 
 ## Simple Build and Running Test Example in Docker 
 
+> **Note**  
+> The following instructions create a **development/testing environment**  
+> not suitable for production use. For production deployment, see:  
+> [Production Version of ONLYOFFICE DocSpace](https://github.com/ONLYOFFICE/DocSpace-buildtools/tree/master/install/OneClickInstall)
+
 1. Clone DocSpace repository with submodules:
 
    ```bash
    git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace && \
    cd "$(basename "$_" .git)" && \
-   git submodule foreach "git checkout develop" 
+   git submodule foreach "git checkout master" 
+   ```
+> **Note** 
+> Customizing branches:
+> To use specific branches (hotfix/releases) for submodules:
+
+   ```bash
+   # Checkout desired branch for main repository
+   git checkout <branch-name>
+
+   # Update submodules to specific branches
+   git submodule update --init --remote
+   git submodule foreach "git checkout <submodule-branch-name>"
    ```
 2. Run Docker Images:
  
@@ -44,6 +66,17 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, We
    docker compose -f dev.docspace.yml up -d
    ```
 3. Open your web browser (Chrome, Opera, etc) and run: http://localhost
+
+
+## Production Version
+For production deployments, use the official enterprise-ready solutions:
+
+ONLYOFFICE DocSpace Enterprise Edition - Commercial version with enterprise support
+
+ONLYOFFICE DocSpace Developer Edition - Free version for small teams (up to 10 users)
+
+[Official Production Documentation](https://www.onlyoffice.com/download.aspx#docspace-enterprise) 
+
 
 ## Licensing 
 
