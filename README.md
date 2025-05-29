@@ -26,14 +26,14 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SASS, i18next, We
 - Docker: version 25.2.0 or later
 - Docker Compose: version 2.28.0 or later
 
-## Simple Build and Running Test Example in Docker
+## Simple Building and Running Test Example in Docker
 
 > **Note:** DO NOT USE THIS VERSION IN PRODUCTION ENVIRONMENTS.
 > The following instructions create a **development/testing environment**
 > not suitable for production use. For production deployment, see:
 > [Production Version of ONLYOFFICE DocSpace](https://github.com/ONLYOFFICE/DocSpace-buildtools/tree/master/install/OneClickInstall)
 
-1. Clone DocSpace repository with submodules:
+1. Clone the DocSpace repository with submodules:
 
 ```bash
 git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace && \
@@ -44,14 +44,14 @@ git submodule foreach "git checkout master"
 2. Run Docker Images:
 
 ```bash
-# Change directory to the docker directory
+# Change the directory to the docker directory
 cd ./docker
-# Make sure to run the above command from the ./docker/ directory,
+# Make sure to run the below command from the ./docker/ directory,
 # so the .env file is used for configuration.
 docker compose -f dev.docspace.yml up -d
 ```
 
-3. Open your web browser (Chrome, Opera, etc) and run: http://localhost
+3. Open your web browser (Chrome, Opera, etc.) and run: http://localhost
 
 ## Production Version
 
