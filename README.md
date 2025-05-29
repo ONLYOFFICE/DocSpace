@@ -33,38 +33,38 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, We
 
 ## Simple Build and Running Test Example in Docker 
 
-> **Note**  
-> The following instructions create a **development/testing environment**  
-> not suitable for production use. For production deployment, see:  
+> **Note** 
+> The following instructions create a **development/testing environment**
+> not suitable for production use. For production deployment, see:
 > [Production Version of ONLYOFFICE DocSpace](https://github.com/ONLYOFFICE/DocSpace-buildtools/tree/master/install/OneClickInstall)
 
 1. Clone DocSpace repository with submodules:
 
-   ```bash
-   git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace && \
-   cd "$(basename "$_" .git)" && \
-   git submodule foreach "git checkout master" 
-   ```
+```bash
+git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace && \
+cd "$(basename "$_" .git)" && \
+git submodule foreach "git checkout master"
+```
 > **Note** 
 > Customizing branches:
 > To use specific branches (hotfix/releases) for submodules:
 
-   ```bash
-   # Checkout desired branch for main repository
-   git checkout <branch-name>
+```bash
+# Checkout desired branch for main repository
+git checkout <branch-name>
 
-   # Update submodules to specific branches
-   git submodule update --init --remote
-   git submodule foreach "git checkout <submodule-branch-name>"
-   ```
+# Update submodules to specific branches
+git submodule update --init --remote
+git submodule foreach "git checkout <submodule-branch-name>"
+```
 2. Run Docker Images:
  
-   ```bash
-   # Change directory to the docker directory
-   cd ./docker
-   # Ensure that your current directory is: ./DocSpace/docker/
-   docker compose -f dev.docspace.yml up -d
-   ```
+```bash
+# Change directory to the docker directory
+cd ./docker
+# Ensure that your current directory is: ./DocSpace/docker/
+docker compose -f dev.docspace.yml up -d
+```
 3. Open your web browser (Chrome, Opera, etc) and run: http://localhost
 
 
