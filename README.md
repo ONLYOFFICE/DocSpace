@@ -1,4 +1,4 @@
-![DocSpace logo](./assets/DocSpace_logo.svg)
+![DocSpace logo](./assets/DocSpace_logo_final.svg)
 
 [![Release Notes](https://img.shields.io/github/release/ONLYOFFICE/DocSpace?style=flat-square)](https://github.com/ONLYOFFICE/DocSpace/releases)
 [![License](https://img.shields.io/badge/license-AGPLv3-orange)](https://opensource.org/license/agpl-v3)
