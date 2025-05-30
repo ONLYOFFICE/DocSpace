@@ -4,9 +4,9 @@
 [![License](https://img.shields.io/badge/license-AGPLv3-orange)](https://opensource.org/license/agpl-v3)
 [![GitHub stars](https://img.shields.io/github/stars/ONLYOFFICE/DocSpace?style=flat-square)](https://star-history.com/#ONLYOFFICE/DocSpace)
 [![Open Issues](https://img.shields.io/github/issues-raw/ONLYOFFICE/DocSpace?style=flat-square)](https://github.com/ONLYOFFICE/DocSpace/issues)
+[![DocSpace Forum](https://img.shields.io/badge/DocSpace%20Forum-Discuss-blue?style=flat-square)](https://forum.onlyoffice.com/c/docspace/46)
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/ONLYOFFICE.svg?style=social&label=Follow%20%40ONLYOFFICE)](https://x.com/only_office)
-[![YouTube Channel](https://img.shields.io/youtube/channel/subscribers/UCn2bInQrjdDYKEEmbpwblLQ?label=Subscribe)](https://www.youtube.com/user/onlyofficetv)
-[![Discord Server](https://img.shields.io/discord/1116803230643527710?logo=discord&style=social&label=Join)](https://discord.com/invite/Hcgtf5n4uF)
+[![YouTube Channel](https://img.shields.io/youtube/channel/subscribers/UCNxeQm7vVujR8eFPtpVAVNg?label=Subscribe)](https://www.youtube.com/@Onlyoffice_Community)
 
 ## Overview
 
