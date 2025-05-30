@@ -12,10 +12,12 @@ ONLYOFFICE DocSpace is a document hub where you can connect users and documents 
 - Document collaboration: two co-editing modes, track changes, comments, built-in chat, plugins for making audio and video calls.
 - Connecting third-party clouds and storages.
 - JavaScript SDK for embedding ONLYOFFICE DocSpace or its parts into your own web application.
+- Plugins SDK for creating own plugins and adding them to DocSpace.
 - LDAP settings for importing users and groups from an LDAP server.
 - Single Sign-On (SSO) settings for enabling third-party authentication using SAML.
 - Developer tools: webhooks, OAuth applications, API keys.
 - Security tools: two-factor authentication, backup and restore features, IP security, audit trail, and much more.
+- Migration from other platforms, such as Google Workspace, Nextcloud, ONLYOFFICE Workspace.
 
 ## Technology stack
 
@@ -78,6 +80,8 @@ ONLYOFFICE DocSpace is released under AGPLv3 license. See the LICENSE file for m
 Official website: [https://www.onlyoffice.com](https://www.onlyoffice.com/?utm_source=github&utm_medium=cpc&utm_campaign=DocSpace "https://www.onlyoffice.com/?utm_source=github&utm_medium=cpc&utm_campaign=DocSpace")
 
 Code repository: [https://github.com/ONLYOFFICE/DocSpace](https://github.com/ONLYOFFICE/DocSpace)
+
+API documentation: [https://api.onlyoffice.com](https://api.onlyoffice.com)
 
 ## User feedback and support
 
