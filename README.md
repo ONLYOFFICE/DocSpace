@@ -8,7 +8,7 @@ ONLYOFFICE DocSpace is a document hub where you can connect users and documents 
 
 - Various room types: Public rooms, Form filling rooms, Collaboration rooms, Virtual Data Rooms, Custom rooms.
 - Flexible access permissions: viewing, commenting, reviewing, form filling, editing.
-- Ability to work with multiple file formats: text documents, spreadsheets, presentations, digital forms, PDFs, e-books.
+- Ability to work with multiple file formats: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, media files (images, video and audio files), markdown files.
 - Document collaboration: two co-editing modes, track changes, comments, built-in chat, plugins for making audio and video calls.
 - Connecting third-party clouds and storages.
 - JavaScript SDK for embedding ONLYOFFICE DocSpace or its parts into your own web application.
@@ -18,6 +18,7 @@ ONLYOFFICE DocSpace is a document hub where you can connect users and documents 
 - Developer tools: webhooks, OAuth applications, API keys.
 - Security tools: two-factor authentication, backup and restore features, IP security, audit trail, and much more.
 - Migration from other platforms, such as Google Workspace, Nextcloud, ONLYOFFICE Workspace.
+- Ready-to-use connectors for integration with your platform: Drupal, Pipedrive, WordPress, Zapier, Zoom.
 
 ## Technology stack
 
@@ -67,7 +68,7 @@ For production deployments, use the official enterprise-ready solutions:
 
 ONLYOFFICE DocSpace Enterprise Edition - Commercial version with enterprise support
 
-ONLYOFFICE DocSpace Developer Edition - Free version for small teams (up to 10 users)
+ONLYOFFICE DocSpace Developer Edition - Commercial version for integration into any commercial software, under your own brand and on your own servers
 
 [Official Production Documentation](https://www.onlyoffice.com/download.aspx#docspace-enterprise)
 
