@@ -28,7 +28,7 @@ ONLYOFFICE DocSpace is a document hub where you can connect users and documents 
 - 🛠️ Developer tools: webhooks, OAuth applications, API keys.
 - 🔒 Security tools: two-factor authentication, backup and restore features, IP security, audit trail, and much more.
 - 🚚 Migration from other platforms, such as Google Workspace, Nextcloud, ONLYOFFICE Workspace.
-- 🔌 Ready-to-use connectors for integration with your platform: Drupal, Pipedrive, WordPress, Zapier, Zoom. `<a href="https://www.onlyoffice.com/all-connectors.aspx" target="_blank">`See all connectors`</a>`
+- 🔌 Ready-to-use connectors for integration with your platform: Drupal, Pipedrive, WordPress, Zapier, Zoom. [See all connectors](https://www.onlyoffice.com/all-connectors.aspx)
 
 ## Technology stack
 
