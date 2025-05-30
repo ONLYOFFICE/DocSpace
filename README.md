@@ -6,10 +6,16 @@ ONLYOFFICE DocSpace is a document hub where you can connect users and documents 
 
 ## Functionality
 
-- Various room types with different access levels: view-only, review, collaboration, filling forms, custom rooms.
+- Various room types: Public rooms, Form filling rooms, Collaboration rooms, Virtual Data Rooms, Custom rooms.
+- Flexible access permissions: viewing, commenting, reviewing, form filling, editing.
 - Ability to work with multiple file formats: text documents, spreadsheets, presentations, digital forms, PDFs, e-books.
-- Document collaboration: two co-editing modes, Track Changes, comments, built-in chat, plugins for making audio and video calls.
+- Document collaboration: two co-editing modes, track changes, comments, built-in chat, plugins for making audio and video calls.
 - Connecting 3rd party clouds and storages.
+- JavaScript SDK for embedding ONLYOFFICE DocSpace or its parts into your own web application.
+- LDAP settings for importing users and groups from an LDAP Server.
+- Single Sign-On (SSO) settings for enabling third-party authentication using SAML.
+- Developer tools: webhooks, OAuth applications, API keys.
+- Security tools: two-factor authentication, backup and restore features, IP security, audit trail and much more.
 
 ## Technology stack
 
