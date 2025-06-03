@@ -214,6 +214,7 @@ jobs:
 
       - name: Update submodules (DocSpace only)
         if: ${{ matrix.repo == 'DocSpace' }}
+        working-directory: ${{ matrix.repo }}
         run: |
           git pull --recurse-submodules
           git submodule update --remote --merge
@@ -227,6 +228,7 @@ jobs:
           fi
 
       - name: Create Tag
+        working-directory: ${{ matrix.repo }}
         run: |
           TAG_NAME=${{ github.event.inputs.version }}$([ "${{ matrix.repo }}" != "DocSpace" ] && echo '-server' || echo '')
           git fetch --tags
