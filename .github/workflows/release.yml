@@ -1,9 +1,6 @@
 name: Release Action
 
 on:
-  push:
-    branches:
-      - 'hotfix/v3.1.1'
   workflow_dispatch:
     inputs:
       version:
@@ -127,6 +124,16 @@ jobs:
         run: |
           if [ -z "$(git ls-remote --heads "https://${{ secrets.GITEA_TOKEN }}@${{ secrets.GITEA_HOST }}/${{ github.repository_owner }}/${{ matrix.repo }}" "${{ github.event.inputs.branch }}")" ]; then
             echo "::error::Branch '${{ github.event.inputs.branch }}' does not exist in repository ${{ matrix.repo }}" && exit 1
+          fi
+
+      - name: Check commits difference
+        run: |
+          git clone https://${{ secrets.GITEA_TOKEN }}@${{ secrets.GITEA_HOST }}/${{ github.repository_owner }}/${{ matrix.repo }}
+          cd ${{ matrix.repo }}
+          git fetch --quiet --all
+          if git diff --quiet origin/${{ github.event.inputs.target_branch }} origin/${{ github.event.inputs.branch }}; then
+            echo "::warning::No changes between '${{ github.event.inputs.target_branch }}' and '${{ github.event.inputs.branch }}'. Skipping PR."
+            echo "SKIP_PR=true" >> $GITHUB_ENV
           fi
 
       - name: Create Pull Request
