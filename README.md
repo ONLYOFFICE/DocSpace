@@ -12,7 +12,7 @@
 
 ONLYOFFICE DocSpace is a document hub where you can connect users and documents in one place to boost collaboration.
 
-<a href="https://www.youtube.com/watch?v=DU14HFeZErU&ab_channel=ONLYOFFICE" target="_blank"><img src="./assets/DocSpace_with_youtube_button.svg" alt="What is DocSpace?"></a>
+<a href="https://www.youtube.com/watch?v=DU14HFeZErU&ab_channel=ONLYOFFICE" target="_blank"><img width="801px" src="./assets/DocSpace_with_youtube_button.svg" alt="What is DocSpace?"></a>
 
 ## Functionality
 
