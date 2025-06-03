@@ -50,7 +50,7 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SASS, i18next, We
 > **Note:** DO NOT USE THIS VERSION IN PRODUCTION ENVIRONMENTS.
 > The following instructions create a **development/testing environment**
 > not suitable for production use. For production deployment, see:
-> [Production Version of ONLYOFFICE DocSpace](https://github.com/ONLYOFFICE/DocSpace-buildtools/tree/master/install/OneClickInstall)
+> [Production Version of ONLYOFFICE DocSpace](https://www.onlyoffice.com/download.aspx#docspace-enterprise)
 
 1. Clone the DocSpace repository with submodules:
 
