@@ -161,7 +161,8 @@ jobs:
 
           if [ "${MERGEABLE_STATUS}" = "true" ]; then
             tea pr merge --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
-              -t "Merge ${{ github.event.inputs.branch }} into ${{ github.event.inputs.target_branch }}" ${PR_NUMBER}
+              -t "Merge ${{ github.event.inputs.branch }} into ${{ github.event.inputs.target_branch }}" ${PR_NUMBER} \
+              || echo "::error::Failed to merge PR #$PR_NUMBER in ${{ matrix.repo }}"
           else
             echo "::warning::PR #$PR_NUMBER in ${{ matrix.repo }} is not mergeable or contains conflicts."
           fi
@@ -195,9 +196,8 @@ jobs:
                 | jq -c --arg head "${{ github.event.inputs.branch }}" --arg base "${{ github.event.inputs.target_branch }}" \
                 '[.[]|select(.head==$head and .base==$base)] | if length>0 then .[0] else {state: "not_found", url: ""} end')
               PR_STATE=$(echo "${PR_JSON}" | jq -r '.state') 
-              PR_URL=$(echo "${PR_JSON}" | jq -r '.url')
 
-              echo "PR state for $REPO: ${PR_STATE} ($PR_URL)"
+              echo "PR state for $REPO: ${PR_STATE}"
 
              [[ "${PR_STATE}" == merged || "${PR_STATE}" == closed ]] && MERGED=$((MERGED + 1))
               [ "${PR_STATE}" = "not_found" ] && REPOS=$(xargs -n1 <<< "$REPOS" | grep -vx "$REPO" | xargs)
