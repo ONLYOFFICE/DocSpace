@@ -266,7 +266,7 @@ jobs:
     name: Notify Release
     runs-on: ubuntu-latest
     needs: [release, trigger_docker_release, trigger_packages_release ]
-    if: ${{ needs.release.result == 'success' && needs.trigger_docker_release.result == 'success' && needs.trigger_packages_release.result == 'success' }}
+    if: ${{ needs.release.result == 'success' }}
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
