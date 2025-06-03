@@ -6,11 +6,11 @@ on:
       version:
         description: 'Release version'
         required: true
-        default: 'vX.X.X'
+        default: 'v3.1.1'
       branch:
         description: 'Release branch'
         required: true
-        default: 'release/vX.X.X'
+        default: 'hotfix/v3.1.1'
       target_branch:
         description: 'Target branch'
         required: true
@@ -24,28 +24,28 @@ on:
         type: boolean
         description: 'Docker images release'
         required: true
-        default: true
+        default: false
       docker_version:
         description: 'Source Docker version'
         required: true
-        default: 'X.X.X.XXXX'
+        default: '3.1.1.5821'
       trigger_packages_release:
         type: boolean
         description: 'Packages release'
         required: true
-        default: true
+        default: false
       deb_build_number:
         description: 'deb package build number'
         required: true
-        default: 'XXXX'
+        default: '495'
       rpm_build_number:
         description: 'rpm package build number'
         required: true
-        default: 'XXX'
+        default: '563'
       exe_build_number:
         description: 'exe package build number'
         required: true
-        default: 'XXXX'
+        default: '900'
 
 jobs:
   trigger_docker_release:
@@ -145,6 +145,7 @@ jobs:
       - name: Auto merge Pull Request
         if: ${{ env.SKIP_PR != 'true' }}
         run: |
+          set -x
           PR_NUMBER=$(timeout 60 bash -c 'while :; do 
             NUM=$(tea pr list --login ${{ secrets.GITEA_HOST }} --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
             --state open --fields index,head,base --output json \
