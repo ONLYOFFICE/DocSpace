@@ -1,6 +1,6 @@
 # Change log
 
-## 3.0.4
+## 3.1.0
 
 ### General changes
 
