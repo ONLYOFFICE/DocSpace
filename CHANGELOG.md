@@ -1,5 +1,7 @@
 # Change log
 
+## 3.0.4
+
 ### General changes
 
 * Fixed a security issue in NextJS (Authorization Bypass in Next.js Middleware)
