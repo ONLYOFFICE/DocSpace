@@ -9,11 +9,11 @@ on:
       version:
         description: 'Release version'
         required: true
-        default: 'v3.1.1'
+        default: 'vX.X.X'
       branch:
         description: 'Release branch'
         required: true
-        default: 'hotfix/v3.1.1'
+        default: 'release/vX.X.X'
       target_branch:
         description: 'Target branch'
         required: true
@@ -27,28 +27,28 @@ on:
         type: boolean
         description: 'Docker images release'
         required: true
-        default: false
+        default: true
       docker_version:
         description: 'Source Docker version'
         required: true
-        default: '3.1.1.5821'
+        default: 'X.X.X.XXXX'
       trigger_packages_release:
         type: boolean
         description: 'Packages release'
         required: true
-        default: false
+        default: true
       deb_build_number:
         description: 'deb package build number'
         required: true
-        default: '495'
+        default: 'XXXX'
       rpm_build_number:
         description: 'rpm package build number'
         required: true
-        default: '563'
+        default: 'XXX'
       exe_build_number:
         description: 'exe package build number'
         required: true
-        default: '900'
+        default: 'XXXX'
 
 jobs:
   trigger_docker_release:
@@ -148,7 +148,6 @@ jobs:
       - name: Auto merge Pull Request
         if: ${{ env.SKIP_PR != 'true' }}
         run: |
-          set -x
           PR_NUMBER=$(timeout 60 bash -c 'while :; do 
             NUM=$(tea pr list --login ${{ secrets.GITEA_HOST }} --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
             --state open --fields index,head,base --output json \
@@ -165,7 +164,8 @@ jobs:
 
           if [ "${MERGEABLE_STATUS}" = "true" ]; then
             tea pr merge --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
-              -t "Merge ${{ github.event.inputs.branch }} into ${{ github.event.inputs.target_branch }}" ${PR_NUMBER}
+              -t "Merge ${{ github.event.inputs.branch }} into ${{ github.event.inputs.target_branch }}" ${PR_NUMBER} \
+              || echo "::error::Failed to merge PR #$PR_NUMBER in ${{ matrix.repo }}"
           else
             echo "::warning::PR #$PR_NUMBER in ${{ matrix.repo }} is not mergeable or contains conflicts."
           fi
@@ -199,9 +199,8 @@ jobs:
                 | jq -c --arg head "${{ github.event.inputs.branch }}" --arg base "${{ github.event.inputs.target_branch }}" \
                 '[.[]|select(.head==$head and .base==$base)] | if length>0 then .[0] else {state: "not_found", url: ""} end')
               PR_STATE=$(echo "${PR_JSON}" | jq -r '.state') 
-              PR_URL=$(echo "${PR_JSON}" | jq -r '.url')
 
-              echo "PR state for $REPO: ${PR_STATE} ($PR_URL)"
+              echo "PR state for $REPO: ${PR_STATE}"
 
              [[ "${PR_STATE}" == merged || "${PR_STATE}" == closed ]] && MERGED=$((MERGED + 1))
               [ "${PR_STATE}" = "not_found" ] && REPOS=$(xargs -n1 <<< "$REPOS" | grep -vx "$REPO" | xargs)
