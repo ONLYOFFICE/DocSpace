@@ -148,6 +148,7 @@ jobs:
       - name: Auto merge Pull Request
         if: ${{ env.SKIP_PR != 'true' }}
         run: |
+          set -x
           PR_NUMBER=$(timeout 60 bash -c 'while :; do 
             NUM=$(tea pr list --login ${{ secrets.GITEA_HOST }} --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
             --state open --fields index,head,base --output json \
