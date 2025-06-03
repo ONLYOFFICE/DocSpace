@@ -16,19 +16,20 @@ ONLYOFFICE DocSpace is a document hub where you can connect users and documents 
 
 ## Functionality
 
-- 🚪 Various room types: Public rooms, Form filling rooms, Collaboration rooms, Virtual Data Rooms, Custom rooms.
+- 🚪 Various room types: [Public rooms](https://www.onlyoffice.com/public-rooms.aspx), [Form filling rooms](https://www.onlyoffice.com/form-filling-rooms.aspx), [Collaboration rooms](https://www.onlyoffice.com/collaboration-rooms.aspx), [Virtual Data Rooms](https://www.onlyoffice.com/virtual-data-rooms.aspx), [Custom rooms](https://www.onlyoffice.com/custom-rooms.aspx).
 - 🔑 Flexible access permissions: viewing, commenting, reviewing, form filling, editing.
 - 📄 Ability to work with multiple file formats: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, media files (images, video and audio files), markdown files.
-- 🤝 Document collaboration: two co-editing modes, track changes, comments, built-in chat, plugins for making audio and video calls.
+- 🤝 [Document collaboration](https://www.onlyoffice.com/seamless-collaboration.aspx): two co-editing modes, track changes, comments, built-in chat, plugins for making audio and video calls.
+- 🤖 Connecting any [AI assistants](https://www.onlyoffice.com/ai-assistants.aspx) to the editors for enhanced efficiency and faster workflows.
 - ☁️ Connecting third-party clouds and storages.
-- 💻 JavaScript SDK for embedding ONLYOFFICE DocSpace or its parts into your own web application.
-- 🧩 Plugins SDK for creating own plugins and adding them to DocSpace.
+- 💻 [JavaScript SDK](https://api.onlyoffice.com/docspace/javascript-sdk/get-started/) for embedding ONLYOFFICE DocSpace or its parts into your own web application.
+- 🧩 [Plugins SDK](https://api.onlyoffice.com/docspace/plugins-sdk/get-started/) for creating own plugins and adding them to DocSpace.
 - 🧑‍🤝‍🧑 LDAP settings for importing users and groups from an LDAP server.
 - 🛡️ Single Sign-On (SSO) settings for enabling third-party authentication using SAML.
 - 🛠️ Developer tools: webhooks, OAuth applications, API keys.
 - 🔒 Security tools: two-factor authentication, backup and restore features, IP security, audit trail, and much more.
 - 🚚 Migration from other platforms, such as Google Workspace, Nextcloud, ONLYOFFICE Workspace.
-- 🔌 Ready-to-use connectors for integration with your platform: Drupal, Pipedrive, WordPress, Zapier, Zoom. [See all connectors](https://www.onlyoffice.com/all-connectors.aspx)
+- 🔌 Ready-to-use connectors for integration with your platform: Drupal, Pipedrive, WordPress, Zapier, Zoom, Moodle. [See all connectors](https://www.onlyoffice.com/all-connectors.aspx)
 
 ## Technology stack
 
@@ -72,15 +73,15 @@ docker compose -f dev.docspace.yml up -d
 
 3. Open your web browser (Chrome, Opera, etc.) and run: http://localhost
 
-## Production Version
+## Production-Ready Versions
 
-For production deployments, use the official enterprise-ready solutions:
+Deploy with confidence using the official enterprise-grade solutions:
 
-ONLYOFFICE DocSpace Enterprise Edition - Commercial version with enterprise support
+- [ONLYOFFICE DocSpace Enterprise](https://www.onlyoffice.com/docspace-enterprise.aspx): A commercial version with comprehensive enterprise support. [Download](https://www.onlyoffice.com/download.aspx#docspace-enterprise)
 
-ONLYOFFICE DocSpace Developer Edition - Commercial version for integration into any commercial software, under your own brand and on your own servers
+- [ONLYOFFICE DocSpace Developer](https://www.onlyoffice.com/docspace-developer.aspx): A commercial version designed for seamless integration into your software. Customize it under your own brand and deliver to the end users. [Download](https://www.onlyoffice.com/download-developer.aspx#docspace-developer)
 
-[Official Production Documentation](https://www.onlyoffice.com/download.aspx#docspace-enterprise)
+[Check the documentation](https://helpcenter.onlyoffice.com/docspace/installation)
 
 ## Licensing
 
