@@ -228,12 +228,11 @@ jobs:
         working-directory: ${{ matrix.repo }}
         run: |
           git pull --recurse-submodules
-          git submodule update --remote --merge --recursive
+          git submodule update --remote --merge
           if [ -n "$(git status --porcelain)" ]; then
             git config --global user.name "github-actions[bot]"
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            git add .
-            git commit -m "Update submodules"
+            git commit -am "Update submodules"
             git push origin HEAD
           else
             echo "::warning::No submodule changes detected."
