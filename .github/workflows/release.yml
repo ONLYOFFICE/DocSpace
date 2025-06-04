@@ -297,11 +297,13 @@ jobs:
 
           JSON_PAYLOAD=$(jq -n --arg CHAT_ID "${{ secrets.TELEGRAM_TEAM_CHAT_ID }}" --arg TEXT "${MESSAGE}" \
             '{chat_id: $CHAT_ID, text: $TEXT, parse_mode: "Markdown", disable_web_page_preview: true}')
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" -d "${JSON_PAYLOAD}"
+          TEAM_CHAT_RESPONSE=$(curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" -d "${JSON_PAYLOAD}")
+          echo "${TEAM_CHAT_RESPONSE}" | jq -e '.ok' > /dev/null || { echo "::error:: Error sending to TEAM CHAT - $(echo "${TEAM_CHAT_RESPONSE}" | jq -r '.description')" >&2; exit 1; }
 
           if "${{ github.event.inputs.trigger_release }}" = "true" && ${{ github.event.inputs.trigger_docker_release == 'true' }} && ${{ github.event.inputs.trigger_packages_release == 'true' }}; then
-            curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+            RELEASE_NOTIFICATION_CHAT_RESPONSE=$(curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
               -d chat_id=${{ secrets.TELEGRAM_RELEASE_NOTIFICATION_CHAT_ID }} -d parse_mode=Markdown \
-              -d "text=ONLYOFFICE DocSpace [${{ github.event.inputs.version }}](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) for Docker, Linux and Windows has been released"
+              -d "text=ONLYOFFICE DocSpace [${{ github.event.inputs.version }}](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) for Docker, Linux and Windows has been released")
+            echo "${RELEASE_NOTIFICATION_CHAT_RESPONSE}" | jq -e '.ok' > /dev/null || { echo "::error:: Error sending to RELEASE NOTIFICATION CHAT - $(echo "${RELEASE_NOTIFICATION_CHAT_RESPONSE}" | jq -r '.description')" >&2; exit 1; }
           fi
