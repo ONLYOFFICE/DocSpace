@@ -34,18 +34,10 @@ on:
         description: 'Packages release'
         required: true
         default: true
-      deb_build_number:
-        description: 'deb package build number'
+      package_build_numbers:
+        description: 'deb/rpm/exe package build numbers (with /)'
         required: true
-        default: 'XXXX'
-      rpm_build_number:
-        description: 'rpm package build number'
-        required: true
-        default: 'XXX'
-      exe_build_number:
-        description: 'exe package build number'
-        required: true
-        default: 'XXXX'
+        default: 'DEB/RPM/EXE'
       trigger_notify:
         type: boolean
         description: 'Notify'
@@ -95,11 +87,8 @@ jobs:
         id: package_release
         run: |
           JENKINS_URL="${{ secrets.JENKINS_URL }}"; TOKEN="${{ secrets.JENKINS_TOKEN }}"; VERSION="${{ github.event.inputs.version }}"
-          declare -A NUM=(
-            [deb]="${{ github.event.inputs.deb_build_number }}"
-            [rpm]="${{ github.event.inputs.rpm_build_number }}"
-            [exe]="${{ github.event.inputs.exe_build_number }}"
-          )
+          declare -A NUM
+          IFS='/' read -r NUM[deb] NUM[rpm] NUM[exe] <<< "${{ github.event.inputs.package_build_numbers }}"
 
           for TYPE in deb rpm exe; do
             BUILD_NUM=${NUM[${TYPE}]}
