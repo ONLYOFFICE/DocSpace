@@ -297,7 +297,7 @@ jobs:
             if ${{ github.event.inputs.trigger_packages_release == 'true' }}; then
               MESSAGE+='[DEB](${{ secrets.JENKINS_URL }}/job/production.deb.publish/${{ env.DEB_BUILD_NUMBER }}) | '
               MESSAGE+='[RPM](${{ secrets.JENKINS_URL }}/job/production.rpm.publish/${{ env.RPM_BUILD_NUMBER }}) | '
-              MESSAGE+='[EXE](${{ secrets.JENKINS_URL }}/job/production.exe.publish/${{ env.EXE_BUILD_NUMBER }})'
+              MESSAGE+='[EXE](${{ secrets.JENKINS_URL }}/job/production.docspace.exe.publish/${{ env.EXE_BUILD_NUMBER }})'
             fi
           fi
 
