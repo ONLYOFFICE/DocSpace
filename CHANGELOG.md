@@ -2,7 +2,9 @@
 
 ## 3.1.0
 
-### General changes
+### New features
+
+#### General changes
 
 * Fixed a security issue in NextJS (Authorization Bypass in Next.js Middleware)
 * A new SSR client (/sdk) has been added for working with the JS-SDK,
@@ -16,7 +18,7 @@
 * Added a page with an error message for opening a file of an unsupported
   format via an external link that is no longer available
 
-### Settings
+#### Settings
 
 * Updated button colors for adding and changing the avatar in the profile
 * Added an error message to the main settings methods in the sections Backup
@@ -33,7 +35,7 @@
   in the Integration - Document Service section has been modified to allow
   specifying a secret key and Authorization header
 
-### Login page
+#### Login page
 
 * Added the ability to share guests. When selecting the "Share guest" option
   in the Contacts/Guests section, the user receives a link to a new confirm
@@ -41,7 +43,7 @@
 * The account is now automatically linked to the DocSpace account with the same
   email address when logging in via social media
 
-### Documents
+#### Documents
 
 * Added the ability to delete a file version in the version panel
 * Added the ability to create templates from rooms and rooms from templates
@@ -71,11 +73,11 @@
 * The list of push notifications in the mobile app for events on the portal
   has been expanded
 
-### Management
+#### Management
 
 * Added an ability to encrypt data at rest in the server version
 
-## Accounts
+#### Accounts
 
 * Added the ability to downgrade a type to User and to Guest
 
