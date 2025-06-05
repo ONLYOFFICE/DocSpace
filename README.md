@@ -37,14 +37,13 @@ Backend: C# 13.0, .NET 9.0, ASP.NET Core, MySQL 8.3, RabbitMQ, Redis, OpenSearch
 
 Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SASS, i18next, Webpack 5, Next.js
 
-## Recommended System Requirements
+## Minimum System Requirements
 
-- 💾 RAM: 8 GB or more
 - 💻 CPU: dual-core 2 GHz or higher
-- 🔄 Swap: at least 2 GB
-- 💽 HDD: at least 40 GB of free space
+- 💾 RAM: 8 GB or more
+- 💽 SSD: at least 40 GB of free space
+- 🔄 Swap file: at least 2 GB
 - 🐳 Docker: version 25.2.0 or later
-- 🐳 Docker Compose: version 2.28.0 or later
 
 ## Simple Building and Running Test Example in Docker
 
