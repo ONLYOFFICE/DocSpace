@@ -1,8 +1,106 @@
 # Change log
 
+## 3.1.1
+
+### Fixes
+
+#### Settings
+
+* Fixed client crash when authorizing via Auth link without specifying scope
+* Fixed an error when displaying the application of the removed user
+  in the Developer Tools
+* Fixed an issue with repeatedly resetting the 2FA application
+* Fixed an error after connecting Google Drive as Third-Party resource
+  in server version
+* Fixed the visual freeze of the Back up process when multiple Spaces
+  are created
+* Implemented the resetting of the 2FA application after a long period
+  of inactivity
+* Fixed the display of the portal logo in Developer Tools after page refresh
+* Fixed the mention of the platform in the tooltip for Authentication
+  when configuring the LDAP server
+* Fixed opening a page in a new tab using the right mouse button
+
+#### Login page
+
+* Fixed a security issue that allowed authorization after changing the password
+
+#### Documents
+
+* Fixed adding an entry to reports in Filling Form Room if the user
+  is not authorized
+* Fixed the application of settings for the VDR room when it is created from
+  a template
+* Fixed missing values for tag and quota in the template when creating a Room
+  from it in the root of Rooms
+* Fixed the presence of the Start filling/Filling status/Stop filling/Reset
+  and start filling PDF form menu buttons in rooms other than VDR
+* Fixed the presence of the Quick sharing button in the PDF form editor
+  for certain Room types
+* Fixed the application of the template icon using Customize cover
+  in the info panel
+* Fixed the possibility of re-invoking the internal template menu after changing
+  the Name/Tags settings
+* Fixed the presence of the Complete & Submit button in the form labeled My Draft
+  in the Filling Form Room, restored from Archive
+* Fixed the notifications to the room owner about file upload/edit
+  by another participant
+* Fixed the possibility of deleting a Public Room used as storage
+* Fixed the change of type from PDF Form to PDF Documents in the Type column
+  after changing the index in VDR Room
+* Fixed the ability to edit a PDF form on external access
+  with fill-in permissions
+* Fixed the designation of a Copy/Duplicate file as editing if the original
+  was opened in the editor
+* Fixed the appearance of a deleted value in the SearchInput field
+  on the Select panel
+* Fixed opening of PDF forms in the desktop version of editors when opening
+  a file in VDR Room and mobile version
+* Fixed the display of Your turn/In Progress statuses in the VDR Room
+  and mobile version
+* Fixed highlighting of elements during the Short tour for the Form Filling Room
+  on iPad
+* Fixed the ability to scroll content in the Create room dialog
+  at a screen resolution of 1024x650
+* Fixed the ability to perform operations with templates using drag-and-drop
+* Fixed the description in the Empty screen of the Upload from DocSpace module
+
+#### Accounts
+
+* Fixed email confirmation for DocSpace and Room Admin
+* Fixed the ability to delete a guest
+* Fixed adding more than one Authorized app in the user profile
+
+#### SDK
+
+* Fixed an error when attempting to authorize a system user in WordPress
+* Fixed the display of inactive folders Complete/In progress
+  in the file selector from Filling Form Room in WordPress
+* Fixed the display of the editor close button in the corresponding
+  WordPress frame
+* Fixed the display of the selector in the DocSpace frame embedded in Wordpress
+ after logging out
+* Fixed the logo offset on the Empty screen during the DocSpace configuration
+  process in WordPress
+* Fixed the presence of the "Back to room" button for unauthorized users
+  filling out the form via WordPress
+* Fixed the presence of the sidebar call button for a non-Public room embedded
+  in WordPress
+* Fixed the presence of Share and Embed buttons in the menu of a file embedded
+  in WordPress in embedded mode
+* Fixed the ability to go to the Trash inside a frame with a room embedded
+  in WordPress
+* Fixed the ability for a User role to create a new room in WordPress
+* Fixed the display of extra rows in the room skeleton embedded in WordPress
+  for unauthorized users
+* The format of the type parameter of the createRoom method has been brought
+  into compliance
+
 ## 3.1.0
 
-### General changes
+### New features
+
+#### General changes
 
 * Fixed a security issue in NextJS (Authorization Bypass in Next.js Middleware)
 * A new SSR client (/sdk) has been added for working with the JS-SDK,
@@ -16,7 +114,7 @@
 * Added a page with an error message for opening a file of an unsupported
   format via an external link that is no longer available
 
-### Settings
+#### Settings
 
 * Updated button colors for adding and changing the avatar in the profile
 * Added an error message to the main settings methods in the sections Backup
@@ -33,7 +131,7 @@
   in the Integration - Document Service section has been modified to allow
   specifying a secret key and Authorization header
 
-### Login page
+#### Login page
 
 * Added the ability to share guests. When selecting the "Share guest" option
   in the Contacts/Guests section, the user receives a link to a new confirm
@@ -41,7 +139,7 @@
 * The account is now automatically linked to the DocSpace account with the same
   email address when logging in via social media
 
-### Documents
+#### Documents
 
 * Added the ability to delete a file version in the version panel
 * Added the ability to create templates from rooms and rooms from templates
@@ -71,11 +169,11 @@
 * The list of push notifications in the mobile app for events on the portal
   has been expanded
 
-### Management
+#### Management
 
 * Added an ability to encrypt data at rest in the server version
 
-## Accounts
+#### Accounts
 
 * Added the ability to downgrade a type to User and to Guest
 
