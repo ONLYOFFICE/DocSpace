@@ -47,13 +47,9 @@ x-service: &x-service-base
     DASHBOARDS_CONTAINER_NAME: ${DASHBOARDS_CONTAINER_NAME}
     DASHBOARDS_USERNAME: ${DASHBOARDS_USERNAME}
     DASHBOARDS_PASSWORD: ${DASHBOARDS_PASSWORD}
-  volumes:
-    - ${VOLUMES_DIR:+${VOLUMES_DIR}/}app_data:/app/onlyoffice/data
-    - ${VOLUMES_DIR:+${VOLUMES_DIR}/}log_data:/var/log/onlyoffice
-    - ./config/nginx/onlyoffice-proxy-dev.conf:/etc/nginx/includes/onlyoffice-proxy-dev.conf:ro
 x-service-network: &x-service-network
   networks:
-    - dev-onlyoffice
+    - onlyoffice
 
 services:
   onlyoffice-docspace-services:
@@ -62,14 +58,19 @@ services:
     ports:
       - 80:80
       - 33060:3306
+      - 9200:9200
+    volumes:
+      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}app_data:/app/onlyoffice/data
+      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}log_data:/var/log/onlyoffice
+      - ./config/nginx/onlyoffice-proxy.conf:/etc/nginx/includes/onlyoffice-proxy.conf:ro
     cap_add:
       - SYS_NICE
     tty: true
     user: root
     build:
       context: ..
-      dockerfile: ./docker/dev.Dockerfile
-      target: build
+      dockerfile: ./docker/Dockerfile
+      target: run
     container_name: onlyoffice-docspace-services
     image: "${REGISTRY}${REPO}/${DOCKER_IMAGE_PREFIX}docspace-services:${DOCKER_TAG}"
 
@@ -99,8 +100,8 @@ services:
       timeout: 10s      
 
 networks:
-  dev-onlyoffice:
-    name: dev-onlyoffice
+  onlyoffice:
+    name: onlyoffice
     driver: "bridge"
 
 volumes:
