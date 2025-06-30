@@ -209,7 +209,7 @@ RUN <<EOF
         wget -qO- https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${DASHBOARDS_VERSION}/opensearch-dashboards-${DASHBOARDS_VERSION}-linux-x64.tar.gz | tar -xz -C /opt/
     fi
     if [ "$ARCH_LINUX" = "aarch64" ] ; then
-        wget -qO- https://artifacts.opensearch.org/releases/bundle/opensearch/${OPENSEARCH_VERSION}/opensearch-${OPENSEARCH_VERSION}-linux-arm64.tar.gz | tar -xz -C  /opt/ | tar -xz -C /opt/ && \
+        wget -qO- https://artifacts.opensearch.org/releases/bundle/opensearch/${OPENSEARCH_VERSION}/opensearch-${OPENSEARCH_VERSION}-linux-arm64.tar.gz | tar -xz -C /opt/ && \
         wget -qO- https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${DASHBOARDS_VERSION}/opensearch-dashboards-${DASHBOARDS_VERSION}-linux-arm64.tar.gz | tar -xz -C /opt/
     fi
     chown -R opensearch:opensearch /var/lib/opensearch /var/log/opensearch /opt/opensearch-${OPENSEARCH_VERSION} /opt/opensearch-dashboards-${DASHBOARDS_VERSION} && \
