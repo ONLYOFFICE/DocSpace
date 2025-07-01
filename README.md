@@ -67,7 +67,7 @@ git submodule foreach "git checkout master"
 cd ./docker
 # Make sure to run the below command from the ./docker/ directory,
 # so the .env file is used for configuration.
-docker compose -f dev.docspace.yml up -d
+docker compose -f docker-compose.yml up -d
 ```
 
 3. Open your web browser (Chrome, Opera, etc.) and run: http://localhost
