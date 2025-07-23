@@ -1,5 +1,156 @@
 # Change log
 
+## 3.2.1
+
+### New features
+
+#### General changes
+
+* The ability to rename the portal is now only available on Business plans
+
+#### Documents
+
+* Added support for .pages, .numbers, .key, .hwp, .hwpx, .odg, .md formats
+* Added support for opening Diagram-type documents: .vsdx, .vssx, .vstx,
+  .vsdm, .vssm, .vstm
+* Favicons updated and improved
+* Starter documents updated in some languages
+
+#### Settings
+
+* Added the ability to hide the advertising block in Ad Management
+  (for commercial builds of DocSpace Server only)
+* The Payer is now determining via API only through portal/payment/customerinfo,
+  and information about the payer is returned immediately
+* Purchasing administrators during the Grace Period now requires adding
+  a payment method
+* The recommended payment has been removed from the top-up dialog
+  when downgrading a plan
+* Added Apply and Clear buttons to the Wallet filter in the mobile version
+
+### Fixes
+
+#### Settings
+
+* Fixed the ability to perform Backup when the data limit is exceeded
+ on the portal
+* Fixed an infinite process of creating a Backup file in Amazon AWS S3
+  if the Region or Bucket is specified incorrectly
+* Fixed an error when accessing Developer Tools under Room Admin if the section
+  is hidden from User-type users
+* Fixed the operation of the GET /api/2.0/keys/@self method if Permissions
+  other than All are selected when creating the key
+* Fixed the ability to generate an Audit Trail report in a neighboring tab
+* Improved the description of the Developer Tools access configuration
+
+#### Documents
+
+* Fixed an error when attempting to restore a session after a forcesave
+  and connection loss while working on a document
+* Fixed the reset of the Days remaining value in the Erasure column after
+  restoring and re-deleting a file
+* Fixed a file search error when selecting the Members - Other filter
+  for a user of type User
+* Fixed an error when resetting assigned roles in a VDR Room and starting
+  to fill it out from beginning
+* Corrected the tooltip wording when copying a link to a file or room
+* Fixed the presence of a download button for a locked file in a Public Room
+  opened via a link and in thumbnail mode
+* Fixed the display of the file lock label for users with the Editor role
+* Fixed skeleton display when quickly switching from a room to the archive
+  with a slow connection
+* Fixed the operation of the Enter key in the confirmation window when moving
+  a Room to the Archive
+* Fixed clipboard functionality in Firefox
+* Fixed downloading of a document or folder if its name contains the "#" symbol
+* Fixed the appearance of an extra window when trying to open a document
+  in the mobile version on iOS if the app is not installed
+* Improved user interaction when opening a document in the mobile version
+  with the "Open in app only" setting selected
+* Fixed navigation using the browser Back button while viewing media
+* Fixed the shift in room button highlighting when launching Take a short tour
+
+#### Accounts
+
+* Fixed an error when retrieving the list of Contacts if the sort value
+  in Local Storage was incorrect
+* Fixed the accessibility of Owner and data transfer initiator in the
+  "Choose from list" window of the Data reassignment panel
+* Fixed the display of the account list for a user whose type was changed
+  from Room Admin to DocSpace Admin and vice versa
+* Fixed the dependency of the language for resend invitation emails
+  on the portal language instead of the set Invitation language
+* Fixed the appearance of the New Rooms button in the menu when switching
+  between Rooms and Contacts with a slow connection
+* The order of the First Name and Last Name fields in the Change name
+  window now depends on the region
+* Improved the display of Social Media connect buttons in the user profile
+
+#### Server
+
+* Fixed display of the domain instead of localhost in notifications
+  about changes on the portal
+* Fixed the operation of the POST /apisystem/portal/register method
+  if a negative time zone is set on the server
+* Fixed an error applying Back up when restoring a backup of version 2.6.0
+  on version 3.1.1
+  
+#### Security
+
+* Fixed a vulnerability that allowed users with User or Guest roles to view
+  the Owner's id using the GET /api/2.0/settings/security/administrator/:productid method
+* Fixed a vulnerability that allowed viewing the Owner's profile
+  using the GET /api/2.0/portal/users/:userID method.
+* Fixed the accessibility of the PUT /api/2.0/people/:userid/contacts method.
+
+## 3.2.0
+
+### New features
+
+#### General changes
+
+* Updated the react-virtualized library to the latest version
+  used for rendering lists of files/rooms/contacts
+* Updated the react-route library to the latest version (7.5.2)
+  used for navigation
+* Added new language: sq-AL (Albanian)
+* Added caching for requests to web plugins
+* Added a link to UserVoice in the menu and a new banner
+
+#### Settings
+
+* Added settings for inviting users to the portal
+* Added the Wallet section (for SaaS only)
+* Added the Services section (for SaaS only)
+* Changed the editor logo scheme in the Branding section in connection
+  with new editor themes
+
+#### Login page
+
+* Added the ability to share guests. When selecting the "Share guest" option
+  in the Contacts/Guests section, the user receives a link to a new confirm
+  page called "GuestInviteForm"
+* The account is now automatically linked to the DocSpace account with the same
+  email address when logging in via social media
+
+#### Documents
+
+* Added support for onRequestRefreshFile. Now, if you lose Internet connection
+  or wait for a long time, the document will be updated itself,
+  without reloading the page
+* Added empty file templates for creating in the following languages: ca-ES, cs-CZ, da-DK, hu-HU, id-ID, ro-RO, sq-AL, ur-PK
+* Added scroll control from the keyboard in the new files panel
+* The logic for generating the URL for the Open file location button has been moved to the server
+
+### Fixes
+
+#### Documents
+
+* Optimized work with filters
+* Fixed errors when calculating activated filters
+* Fixed sending duplicate requests to the server when filtering a file list
+  by author or a room list by participant
+
 ## 3.1.1
 
 ### Fixes
