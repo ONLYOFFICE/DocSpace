@@ -59,13 +59,11 @@ services:
     <<: [*x-service-base, *x-service-network]
     restart: always
     ports:
-      - 80:80
       - 33060:3306
       - 9200:9200
     volumes:
       - ${VOLUMES_DIR:+${VOLUMES_DIR}/}app_data:/app/onlyoffice/data
       - ${VOLUMES_DIR:+${VOLUMES_DIR}/}log_data:/var/log/onlyoffice
-      - ./config/nginx/onlyoffice-proxy.conf:/etc/nginx/includes/onlyoffice-proxy.conf:ro
     cap_add:
       - SYS_NICE
     tty: true
@@ -102,6 +100,18 @@ services:
       start_period: 60s
       timeout: 10s      
 
+  onlyoffice-proxy:
+    <<: [*x-service-network]
+    image: nginx:latest
+    container_name: onlyoffice-proxy 
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx/conf.d/onlyoffice-proxy.conf:/etc/nginx/conf.d/default.conf
+      -  certbot:/var/www/certbot
+    depends_on:
+      - onlyoffice-docspace-services
+
 networks:
   onlyoffice:
     name: onlyoffice
@@ -110,4 +120,4 @@ networks:
 volumes:
   log_data:
   app_data:
-  os_data:
+  certbot:

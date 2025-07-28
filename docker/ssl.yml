@@ -1,0 +1,17 @@
+services:
+  onlyoffice-proxy:
+    image: nginx:stable
+    ports:
+      - "443:443"
+    volumes:
+      - ./config/nginx/ssl/conf.d/onlyoffice-proxy.conf:/etc/nginx/conf.d/default.conf
+      - ./config/nginx/ssl/letsencrypt:/etc/letsencrypt      
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./config/nginx/ssl/letsencrypt:/etc/letsencrypt
+      -  certbot:/var/www/certbot
+    networks:
+    - onlyoffice    
