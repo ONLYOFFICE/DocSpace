@@ -7,8 +7,8 @@ HTTP_PORT=8092                              # <-- Port your app listens to inter
 
 while [ "$1" != "" ]; do
     case $1 in
-        --domain )
-        	if [ "$2" != "" ]; then
+    --domain )
+    if [ "$2" != "" ]; then
 			DOMAIN=$2
 		       	shift
 		fi
@@ -21,28 +21,26 @@ while [ "$1" != "" ]; do
 		fi
 		;;
 	--port )
-                if [ "$2" != "" ]; then
-                        HTTP_PORT=$2
-                        shift
-                fi
-                ;;
+    if [ "$2" != "" ]; then
+      HTTP_PORT=$2
+      shift
+    fi
+    ;;
 	--app )
-                if [ "$2" != "" ]; then
-                        APP_IMAGE=$2
-                        shift
-                fi
-                ;;
-
-
-        -? | -h | --help )
+    if [ "$2" != "" ]; then
+      APP_IMAGE=$2
+      shift
+    fi
+    ;;
+    -? | -h | --help )
             echo "    Parameters:"
             echo "     --domain             Add your domain"
             echo "     --email              Add your email"
             echo "     --port               Add your app's port for internally"
             echo "     --app                Add your app docker service"
-	    echo "     -?, -h, --help       this help"
+      	    echo "     -?, -h, --help       this help"
             exit 0
-	    ;;
+	  ;;
 
 		* )
 			echo "Unknown parameter $1" 1>&2
@@ -75,7 +73,6 @@ MAIN_DOMAIN=$(echo "${DOMAIN_LIST[0]}" | xargs)
 SERVER_NAME=""
 DOMAIN_ARGS=""
 for domain in "${DOMAIN_LIST[@]}"; do
-  # Trim whitespace just in case
   domain=$(echo "$domain" | xargs)
   SERVER_NAME+="$domain "
   DOMAIN_ARGS+=" -d $domain"
