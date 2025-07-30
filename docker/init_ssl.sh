@@ -67,6 +67,19 @@ for dir in "${dirs[@]}"; do
   fi
 done
 
+# Preparing domain(s) config 
+IFS=',' read -ra DOMAIN_LIST <<< "$DOMAIN"
+
+MAIN_DOMAIN=$(echo "${DOMAIN_LIST[0]}" | xargs)
+
+SERVER_NAME=""
+DOMAIN_ARGS=""
+for domain in "${DOMAIN_LIST[@]}"; do
+  # Trim whitespace just in case
+  domain=$(echo "$domain" | xargs)
+  SERVER_NAME+="$domain "
+  DOMAIN_ARGS+=" -d $domain"
+done
 
 cat <<EOF > ./config/nginx/ssl/conf.d/onlyoffice-proxy.conf
 map \$http_host \$this_host {
@@ -115,7 +128,7 @@ resolver_timeout 5s;
 
 server {
     listen 80;
-    server_name ${DOMAIN};
+    server_name ${SERVER_NAME};
 
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
@@ -128,10 +141,10 @@ server {
 
 server {
     listen 443 ssl;
-    server_name ${DOMAIN};
+    server_name ${SERVER_NAME};
 
-    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${MAIN_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${MAIN_DOMAIN}/privkey.pem;
 
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
@@ -153,9 +166,10 @@ server {
 }
 EOF
 
+
 docker compose -f docker-compose.yml -f ssl.yml run --rm certbot certonly \
   --webroot --webroot-path=/var/www/certbot \
-  --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN}
+  --email ${EMAIL} --agree-tos --no-eff-email ${DOMAIN_ARGS}
 
 docker compose -f docker-compose.yml -f ssl.yml up -d onlyoffice-proxy
 docker compose restart onlyoffice-proxy
