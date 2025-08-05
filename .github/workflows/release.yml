@@ -47,6 +47,7 @@ on:
 
 jobs:
   extract-version:
+    name: Version retrieval
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.extract.outputs.version }}
@@ -59,7 +60,7 @@ jobs:
         run: |
           [[ "${BRANCH##*/}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] \
             && version="${BASH_REMATCH[0]}" || { echo "::error::Invalid version: ${BRANCH##*/} (expected vX.X.X)"; exit 1; }
-          echo "version=$version" >>"${GITHUB_OUTPUT}"
+          echo "version=$version" | tee -a "${GITHUB_OUTPUT}"
 
   trigger_docker_release:
     if: ${{ github.event.inputs.trigger_docker_release == 'true' }}
