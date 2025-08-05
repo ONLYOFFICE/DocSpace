@@ -160,15 +160,21 @@ jobs:
           cd ${{ matrix.repo }} && git fetch --quiet --all
 
           check_commits_difference(){
-            BASE=$1; FLAG=$2; LABEL=${3:-$BASE}
-            git diff --quiet origin/"${BASE}" origin/${{ github.event.inputs.branch }} \
-              && echo "::warning::No changes between '${BASE}' and '${{ github.event.inputs.branch }}'. Skipping ${LABEL} PR." \
-              && echo "${FLAG}=true" >> $GITHUB_ENV
+            HEAD=$1; BASE=$2; FLAG=${3}
+            COMMITS=$(git log origin/${BASE}..origin/${HEAD} --oneline)
+            if [ -z "$COMMITS" ]; then
+              echo "::warning::No changes between '${HEAD}' and '${BASE}'. Skipping PR."
+              echo "${FLAG}=true" >> $GITHUB_ENV
+            fi
           }
 
-          check_commits_difference "${{ github.event.inputs.target_branch }}" SKIP_PR
-          [[ "${{ github.event.inputs.develop }}" == "true" ]] && check_commits_difference develop SKIP_PR_DEVELOP
-          [ -n "${{ env.CHANGELOG_BRANCH }}" ] && check_commits_difference "${{ env.CHANGELOG_BRANCH }}" SKIP_PR_CHANGELOG
+          check_commits_difference "${{ github.event.inputs.branch }}" "${{ github.event.inputs.target_branch }}" "SKIP_PR"
+          if [[ "${{ github.event.inputs.develop }}" == "true" ]]; then
+            check_commits_difference "${{ github.event.inputs.branch }}" "develop" "SKIP_PR_DEVELOP"
+          fi
+          if [[ -n "${{ env.CHANGELOG_BRANCH }}" ]]; then
+            check_commits_difference "${{ env.CHANGELOG_BRANCH }}" "${{ github.event.inputs.target_branch }}" "SKIP_PR_CHANGELOG"
+          fi
 
       - name: Create Pull Request
         if: ${{ env.SKIP_PR != 'true' }}
