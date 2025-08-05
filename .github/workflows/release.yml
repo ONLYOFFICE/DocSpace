@@ -7,6 +7,11 @@ on:
         description: 'Release branch'
         required: true
         default: 'release/vX.X.X'
+      delete_branch:
+        type: boolean
+        description: 'Delete release branch'
+        required: true
+        default: true
       target_branch:
         description: 'Target branch'
         required: true
@@ -387,7 +392,7 @@ jobs:
   delete-branch:
     name: Delete release branch
     needs: [trigger_docker_release, trigger_packages_release, release, notify]
-    if: ${{ success() }}
+    if: ${{ github.event.inputs.delete_branch == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
