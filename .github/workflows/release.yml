@@ -143,15 +143,16 @@ jobs:
         run: |
           check_branch(){
             GIT_OUTPUT=$(git ls-remote --heads "https://${{ secrets.GITEA_TOKEN }}@${{ secrets.GITEA_HOST }}/${{ github.repository_owner }}/${{ matrix.repo }}" "refs/heads/${1%\*}*")
-            [[ -z ${GIT_OUTPUT} ]] && { echo "::error::Branch '$1' does not exist in repository ${{ matrix.repo }}"; [[ $1 == changelog/* ]] && return 0 || exit 1; }
-            BRANCH_NAME=$(awk '{ sub("refs\/heads\/","",$2); print $2 }' <<<"$GIT_OUTPUT")
+            [[ -z ${GIT_OUTPUT} ]] && { echo "::error::Branch '$1' does not exist in repository ${{ matrix.repo }}"; [[ $1 == changelog/* ]] && return 0 || return 1; }
+            BRANCH_NAME=$(awk '{ sub("refs/heads/","",$2); print $2 }' <<<"$GIT_OUTPUT" | sort -V | tail -n1)
             echo "Branch $BRANCH_NAME found"
-            [[ $1 == changelog/* ]] && echo "CHANGELOG_BRANCH=${BRANCH_NAME}" >> "$GITHUB_ENV"
+            [[ ${1} == changelog/* ]] && echo "CHANGELOG_BRANCH=${BRANCH_NAME}" >> "$GITHUB_ENV" || true
           }
-          check_branch "${{ github.event.inputs.target_branch }}"
-          check_branch "${{ github.event.inputs.branch }}"
-          [ "${{ github.event.inputs.develop }}" = "true" ] && check_branch develop
-          [ "${{ matrix.repo }}" = "DocSpace" ] && check_branch 'changelog/*'
+
+          check_branch "${{ github.event.inputs.target_branch }}" || exit 1
+          check_branch "${{ github.event.inputs.branch }}" || exit 1
+          [ "${{ github.event.inputs.develop }}" = "true" ] && { check_branch develop || exit 1; } || true
+          [ "${{ matrix.repo }}" = "DocSpace" ] && check_branch 'changelog/*' || true
 
       - name: Check commits difference
         run: |
