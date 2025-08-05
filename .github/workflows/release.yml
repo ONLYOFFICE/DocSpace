@@ -3,10 +3,6 @@ name: Release Action
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Release branch'
-        required: true
-        default: 'release/vX.X.X'
       delete_branch:
         type: boolean
         description: 'Delete release branch'
@@ -36,7 +32,7 @@ on:
         required: true
         default: true
       package_build_numbers:
-        description: 'deb/rpm/exe package build numbers (with /)'
+        description: 'deb/rpm/exe package build numbers'
         required: true
         default: 'DEB/RPM/EXE'
       trigger_notify:
@@ -56,11 +52,20 @@ jobs:
         name: Extract & validate version
         shell: bash
         env:
-          BRANCH: ${{ github.event.inputs.branch }}
+          BRANCH: ${{ github.ref_name }}
         run: |
-          [[ "${BRANCH##*/}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] \
-            && version="${BASH_REMATCH[0]}" || { echo "::error::Invalid version: ${BRANCH##*/} (expected vX.X.X)"; exit 1; }
-          echo "version=$version" | tee -a "${GITHUB_OUTPUT}"
+          if [[ "${BRANCH}" == "master" || "${BRANCH}" == "develop" ]]; then
+            echo "::error::Please use a release branch (e.g., release/1.2.3) for this workflow"
+            exit 1
+          fi
+          if [[ "${BRANCH##*/}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            version="${BASH_REMATCH[0]}"
+          else
+            echo "::error::Invalid version: ${BRANCH##*/} (expected vX.X.X)"
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
   trigger_docker_release:
     if: ${{ github.event.inputs.trigger_docker_release == 'true' }}
@@ -129,6 +134,7 @@ jobs:
   create_and_merge_pr:
     name: Create/merge PRs ${{ matrix.repo }}
     runs-on: ubuntu-latest
+    needs: extract-version
     strategy:
       matrix:
         repo: [ "DocSpace", "DocSpace-buildtools", "DocSpace-client", "DocSpace-server" ]
@@ -150,7 +156,7 @@ jobs:
           }
 
           check_branch "${{ github.event.inputs.target_branch }}" || exit 1
-          check_branch "${{ github.event.inputs.branch }}" || exit 1
+          check_branch "${{ github.ref_name }}" || exit 1
           check_branch develop || exit 1
           [ "${{ matrix.repo }}" = "DocSpace" ] && check_branch 'changelog/*' || true
 
@@ -168,8 +174,8 @@ jobs:
             fi
           }
 
-          check_commits_difference "${{ github.event.inputs.branch }}" "${{ github.event.inputs.target_branch }}" "SKIP_PR"
-          check_commits_difference "${{ github.event.inputs.branch }}" "develop" "SKIP_PR_DEVELOP"
+          check_commits_difference "${{ github.ref_name }}" "${{ github.event.inputs.target_branch }}" "SKIP_PR"
+          check_commits_difference "${{ github.ref_name }}" "develop" "SKIP_PR_DEVELOP"
           if [[ -n "${{ env.CHANGELOG_BRANCH }}" ]]; then
             check_commits_difference "${{ env.CHANGELOG_BRANCH }}" "${{ github.event.inputs.target_branch }}" "SKIP_PR_CHANGELOG"
           fi
@@ -197,8 +203,8 @@ jobs:
             fi
           }
 
-          [[ "${{ env.SKIP_PR }}" != "true" ]] && create_pr "${{ github.event.inputs.branch }}" "${{ github.event.inputs.target_branch }}"
-          [[ "${{ env.SKIP_PR_DEVELOP }}" != "true" ]] && create_pr "${{ github.event.inputs.branch }}" develop
+          [[ "${{ env.SKIP_PR }}" != "true" ]] && create_pr "${{ github.ref_name }}" "${{ github.event.inputs.target_branch }}"
+          [[ "${{ env.SKIP_PR_DEVELOP }}" != "true" ]] && create_pr "${{ github.ref_name }}" develop
           if [[ -n "${{ env.CHANGELOG_BRANCH }}" && "${{ env.SKIP_PR_CHANGELOG }}" != "true" ]]; then
             create_pr "${{ env.CHANGELOG_BRANCH }}" "${{ github.event.inputs.target_branch }}"
           fi
@@ -238,8 +244,8 @@ jobs:
             fi
           }
 
-          [[ "${{ env.SKIP_PR }}" != "true" ]] && merge "${{ github.event.inputs.branch }}" "${{ github.event.inputs.target_branch }}"
-          [[ "${{ env.SKIP_PR_DEVELOP }}" != "true" ]] && merge "${{ github.event.inputs.branch }}" develop
+          [[ "${{ env.SKIP_PR }}" != "true" ]] && merge "${{ github.ref_name }}" "${{ github.event.inputs.target_branch }}"
+          [[ "${{ env.SKIP_PR_DEVELOP }}" != "true" ]] && merge "${{ github.ref_name }}" develop
           if [[ -n "${{ env.CHANGELOG_BRANCH }}" && "${{ env.SKIP_PR_CHANGELOG }}" != "true" ]]; then
             merge "${{ env.CHANGELOG_BRANCH }}" "${{ github.event.inputs.target_branch }}"
           fi
@@ -279,7 +285,7 @@ jobs:
               for BASE in "${BASE_BRANCHES[@]}"; do
                 PR_JSON=$(tea pr list --login ${{ secrets.GITEA_HOST }} --repo ${{ github.repository_owner }}/${REPO} \
                   --state all --fields head,base,state,url --output json \
-                  | jq -c --arg head "${{ github.event.inputs.branch }}" --arg base "${BASE}" \
+                  | jq -c --arg head "${{ github.ref_name }}" --arg base "${BASE}" \
                   '[.[]|select(.head==$head and .base==$base)] | if length>0 then .[0] else {state: "not_found", url: ""} end')
                 PR_STATE=$(echo "${PR_JSON}" | jq -r '.state') 
 
@@ -363,7 +369,7 @@ jobs:
             STATUS+=$'\n'"${EMOJI} [${REPO}](${{ github.server_url }}/${{ github.repository_owner }}/${REPO})"
           done
 
-          MESSAGE="\[${SUCCESS:-0}/$(echo $REPOS | wc -w)] ${{ github.event.inputs.branch }} → ${{ github.event.inputs.target_branch }} ${STATUS}"
+          MESSAGE="\[${SUCCESS:-0}/$(echo $REPOS | wc -w)] ${{ github.ref_name }} → ${{ github.event.inputs.target_branch }} ${STATUS}"
           if ${{ github.event.inputs.trigger_docker_release == 'true' }} || ${{ github.event.inputs.trigger_packages_release == 'true' }}; then
             MESSAGE+=$'\n'$'\n''Releases: '
             if ${{ github.event.inputs.trigger_docker_release == 'true' }}; then
@@ -400,7 +406,7 @@ jobs:
     steps:
       - name: Delete release branch
         env:
-          BRANCH: ${{ github.event.inputs.branch }}
+          BRANCH: ${{ github.ref_name }}
         run: |
           GITEA_API_URL="https://${{ secrets.GITEA_HOST }}/api/v1/repos/${{ github.repository_owner }}/${{ matrix.repo }}/branches/${BRANCH//\//%2F}"
           if curl -sfH "Authorization: token ${{ secrets.GITEA_TOKEN }}" "${GITEA_API_URL}" -o /dev/null; then
