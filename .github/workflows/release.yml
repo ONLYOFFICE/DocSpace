@@ -177,25 +177,35 @@ jobs:
           fi
 
       - name: Create Pull Request
-        if: ${{ env.SKIP_PR != 'true' }}
+        if: ${{ env.SKIP_PR != 'true' || env.SKIP_PR_DEVELOP != 'true' || env.SKIP_PR_CHANGELOG != 'true' }}
         run: |
-          BRANCHES=("${{ github.event.inputs.target_branch }}")
-          [[ "${{ github.event.inputs.develop }}" == "true" && "${{ env.SKIP_PR_DEVELOP }}" != "true" ]] && BRANCHES+=("develop")
-          [[ -n "${{ env.CHANGELOG_BRANCH }}" && "${{ env.SKIP_PR_CHANGELOG }}" != "true" ]] && BRANCHES+=("${{ env.CHANGELOG_BRANCH }}")
-          for BRANCH in "${BRANCHES[@]}"; do
-            PR_NUMBER=$(tea pr list --login ${{ secrets.GITEA_HOST }} --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
-              --state open --fields index,head,base --output json \
-              | jq -r '.[] | select(.head=="${{ github.event.inputs.branch }}" and .base=="${BRANCH}") | .index')
+          REPO="${{ github.repository_owner }}/${{ matrix.repo }}"
 
-            if [[ -n "$PR_NUMBER" ]]; then
-              echo "Pull request #$PR_NUMBER already exists in ${{ matrix.repo }}"
+          create_pr() {
+            local HEAD="$1" BASE="$2"
+            echo ">>> Creating PR: head='${HEAD}' → base='${BASE}'"
+
+            EXISTING=$(tea pr list --login "${{ secrets.GITEA_HOST }}" \
+              --repo "${REPO}" --state open --fields index,head,base --output json \
+              | jq -r --arg H "${HEAD}" --arg B "${BASE}" '.[] | select(.head == $H and .base == $B) | .index')
+
+            if [[ -n "${EXISTING}" ]]; then
+              echo "→ PR #${EXISTING} already exists for ${HEAD} → ${BASE}."
             else
-              tea pr create --repo ${{ github.repository_owner }}/${{ matrix.repo }} \
-                --base ${BRANCH} --head ${{ github.event.inputs.branch }} \
-                -t "Merge ${{ github.event.inputs.branch }} into ${BRANCH}" \
-                -d "Automatically created by Release Action"
+              tea pr create --repo "${REPO}" --base "${BASE}" --head "${HEAD}" \
+                -t "Merge ${HEAD} into ${BASE}" \
+                -d "Automatically created by Release Action" \
+                || echo "::error:: Failed to create PR for ${HEAD} → ${BASE}"
             fi
-          done
+          }
+
+          [[ "${{ env.SKIP_PR }}" != "true" ]] && create_pr "${{ github.event.inputs.branch }}" "${{ github.event.inputs.target_branch }}"
+          if [[ "${{ github.event.inputs.develop }}" == "true"  && "${{ env.SKIP_PR_DEVELOP }}" != "true" ]]; then
+            create_pr "${{ github.event.inputs.branch }}" develop
+          fi
+          if [[ -n "${{ env.CHANGELOG_BRANCH }}" && "${{ env.SKIP_PR_CHANGELOG }}" != "true" ]]; then
+            create_pr "${{ env.CHANGELOG_BRANCH }}" "${{ github.event.inputs.target_branch }}"
+          fi
 
       - name: Auto merge Pull Request
         if: ${{ env.SKIP_PR != 'true' }}
