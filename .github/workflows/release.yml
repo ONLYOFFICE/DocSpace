@@ -409,11 +409,11 @@ jobs:
           BRANCH: ${{ github.event.inputs.branch }}
         run: |
           GITEA_API_URL="https://${{ secrets.GITEA_HOST }}/api/v1/repos/${{ github.repository_owner }}/${{ matrix.repo }}/branches/${BRANCH//\//%2F}"
-          if curl -sf -H "Authorization: token ${{ secrets.GITEA_TOKEN }}" "${GITEA_API_URL}"; then
+          if curl -sfH "Authorization: token ${{ secrets.GITEA_TOKEN }}" "${GITEA_API_URL}" -o /dev/null; then
             if curl -sf -X DELETE -H "Authorization: token ${{ secrets.GITEA_TOKEN }}" "${GITEA_API_URL}"; then
               echo "Branch '${BRANCH}' successfully deleted in ${{ matrix.repo }}."
             else
-              echo "Error deleting branch in ${{ matrix.repo }}: HTTP status $(curl -s -o /dev/null -w '%{http_code}' -X DELETE -H \"Authorization: token ${{ secrets.GITEA_TOKEN }}\" \"${GITEA_API_URL}\")" >&2 && exit 1
+              echo "::error:: Error deleting branch in ${{ matrix.repo }}: HTTP status $(curl -s -o /dev/null -w '%{http_code}' -X DELETE -H \"Authorization: token ${{ secrets.GITEA_TOKEN }}\" \"${GITEA_API_URL}\")" >&2 && exit 1
             fi
           else
             echo "::warning:: Branch '${BRANCH}' not found in ${{ matrix.repo }}." >&2 && exit 1
