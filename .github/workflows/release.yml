@@ -11,11 +11,6 @@ on:
         description: 'Target branch'
         required: true
         default: 'master'
-      develop:
-        type: boolean
-        description: 'Merge release branch into develop'
-        required: true
-        default: true
       trigger_release:
         type: boolean
         description: 'GitHub Release'
@@ -151,7 +146,7 @@ jobs:
 
           check_branch "${{ github.event.inputs.target_branch }}" || exit 1
           check_branch "${{ github.event.inputs.branch }}" || exit 1
-          [ "${{ github.event.inputs.develop }}" = "true" ] && { check_branch develop || exit 1; } || true
+          check_branch develop || exit 1
           [ "${{ matrix.repo }}" = "DocSpace" ] && check_branch 'changelog/*' || true
 
       - name: Check commits difference
@@ -169,9 +164,7 @@ jobs:
           }
 
           check_commits_difference "${{ github.event.inputs.branch }}" "${{ github.event.inputs.target_branch }}" "SKIP_PR"
-          if [[ "${{ github.event.inputs.develop }}" == "true" ]]; then
-            check_commits_difference "${{ github.event.inputs.branch }}" "develop" "SKIP_PR_DEVELOP"
-          fi
+          check_commits_difference "${{ github.event.inputs.branch }}" "develop" "SKIP_PR_DEVELOP"
           if [[ -n "${{ env.CHANGELOG_BRANCH }}" ]]; then
             check_commits_difference "${{ env.CHANGELOG_BRANCH }}" "${{ github.event.inputs.target_branch }}" "SKIP_PR_CHANGELOG"
           fi
@@ -200,9 +193,7 @@ jobs:
           }
 
           [[ "${{ env.SKIP_PR }}" != "true" ]] && create_pr "${{ github.event.inputs.branch }}" "${{ github.event.inputs.target_branch }}"
-          if [[ "${{ github.event.inputs.develop }}" == "true"  && "${{ env.SKIP_PR_DEVELOP }}" != "true" ]]; then
-            create_pr "${{ github.event.inputs.branch }}" develop
-          fi
+          [[ "${{ env.SKIP_PR_DEVELOP }}" != "true" ]] && create_pr "${{ github.event.inputs.branch }}" develop
           if [[ -n "${{ env.CHANGELOG_BRANCH }}" && "${{ env.SKIP_PR_CHANGELOG }}" != "true" ]]; then
             create_pr "${{ env.CHANGELOG_BRANCH }}" "${{ github.event.inputs.target_branch }}"
           fi
@@ -243,9 +234,7 @@ jobs:
           }
 
           [[ "${{ env.SKIP_PR }}" != "true" ]] && merge "${{ github.event.inputs.branch }}" "${{ github.event.inputs.target_branch }}"
-          if [[ "${{ github.event.inputs.develop }}" == "true"  && "${{ env.SKIP_PR_DEVELOP }}" != "true" ]]; then
-            merge "${{ github.event.inputs.branch }}" develop
-          fi
+          [[ "${{ env.SKIP_PR_DEVELOP }}" != "true" ]] && merge "${{ github.event.inputs.branch }}" develop
           if [[ -n "${{ env.CHANGELOG_BRANCH }}" && "${{ env.SKIP_PR_CHANGELOG }}" != "true" ]]; then
             merge "${{ env.CHANGELOG_BRANCH }}" "${{ github.event.inputs.target_branch }}"
           fi
@@ -275,7 +264,7 @@ jobs:
           echo "Waiting for PR merges in all repositories..."
           BASE_BRANCHES=(
             $( [[ "${{ env.SKIP_PR }}" != "true" ]] && echo "${{ github.event.inputs.target_branch }}" )
-            $( [[ "${{ github.event.inputs.develop }}" == "true" ]] && echo "develop" )
+            $( [[ "${{ env.SKIP_PR_DEVELOP }}" != "true" ]] && echo "develop" )
           )
           while :; do
             MERGED=0
