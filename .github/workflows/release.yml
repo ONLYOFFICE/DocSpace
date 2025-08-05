@@ -273,26 +273,28 @@ jobs:
           REPOS: "DocSpace DocSpace-client DocSpace-server DocSpace-buildtools"
         run: |
           echo "Waiting for PR merges in all repositories..."
-          BRANCHES=("${{ github.event.inputs.target_branch }}")
-          [[ "${{ github.event.inputs.develop }}" == "true" ]] && BRANCHES+=("develop")
-          TOTAL=$(( $(set -- ${REPOS}; echo $#) * ${#BRANCHES[@]} ))
+          BASE_BRANCHES=(
+            $( [[ "${{ env.SKIP_PR }}" != "true" ]] && echo "${{ github.event.inputs.target_branch }}" )
+            $( [[ "${{ github.event.inputs.develop }}" == "true" ]] && echo "develop" )
+          )
           while :; do
             MERGED=0
+            TOTAL=$(( $(set -- ${REPOS}; echo $#) * ${#BASE_BRANCHES[@]} ))
             for REPO in ${REPOS}; do
-              for BRANCH in "${BRANCHES[@]}"; do
+              echo "├ ${REPO}"
+              for BASE in "${BASE_BRANCHES[@]}"; do
                 PR_JSON=$(tea pr list --login ${{ secrets.GITEA_HOST }} --repo ${{ github.repository_owner }}/${REPO} \
                   --state all --fields head,base,state,url --output json \
-                  | jq -c --arg head "${{ github.event.inputs.branch }}" --arg base "${BRANCH}" \
+                  | jq -c --arg head "${{ github.event.inputs.branch }}" --arg base "${BASE}" \
                   '[.[]|select(.head==$head and .base==$base)] | if length>0 then .[0] else {state: "not_found", url: ""} end')
                 PR_STATE=$(echo "${PR_JSON}" | jq -r '.state') 
 
-                echo "[${REPO}:${BRANCH}] PR status: ${PR_STATE}"
-                [[ "${PR_STATE}" == merged || "${PR_STATE}" == closed ]] && MERGED=$((MERGED + 1))
+                [[ "${PR_STATE}" == merged || "${PR_STATE}" == "closed" ]] && { MERGED=$((MERGED + 1)); echo "│  ├ ${BASE} ✅ ${PR_STATE}"; } || { echo "│  ├ ${BASE} ❌ ${PR_STATE}"; }
                 [ "${PR_STATE}" = "not_found" ] && TOTAL=$(( TOTAL - 1 ));
               done
             done
-            printf '%.0s-' {1..48}; echo
             [ "${MERGED}" -eq "${TOTAL}" ] && break || echo "${MERGED}/${TOTAL} PR(s) merged. Waiting for the rest..."
+            printf '%.0s-' {1..48}; echo
             sleep 5
           done
 
