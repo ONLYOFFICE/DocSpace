@@ -100,6 +100,7 @@ RUN mkdir -p /var/log/onlyoffice && \
     apt-get install -yq \
         sudo \
         adduser \
+        dos2unix \
         nano \
         git \
         wget \
@@ -425,7 +426,9 @@ RUN chown -R onlyoffice:onlyoffice /etc/nginx/ && \
     #chown -R onlyoffice:onlyoffice /var/www  
 
 WORKDIR  /
-RUN chmod +x *.sh
+RUN dos2unix /docker-entrypoint.d/* && chmod +x /docker-entrypoint.d/* && \
+    dos2unix /nginx/*.sh && chmod +x *.sh && \ 
+    dos2unix *.sh && chmod +x *.sh 
 
 EXPOSE 5032 5010 5027 5012 5007 5009 5005 5004 5006 5000 5003 5033 5099 5013 5011 9899 9834 8092 3306 6379 5672 9200 9600 5601 8080 9090
 

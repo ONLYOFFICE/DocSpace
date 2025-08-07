@@ -1,0 +1,26 @@
+# files use LF
+* text=auto eol=lf
+
+# scripts use LF
+*.sh text eol=lf
+*.py text eol=lf
+*.bash text eol=lf
+
+# Dockerfiles use LF
+Dockerfile* text eol=lf
+
+# YAML/JSON/Config files use LF
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.conf text eol=lf
+
+
+# Git-related files use LF
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# ========== Binary Files (No Line Ending Conversion) ==========
+*.png binary
+*.jpg binary
+*.zip binary
