@@ -304,6 +304,8 @@ COPY --from=build ${SRC_PATH}/plugins ${SRC_PATH}/plugins
 WORKDIR ${SRC_PATH}/buildtools/install/common
 COPY ./buildtools/install/common/plugins-build.sh ./plugins-build.sh
 RUN echo "--- build/publish plugins ---" && \
+    apt-get update && apt-get install -y dos2unix && \
+    dos2unix *.sh && \
     bash plugins-build.sh "${SRC_PATH}/plugins"
 
 #----------------------------------
