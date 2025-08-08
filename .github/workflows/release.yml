@@ -198,7 +198,7 @@ jobs:
             else
               tea pr create --repo "${REPO}" --base "${BASE}" --head "${HEAD}" \
                 -t "Merge ${HEAD} into ${BASE}" \
-                -d "Automatically created by Release Action" \
+                --description "Automatically created by Release Action" \
                 || echo "::error:: Failed to create PR for ${HEAD} → ${BASE}"
             fi
           }
@@ -214,7 +214,7 @@ jobs:
         run: |
           REPO="${{ github.repository_owner }}/${{ matrix.repo }}"
           merge() {
-            HEAD="$1"; BASE="$2"
+            HEAD="$1"; BASE="$2"; MERGE_STYLE="${3:-merge}"
             echo ">>> Processing PR: head='$HEAD' → base='${BASE}' in ${REPO}"
             PR_NUMBER=$(timeout 60 bash -c "
               while :; do
@@ -236,9 +236,8 @@ jobs:
               | jq -r ".[] | select(.index==${PR_NUMBER}) | .mergeable")
 
             if [[ "$MERGEABLE" == "true" ]]; then
-              tea pr merge --repo "${REPO}" \
-                -t "Merge $HEAD into $BASE" "$PR_NUMBER" \
-                || echo "::error:: Failed to merge PR #$PR_NUMBER"
+              tea pr merge --repo "${REPO}" --style "${MERGE_STYLE}" --title  "Merge ${HEAD} into ${BASE}" "${PR_NUMBER}" \
+                || echo "::error:: Failed to merge PR #${PR_NUMBER} for ${HEAD} → ${BASE}"
             else
               echo "::warning:: PR #$PR_NUMBER is not mergeable or has conflicts."
             fi
@@ -247,7 +246,7 @@ jobs:
           [[ "${{ env.SKIP_PR }}" != "true" ]] && merge "${{ github.ref_name }}" "${{ github.event.inputs.target_branch }}"
           [[ "${{ env.SKIP_PR_DEVELOP }}" != "true" ]] && merge "${{ github.ref_name }}" develop
           if [[ -n "${{ env.CHANGELOG_BRANCH }}" && "${{ env.SKIP_PR_CHANGELOG }}" != "true" ]]; then
-            merge "${{ env.CHANGELOG_BRANCH }}" "${{ github.event.inputs.target_branch }}"
+            merge "${{ env.CHANGELOG_BRANCH }}" "${{ github.event.inputs.target_branch }}" "squash"
           fi
 
   release:
