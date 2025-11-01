@@ -244,7 +244,7 @@ jobs:
 
             MERGEABLE=$(tea pr list --login "${{ secrets.GITEA_HOST }}" --repo "${REPO}" \
               --state all --fields index,mergeable --output json \
-              | jq -r ".[] | select(.index==${PR_NUMBER}) | .mergeable")
+              | jq -r --arg PR "$PR_NUMBER" '.[] | select(.index==$PR) | .mergeable')
 
             if [[ "$MERGEABLE" == "true" ]]; then
               tea pr merge --repo "${REPO}" --style "${MERGE_STYLE}" --title  "Merge ${HEAD} into ${BASE}" "${PR_NUMBER}" \
