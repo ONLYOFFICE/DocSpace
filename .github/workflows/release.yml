@@ -429,11 +429,15 @@ jobs:
         run: |
           GITEA_API_URL="https://${{ secrets.GITEA_HOST }}/api/v1/repos/${{ github.repository_owner }}/${{ matrix.repo }}/branches/${BRANCH//\//%2F}"
           if curl -sfH "Authorization: token ${{ secrets.GITEA_TOKEN }}" "${GITEA_API_URL}" -o /dev/null; then
-            if curl -sf -X DELETE -H "Authorization: token ${{ secrets.GITEA_TOKEN }}" "${GITEA_API_URL}"; then
+            RESPONSE=$(curl -s -w "%{http_code}" -o /tmp/delete_branch.json \
+              -X DELETE -H "Authorization: token ${{ secrets.GITEA_TOKEN }}" "${GITEA_API_URL}")
+
+            if [ "$RESPONSE" = "204" ]; then
               echo "Branch '${BRANCH}' successfully deleted in ${{ matrix.repo }}."
             else
-              echo "::error:: Error deleting branch in ${{ matrix.repo }}: HTTP status $(curl -s -o /dev/null -w '%{http_code}' -X DELETE -H \"Authorization: token ${{ secrets.GITEA_TOKEN }}\" \"${GITEA_API_URL}\")" >&2 && exit 1
+              MESSAGE=$(jq -r '.message // empty' /tmp/delete_branch.json 2>/dev/null)
+              echo "::error:: Failed to delete branch '${BRANCH}' in ${{ matrix.repo }} (HTTP $RESPONSE): ${MESSAGE:-Unknown error}" >&2
             fi
           else
-            echo "::warning:: Branch '${BRANCH}' not found in ${{ matrix.repo }}." >&2 && exit 1
+            echo "::warning:: Branch '${BRANCH}' not found in ${{ matrix.repo }}." >&2
           fi
