@@ -201,7 +201,7 @@ jobs:
             if [[ -n "${EXISTING}" ]]; then
               echo "→ PR #${EXISTING} already exists for ${HEAD} → ${BASE}."
             else
-              tea pr create --repo "${REPO}" --base "${BASE}" --head "${HEAD}" \
+              tea pr create --login "${{ secrets.GITEA_HOST }}" --repo "${REPO}" --base "${BASE}" --head "${HEAD}" \
                 -t "Merge ${HEAD} into ${BASE}" \
                 --description "Automatically created by Release Action" \
                 || echo "::error:: Failed to create PR for ${HEAD} → ${BASE}"
@@ -247,7 +247,7 @@ jobs:
               | jq -r --arg PR "$PR_NUMBER" '.[] | select(.index==$PR) | .mergeable')
 
             if [[ "$MERGEABLE" == "true" ]]; then
-              tea pr merge --repo "${REPO}" --style "${MERGE_STYLE}" --title  "Merge ${HEAD} into ${BASE}" "${PR_NUMBER}" \
+              tea pr merge --login "${{ secrets.GITEA_HOST }}" --repo "${REPO}" --style "${MERGE_STYLE}" --title  "Merge ${HEAD} into ${BASE}" "${PR_NUMBER}" \
                 || echo "::error:: Failed to merge PR #${PR_NUMBER} for ${HEAD} → ${BASE}"
             else
               echo "::warning:: PR #$PR_NUMBER is not mergeable or has conflicts."
