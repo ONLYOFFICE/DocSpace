@@ -87,7 +87,7 @@ jobs:
             --jq '.workflows[] | select(.path == ".github/workflows/release-docspace.yaml") | .id')
 
           gh api /repos/${{ github.repository }}-buildtools/actions/workflows/${WORKFLOW_ID}/dispatches -X POST \
-            -f "ref=${{ github.ref_name }}" -f "inputs[release_version]=${DOCKER_VERSION}" -f "inputs[source_version]=${VERSION}.${{ github.event.inputs.docker_version }}"
+            -f "ref=${{ github.ref_name }}" -f "inputs[release_version]=${DOCKER_VERSION}" -f "inputs[source_version]=${VERSION#v}.${{ github.event.inputs.docker_version }}"
 
           until [ -n "${DOCKER_RUN_ID}" ]; do
             DOCKER_RUN_ID=$(gh api repos/${{ github.repository }}-buildtools/actions/runs \
