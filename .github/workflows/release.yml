@@ -388,7 +388,7 @@ jobs:
             STATUS+=$'\n'"${EMOJI} [${REPO}](${{ github.server_url }}/${{ github.repository_owner }}/${REPO})"
           done
 
-          MESSAGE="\[${SUCCESS:-0}/$(echo $REPOS | wc -w)] ${{ github.ref_name }} → ${{ github.event.inputs.target_branch }} ${STATUS}"
+          MESSAGE="\[${SUCCESS:-0}/$(echo $REPOS | wc -w)] ${{ github.ref_name }} → ${{ github.event.inputs.target_branches }} ${STATUS}"
           if ${{ github.event.inputs.trigger_docker_release == 'true' }} || ${{ github.event.inputs.trigger_packages_release == 'true' }}; then
             MESSAGE+=$'\n'$'\n''Releases: '
             if ${{ github.event.inputs.trigger_docker_release == 'true' }}; then
