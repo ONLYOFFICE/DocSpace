@@ -71,7 +71,7 @@ jobs:
     if: ${{ github.event.inputs.trigger_docker_release == 'true' }}
     name: Trigger Docker release
     runs-on: ubuntu-latest
-    needs: extract-version
+    needs: release
     outputs:
       docker_run_id: ${{ steps.docker_release.outputs.docker_run_id }}
     env:
@@ -101,7 +101,7 @@ jobs:
     if: ${{ github.event.inputs.trigger_packages_release == 'true' }}
     name: Trigger Packages release
     runs-on: ubuntu-latest
-    needs: extract-version
+    needs: release
     outputs:
       deb_build_number: ${{ steps.package_release.outputs.deb_build_number }}
       rpm_build_number: ${{ steps.package_release.outputs.rpm_build_number }}
