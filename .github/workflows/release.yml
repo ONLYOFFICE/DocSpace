@@ -18,9 +18,9 @@ on:
         required: true
         default: true
       docker_version:
-        description: 'Source Docker version'
+        description: 'Source Docker build number'
         required: true
-        default: 'XXXX'
+        default: 'XXXX (build number)'
       trigger_packages_release:
         type: boolean
         description: 'Packages release'
