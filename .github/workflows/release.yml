@@ -114,10 +114,12 @@ jobs:
       - name: Trigger Packages release
         id: package_release
         run: |
-          declare -A NUM; IFS='/' read -r NUM[deb] NUM[rpm] NUM[exe] <<< "${{ github.event.inputs.package_build_numbers }}"
+          declare -A NUM; IFS='/' read -r -a A <<< ""${{ github.event.inputs.package_build_numbers }}""; NUM=([deb]="${A[0]}" [rpm]="${A[1]}" [exe]="${A[2]}")
 
           for TYPE in deb rpm exe; do
             BUILD_NUM=${NUM[${TYPE}]}
+            [[ -z "${BUILD_NUM//[[:space:]]/}" || "$BUILD_NUM" == 0 || "$BUILD_NUM" == "none" ]] && { echo "::warning::[${TYPE}] BUILD_NUM is empty/0/none/spaces, skip"; continue; }
+            
             PUBLISH_JOB=$([ "$TYPE" = "exe" ] && echo "production.docspace.${TYPE}.publish" || echo "production.${TYPE}.publish")
 
             curl -s -S -X POST -H "Content-Length: 0" -u "${JENKINS_TOKEN}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/toggleLogKeep" -o /dev/null
