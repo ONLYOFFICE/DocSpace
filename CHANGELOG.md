@@ -1,5 +1,469 @@
 # Change log
 
+## 3.2.1
+
+### New features
+
+#### General changes
+
+* The ability to rename the portal is now only available on Business plans
+
+#### Documents
+
+* Added support for .pages, .numbers, .key, .hwp, .hwpx, .odg, .md formats
+* Added support for opening Diagram-type documents: .vsdx, .vssx, .vstx,
+  .vsdm, .vssm, .vstm
+* Favicons updated and improved
+* Starter documents updated in some languages
+
+#### Settings
+
+* Added the ability to hide the advertising block in Ad Management
+  (for commercial builds of DocSpace Server only)
+* The Payer is now determining via API only through portal/payment/customerinfo,
+  and information about the payer is returned immediately
+* Purchasing administrators during the Grace Period now requires adding
+  a payment method
+* The recommended payment has been removed from the top-up dialog
+  when downgrading a plan
+* Added Apply and Clear buttons to the Wallet filter in the mobile version
+
+### Fixes
+
+#### Settings
+
+* Fixed the ability to perform Backup when the data limit is exceeded
+ on the portal
+* Fixed an infinite process of creating a Backup file in Amazon AWS S3
+  if the Region or Bucket is specified incorrectly
+* Fixed an error when accessing Developer Tools under Room Admin if the section
+  is hidden from User-type users
+* Fixed the operation of the GET /api/2.0/keys/@self method if Permissions
+  other than All are selected when creating the key
+* Fixed the ability to generate an Audit Trail report in a neighboring tab
+* Improved the description of the Developer Tools access configuration
+
+#### Documents
+
+* Fixed an error when attempting to restore a session after a forcesave
+  and connection loss while working on a document
+* Fixed the reset of the Days remaining value in the Erasure column after
+  restoring and re-deleting a file
+* Fixed a file search error when selecting the Members - Other filter
+  for a user of type User
+* Fixed an error when resetting assigned roles in a VDR Room and starting
+  to fill it out from beginning
+* Corrected the tooltip wording when copying a link to a file or room
+* Fixed the presence of a download button for a locked file in a Public Room
+  opened via a link and in thumbnail mode
+* Fixed the display of the file lock label for users with the Editor role
+* Fixed skeleton display when quickly switching from a room to the archive
+  with a slow connection
+* Fixed the operation of the Enter key in the confirmation window when moving
+  a Room to the Archive
+* Fixed clipboard functionality in Firefox
+* Fixed downloading of a document or folder if its name contains the "#" symbol
+* Fixed the appearance of an extra window when trying to open a document
+  in the mobile version on iOS if the app is not installed
+* Improved user interaction when opening a document in the mobile version
+  with the "Open in app only" setting selected
+* Fixed navigation using the browser Back button while viewing media
+* Fixed the shift in room button highlighting when launching Take a short tour
+
+#### Accounts
+
+* Fixed an error when retrieving the list of Contacts if the sort value
+  in Local Storage was incorrect
+* Fixed the accessibility of Owner and data transfer initiator in the
+  "Choose from list" window of the Data reassignment panel
+* Fixed the display of the account list for a user whose type was changed
+  from Room Admin to DocSpace Admin and vice versa
+* Fixed the dependency of the language for resend invitation emails
+  on the portal language instead of the set Invitation language
+* Fixed the appearance of the New Rooms button in the menu when switching
+  between Rooms and Contacts with a slow connection
+* The order of the First Name and Last Name fields in the Change name
+  window now depends on the region
+* Improved the display of Social Media connect buttons in the user profile
+
+#### Server
+
+* Fixed display of the domain instead of localhost in notifications
+  about changes on the portal
+* Fixed the operation of the POST /apisystem/portal/register method
+  if a negative time zone is set on the server
+* Fixed an error applying Back up when restoring a backup of version 2.6.0
+  on version 3.1.1
+  
+#### Security
+
+* Fixed a vulnerability that allowed users with User or Guest roles to view
+  the Owner's id using the GET /api/2.0/settings/security/administrator/:productid method
+* Fixed a vulnerability that allowed viewing the Owner's profile
+  using the GET /api/2.0/portal/users/:userID method.
+* Fixed the accessibility of the PUT /api/2.0/people/:userid/contacts method.
+
+## 3.2.0
+
+### New features
+
+#### General changes
+
+* Updated the react-virtualized library to the latest version
+  used for rendering lists of files/rooms/contacts
+* Updated the react-route library to the latest version (7.5.2)
+  used for navigation
+* Added new language: sq-AL (Albanian)
+* Added caching for requests to web plugins
+* Added a link to UserVoice in the menu and a new banner
+
+#### Settings
+
+* Added settings for inviting users to the portal
+* Added the Wallet section (for SaaS only)
+* Added the Services section (for SaaS only)
+* Changed the editor logo scheme in the Branding section in connection
+  with new editor themes
+
+#### Login page
+
+* Added the ability to share guests. When selecting the "Share guest" option
+  in the Contacts/Guests section, the user receives a link to a new confirm
+  page called "GuestInviteForm"
+* The account is now automatically linked to the DocSpace account with the same
+  email address when logging in via social media
+
+#### Documents
+
+* Added support for onRequestRefreshFile. Now, if you lose Internet connection
+  or wait for a long time, the document will be updated itself,
+  without reloading the page
+* Added empty file templates for creating in the following languages: ca-ES, cs-CZ, da-DK, hu-HU, id-ID, ro-RO, sq-AL, ur-PK
+* Added scroll control from the keyboard in the new files panel
+* The logic for generating the URL for the Open file location button has been moved to the server
+
+### Fixes
+
+#### Documents
+
+* Optimized work with filters
+* Fixed errors when calculating activated filters
+* Fixed sending duplicate requests to the server when filtering a file list
+  by author or a room list by participant
+
+## 3.1.1
+
+### Fixes
+
+#### Settings
+
+* Fixed client crash when authorizing via Auth link without specifying scope
+* Fixed an error when displaying the application of the removed user
+  in the Developer Tools
+* Fixed an issue with repeatedly resetting the 2FA application
+* Fixed an error after connecting Google Drive as Third-Party resource
+  in server version
+* Fixed the visual freeze of the Back up process when multiple Spaces
+  are created
+* Implemented the resetting of the 2FA application after a long period
+  of inactivity
+* Fixed the display of the portal logo in Developer Tools after page refresh
+* Fixed the mention of the platform in the tooltip for Authentication
+  when configuring the LDAP server
+* Fixed opening a page in a new tab using the right mouse button
+
+#### Login page
+
+* Fixed a security issue that allowed authorization after changing the password
+
+#### Documents
+
+* Fixed adding an entry to reports in Filling Form Room if the user
+  is not authorized
+* Fixed the application of settings for the VDR room when it is created from
+  a template
+* Fixed missing values for tag and quota in the template when creating a Room
+  from it in the root of Rooms
+* Fixed the presence of the Start filling/Filling status/Stop filling/Reset
+  and start filling PDF form menu buttons in rooms other than VDR
+* Fixed the presence of the Quick sharing button in the PDF form editor
+  for certain Room types
+* Fixed the application of the template icon using Customize cover
+  in the info panel
+* Fixed the possibility of re-invoking the internal template menu after changing
+  the Name/Tags settings
+* Fixed the presence of the Complete & Submit button in the form labeled My Draft
+  in the Filling Form Room, restored from Archive
+* Fixed the notifications to the room owner about file upload/edit
+  by another participant
+* Fixed the possibility of deleting a Public Room used as storage
+* Fixed the change of type from PDF Form to PDF Documents in the Type column
+  after changing the index in VDR Room
+* Fixed the ability to edit a PDF form on external access
+  with fill-in permissions
+* Fixed the designation of a Copy/Duplicate file as editing if the original
+  was opened in the editor
+* Fixed the appearance of a deleted value in the SearchInput field
+  on the Select panel
+* Fixed opening of PDF forms in the desktop version of editors when opening
+  a file in VDR Room and mobile version
+* Fixed the display of Your turn/In Progress statuses in the VDR Room
+  and mobile version
+* Fixed highlighting of elements during the Short tour for the Form Filling Room
+  on iPad
+* Fixed the ability to scroll content in the Create room dialog
+  at a screen resolution of 1024x650
+* Fixed the ability to perform operations with templates using drag-and-drop
+* Fixed the description in the Empty screen of the Upload from DocSpace module
+
+#### Accounts
+
+* Fixed email confirmation for DocSpace and Room Admin
+* Fixed the ability to delete a guest
+* Fixed adding more than one Authorized app in the user profile
+
+#### SDK
+
+* Fixed an error when attempting to authorize a system user in WordPress
+* Fixed the display of inactive folders Complete/In progress
+  in the file selector from Filling Form Room in WordPress
+* Fixed the display of the editor close button in the corresponding
+  WordPress frame
+* Fixed the display of the selector in the DocSpace frame embedded in Wordpress
+ after logging out
+* Fixed the logo offset on the Empty screen during the DocSpace configuration
+  process in WordPress
+* Fixed the presence of the "Back to room" button for unauthorized users
+  filling out the form via WordPress
+* Fixed the presence of the sidebar call button for a non-Public room embedded
+  in WordPress
+* Fixed the presence of Share and Embed buttons in the menu of a file embedded
+  in WordPress in embedded mode
+* Fixed the ability to go to the Trash inside a frame with a room embedded
+  in WordPress
+* Fixed the ability for a User role to create a new room in WordPress
+* Fixed the display of extra rows in the room skeleton embedded in WordPress
+  for unauthorized users
+* The format of the type parameter of the createRoom method has been brought
+  into compliance
+
+## 3.1.0
+
+### New features
+
+#### General changes
+
+* Fixed a security issue in NextJS (Authorization Bypass in Next.js Middleware)
+* A new SSR client (/sdk) has been added for working with the JS-SDK,
+  which includes basic modules for working with DocSpace (file-selector,
+  room-selector, public-room)
+* Implemented basic functionality of the public room for the SDK client
+* Expanded methods for connecting the JS-SDK on the settings page
+* Added a key parameter to the URL of Filling Forms Room, Custom Room,
+  and Public Room. Now a link to a room can be copied directly from
+  the browser's address bar
+* Added a page with an error message for opening a file of an unsupported
+  format via an external link that is no longer available
+
+#### Settings
+
+* Updated button colors for adding and changing the avatar in the profile
+* Added an error message to the main settings methods in the sections Backup
+  and Restore
+* The "Company Name" field in the Branding section has been replaced with
+  "Brand name" and "Generate logo from text"
+* Added a data storage region in Storage management for the cloud version
+* Added a setting for deep link
+* Added a setting to disable email activation for LDAP/SSO portal users
+* The DeveloperTools section is now available to all users except guests
+* Added triggers in the Developer tools – Webhooks section
+* Added a section for API keys in the Developer Tools
+* The form for configuring the document editing server service
+  in the Integration - Document Service section has been modified to allow
+  specifying a secret key and Authorization header
+
+#### Login page
+
+* Added the ability to share guests. When selecting the "Share guest" option
+  in the Contacts/Guests section, the user receives a link to a new confirm
+  page called "GuestInviteForm"
+* The account is now automatically linked to the DocSpace account with the same
+  email address when logging in via social media
+
+#### Documents
+
+* Added the ability to delete a file version in the version panel
+* Added the ability to create templates from rooms and rooms from templates
+* Implemented the ability to fill out the form based on user roles
+  in the Virtual Data Room
+* Added the ability to share PDF forms directly without rooms
+* Added a password input dialog when downloading a protected file in a format
+  different from the original
+* Updated the library for thumbnail generation
+* Links created in the Documents section are now created with no expiration
+  date and with Read only access by default
+* The search bar on mobile devices is now hiding when scrolling down
+* Settings for the "SearchInContent" and "WithSubfolders" document filters
+  have been removed and are now enabled by default
+* The report format in Filling Form Room has been changed to XLSX
+* Improved user interaction during operation progress
+* The appearance of the tiles near the rooms has been changed
+* Added a training system for the Form Filling Room
+* Added the ability to enable and disable custom filters for table
+* Added new document types (PDF Form and PDF Document) and filters
+  (PDF-forms and PDF-documents)
+* The design of the "Fill in as" and "Share to fill out" panels has been
+  unified in style
+* The "Share" button has been removed from the editor for PDF forms
+* The logic of the link creation in the editor has been moved from
+  "Share panel" to "Share to fill out"
+* The list of push notifications in the mobile app for events on the portal
+  has been expanded
+
+#### Management
+
+* Added an ability to encrypt data at rest in the server version
+
+#### Accounts
+
+* Added the ability to downgrade a type to User and to Guest
+
+## 3.0.4
+
+### Fixes
+* Fixed adding users with a dot in the email
+* Fixed context menu for creating files with screen width 1000px
+* Fixed update external links in spreadsheet for anonymus user
+* Fixed performance and timeout errors
+
+## 3.0.3
+
+* No public release.
+
+## 3.0.2
+
+* No public release.
+
+## 3.0.1
+
+### Fixes
+* Fixed the work of OAuth2 in the US region
+* Fixed viewing document versions in someone else's room for the administrator
+* Fixed opening editors for docker with self-signed certificates(Standalone)
+* Fixed opening editors after update when using self-signed certificates(Standalone)
+* Fixed default value in user type field on ldap settings page after update
+* Removed description of user type on payments page
+* Fixed dialog for choosing the method of opening a document on mobile devices under an unauthorized user
+* Fixed registration on the portal for guests via social networks
+* Fixed closing of Action required window when copying file again
+* Fixed uploading/downloading files without extension
+* Fixed the ability to insert a document from a form room into WordPress
+* Fixed authorization on the portal after an update if an ldap server with the user type "power user" was
+* Added guest user type to ldap server connection settings
+* Fixed access rights in public rooms for dockspace administrators
+* Fixed email activation for ldap users
+
+## 3.0.0
+
+### New features
+
+#### General changes
+
+* Restored the mobile app advertising banner.
+* Changed the licensing scheme. The Branding functionality is blocked for the enterprise_license without the customization parameter. Branding is available for the developer_license with the customization parameter. The About window is hidden for the developer_plus_license. There is no the Branding tab in the free Community version.
+* Fixed loading of only the first 1000 records in the Info -> History panel, now the remaining records are also loaded when scrolling.
+* Changed file format icons.
+
+#### Settings
+
+* Added a new OAuth2.0 section: Settings -> Developer Tools -> OAuth2. Added new login and profile pages.
+* Added a warning before migrating if the quota is enabled.
+* Fixed logo sizes in Branding.
+
+#### Login page
+
+* Added OAuth support for Login.
+* Added the ability to select the necessary portal if a user has more than 1 portal according to the entered data.
+* Added the 'instance ID' field to the setup wizard.
+* Added the checkbox about the newsletter subscription to the registration page.
+
+#### Documents
+
+* Added a dialog window for converting XML files. Added the ability to convert XML files to the docx or xlsx format.
+* Rewrote the logic for applying Right-to-Left styles to logical CSS properties.
+* Added the shardkey parameter to all editor requests (api.js loading, conversion, builder, command execution) to work with the cluster version that supports sharding.
+* Added the ability to share a Public Room for editing.
+* Changed the context menu. Added nesting in the mobile view.
+* Added new empty screens.
+* Added an option to display file extensions to the Profile -> File management section.
+* Added requirements for the public link password.
+* Added an hourglass icon for unverified users.
+* Changed the Share feature in the Documents section: moved the Remove link option, added a new toast about copying the link, fixed minor bugs.
+* Added the ability to set a custom logo for a room.
+* Changed the design for the profile and room avatar editor.
+* Added a new room type: Virtual Data Room. Implemented new capabilities for working with data in this type of room: indexing of data with the ability to change the index and generate a summary report on the file structure of the room, setting the lifetime of files, prohibition on copying and downloading files, setting watermarks.
+* Added a toast about the view-only mode and an authorization button in the public room.
+* Increased the original size of room avatars by 2 times to support 4k displays.
+* Changed the panel with information about latest new files in rooms.
+* When creating a new document for the en-US language, a template with the Letter page format is used. If there are no templates for a language, a document with the A4 page format is used.
+* Added empty files templates for creation in the following languages: fi-FI, he-IL, nb-NO, sl-SI.
+* Starting documents have titles in the corresponding language.
+* Added the ability to display public rooms shared via link in the room list.
+* Optimized queries when saving changes in the room editing panel and when creating a room: all parameters are passed in one method.
+* Added new types of records to the Info -> History panel.
+
+#### Management
+
+* Redesigned the Management section.
+* Added the ability to quickly delete a portal (if the wizard is not completed, the portal will be deleted without confirmation).
+
+#### Accounts
+
+* Renamed the Accounts section to Contacts. Added a new Guests tab to it. Renamed the People tab to Members.
+* The DocSpace Owner/Admin has read-only access to rooms he was not invited to, but he can change the owner for such a room or archive it.
+* Any role can be assigned to the DocSpace Owner/Admin and he will work in the room according to the role.
+* The Room Admin role is renamed to Room Manager. He can invite only Users and Guests to the portal (via rooms) and cannot promote the type of other contacts higher than the User.
+* The Power User type is a free type, which is renamed to User.
+* The Power User role is renamed to Content Creator. The Content Creator role allows creating/uploading/deleting files/folders even for Guests.
+* The User type renamed to Guest. Guests can only be invited via rooms.
+* Changed the Info -> History panel, now the focus is on actions, not the user name.
+* Changed the appearance of the element for insertion when entering an email in the invitation.
+
+### Fixes
+* Added the ability to use keyboard actions in modal windows
+* Fixed display of support button (live chat)
+* Added notification about enabled quota when migration starts
+* Added the ability to select the user type when connecting to the SSO server
+* Added notification when trying to copy a document other than PDF into the form room
+* Added reset to default settings for brute force protection
+* Fixed extra browser window when copying a link on Safari
+* Fixed message when adding users over the tariff limit
+* Added the ability to edit files in a public room without authorization
+* Fixed an error in the browser console for the user when creating a room by the administrator
+* Fixed setting the filter when clicking on the portal logo
+* Fixed double click on room in copy window
+* Fixed an error if a folder/room for auto backup was deleted
+* Fixed switcher color in portal settings for dark theme
+* Fixed errors in logs after installing the standalone version
+* Fixed storage of files without extension
+* Fixed creation of new documents according to the selected language
+* Fixed creation of sample documents according to the selected language
+* Fixed focus on search field after results are displayed
+* Fixed connection of public room in frame for server version
+* Fixed automatic update of LetsEncrypt certificates in the server version
+* Fixed emails when registering via social networks
+* Added sand clock icon for accounts that have not accepted an invitation in the group selector
+* Added a message about exceeding the quota limit before the file upload starts
+* Fixed adding users with underscore in email
+* Fixed favicon on tab after form submission
+* Added a message when trying to edit PDF forms on mobile devices
+* Twitter has been replaced by X
+* Fixed creation of a new CSV report after deleting it in the form filling room
+* Fixed the appearance of the new badge for the room owner when filling out the form
+* Fixed display of diacritic characters on the groups tab
+* Removed the role of filler forms in the custom room
+* Added the ability to connect Egnyte as a third-party storage via WebDav
+
 ## 2.6.3
 
 ### Fixes
