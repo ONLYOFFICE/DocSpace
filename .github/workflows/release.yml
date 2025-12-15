@@ -143,7 +143,7 @@ jobs:
     steps:
       - name: Set up Gitea CLI
         run: |
-          sudo curl -sL "https://dl.gitea.com/tea/main/tea-main-linux-amd64" -o /usr/bin/tea
+          sudo curl -sL "https://dl.gitea.com/tea/0.11.1/tea-0.11.1-linux-amd64" -o /usr/bin/tea
           sudo chmod +x /usr/bin/tea
           tea login add --url ${{ secrets.GITEA_HOST }} --token ${{ secrets.GITEA_TOKEN }}
 
@@ -280,7 +280,7 @@ jobs:
     steps:
       - name: Set up Gitea CLI
         run: |
-          sudo curl -sL "https://dl.gitea.com/tea/main/tea-main-linux-amd64" -o /usr/bin/tea
+          sudo curl -sL "https://dl.gitea.com/tea/0.11.1/tea-0.11.1-linux-amd64" -o /usr/bin/tea
           sudo chmod +x /usr/bin/tea
           tea login add --url ${{ secrets.GITEA_HOST }} --token ${{ secrets.GITEA_TOKEN }}
 
