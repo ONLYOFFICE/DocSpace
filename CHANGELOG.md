@@ -1,5 +1,178 @@
 # Change log
 
+## 3.5.0
+
+### New features
+
+#### General changes
+
+* Switching from yarn to pnpm in the client
+* Updated the nodejs version to v22
+* Updated the SDK JS local script version to v2.1
+* Switching the server from the Polly library to Resilience (a library
+  for ensuring stability and handling temporary failures, which allows
+  implementing strategies such as repeated request attempts, timeouts, etc.)
+* Added a two-factor authentication advertising banner to the Portal Settings
+  -> Login History and Profile -> Login sections
+* Completely rewritten the Info panel. Added new logic for displaying content
+  loading inside it (now old content is always shown with blur until
+  new content is received, after 500 ms animation appears in the tab)
+* Added new loading animation when switching through a directory and profile
+  (now the skeleton appears only on the first page load or after switching
+  from the portal settings). Also rewritten the logic of tabs in the profile
+* Added the ability to copy page content
+* Added new keyboard hotkeys: Disable the selection area - Ctrl + Alt, Copy
+  the selected items text - Ctrl + Shift + C
+* Updated the Pomelo.EntityFramework.Core connector for MySql to version 9.0
+* Switching to new ESLINT v9
+* Enabled linter for shared components
+* Added a service for receiving notifications via Telegram. It's possible
+  to configure it on the Settings -> Integration -> Third-party services page
+  and enable notifications in the profile
+* Added buttons for connecting and disconnecting the WeChat login provider
+* Updated outdated logos for some login providers
+* Changing the language in the profile occurs without refreshing the page
+* Updated EmptyScreens in selectors and the info panel
+* Added additional fonts (apple-system, "segoe ui") to the basic set to improve
+  the display of Arabic characters on macOS
+* Removed the key parameter (access key) from the link. Now the user cannot
+  access the portal by copying the link from the browser address bar
+
+#### Settings
+
+* Added a checkbox to hide/show the "About this program" window
+* Added placeholders for lists in the OAuth, Webhooks and ApiKeys sections
+* Changed Backup:
+  * Rewrote the AutoBackup, RestoreBackup, and ManualBackup pages
+    from JavaScript to TypeScript
+  * Along with the main pages, redesigned all related components, including
+    auxiliary modules, dialogs and controls
+  * Replaced class components with functional ones using React hooks.
+  * Removed dependencies on the global store, simplified logic and improved
+    architecture
+  * Moved pages to the Shared directory for reuse
+  * Fixed bugs, optimized code, improved readability
+  * In Space Management, pages are no longer connected via Module Federation
+* Changed Portal Encryption. Rewrote component styles from styled-components
+  to scss. When decrypting the portal, changed the translation from
+  "The encryption process in progress" to "The decryption process in progress"
+* In the final Audit Events report, replaced the Products/Module columns with Location
+* Added the ability to buy the Backup service via the Wallet
+* Updated the report in the Wallet
+* Added filter reset in the Wallet
+* Added dialogs when disabling the backup service
+* Added a warning for DocSpace admins that backups are not free if the free
+  backup quota is exceeded
+* Added the ability to upload plugins to the SaaS version
+* Split the Action column in the Login History report: added
+  the LoginSuccessViaOAuth, LoginSuccessViaPassword actions, added the name
+  of a specific provider into LoginSuccessViaApiSocialAccount, etc.
+* Added the WeChat login provider to the Integrations section
+* Updated outdated logos for some login providers in the Integrations section
+* Added a new loading animation when switching between settings sections
+  and tabs in all sections
+* Added a dialog window with user statistics for the Enterprise license
+* Brought plugins description to a unified form, added the “Learn more” link
+  to the Plugins SDK documentation. Added plugin versioning: incompatible
+  versions are highlighted in red, a tooltip appears when hovering over them,
+  and a toast appears when uploading asking for an update
+
+#### Login page
+
+* Redesigned the two-factor authentication page
+* An open email address is no longer used in links on confirmation pages
+  Instead, the `encemail` parameter is now passed — an encrypted version of the email
+* Changed the logic on the EmailChange page: if the user is not authorized
+  in a browser, he will be redirected to the login page with a request
+  to enter the previous credentials to log in to the portal
+* Added additional user information to the ProfileRemove page: name, email, and avatar
+* Added buttons for logging in via WeChat
+* Updated outdated logos for some login providers
+* Updated the login captcha design
+* Added a captcha to the password recovery request window and the access
+  recovery request window. Now the methods require a captcha key
+  and it is always called (in hidden or explicit form)
+
+#### Documents
+
+* Now opensearch contains only document content without sources
+* Added the "Everyone" system group in the invitation panel
+* Improved the drag-drop functionality. A floating button now appears
+  with information about where the selected element will be placed
+* Changed design of tiles for folders and files
+* Added the `api/2.0/files/folder/{folderId}/log/report` method to generate
+  a report on the room
+* Added a hint if a file is locked by another user and there are no rights
+  to unlock it
+* Updated file and folder sharing: added new features for working with links
+  and improved the interface
+  * Added the ability to share folders without creating rooms
+  * Implemented separate links for files and folders both inside and outside
+    of rooms
+  * Added the ability to share links for internal and external users (for rooms
+    and their contents, including the Documents section)
+  * In the Documents section, links now have a name (title) and access rights
+    for links can be configured in the same way as for rooms
+  * Brought the interface for working with links to a unified style
+  * Added new notifications (toasts)
+  * Added new items to context menus for managing links
+  * Added pages for entering a password when accessing files and folders
+* Added the Recent and Favorites sections
+* Added the Shared with me section
+  * The 'Shared with me' section displays files and folders shared by other
+    users from the 'My Documents' section, as well as files and folders
+ 	accessible via a link
+  * Folders shared via a link open in the 'Shared with me' section
+    for authorized users
+  * Added access levels for files and folders
+  * Added the 'Sharing with DocSpace users' section for PDF forms in the
+    'Share to fill out' panel, as well as sharing functionality for other files
+ 	in the 'Share' panel
+* Redesigned the left menu. Renamed the Documents section to My Documents.
+* Added the AI agents item to the left menu
+* Renamed the Room column in Trash to Location
+* Added the ability to hide the "Download applications" section via the config
+  on the server
+* Added a mechanism for preloading editor resources to speed up the first opening
+* Added the `onFileManagerClick` event for SDK JS when clicking on a file in a list
+* Added the `onEditorOpen` event for SDK JS for events related to opening
+  an editor (creation, editing, filling) from context menus, modal windows, panels, or hotkeys
+* Added grouping of context menu items
+* Added the ability to repeat the upload or conversion in case of an error
+* Added display of the Room Manager role with a corresponding hint in the role
+  change list for a user or guest
+* Added the ability to delete rooms
+* Redesigned file/folder deletion dialogs
+* Removed the 'New' badge from the room creation dialog and the context menu
+  for Templates
+* Disabled saving the selected filter in rooms (only sorting remains)
+
+#### Management
+
+* Completely rewrote Space Management in next.js
+* Fixed behavior when encrypting a portal: if another tab with
+  a portal is open, it will also switch to the /encryption-portal page
+  
+### Fixes
+
+#### General changes
+
+* Fixed the issue with missing cache control headers for static resources
+  of next clients (login, editor, management, sdk) in NGINX settings
+* Fixed issues with client dependency audit; updated outdated packages
+  (webpack, next, axios, react, next, typescript, etc.)
+* Fixed issues with eslint and typescript
+
+#### Login page
+
+* Fixed login page flickering if SSO is configured and the hideAuthPage
+  setting is enabled
+* Fixed usage of externalResources in the wizard and login
+
+#### Documents
+
+* Fixed a bug when a table header was broken in Safari
+
 ## 3.2.1
 
 ### New features
@@ -38,7 +211,7 @@
   if the Region or Bucket is specified incorrectly
 * Fixed an error when accessing Developer Tools under Room Admin if the section
   is hidden from User-type users
-* Fixed the operation of the GET /api/2.0/keys/@self method if Permissions
+* Fixed the operation of the `GET /api/2.0/keys/@self` method if Permissions
   other than All are selected when creating the key
 * Fixed the ability to generate an Audit Trail report in a neighboring tab
 * Improved the description of the Developer Tools access configuration
@@ -98,9 +271,9 @@
 #### Security
 
 * Fixed a vulnerability that allowed users with User or Guest roles to view
-  the Owner's id using the GET /api/2.0/settings/security/administrator/:productid method
+  the Owner's id using the `GET /api/2.0/settings/security/administrator/:productid` method
 * Fixed a vulnerability that allowed viewing the Owner's profile
-  using the GET /api/2.0/portal/users/:userID method.
+  using the `GET /api/2.0/portal/users/:userID` method.
 * Fixed the accessibility of the PUT /api/2.0/people/:userid/contacts method.
 
 ## 3.2.0
