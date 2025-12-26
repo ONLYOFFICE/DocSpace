@@ -369,15 +369,16 @@ COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publis
 COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/management ${BUILD_PATH}/management
 COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/login ${SRC_PATH}/publish/web/login
 COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/sdk ${SRC_PATH}/publish/web/sdk
+COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/editor {SRC_PATH}/publish/web/editor
 COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/editor/packages/doceditor/.next/static/chunks ${BUILD_PATH}/build/doceditor/static/chunks
 COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/editor/packages/doceditor/.next/static/css ${BUILD_PATH}/build/doceditor/static/css
 COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/editor/packages/doceditor/.next/static/media ${BUILD_PATH}/build/doceditor/static/media
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/login/.next/static/chunks ${BUILD_PATH}/build/login/static/chunks
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/login/.next/static/css ${BUILD_PATH}/build/login/static/css
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/login/.next/static/media ${BUILD_PATH}/build/login/static/media
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/sdk/.next/static/chunks ${BUILD_PATH}/build/sdk/static/chunks
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/sdk/.next/static/css ${BUILD_PATH}/build/sdk/static/css
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/sdk/.next/static/media ${BUILD_PATH}/build/sdk/static/media
+COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/packages/login/.next/static/chunks ${BUILD_PATH}/build/login/static/chunks
+COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/packages/login/.next/static/css ${BUILD_PATH}/build/login/static/css
+COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/packages/login/.next/static/media ${BUILD_PATH}/build/login/static/media
+COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/packages/sdk/.next/static/chunks ${BUILD_PATH}/build/sdk/static/chunks
+COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/packages/sdk/.next/static/css ${BUILD_PATH}/build/sdk/static/css
+COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/packages/sdk/.next/static/media ${BUILD_PATH}/build/sdk/static/media
 COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/plugins/publish/ ${APP_STORAGE_ROOT}/Studio/webplugins
 
 COPY --chown=onlyoffice:onlyoffice ./buildtools/install/docker/config/nginx/docker-entrypoint.d /docker-entrypoint.d
