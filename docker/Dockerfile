@@ -124,7 +124,7 @@ RUN mkdir -p /var/log/onlyoffice && \
 RUN add-apt-repository -y ppa:dotnet/backports && \
     apt-get -y update --fix-missing && \
     apt-get install -yq \
-        dotnet-sdk-9.0
+        dotnet-sdk-10.0
 
 #----------------------------------
 #       Install RabbitMQ
@@ -330,7 +330,7 @@ RUN echo "--- build/publish ASC.Socket.IO ---" && \
 #----------------------------------
 #          Dotnet build            
 #----------------------------------   
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-dotnet
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-dotnet
 ARG DEBIAN_FRONTEND
 ARG SRC_PATH
 
@@ -432,6 +432,6 @@ RUN dos2unix /docker-entrypoint.d/* && chmod +x /docker-entrypoint.d/* && \
     dos2unix /nginx/*.sh && chmod +x *.sh && \ 
     dos2unix *.sh && chmod +x *.sh 
 
-EXPOSE 5032 5010 5027 5012 5007 5009 5005 5004 5006 5000 5003 5033 5099 5013 5011 9899 9834 8092 3306 6379 5672 9200 9600 5601 8080 9090
+EXPOSE 5032 5010 5027 5012 5007 5009 5005 5004 5006 5000 5003 5033 5099 5013 5011 9899 9834 8092 3306 6379 5672 9200 9600 5601 8080 9090 5157
 
 ENTRYPOINT  [ "/docker-entrypoint.sh" ]
