@@ -274,37 +274,22 @@ COPY ./client/ ${SRC_PATH}/client/
 COPY ./buildtools/config/ ${SRC_PATH}/buildtools/config/
 WORKDIR ${SRC_PATH}/client
 
-RUN <<EOF
-#!/bin/bash
-echo "--- build/publish docspace-client node ---" && \
-yarn install
-node common/scripts/before-build.js
-
-CLIENT_PACKAGES+=("@docspace/client")
-CLIENT_PACKAGES+=("@docspace/login")
-CLIENT_PACKAGES+=("@docspace/doceditor")
-CLIENT_PACKAGES+=("@docspace/sdk")
-CLIENT_PACKAGES+=("@docspace/management")
-
-for PKG in ${CLIENT_PACKAGES[@]}; do
-  echo "--- build/publish ${PKG} ---"
-  yarn workspace ${PKG} ${BUILD_ARGS} $([[ "${PKG}" =~ (client|management) ]] && echo "--env lint=false")
-  yarn workspace ${PKG} ${DEPLOY_ARGS}
-done
-
-echo "--- publish public web files ---" && \
-cp -rf public "${SRC_PATH}/publish/web/"
-echo "--- publish locales ---" && \
-node common/scripts/minify-common-locales.js
-rm -rf ${SRC_PATH}/client/*
-EOF
+ENV PNPM_HOME=/tmp/pnpm
+RUN echo "--- installing pnpm ---" && \
+    npm install -g pnpm && \
+    echo "--- build/publish docspace-client node ---" && \
+    pnpm install && \
+    pnpm ${BUILD_ARGS} && \
+    pnpm run ${DEPLOY_ARGS} && \
+    rm -rf ${SRC_PATH}/client ${SRC_PATH}/buildtools && \
+    rm -rf /tmp/pnpm
 
 # build plugins
 COPY --from=build ${SRC_PATH}/plugins ${SRC_PATH}/plugins
 WORKDIR ${SRC_PATH}/buildtools/install/common
 COPY ./buildtools/install/common/plugins-build.sh ./plugins-build.sh
 RUN echo "--- build/publish plugins ---" && \
-    apt-get update && apt-get install -y dos2unix && \
+    apt-get update && apt-get install -y dos2unix unzip &&\
     dos2unix *.sh && \
     bash plugins-build.sh "${SRC_PATH}/plugins"
 
