@@ -1,23 +1,35 @@
-ARG SRC_PATH="/app/onlyoffice/src"
-ARG BUILD_PATH="/var/www"
-ARG APP_STORAGE_ROOT="/app/onlyoffice/data"
-ARG PATH_TO_CONF="/app/onlyoffice/config"
-ARG LOG_DIR="/var/log/onlyoffice"
+ARG PRODUCT=onlyoffice
+ARG SRC_PATH=/app/${PRODUCT}/src
+ARG BUILD_PATH=/var/www
+ARG APP_STORAGE_ROOT=/app/${PRODUCT}/data
+ARG PATH_TO_CONF=/app/${PRODUCT}/config
+ARG LOG_DIR=/var/log/${PRODUCT}
 
 #----------------------------------
-#         Image SDK base         
+#         Base Image         
 #----------------------------------
-FROM ubuntu:22.04 AS build
+FROM ubuntu:22.04 AS base
+
 ARG SRC_PATH
 ARG BUILD_PATH
 ARG APP_STORAGE_ROOT
 ARG PATH_TO_CONF
 ARG LOG_DIR
-ARG PRODUCT="onlyoffice"
-ARG DEBIAN_FRONTEND="noninteractive"
+ARG PRODUCT
+ARG DEBIAN_FRONTEND=noninteractive
+
+# --- Make company/user/group name configurable ---
+ARG COMPANY=${PRODUCT}
+ARG COMPANY_UID=1004
+ARG COMPANY_GID=107
+
+# Optional: set to 1 at build time if you want vim inside the image
+ARG INSTALL_TOOL=0
+
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    DOTNET_NOLOGO=1
+
 ARG OPENSEARCH_PATH="/opt/opensearch/config"
-ARG BUILD_ARGS="build"
-ARG DEPLOY_ARGS="deploy"
 ARG ENV_EXTENSION=""
 ARG BUILD_DATE=""
 
@@ -44,7 +56,7 @@ ARG RABBIT_PASSWORD=guest
 ARG OPENSEARCH_VERSION=2.18.0
 ARG DASHBOARDS_VERSION=2.18.0
 
-ARG DOCUMENT_CONTAINER_NAME="onlyoffice-document-server"
+ARG DOCUMENT_CONTAINER_NAME=${COMPANY}-document-server
 ARG DOCUMENT_SERVER_URL_EXTERNAL=""
 ARG COUNT_WORKER_CONNECTIONS=1024
 
@@ -53,7 +65,8 @@ ARG JDBC_DATABASE=${MYSQL_DATABASE}
 ARG JDBC_USER_NAME=${MYSQL_USER}
 ARG JDBC_PASSWORD=${MYSQL_PASSWORD}
 
-ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
+ENV COMPANY=${COMPANY} \
+    DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
     DNS_NAMESERVER=127.0.0.11 \
     COUNT_WORKER_CONNECTIONS=$COUNT_WORKER_CONNECTIONS \
     MAP_HASH_BUCKET_SIZE="" \
@@ -91,94 +104,76 @@ ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
     JDBC_USER_NAME=${MYSQL_USER} \
     JDBC_PASSWORD=${MYSQL_PASSWORD}
 
-#----------------------------------
-#       Install dependencies
-#----------------------------------
-RUN mkdir -p /var/log/onlyoffice && \
-    mkdir -p /app/onlyoffice/data && \
-    apt-get -y update && \
-    apt-get install -yq \
-        sudo \
-        adduser \
-        dos2unix \
-        nano \
-        git \
-        wget \
-        curl \
-        vim \
-        gnupg \
-        lsb-release \
-        ca-certificates \
-        gettext-base \
-        supervisor \
-        python3-launchpadlib \
-        apt-transport-https \
-        software-properties-common && \
-    addgroup --system --gid 107 onlyoffice && \
-    adduser -uid 1004 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice
+#FROM base AS test
 
-#----------------------------------
-#       Install .Net
-#----------------------------------
-RUN add-apt-repository -y ppa:dotnet/backports && \
-    apt-get -y update --fix-missing && \
-    apt-get install -yq \
-        dotnet-sdk-10.0
+# ---- base dirs + minimal runtime packages ----
+# Notes:
+# - install repo helpers only temporarily, then purge them
+# - no git/sudo/apt-transport-https by default
+RUN set -eux; \
+    mkdir -p /var/log/${COMPANY} /app/${COMPANY}/data; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+      ca-certificates \
+      curl \
+      wget \
+      gnupg \
+      lsb-release \
+      gettext-base \
+      supervisor \
+      dos2unix \
+      adduser \
+      git \
+      # repo helpers (temporary)
+      software-properties-common \
+      python3-launchpadlib \
+    ; \
+    \
+    # ---- ${COMPANY} user/group ----
+    addgroup --system --gid ${COMPANY_GID} ${COMPANY}; \
+    adduser --uid ${COMPANY_UID} --quiet --home /var/www/${COMPANY} --system --gid ${COMPANY_GID} ${COMPANY}; \
+    \
+    # ---- .NET runtime (jammy) ----
+    add-apt-repository -y ppa:dotnet/backports; \
+    apt-get update --fix-missing; \
+    apt-get install -y --no-install-recommends aspnetcore-runtime-10.0; \
+    \
+    # ---- OpenResty (Ubuntu repo; required for access_by_lua + resty.redis) ----
+    wget -O - https://openresty.org/package/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/openresty.gpg; \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu $(lsb_release -sc) main" \
+      > /etc/apt/sources.list.d/openresty.list; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends openresty; \
+    \
+    # ---- Optional vim ----
+    if [ "${INSTALL_TOOL}" = "1" ]; then \
+      apt-get install -y --no-install-recommends vim nano; \
+    fi; \
+    \
+    # ---- purge repo helper packages to shrink ----
+    apt-get purge -y --auto-remove software-properties-common python3-launchpadlib lsb-release; \
+    \
+    # ---- clean apt ----
+    rm -rf /var/lib/apt/lists/*
 
-#----------------------------------
-#       Install Openresty
-#----------------------------------
-RUN <<EOF
-    #!/bin/bash
-    set -xe
-    ARCH_LINUX=$(lscpu | grep Architecture | awk '{print $2}')
-    echo "--- ADD necessary services arh: ${ARCH_LINUX} ---"
-    if [ "$ARCH_LINUX" = "x86_64" ] ; then
-	    wget -O - https://openresty.org/package/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/openresty.gpg && \
-	    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/debian bookworm openresty" | sudo tee /etc/apt/sources.list.d/openresty.list && \
-        apt update && \
-        apt install -y openresty
-    fi
-    if [ "$ARCH_LINUX" = "aarch64" ] ; then
-        wget -O - https://openresty.org/package/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/openresty.gpg && \
-        echo "deb [arch=arm64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/arm64/debian bookworm openresty" | sudo tee /etc/apt/sources.list.d/openresty.list && \
-        apt update && \
-        apt install -y openresty
-    fi
-EOF
+# ---- Node runtime: copy node binary only (no npm/pnpm) ----
+# Your supervisord programs run: node server.js ...
+COPY --from=node:22-bookworm-slim /usr/local/bin/node /usr/local/bin/node
+RUN set -eux; node -v
 
-#----------------------------------
-#         clean up         
-#----------------------------------    
-RUN echo "--- delete temporary files ---" && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* \
-    /tmp/* 
+ADD https://api.github.com/repos/ONLYOFFICE/DocSpace-buildtools/git/refs/heads/${GIT_BRANCH} /version.json
+RUN set -eux; \
+   # git clone -b "master" --depth 1 https://github.com/ONLYOFFICE/docspace-plugins.git ${SRC_PATH}/plugins; \
+    git clone -b "master" --depth 1 https://github.com/ONLYOFFICE/ASC.Web.Campaigns.git ${SRC_PATH}/campaigns;
+    # If you want to drop git after clone (saves space), uncomment:
+    # apt-get update && apt-get purge -y --auto-remove git && rm -rf /var/lib/apt/lists/*
 
-#----------------------------------
-#       Install Nodejs and yarn
-#----------------------------------
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-    apt-get -y update && \
-    apt-get install -yq \
-	    yarn && \ 
-    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y nodejs && \
-    node -v    
-
-#----------------------------------
-#              Get src             
-#----------------------------------
-ADD https://api.github.com/repos/ONLYOFFICE/DocSpace-buildtools/git/refs/heads/${GIT_BRANCH} version.json
-RUN git clone -b "master" --depth 1 https://github.com/ONLYOFFICE/docspace-plugins.git ${SRC_PATH}/plugins && \
-        git clone -b "master" --depth 1 https://github.com/ONLYOFFICE/ASC.Web.Campaigns.git ${SRC_PATH}/campaigns
-COPY --chown=onlyoffice:onlyoffice ./server/ ${SRC_PATH}/server/
-COPY --chown=onlyoffice:onlyoffice ./client/ ${SRC_PATH}/client/
-COPY --chown=onlyoffice:onlyoffice ./buildtools/config/ ${SRC_PATH}/buildtools/config/
-COPY --chown=onlyoffice:onlyoffice ./docker/docker-entrypoint.sh /docker-entrypoint.sh
-#COPY --chown=onlyoffice:onlyoffice ./docker/init_db.sh /init_db.sh
-COPY --chown=onlyoffice:onlyoffice ./docker/supervisord/supervisord.preview.conf /etc/supervisor/conf.d/supervisord.conf
+# ------------------------------------------------------------
+# Copy config + entrypoint + supervisor config 
+# ------------------------------------------------------------
+COPY --chown=${COMPANY}:${COMPANY} ./buildtools/config/ ${SRC_PATH}/buildtools/config/
+COPY --chown=${COMPANY}:${COMPANY} ./docker/docker-entrypoint.sh /docker-entrypoint.sh
+COPY --chown=${COMPANY}:${COMPANY} ./docker/supervisord/supervisord.preview.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR ${SRC_PATH}/buildtools/config
 RUN <<EOF
@@ -188,33 +183,60 @@ RUN <<EOF
     cp *.config /app/onlyoffice/config/
 EOF
 
-#----------------------------------
-#         Nodejs build client
-#----------------------------------
-FROM node:22.12.0 AS build-nodejs-client
+#RUN set -eux; \
+#    echo "--- customize config base files ---"; \
+#    mkdir -p /app/${COMPANY}/config/; \
+#    ls | grep -v "test" | grep -v "\.dev\." | grep -v "nginx" | xargs cp -t /app/${COMPANY}/config/; \
+#    cp -f *.config /app/${COMPANY}/config/
+
+#--------------------------------------
+# Node build services (front)
+#--------------------------------------
+FROM node:22-bookworm AS build-nodejs-client
 ARG SRC_PATH
 ARG DEBIAN_FRONTEND
-ARG BUILD_ARGS="build"
-ARG DEPLOY_ARGS="deploy"
+ARG BUILD_ARGS="build:lite"
+ARG DEPLOY_ARGS="deploy:lite"
+
+ENV PNPM_HOME=/tmp/pnpm \
+    CI=1 
 
 # build frondend from DocSpace-client
-WORKDIR ${SRC_PATH}
-COPY ./client/ ${SRC_PATH}/client/
-COPY ./buildtools/config/ ${SRC_PATH}/buildtools/config/
 WORKDIR ${SRC_PATH}/client
+COPY client/common/tests/package.json \
+     client/common/tests/package-lock.json \
+     ./common/tests/
 
-ENV PNPM_HOME=/tmp/pnpm
-RUN echo "--- installing pnpm ---" && \
-    npm install -g pnpm && \
-    echo "--- build/publish docspace-client node ---" && \
-    pnpm install && \
-    pnpm ${BUILD_ARGS} && \
-    pnpm run ${DEPLOY_ARGS} && \
-    rm -rf ${SRC_PATH}/client ${SRC_PATH}/buildtools && \
-    rm -rf /tmp/pnpm
+# copy dependency metadata 
+COPY client/package.json \
+     client/pnpm-lock.yaml \
+     client/pnpm-workspace.yaml \
+     client/.npmrc \
+     client/nx.json \
+     ./
+
+# workspace package manifests 
+COPY client/packages/login/package.json       ./packages/login/
+#COPY client/packages/sdk/package.json         ./packages/sdk/
+COPY client/packages/management/package.json  ./packages/management/
+COPY client/packages/client/package.json      ./packages/client/
+COPY client/packages/doceditor/package.json   ./packages/doceditor/
+COPY client/packages/shared/package.json      ./packages/shared/
+
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate 
+RUN --mount=type=cache,target=/pnpm-store \
+    pnpm config set store-dir /pnpm-store \
+ && pnpm install --frozen-lockfile
+
+# copy the rest of the source 
+COPY client/ ./
+
+# build / deploy
+RUN pnpm ${BUILD_ARGS} && pnpm run ${DEPLOY_ARGS}
 
 # build plugins
-COPY --from=build ${SRC_PATH}/plugins ${SRC_PATH}/plugins
+RUN git clone -b "master" --depth 1 https://github.com/ONLYOFFICE/docspace-plugins.git ${SRC_PATH}/plugins;
+
 WORKDIR ${SRC_PATH}/buildtools/install/common
 COPY ./buildtools/install/common/plugins-build.sh ./plugins-build.sh
 RUN echo "--- build/publish plugins ---" && \
@@ -222,9 +244,9 @@ RUN echo "--- build/publish plugins ---" && \
     dos2unix *.sh && \
     bash plugins-build.sh "${SRC_PATH}/plugins"
 
-#----------------------------------
-#         Nodejs build server
-#----------------------------------
+#-------------------------------------
+# Node build services (back)
+#-------------------------------------
 FROM node:22.12.0 AS build-nodejs-server
 ARG DEBIAN_FRONTEND
 ARG SRC_PATH
@@ -232,17 +254,13 @@ ARG SRC_PATH
 # build services Socket, SsoAuth from DocSpace-server 
 WORKDIR ${SRC_PATH}/server
 COPY ./server/common/ASC.Socket.IO ./common/ASC.Socket.IO
-COPY ./server/common/ASC.SsoAuth ./common/ASC.SsoAuth
 
 RUN echo "--- build/publish ASC.Socket.IO ---" && \ 
     cd ${SRC_PATH}/server/common/ASC.Socket.IO &&\
-    yarn install --immutable &&\
-    echo "--- build/publish ASC.SsoAuth ---" && \ 
-    cd ${SRC_PATH}/server/common/ASC.SsoAuth &&\
     yarn install --immutable
 
 #----------------------------------
-#          Dotnet build            
+# .NET build sevices
 #----------------------------------   
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-dotnet
 ARG DEBIAN_FRONTEND
@@ -253,99 +271,94 @@ COPY ./server/ .
 
 RUN echo "--- build/publishh docspace-server .net 10.0 ---" && \
     dotnet build ASC.Web.slnf && \
-    dotnet build ASC.Migrations.sln --property:OutputPath=${SRC_PATH}/publish/services/ASC.Migration.Runner/service/ && \
-    dotnet publish ASC.Web.slnf -p PublishProfile=ReleaseProfile && \
-    rm -rf ${SRC_PATH}/server/*
+#    dotnet build ASC.Migrations.sln --property:OutputPath=${SRC_PATH}/publish/services/ASC.Migration.Runner/service/ && \
+    dotnet publish ASC.Web.slnf -p PublishProfile=ReleaseProfile \
+                                -p:DebugType=None -p:DebugSymbols=false && \
+    mkdir -p ${SRC_PATH}/publish/services/backend/ && \
+    cp -rf ${SRC_PATH}/publish/services/ASC.Web.Studio/service/* ${SRC_PATH}/publish/services/backend/ && \
+    cp -rf ${SRC_PATH}/publish/services/ASC.AI/service/* ${SRC_PATH}/publish/services/backend/ && \
+    cp -rf ${SRC_PATH}/publish/services/ASC.Web.Api/service/* ${SRC_PATH}/publish/services/backend/ && \
+    cp -rf ${SRC_PATH}/publish/services/ASC.People/service/* ${SRC_PATH}/publish/services/backend/ && \
+    cp -rf ${SRC_PATH}/publish/services/ASC.Files.Service/service/* ${SRC_PATH}/publish/services/backend/ && \
+    cp -rf ${SRC_PATH}/publish/services/ASC.Files/service/* ${SRC_PATH}/publish/services/backend/ && \
+    find ${SRC_PATH}/publish/services/backend/DocStore/ -type f \( -iname "*.mp4" -o -iname "*.mp3" \) -delete || true; 
 
-FROM build AS run
-#----------------------------------
-#       Nginx/Openresty            
-#----------------------------------
+RUN echo "check dir backend" && \    
+    ls -la ${SRC_PATH}/publish/services/backend/
 
-# Create directories for openresty
-RUN rm -rf /var/lib/apt/lists/* && \
-    rm -rf /usr/share/nginx/html/* && \
-    mkdir -p /var/log/nginx/ && \
-    mkdir -p /etc/nginx/ && \
-    mkdir -p /var/log/openresty && \
-    mkdir -p /etc/openresty/conf.d  && \  
-    mkdir -p /etc/nginx/includes/ && \
-    cp -f ${SRC_PATH}/buildtools/config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
-    cp -f ${SRC_PATH}/buildtools/config/nginx/includes/server-*.conf /etc/nginx/includes/ && \
-    mkdir -p /etc/nginx/conf.d && \
-    cp -f ${SRC_PATH}/buildtools/config/nginx/onlyoffice.conf /etc/nginx/conf.d/ && \
-    cp -f ${SRC_PATH}/buildtools/config/nginx/onlyoffice-client.conf /etc/nginx/conf.d/ && \
-    cp -f ${SRC_PATH}/buildtools/config/nginx/onlyoffice-management.conf /etc/nginx/conf.d/ && \
-    cp -f ${SRC_PATH}/buildtools/config/nginx/onlyoffice-story.conf /etc/nginx/conf.d/
-
-# copy static services files and config values 
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/client ${BUILD_PATH}/client
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/public ${BUILD_PATH}/public
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/management ${BUILD_PATH}/management
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/login ${SRC_PATH}/publish/web/login
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/sdk ${SRC_PATH}/publish/web/sdk
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/editor ${SRC_PATH}/publish/web/editor
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/editor/packages/doceditor/.next/static/chunks ${BUILD_PATH}/build/doceditor/static/chunks
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/editor/packages/doceditor/.next/static/css ${BUILD_PATH}/build/doceditor/static/css
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/editor/packages/doceditor/.next/static/media ${BUILD_PATH}/build/doceditor/static/media
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/login/packages/login/.next/static/chunks ${BUILD_PATH}/build/login/static/chunks
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/login/packages/login/.next/static/css ${BUILD_PATH}/build/login/static/css
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/login/packages/login/.next/static/media ${BUILD_PATH}/build/login/static/media
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/sdk/packages/sdk/.next/static/chunks ${BUILD_PATH}/build/sdk/static/chunks
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/sdk/packages/sdk/.next/static/css ${BUILD_PATH}/build/sdk/static/css
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/web/sdk/packages/sdk/.next/static/media ${BUILD_PATH}/build/sdk/static/media
-COPY --from=build-nodejs-client --chown=onlyoffice:onlyoffice ${SRC_PATH}/plugins/publish/ ${APP_STORAGE_ROOT}/Studio/webplugins
-
-COPY --chown=onlyoffice:onlyoffice ./buildtools/install/docker/config/nginx/docker-entrypoint.d /docker-entrypoint.d
-COPY --chown=onlyoffice:onlyoffice ./buildtools/config/elastic.test.json /app/onlyoffice/config/elastic.json
-COPY --chown=onlyoffice:onlyoffice ./docker/config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
-COPY --chown=onlyoffice:onlyoffice ./buildtools/install/docker/config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
-COPY --chown=onlyoffice:onlyoffice ./buildtools/config/nginx/html /etc/nginx/html
-COPY --chown=onlyoffice:onlyoffice ./buildtools/install/docker/prepare-nginx-router.sh /docker-entrypoint.d/prepare-nginx-router.sh
-COPY --chown=onlyoffice:onlyoffice ./buildtools/install/docker/config/nginx/docker-entrypoint.sh /nginx/docker-entrypoint.sh
-
-COPY --from=build-dotnet --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/services/ASC.Web.Studio/service ${SRC_PATH}/publish/services/ASC.Web.Studio/service
-COPY --from=build-dotnet --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/services/ASC.AI/service ${SRC_PATH}/publish/services/ASC.AI/service
-COPY --from=build-dotnet --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/services/ASC.Web.Api/service ${SRC_PATH}/publish/services/ASC.Web.Api/service
-COPY --from=build-dotnet --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/services/ASC.People/service ${SRC_PATH}/publish/services/ASC.People/service
-COPY --from=build-dotnet --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/services/ASC.Files.Service/service ${SRC_PATH}/publish/services/ASC.Files.Service/service
-COPY --from=build-dotnet --chown=onlyoffice:onlyoffice ${SRC_PATH}/publish/services/ASC.Files/service ${SRC_PATH}/publish/services/ASC.Files/service
-
-COPY --from=build-nodejs-server --chown=onlyoffice:onlyoffice ${SRC_PATH}/server/common/ASC.Socket.IO ${SRC_PATH}/publish/services/ASC.Socket.IO
-COPY --from=build-nodejs-server --chown=onlyoffice:onlyoffice ${SRC_PATH}/server/common/ASC.SsoAuth ${SRC_PATH}/publish/services/ASC.SsoAuth
-#COPY --from=java-build --chown=onlyoffice:onlyoffice ${SRC_PATH}/server/common/ASC.Identity/authorization/authorization-container/target/*.jar ${SRC_PATH}/publish/services/ASC.Identity.Authorization/app.jar
-#COPY --from=java-build --chown=onlyoffice:onlyoffice ${SRC_PATH}/server/common/ASC.Identity/registration/registration-container/target/*.jar ${SRC_PATH}/publish/services/ASC.Identity.Registration/app.jar
-
-
-RUN sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/http:\/\/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i '/client_body_temp_path/ i \ \ \ \ $MAP_HASH_BUCKET_SIZE' /etc/nginx/nginx.conf.template && \
-    sed -i 's/\(worker_connections\).*;/\1 $COUNT_WORKER_CONNECTIONS;/' /etc/nginx/nginx.conf.template && \
-    sed -i -e '/^user/s/^/#/' -e 's#/tmp/nginx.pid#nginx.pid#' -e 's#/etc/nginx/mime.types#mime.types#' /etc/nginx/nginx.conf.template && \
-    mkdir -p ${BUILD_PATH}/public/campaigns && cp -arf ${SRC_PATH}/campaigns/src/campaigns/* ${BUILD_PATH}/public/campaigns/ && \
-    rm -rf ${SRC_PATH}/campaigns
-
-RUN chown -R onlyoffice:onlyoffice /etc/nginx/ && \
-    chown -R onlyoffice:onlyoffice /var/log/onlyoffice && \
-    chown -R onlyoffice:onlyoffice /var/log/nginx/ ${BUILD_PATH}/public/campaigns
-    #chown -R mysql:mysql /var/log/mysql /var/lib/mysql /var/run/mysqld 
-    #chmod 600 /var/lib/rabbitmq/.erlang.cookie && \
-    #chown rabbitmq:rabbitmq /var/log/rabbitmq
-    #chown -R onlyoffice:onlyoffice /var/www  
-
-WORKDIR  /
-RUN dos2unix /docker-entrypoint.d/* && chmod +x /docker-entrypoint.d/* && \
-    dos2unix /nginx/*.sh && chmod +x *.sh && \ 
-    dos2unix *.sh && chmod +x *.sh
+# ============================================================
+# Final runtime image Ubuntu 22.04 + .NET runtime
+# + OpenResty (Lua in router) + Node (binary only) + supervisor
+# Works on amd64 + arm64
+# ============================================================
     
-#----------------------------------
-#         clean up         
-#----------------------------------    
-RUN echo "--- delete temporary files ---" && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* \
-    /tmp/*
+FROM base AS final
 
-EXPOSE 5032 5010 5027 5012 5007 5009 5005 5004 5006 5000 5003 5033 5099 5013 5011 9899 9834 8092 3306 6379 5672 9200 9600 5601 8080 9090 5157
+COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/config/nginx/docker-entrypoint.d /docker-entrypoint.d
+COPY --chown=${COMPANY}:${COMPANY} ./buildtools/config/elastic.test.json /app/${COMPANY}/config/elastic.json
+COPY --chown=${COMPANY}:${COMPANY} ./docker/config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
+COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
+COPY --chown=${COMPANY}:${COMPANY} ./buildtools/config/nginx/html /etc/nginx/html
+COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/prepare-nginx-router.sh /docker-entrypoint.d/prepare-nginx-router.sh
+COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/config/nginx/docker-entrypoint.sh /nginx/docker-entrypoint.sh
+
+COPY --from=build-nodejs-client --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/web/ ${BUILD_PATH}/
+COPY --from=build-nodejs-client --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/plugins/publish/ ${APP_STORAGE_ROOT}/Studio/webplugins
+COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/services/backend/ ${SRC_PATH}/publish/services/backend/
+COPY --from=build-nodejs-server --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/server/common/ASC.Socket.IO ${SRC_PATH}/publish/services/ASC.Socket.IO
+
+# ---- nginx/openresty config + templates + campaigns (merged from your snippets) ----
+RUN set -eux; \
+    rm -rf /usr/share/nginx/html/*; \
+    mkdir -p /var/log/nginx/ /etc/nginx/ /var/log/openresty /etc/openresty/conf.d /etc/nginx/includes/ /etc/nginx/conf.d; \
+    \
+    cp -f ${SRC_PATH}/buildtools/config/nginx/includes/${COMPANY}*.conf /etc/nginx/includes/; \
+    cp -f ${SRC_PATH}/buildtools/config/nginx/includes/server-*.conf /etc/nginx/includes/; \
+    \
+    cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}.conf /etc/nginx/conf.d/; \
+    cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}-client.conf /etc/nginx/conf.d/; \
+    cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}-management.conf /etc/nginx/conf.d/; \
+    cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}-story.conf /etc/nginx/conf.d/; \
+    \
+    sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/${COMPANY}.conf; \
+    sed -i 's/http:\/\/172.*/$document_server;/' /etc/nginx/conf.d/${COMPANY}.conf; \
+    sed -i '/client_body_temp_path/ i \ \ \ \ $MAP_HASH_BUCKET_SIZE' /etc/nginx/nginx.conf.template; \
+    sed -i 's/\(worker_connections\).*;/\1 $COUNT_WORKER_CONNECTIONS;/' /etc/nginx/nginx.conf.template; \
+    sed -i -e '/^user/s/^/#/' -e 's#/tmp/nginx.pid#nginx.pid#' -e 's#/etc/nginx/mime.types#mime.types#' /etc/nginx/nginx.conf.template; \
+    \
+    mkdir -p ${BUILD_PATH}/public/campaigns; \
+    cp -arf ${SRC_PATH}/campaigns/src/campaigns/* ${BUILD_PATH}/public/campaigns/; \
+    rm -rf ${SRC_PATH}/campaigns; \
+    \
+    chown -R ${COMPANY}:${COMPANY} /etc/nginx/ /var/log/${COMPANY} /var/log/nginx/ ${BUILD_PATH}/public/campaigns
+ 
+RUN mkdir -p ${BUILD_PATH}/build/doceditor/static/chunks && \
+    mv ${BUILD_PATH}/editor/packages/doceditor/.next/static/chunks ${BUILD_PATH}/build/doceditor/static/ && \
+    mkdir -p ${BUILD_PATH}/build/doceditor/static/css && \
+    mv ${BUILD_PATH}/editor/packages/doceditor/.next/static/css ${BUILD_PATH}/build/doceditor/static/ && \
+    mkdir -p ${BUILD_PATH}/build/doceditor/static/media && \
+    mv ${BUILD_PATH}/editor/packages/doceditor/.next/static/media ${BUILD_PATH}/build/doceditor/static/ && \
+    mkdir -p ${BUILD_PATH}/build/login/static/chunks && \
+    mv ${BUILD_PATH}/login/packages/login/.next/static/chunks ${BUILD_PATH}/build/login/static/ && \
+    mkdir -p ${BUILD_PATH}/build/login/static/css && \
+    mv ${BUILD_PATH}/login/packages/login/.next/static/css ${BUILD_PATH}/build/login/static/ && \
+    mkdir -p ${BUILD_PATH}/build/login/static/media && \
+    mv ${BUILD_PATH}/login/packages/login/.next/static/media ${BUILD_PATH}/build/login/static/ 
+
+# ---- normalize scripts line-endings + permissions ----
+WORKDIR /
+RUN set -eux; \
+    if [ -d /docker-entrypoint.d ]; then dos2unix /docker-entrypoint.d/* || true; chmod +x /docker-entrypoint.d/* || true; fi; \
+    if [ -d /nginx ]; then dos2unix /nginx/*.sh || true; chmod +x /nginx/*.sh || true; fi; \
+    dos2unix /*.sh || true; \
+    chmod +x /*.sh || true
+
+# ---- cleanup runtime artifacts ----
+RUN set -eux; \
+    echo "--- delete temporary files ---"; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/* /tmp/*
+
+EXPOSE  5007 5009 5004 5000 5157 5003 5013 5011 9899 8092 8080
 
 ENTRYPOINT  [ "/docker-entrypoint.sh" ]
