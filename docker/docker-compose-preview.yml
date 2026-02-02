@@ -1,0 +1,96 @@
+x-service: &x-service-base
+  env_file: "./.env"
+  environment:
+    MYSQL_HOST: ${MYSQL_HOST}
+    MYSQL_PORT: ${MYSQL_PORT}
+    MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    MYSQL_DATABASE: ${MYSQL_DATABASE}
+    MYSQL_USER: ${MYSQL_USER}
+    MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    DATABASE_MIGRATION: ${DATABASE_MIGRATION}
+    APP_DOTNET_ENV: ${APP_DOTNET_ENV}
+    APP_KNOWN_NETWORKS: ${APP_KNOWN_NETWORKS}
+    APP_KNOWN_PROXIES: ${APP_KNOWN_PROXIES}
+    APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN}
+    APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY}
+    APP_URL_PORTAL: ${APP_URL_PORTAL}
+    INSTALLATION_TYPE: ${INSTALLATION_TYPE}
+    OAUTH_REDIRECT_URL: ${OAUTH_REDIRECT_URL}
+    DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET}
+    DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER}
+    DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC}
+    DOCUMENT_CONTAINER_NAME: ${DOCUMENT_CONTAINER_NAME}
+    DOCUMENT_SERVER_URL_EXTERNAL: ${DOCUMENT_SERVER_URL_EXTERNAL}
+    ELK_SHEME: ${ELK_SHEME}
+    ELK_HOST: ${ELK_HOST}
+    ELK_PORT: ${ELK_PORT}
+    REDIS_HOST: ${REDIS_HOST}
+    REDIS_PORT: ${REDIS_PORT}
+    REDIS_USER_NAME: ${REDIS_USER_NAME}
+    REDIS_PASSWORD: ${REDIS_PASSWORD}
+    REDIS_DB: ${REDIS_DB}
+    RABBIT_PROTOCOL: ${RABBIT_PROTOCOL}
+    RABBIT_HOST: ${RABBIT_HOST}
+    RABBIT_PORT: ${RABBIT_PORT}
+    RABBIT_VIRTUAL_HOST: ${RABBIT_VIRTUAL_HOST}
+    RABBIT_USER_NAME: ${RABBIT_USER_NAME}
+    RABBIT_PASSWORD: ${RABBIT_PASSWORD}
+    LOG_LEVEL: ${LOG_LEVEL}
+    DEBUG_INFO: ${DEBUG_INFO}
+    CERTIFICATE_PATH: ${CERTIFICATE_PATH}
+    NODE_OPTIONS: ${NODE_OPTIONS}
+    WRONG_PORTAL_NAME_URL: ${WRONG_PORTAL_NAME_URL}
+    DASHBOARDS_USERNAME: ${DASHBOARDS_USERNAME}
+    DASHBOARDS_PASSWORD: ${DASHBOARDS_PASSWORD}
+    JDBC_DATABASE: ${MYSQL_DATABASE}
+    JDBC_URL: ${MYSQL_HOST}
+    JDBC_PASSWORD: ${MYSQL_PASSWORD}
+    JDBC_USER_NAME: ${MYSQL_USER}
+    SPRING_PROFILES_ACTIVE: ${IDENTITY_PROFILE}
+    SPRING_APPLICATION_SIGNATURE_SECRET: ${APP_CORE_MACHINEKEY}
+    SPRING_APPLICATION_ENCRYPTION_SECRET: ${IDENTITY_ENCRYPTION_SECRET}
+
+x-service-network: &x-service-network
+  networks:
+    - onlyoffice
+
+services:
+  onlyoffice-docspace-preview:
+    <<: [*x-service-base]
+    restart: always
+    volumes:
+      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}app_data:/app/onlyoffice/data
+      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}log_data:/var/log/onlyoffice
+    cap_add:
+      - SYS_NICE
+    tty: true
+    user: root
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.preview
+      target: run
+    container_name: onlyoffice-docspace-preview
+    image: "${REGISTRY}${REPO}/${DOCKER_IMAGE_PREFIX}docspace-preview:${DOCKER_TAG}"
+
+
+  onlyoffice-proxy:
+    image: nginx:latest
+    container_name: onlyoffice-proxy 
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx/conf.d/onlyoffice-proxy-preview.conf:/etc/nginx/conf.d/default.conf
+      -  certbot:/var/www/certbot
+    depends_on:
+      - onlyoffice-docspace-preview
+
+
+networks:
+  default:
+    name: ${NETWORK_NAME}
+    external: true
+
+volumes:
+  log_data:
+  app_data:
+  certbot:
