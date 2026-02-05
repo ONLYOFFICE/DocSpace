@@ -13,6 +13,8 @@ DOCUMENT_SERVER_JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET:-"your_jwt_secret"}
 DOCUMENT_SERVER_JWT_HEADER=${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}
 OAUTH_REDIRECT_URL=${OAUTH_REDIRECT_URL:-"https://service.onlyoffice.com/oauth2.aspx"}
 
+HIDE_SETTINGS=[\n\"Monitoring\",\n\"LdapSettings\",\n\"DocService\",\n\"MailService\",\n\"PublicPortal\",\n\"ProxyHttpContent\",\n\"SpamSubscription\",\n\"FullTextSearch\",\n\"IdentityServer\"\n]
+
 MYSQL_CONTAINER_NAME=${MYSQL_CONTAINER_NAME:-"localhost"}
 MYSQL_HOST=${MYSQL_HOST:-${MYSQL_CONTAINER_NAME}}
 MYSQL_PORT=${MYSQL_PORT:-"3306"}
@@ -45,6 +47,7 @@ sed -i "s!\"public\".*,!\"public\": \"${DOCUMENT_SERVER_URL_PUBLIC}\",!g" ${PATH
 sed -i "s!\"internal\".*,!\"internal\": \"${DOCUMENT_SERVER_URL_EXTERNAL}/\\\",!g" ${PATH_TO_CONF}/appsettings.json
 sed -i "0,/\"value\"/s!\"value\".*,!\"value\": \"${DOCUMENT_SERVER_JWT_SECRET}\",!" ${PATH_TO_CONF}/appsettings.json
 sed -i "s!\"portal\".*!\"portal\": \"${APP_URL_PORTAL}\"!g" ${PATH_TO_CONF}/appsettings.json
+#sed -i "s!\"hide-settings\".*],!\"hide-settings\": ${HIDE_SETTINGS},!g" ${PATH_TO_CONF}/appsettings.json 
 sed -i "s!\"https://service\.teamlab\.info/oauth2\.aspx\"!\"${OAUTH_REDIRECT_URL}\"!g" ${PATH_TO_CONF}/autofac.consumers.json
 
 sed -i "s!\"Hostname\".*!\"Hostname\": \"${RABBIT_HOST}\",!g" ${PATH_TO_CONF}/rabbitmq.json

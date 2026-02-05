@@ -158,7 +158,7 @@ RUN set -eux; \
 
 # ---- Node runtime: copy node binary only (no npm/pnpm) ----
 # Your supervisord programs run: node server.js ...
-COPY --from=node:22-bookworm-slim /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:24-bookworm-slim /usr/local/bin/node /usr/local/bin/node
 RUN set -eux; node -v
 
 ADD https://api.github.com/repos/ONLYOFFICE/DocSpace-buildtools/git/refs/heads/${GIT_BRANCH} /version.json
@@ -192,7 +192,7 @@ EOF
 #--------------------------------------
 # Node build services (front)
 #--------------------------------------
-FROM node:22-bookworm AS build-nodejs-client
+FROM node:24-bookworm AS build-nodejs-client
 ARG SRC_PATH
 ARG DEBIAN_FRONTEND
 ARG BUILD_ARGS="build:lite"
@@ -220,8 +220,10 @@ COPY client/packages/login/package.json       ./packages/login/
 #COPY client/packages/sdk/package.json         ./packages/sdk/
 COPY client/packages/management/package.json  ./packages/management/
 COPY client/packages/client/package.json      ./packages/client/
+COPY client/packages/client/onlyoffice-docspace-plugin-sdk-2.1.0.tgz ./packages/client/
 COPY client/packages/doceditor/package.json   ./packages/doceditor/
 COPY client/packages/shared/package.json      ./packages/shared/
+
 
 RUN corepack enable && corepack prepare pnpm@10.0.0 --activate 
 RUN --mount=type=cache,target=/pnpm-store \

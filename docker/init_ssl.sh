@@ -2,7 +2,7 @@
 
 DOMAIN="yourdomain.com"                     # <-- Replace with your domain
 EMAIL="admin@yourdomain.com"                # <-- Replace with your email
-APP_IMAGE="onlyoffice-docspace-services"    # <-- Replace with your Docker app image
+APP_IMAGE="onlyoffice-docspace-preview"     # <-- Replace with your Docker app image
 HTTP_PORT=8092                              # <-- Port your app listens to internally
 
 while [ "$1" != "" ]; do
@@ -164,9 +164,9 @@ server {
 EOF
 
 
-docker compose -f docker-compose.yml -f ssl.yml run --rm certbot certonly \
+docker compose -f docker-compose-preview.yml -f ssl.yml run --rm certbot certonly \
   --webroot --webroot-path=/var/www/certbot \
   --email ${EMAIL} --agree-tos --no-eff-email ${DOMAIN_ARGS}
 
-docker compose -f docker-compose.yml -f ssl.yml up -d onlyoffice-proxy
+docker compose -f docker-compose-preview.yml -f ssl.yml up -d onlyoffice-proxy
 docker compose restart onlyoffice-proxy
