@@ -218,7 +218,7 @@ COPY client/package.json \
 # workspace package manifests 
 COPY client/packages/login/package.json       ./packages/login/
 #COPY client/packages/sdk/package.json         ./packages/sdk/
-COPY client/packages/management/package.json  ./packages/management/
+#COPY client/packages/management/package.json  ./packages/management/
 COPY client/packages/client/package.json      ./packages/client/
 COPY client/packages/client/onlyoffice-docspace-plugin-sdk-2.1.0.tgz ./packages/client/
 COPY client/packages/doceditor/package.json   ./packages/doceditor/
@@ -273,20 +273,25 @@ COPY ./server/ .
 
 RUN echo "--- build/publishh docspace-server .net 10.0 ---" && \
     dotnet build ASC.Web.slnf && \
-#    dotnet build ASC.Migrations.sln --property:OutputPath=${SRC_PATH}/publish/services/ASC.Migration.Runner/service/ && \
+    dotnet build ASC.Migrations.sln --property:OutputPath=${SRC_PATH}/publish/services/ASC.Migration.Runner/service/ && \
     dotnet publish ASC.Web.slnf -p PublishProfile=ReleaseProfile \
-                                -p:DebugType=None -p:DebugSymbols=false && \
-    mkdir -p ${SRC_PATH}/publish/services/backend/ && \
-    cp -rf ${SRC_PATH}/publish/services/ASC.Web.Studio/service/* ${SRC_PATH}/publish/services/backend/ && \
-    cp -rf ${SRC_PATH}/publish/services/ASC.AI/service/* ${SRC_PATH}/publish/services/backend/ && \
-    cp -rf ${SRC_PATH}/publish/services/ASC.Web.Api/service/* ${SRC_PATH}/publish/services/backend/ && \
-    cp -rf ${SRC_PATH}/publish/services/ASC.People/service/* ${SRC_PATH}/publish/services/backend/ && \
-    cp -rf ${SRC_PATH}/publish/services/ASC.Files.Service/service/* ${SRC_PATH}/publish/services/backend/ && \
-    cp -rf ${SRC_PATH}/publish/services/ASC.Files/service/* ${SRC_PATH}/publish/services/backend/ && \
+                                -p:DebugType=None -p:DebugSymbols=false 
+
+RUN set -eux; \
+    mkdir -p ${SRC_PATH}/publish/services/backend/; \
+    mv ${SRC_PATH}/publish/services/ASC.Web.Studio/service/* ${SRC_PATH}/publish/services/backend/; \
+    mv ${SRC_PATH}/publish/services/ASC.AI/service/*        ${SRC_PATH}/publish/services/backend/; \
+    mv ${SRC_PATH}/publish/services/ASC.Web.Api/service/*   ${SRC_PATH}/publish/services/backend/; \
+    mv ${SRC_PATH}/publish/services/ASC.People/service/*    ${SRC_PATH}/publish/services/backend/; \
+    mv ${SRC_PATH}/publish/services/ASC.Files.Worker/service/* ${SRC_PATH}/publish/services/backend/; \
+    mv ${SRC_PATH}/publish/services/ASC.Files/service/*     ${SRC_PATH}/publish/services/backend/ && \
     find ${SRC_PATH}/publish/services/backend/DocStore/ -type f \( -iname "*.mp4" -o -iname "*.mp3" \) -delete || true; 
 
-RUN echo "check dir backend" && \    
-    ls -la ${SRC_PATH}/publish/services/backend/
+# cleanup
+RUN set -eux; \
+    rm -rf ${SRC_PATH}/server; \
+    find ${SRC_PATH} -type d \( -name bin -o -name obj \) -prune -exec rm -rf {} + || true; \
+    rm -rf /root/.nuget/packages /root/.local/share/NuGet /tmp/* /var/tmp/*
 
 # ============================================================
 # Final runtime image Ubuntu 22.04 + .NET runtime
@@ -306,6 +311,7 @@ COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/config/nginx/dock
 
 COPY --from=build-nodejs-client --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/web/ ${BUILD_PATH}/
 COPY --from=build-nodejs-client --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/plugins/publish/ ${APP_STORAGE_ROOT}/Studio/webplugins
+#COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/services/ASC.Migration.Runner/service ${SRC_PATH}/publish/services/migration
 COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/services/backend/ ${SRC_PATH}/publish/services/backend/
 COPY --from=build-nodejs-server --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/server/common/ASC.Socket.IO ${SRC_PATH}/publish/services/ASC.Socket.IO
 
