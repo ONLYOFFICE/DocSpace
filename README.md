@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://www.onlyoffice.com/docspace?utm_source=github&utm_medium=cpc&utm_campaign=GitHubDocSpace">
-    <img width="840" src="https://static-site.onlyoffice.com/public/images/outer/docspace.png" alt="ONLYOFFICE DocSpace">
+    <img width="840" src="https://static-site.onlyoffice.com/public/images/templates/docspace/hero/yt-cover.png" alt="ONLYOFFICE DocSpace">
   </a>
 </p>
 
