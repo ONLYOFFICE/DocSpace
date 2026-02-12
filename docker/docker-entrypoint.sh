@@ -23,11 +23,8 @@ MYSQL_USER=${MYSQL_USER:-"onlyoffice_user"}
 MYSQL_PASSWORD=${MYSQL_PASSWORD:-"onlyoffice_pass"}
 COMMAND_TIMEOUT=${COMMAND_TIMEOUT:-"100"}
 
-RABBIT_CONNECTION_HOST=${RABBIT_CONNECTION_HOST:-"onlyoffice-rabbitmq"}
-RABBIT_HOST=${RABBIT_HOST:-${RABBIT_CONNECTION_HOST}}
-
-REDIS_CONNECTION_HOST=${REDIS_CONNECTION_HOST:-"onlyoffice-redis"}
-REDIS_HOST=${REDIS_HOST:-${REDIS_CONNECTION_HOST}}
+RABBIT_CONTAINER_NAME=${RABBIT_CONTAINER_NAME:-"onlyoffice-rabbitmq"}
+REDIS_CONTAINER_NAME=${REDIS_CONTAINER_NAME:-"onlyoffice-redis"}
 
 ELK_SHEME=${ELK_SHEME:-"http"}
 ELK_HOST=${ELK_HOST:-"localhost"}
@@ -50,12 +47,18 @@ sed -i "s!\"portal\".*!\"portal\": \"${APP_URL_PORTAL}\"!g" ${PATH_TO_CONF}/apps
 #sed -i "s!\"hide-settings\".*],!\"hide-settings\": ${HIDE_SETTINGS},!g" ${PATH_TO_CONF}/appsettings.json 
 sed -i "s!\"https://service\.teamlab\.info/oauth2\.aspx\"!\"${OAUTH_REDIRECT_URL}\"!g" ${PATH_TO_CONF}/autofac.consumers.json
 
-sed -i "s!\"Hostname\".*!\"Hostname\": \"${RABBIT_HOST}\",!g" ${PATH_TO_CONF}/rabbitmq.json
-sed -i "s!\"Host\".*!\"Host\": \"${REDIS_HOST}\",!g" ${PATH_TO_CONF}/redis.json
+sed -i "s!\"Hostname\".*!\"Hostname\": \"${RABBIT_CONTAINER_NAME}\",!g" ${PATH_TO_CONF}/rabbitmq.json
+sed -i "s!\"Host\".*!\"Host\": \"${REDIS_CONTAINER_NAME}\",!g" ${PATH_TO_CONF}/redis.json
 
 sed -i "s!\"Scheme\".*!\"Scheme\": \"${ELK_SHEME}\",!g" ${PATH_TO_CONF}/elastic.json
 sed -i "s!\"Host\".*!\"Host\": \"${ELK_HOST}\",!g" ${PATH_TO_CONF}/elastic.json
 sed -i "s!\"Port\".*!\"Port\": \"${ELK_PORT}\",!g" ${PATH_TO_CONF}/elastic.json
 sed -i "s!\"Threads\".*!\"Threads\": \"${ELK_THREADS}\"!g" ${PATH_TO_CONF}/elastic.json
+
+cat > "${PATH_TO_CONF}/rabbitmq.json" <<EOF
+{
+  "RabbitMQ": {}
+}
+EOF
 
 supervisord -n

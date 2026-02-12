@@ -180,14 +180,9 @@ RUN <<EOF
     echo "--- customize config base files ---" && \
     mkdir -p /app/onlyoffice/config/ && \
     ls | grep -v "test" | grep -v "\.dev\." | grep -v "nginx" | xargs cp -t /app/onlyoffice/config/
-    cp *.config /app/onlyoffice/config/
+    cp *.config /app/onlyoffice/config/ && \
+    cp -a document-formats /app/onlyoffice/config/
 EOF
-
-#RUN set -eux; \
-#    echo "--- customize config base files ---"; \
-#    mkdir -p /app/${COMPANY}/config/; \
-#    ls | grep -v "test" | grep -v "\.dev\." | grep -v "nginx" | xargs cp -t /app/${COMPANY}/config/; \
-#    cp -f *.config /app/${COMPANY}/config/
 
 #--------------------------------------
 # Node build services (front)
@@ -273,23 +268,28 @@ COPY ./server/ .
 
 RUN echo "--- build/publishh docspace-server .net 10.0 ---" && \
     dotnet build ASC.Web.slnf && \
-    dotnet build ASC.Migrations.sln --property:OutputPath=${SRC_PATH}/publish/services/ASC.Migration.Runner/service/ && \
+    dotnet build ASC.Migrations.sln --property:OutputPath=${SRC_PATH}/publish/ASC.Migration.Runner/service/ && \
     dotnet publish ASC.Web.slnf -p PublishProfile=ReleaseProfile \
-                                -p:DebugType=None -p:DebugSymbols=false 
+                                -p:DebugType=None -p:DebugSymbols=false
 
 RUN set -eux; \
-    mkdir -p ${SRC_PATH}/publish/services/backend/; \
-    mv ${SRC_PATH}/publish/services/ASC.Web.Studio/service/* ${SRC_PATH}/publish/services/backend/; \
-    mv ${SRC_PATH}/publish/services/ASC.AI/service/*        ${SRC_PATH}/publish/services/backend/; \
-    mv ${SRC_PATH}/publish/services/ASC.Web.Api/service/*   ${SRC_PATH}/publish/services/backend/; \
-    mv ${SRC_PATH}/publish/services/ASC.People/service/*    ${SRC_PATH}/publish/services/backend/; \
-    mv ${SRC_PATH}/publish/services/ASC.Files.Worker/service/* ${SRC_PATH}/publish/services/backend/; \
-    mv ${SRC_PATH}/publish/services/ASC.Files/service/*     ${SRC_PATH}/publish/services/backend/ && \
-    find ${SRC_PATH}/publish/services/backend/DocStore/ -type f \( -iname "*.mp4" -o -iname "*.mp3" \) -delete || true; 
+    mkdir -p ${SRC_PATH}/publish/backend/; \
+    for svc in \
+        ASC.Web.Studio \
+        ASC.AI \
+        ASC.Web.Api \
+        ASC.People \
+        ASC.Files.Worker \
+        ASC.Files; \
+    do \
+        cp -a ${SRC_PATH}/publish/services/${svc}/service/. \
+              ${SRC_PATH}/publish/backend/; \
+    done 
 
 # cleanup
 RUN set -eux; \
     rm -rf ${SRC_PATH}/server; \
+    rm -rf ${SRC_PATH}/publish/services; \
     find ${SRC_PATH} -type d \( -name bin -o -name obj \) -prune -exec rm -rf {} + || true; \
     rm -rf /root/.nuget/packages /root/.local/share/NuGet /tmp/* /var/tmp/*
 
@@ -299,7 +299,7 @@ RUN set -eux; \
 # Works on amd64 + arm64
 # ============================================================
     
-FROM base AS final
+FROM base AS final_preview
 
 COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/config/nginx/docker-entrypoint.d /docker-entrypoint.d
 COPY --chown=${COMPANY}:${COMPANY} ./buildtools/config/elastic.test.json /app/${COMPANY}/config/elastic.json
@@ -311,8 +311,12 @@ COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/config/nginx/dock
 
 COPY --from=build-nodejs-client --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/web/ ${BUILD_PATH}/
 COPY --from=build-nodejs-client --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/plugins/publish/ ${APP_STORAGE_ROOT}/Studio/webplugins
-#COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/services/ASC.Migration.Runner/service ${SRC_PATH}/publish/services/migration
-COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/services/backend/ ${SRC_PATH}/publish/services/backend/
+
+# Disabled: migration service moved to preview image.
+# Re-enable if migration is bundled back into this image.
+# COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/ASC.Migration.Runner/service ${SRC_PATH}/publish/services/migration
+
+COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/backend/ ${SRC_PATH}/publish/services/backend/
 COPY --from=build-nodejs-server --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/server/common/ASC.Socket.IO ${SRC_PATH}/publish/services/ASC.Socket.IO
 
 # ---- nginx/openresty config + templates + campaigns (merged from your snippets) ----
@@ -329,7 +333,8 @@ RUN set -eux; \
     cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}-story.conf /etc/nginx/conf.d/; \
     \
     sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/${COMPANY}.conf; \
-    sed -i 's/http:\/\/172.*/$document_server;/' /etc/nginx/conf.d/${COMPANY}.conf; \
+    sed -i "/map \$scheme \$doceditor_url {/,/}/ s|default \"http://[^\"]*\";|default \"http://${COMPANY}-document-server\";|" \
+    /etc/nginx/conf.d/${COMPANY}.conf; \
     sed -i '/client_body_temp_path/ i \ \ \ \ $MAP_HASH_BUCKET_SIZE' /etc/nginx/nginx.conf.template; \
     sed -i 's/\(worker_connections\).*;/\1 $COUNT_WORKER_CONNECTIONS;/' /etc/nginx/nginx.conf.template; \
     sed -i -e '/^user/s/^/#/' -e 's#/tmp/nginx.pid#nginx.pid#' -e 's#/etc/nginx/mime.types#mime.types#' /etc/nginx/nginx.conf.template; \
@@ -370,3 +375,28 @@ RUN set -eux; \
 EXPOSE  5007 5009 5004 5000 5157 5003 5013 5011 9899 8092 8080
 
 ENTRYPOINT  [ "/docker-entrypoint.sh" ]
+
+## ASC.Migration.Runner ##
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble AS onlyoffice-migration-runner
+ARG SRC_PATH
+ARG BUILD_PATH
+ARG PRODUCT
+ARG COMPANY=${PRODUCT}
+ARG COMPANY_UID=1004
+ARG COMPANY_GID=107
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+            adduser; \
+    # ---- ${COMPANY} user/group ----
+    addgroup --system --gid ${COMPANY_GID} ${COMPANY}; \
+    adduser --uid ${COMPANY_UID} --quiet --home /var/www/${COMPANY} --system --gid ${COMPANY_GID} ${COMPANY};
+
+WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
+
+COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/docker-migration-entrypoint.sh ./docker-migration-entrypoint.sh
+COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/ASC.Migration.Runner/service/ .
+
+ENTRYPOINT ["./docker-migration-entrypoint.sh"]
+

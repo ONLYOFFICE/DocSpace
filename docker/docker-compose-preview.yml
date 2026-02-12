@@ -46,13 +46,6 @@ x-service: &x-service-base
     JDBC_URL: ${MYSQL_HOST}
     JDBC_PASSWORD: ${MYSQL_PASSWORD}
     JDBC_USER_NAME: ${MYSQL_USER}
-    SPRING_PROFILES_ACTIVE: ${IDENTITY_PROFILE}
-    SPRING_APPLICATION_SIGNATURE_SECRET: ${APP_CORE_MACHINEKEY}
-    SPRING_APPLICATION_ENCRYPTION_SECRET: ${IDENTITY_ENCRYPTION_SECRET}
-
-x-service-network: &x-service-network
-  networks:
-    - onlyoffice
 
 services:
   onlyoffice-docspace-preview:
@@ -68,14 +61,13 @@ services:
     build:
       context: ..
       dockerfile: ./docker/Dockerfile.preview
-      target: run
-    container_name: onlyoffice-docspace-preview
+      target: final_preview
+    container_name: ${DOCSPACE_PREVIEW_NAME}
     image: "${REGISTRY}${REPO}/${DOCKER_IMAGE_PREFIX}-preview:${DOCKER_TAG}"
 
-
   onlyoffice-proxy:
-    image: nginx:latest
-    container_name: onlyoffice-proxy 
+    image: ${REGISTRY}${PROXY_IMAGE_NAME}
+    container_name: ${PROXY_NAME}
     ports:
       - "80:80"
     volumes:
@@ -84,13 +76,119 @@ services:
     depends_on:
       - onlyoffice-docspace-preview
 
+  onlyoffice-redis:
+    image: ${REGISTRY}${REDIS_IMAGE_NAME}
+    container_name: ${REDIS_CONTAINER_NAME}
+    restart: always
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
 
-networks:
-  default:
-    name: ${NETWORK_NAME}
-    external: true
+  onlyoffice-rabbitmq:
+    image: ${REGISTRY}${RABBITMQ_IMAGE_NAME}
+    container_name: ${RABBIT_CONTAINER_NAME}
+    restart: always
+    expose:
+      - "5672"
+      - "80"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 10s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+  onlyoffice-mysql-server:
+    image: ${REGISTRY}${MYSQL_IMAGE}
+    cap_add:
+      - SYS_NICE
+    container_name: ${MYSQL_CONTAINER_NAME}
+    restart: always
+    tty: true
+    user: mysql
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    command:
+      - "--sql-mode=NO_ENGINE_SUBSTITUTION"
+      - "--max_connections=1000"
+      - "--max_allowed_packet=1048576000"
+      - "--group_concat_max_len=2048"    
+    healthcheck:
+      test: ["CMD", "mysql", "-u", "${MYSQL_USER}", "--password=${MYSQL_PASSWORD}", "-e", ";"]
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    volumes:
+      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}mysql_data:/var/lib/mysql
+
+  onlyoffice-document-server:
+    image: "${REGISTRY}${DOCUMENT_SERVER_IMAGE_NAME}"
+    container_name: ${DOCUMENT_CONTAINER_NAME}
+    # Strings below enable the JSON Web Token validation.
+    environment:
+      - JWT_ENABLED=true
+      - JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET}
+      - JWT_HEADER=${DOCUMENT_SERVER_JWT_HEADER}
+      - JWT_IN_BODY=true
+      - AMQP_URI=${RABBIT_PROTOCOL}://${RABBIT_USER_NAME}:${RABBIT_PASSWORD}@${RABBIT_HOST:-${RABBIT_CONTAINER_NAME}}:${RABBIT_PORT}${RABBIT_VIRTUAL_HOST}
+      - REDIS_SERVER_HOST=${REDIS_HOST:-${REDIS_CONTAINER_NAME}}
+      - REDIS_SERVER_PORT=${REDIS_PORT:-6379}
+      - REDIS_SERVER_USER=${REDIS_USER_NAME}
+      - REDIS_SERVER_PASS=${REDIS_PASSWORD}
+      - REDIS_SERVER_DB=${REDIS_DB}
+    volumes:
+      #- ${CERTIFICATE_PATH}:/var/www/onlyoffice/Data/certs/extra-ca-certs.pem
+      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}app_data:/var/www/onlyoffice/Data
+      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}log_data:/var/log/onlyoffice
+      - ${VOLUMES_DIR:+${VOLUMES_DIR}/}ds_fonts:/usr/share/fonts
+    expose:
+      - '80'
+    extra_hosts:
+      - "${EXTRA_HOSTS:-placeholder.local:127.0.0.1}"
+    stdin_open: true
+    restart: always
+    stop_grace_period: 60s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/info/info.json"]
+      interval: 30s
+      retries: 5
+      start_period: 60s
+      timeout: 10s      
+
+  onlyoffice-migration-runner:
+    image: "${REGISTRY}${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${MIGRATION_TAG}"
+    container_name: ${MIGRATION_RUNNER_NAME}
+    user: root
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.preview
+      target: onlyoffice-migration-runner
+    depends_on:
+      onlyoffice-mysql-server:
+        condition: service_healthy
+    restart: "on-failure"
+    environment:
+      MYSQL_CONTAINER_NAME: ${MYSQL_CONTAINER_NAME}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
 volumes:
   log_data:
   app_data:
+  ds_fonts:
   certbot:
+  mysql_data:
