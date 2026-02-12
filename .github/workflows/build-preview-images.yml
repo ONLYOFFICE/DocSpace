@@ -1,0 +1,161 @@
+name: Build DocSpace Preview Images (multiarch)
+
+on:
+  workflow_dispatch: {}
+
+  schedule:
+    # Every night at 03:00 UTC (adjust if needed)
+    - cron: "0 3 * * *"
+
+jobs:
+  build:
+    # Run only on this feature branch
+    if: github.ref == 'refs/heads/feature/docker-dev-run'
+
+    runs-on: ubuntu-22.04
+
+    env:
+      REPO: onlyoffice
+      PREVIEW_IMAGE: onlyoffice/4testing-docspace-preview
+      MIGRATION_IMAGE: onlyoffice/4testing-docspace-migration-runner
+      PRODUCT_VERSION: preview
+
+    steps:
+      # ----------------------------
+      # 1) Free disk space (optional)
+      # ----------------------------
+      - name: Free Disk Space
+        run: |
+          curl -fsSL \
+            https://raw.githubusercontent.com/${{ github.repository }}/feature/docker-dev-run/.github/scripts/free-disk-space-linux.sh \
+            | sudo bash
+
+      # ----------------------------
+      # 2) Checkout repository
+      # ----------------------------
+      - name: Checkout (no submodules yet)
+        uses: actions/checkout@v4
+        with:
+          ref: feature/docker-dev-run
+          fetch-depth: 0
+
+      # ---------------------------------------------------
+      # 3) Fix relative submodule URLs + init recursively
+      # ---------------------------------------------------
+      - name: Init submodules (recursive, public repos)
+        shell: bash
+        run: |
+          set -eux
+
+          echo "Rewriting relative submodule URLs..."
+
+          # Convert ../Repo.git -> https://github.com/ONLYOFFICE/Repo.git
+          git config -f .gitmodules --get-regexp '^submodule\..*\.url$' \
+          | while read -r key url; do
+              if [[ "$url" == ../*.git ]]; then
+                repo="${url#../}"
+                new="https://github.com/ONLYOFFICE/${repo}"
+                echo "  $key: $url -> $new"
+                git config -f .gitmodules "$key" "$new"
+              fi
+            done
+
+          git submodule sync --recursive
+          git submodule update --init --recursive
+
+          echo "Submodules initialized successfully"
+
+      - name: Verify submodules
+        run: |
+          set -eux
+          git submodule status --recursive
+          ls -la client buildtools server
+
+      # ---------------------------------------------
+      # 4) Optional: Move Docker storage to /mnt
+      # ---------------------------------------------
+      - name: Use /mnt for Docker if available
+        shell: bash
+        run: |
+          set -eux
+          df -h
+
+          if mountpoint -q /mnt; then
+            echo "Relocating Docker root to /mnt/docker"
+
+            sudo systemctl stop docker
+
+            sudo mkdir -p /mnt/docker
+            sudo rm -rf /var/lib/docker
+            sudo ln -s /mnt/docker /var/lib/docker
+
+            sudo systemctl start docker
+          fi
+
+          docker info | grep -E 'Docker Root Dir|Storage Driver' || true
+          df -h
+
+      # ----------------------------
+      # 5) Setup QEMU + Buildx
+      # ----------------------------
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ----------------------------
+      # 6) Login to Docker Hub
+      # ----------------------------
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # ----------------------------
+      # 7) Prepare Docker tag
+      # ----------------------------
+      - name: Prepare tag
+        id: prepare
+        shell: bash
+        run: |
+          DOCKER_TAG="${PRODUCT_VERSION}.${{ github.run_number }}"
+          echo "DOCKER_TAG=$DOCKER_TAG" >> "$GITHUB_OUTPUT"
+          echo "Building tag: $DOCKER_TAG"
+
+      # ----------------------------
+      # 8) Build + Push Preview Image
+      # ----------------------------
+      - name: Build & push preview (amd64+arm64)
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            -f docker/Dockerfile.preview \
+            --target final_preview \
+            -t ${{ env.PREVIEW_IMAGE }}:${{ steps.prepare.outputs.DOCKER_TAG }} \
+            --push \
+            .
+
+      # ----------------------------
+      # 9) Build + Push Migration Runner
+      # ----------------------------
+      - name: Build & push migration-runner (amd64+arm64)
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            -f docker/Dockerfile.preview \
+            --target onlyoffice-migration-runner \
+            -t ${{ env.MIGRATION_IMAGE }}:${{ steps.prepare.outputs.DOCKER_TAG }} \
+            --push \
+            .
+
+      # ----------------------------
+      # 10) Cleanup
+      # ----------------------------
+      - name: Cleanup Docker
+        if: always()
+        run: |
+          docker buildx prune -af || true
+          docker system prune -af --volumes || true
+          df -h
