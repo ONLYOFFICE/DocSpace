@@ -2,7 +2,9 @@ name: Build DocSpace Preview Images (multiarch)
 
 on:
   workflow_dispatch: {}
-
+  push:
+    branches:
+      - feature/docker-dev-run
   schedule:
     # Every night at 03:00 UTC (adjust if needed)
     - cron: "0 3 * * *"
