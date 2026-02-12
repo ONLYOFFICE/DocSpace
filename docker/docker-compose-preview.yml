@@ -54,6 +54,8 @@ services:
     cap_add:
       - SYS_NICE
     tty: true
+    extra_hosts:
+      - "localhost:host-gateway"
     user: root
     build:
       context: ..
