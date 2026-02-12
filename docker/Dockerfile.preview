@@ -132,7 +132,14 @@ RUN set -eux; \
     \
     # ---- OpenResty (Ubuntu repo; required for access_by_lua + resty.redis) ----
     wget -O - https://openresty.org/package/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/openresty.gpg; \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu $(lsb_release -sc) main" \
+    \
+    arch="$(dpkg --print-architecture)"; \
+    if [ "$arch" = "arm64" ]; then \
+      repo="http://openresty.org/package/arm64/ubuntu"; \
+    else \
+      repo="http://openresty.org/package/ubuntu"; \
+    fi; \
+    echo "deb [arch=$arch signed-by=/usr/share/keyrings/openresty.gpg] $repo $(lsb_release -sc) main" \
       > /etc/apt/sources.list.d/openresty.list; \
     apt-get update; \
     apt-get install -y --no-install-recommends openresty; \
