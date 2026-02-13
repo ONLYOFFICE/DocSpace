@@ -24,15 +24,6 @@ jobs:
 
     steps:
       # ----------------------------
-      # Free disk space (optional)
-      # ----------------------------
-      - name: Free Disk Space
-        run: |
-          curl -fsSL \
-            https://raw.githubusercontent.com/${{ github.repository }}/feature/docker-dev-run/.github/scripts/free-disk-space-linux.sh \
-            | sudo bash
-
-      # ----------------------------
       # Checkout repository
       # ----------------------------
       - name: Checkout (no submodules yet)
@@ -79,6 +70,16 @@ jobs:
           echo "client:     $(git -C client rev-parse HEAD)"
           echo "server:     $(git -C server rev-parse HEAD)"
           echo "buildtools: $(git -C buildtools rev-parse HEAD)"
+          
+      # ----------------------------
+      # Free disk space
+      # ----------------------------
+      - name: Free Disk Space
+        shell: bash
+        run: |
+          set -eux
+          sudo bash ./buildtools/.github/scripts/free-disk-space-linux.sh
+          df -h
 
       # ---------------------------------------------
       # Docker storage to /mnt
@@ -88,19 +89,13 @@ jobs:
         run: |
           set -eux
           df -h
-
           if mountpoint -q /mnt; then
-            echo "Relocating Docker root to /mnt/docker"
-
             sudo systemctl stop docker
-
             sudo mkdir -p /mnt/docker
             sudo rm -rf /var/lib/docker
             sudo ln -s /mnt/docker /var/lib/docker
-
             sudo systemctl start docker
           fi
-
           docker info | grep -E 'Docker Root Dir|Storage Driver' || true
           df -h
 
