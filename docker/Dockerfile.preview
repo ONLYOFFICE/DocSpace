@@ -278,6 +278,7 @@ RUN set -eux; \
     rid="linux-${TARGETARCH}"; \
     \
     dotnet restore ASC.Web.slnf; \
+    dotnet restore ASC.Migrations.sln; \
     \
     dotnet build ASC.Web.slnf -c Release --no-restore -m:1; \
     dotnet build ASC.Migrations.sln -c Release --no-restore -m:1 \
@@ -298,8 +299,8 @@ RUN set -eux; \
         ASC.Files.Worker \
         ASC.Files; \
     do \
-        cp -a ${SRC_PATH}/publish/services/${svc}/service/. \
-              ${SRC_PATH}/publish/backend/; \
+        src="${SRC_PATH}/publish/services/${svc}/service"; \
+        [ -d "$src" ] && cp -a "$src/." "${SRC_PATH}/publish/backend/" || true; \
     done 
 
 # cleanup
