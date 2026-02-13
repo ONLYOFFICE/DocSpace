@@ -418,4 +418,3 @@ COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/docker-migration-
 COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/ASC.Migration.Runner/service/ .
 
 ENTRYPOINT ["./docker-migration-entrypoint.sh"]
-
