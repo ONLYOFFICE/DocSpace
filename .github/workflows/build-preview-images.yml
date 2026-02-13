@@ -1,4 +1,4 @@
-name: Build DocSpace Preview Images (multiarch)
+name: Build DocSpace Preview Images (multiarch, split jobs)
 
 on:
   workflow_dispatch: {}
@@ -9,157 +9,197 @@ on:
     # Every night at 03:00 UTC
     - cron: "0 3 * * *"
 
+env:
+  REPO: onlyoffice
+  PREVIEW_IMAGE: onlyoffice/4testing-docspace-preview
+  MIGRATION_IMAGE: onlyoffice/4testing-docspace-migration-runner
+  PRODUCT_VERSION: preview
+
+# ------------------------------------------------------------
+# 1️⃣ PREPARE JOB
+# Generates a single tag used by both architecture builds
+# ------------------------------------------------------------
 jobs:
-  build:
-    # Run only on this feature branch
+  prepare:
     if: github.ref == 'refs/heads/feature/docker-dev-run'
-
     runs-on: ubuntu-22.04
-
-    env:
-      REPO: onlyoffice
-      PREVIEW_IMAGE: onlyoffice/4testing-docspace-preview
-      MIGRATION_IMAGE: onlyoffice/4testing-docspace-migration-runner
-      PRODUCT_VERSION: preview
+    outputs:
+      docker_tag: ${{ steps.prepare.outputs.DOCKER_TAG }}
 
     steps:
-      # ----------------------------
-      # Checkout repository
-      # ----------------------------
-      - name: Checkout (no submodules yet)
-        uses: actions/checkout@v4
-        with:
-          ref: feature/docker-dev-run
-          fetch-depth: 0
-
-      # ---------------------------------------------------
-      # submodule URLs + init recursively
-      # ---------------------------------------------------
-      - name: Init submodules (recursive, public repos)
-        shell: bash
-        run: |
-          set -eux
-
-          echo "Rewriting relative submodule URLs..."
-
-          # Convert ../Repo.git -> https://github.com/ONLYOFFICE/Repo.git
-          git config -f .gitmodules --get-regexp '^submodule\..*\.url$' \
-          | while read -r key url; do
-              if [[ "$url" == ../*.git ]]; then
-                repo="${url#../}"
-                new="https://github.com/ONLYOFFICE/${repo}"
-                echo "  $key: $url -> $new"
-                git config -f .gitmodules "$key" "$new"
-              fi
-            done
-
-          git submodule sync --recursive
-          git submodule update --init --recursive
-
-          echo "Submodules initialized successfully"
-
-      - name: Verify submodules
-        run: |
-          set -eux
-          git submodule status --recursive
-          ls -la client buildtools server
-   
-      - name: Print submodule SHAs
-        run: |
-          set -eux
-          echo "client:     $(git -C client rev-parse HEAD)"
-          echo "server:     $(git -C server rev-parse HEAD)"
-          echo "buildtools: $(git -C buildtools rev-parse HEAD)"
-          
-      # ----------------------------
-      # Free disk space
-      # ----------------------------
-      - name: Free Disk Space
-        shell: bash
-        run: |
-          set -eux
-          sudo bash ./buildtools/.github/scripts/free-disk-space-linux.sh
-          df -h
-
-      # ---------------------------------------------
-      # Docker storage to /mnt
-      # ---------------------------------------------
-      - name: Use /mnt for Docker if available
-        shell: bash
-        run: |
-          set -eux
-          df -h
-          if mountpoint -q /mnt; then
-            sudo systemctl stop docker
-            sudo mkdir -p /mnt/docker
-            sudo rm -rf /var/lib/docker
-            sudo ln -s /mnt/docker /var/lib/docker
-            sudo systemctl start docker
-          fi
-          docker info | grep -E 'Docker Root Dir|Storage Driver' || true
-          df -h
-
-      # ----------------------------
-      # Setup QEMU + Buildx
-      # ----------------------------
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # ----------------------------
-      # Login to Docker Hub
-      # ----------------------------
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      # ----------------------------
-      # Docker tag
-      # ----------------------------
       - name: Prepare tag
         id: prepare
-        shell: bash
         run: |
           DOCKER_TAG="${PRODUCT_VERSION}.${{ github.run_number }}"
           echo "DOCKER_TAG=$DOCKER_TAG" >> "$GITHUB_OUTPUT"
           echo "Building tag: $DOCKER_TAG"
 
-      # ----------------------------
-      # Build & Push Preview Image
-      # ----------------------------
-      - name: Build & push preview (amd64+arm64)
+# ------------------------------------------------------------
+# 2️⃣ BUILD AMD64 IMAGE
+# This runs alone, so arm64 won't affect it
+# ------------------------------------------------------------
+  build_amd64:
+    name: Build amd64
+    needs: prepare
+    runs-on: ubuntu-22.04
+
+    steps:
+      # Checkout repository
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/docker-dev-run
+          fetch-depth: 0
+
+      # Init submodules (same logic you already had)
+      - name: Init submodules
+        run: |
+          set -eux
+          git config -f .gitmodules --get-regexp '^submodule\..*\.url$' \
+          | while read -r key url; do
+              if [[ "$url" == ../*.git ]]; then
+                repo="${url#../}"
+                git config -f .gitmodules "$key" "https://github.com/ONLYOFFICE/${repo}"
+              fi
+            done
+          git submodule sync --recursive
+          git submodule update --init --recursive
+
+      # Free space (important for Docker builds)
+      - name: Free Disk Space
+        run: |
+          sudo bash ./buildtools/.github/scripts/free-disk-space-linux.sh
+          df -h
+
+      # Setup buildx (no QEMU needed for native amd64)
+      - uses: docker/setup-buildx-action@v3
+
+      # Login to Docker Hub
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Build and push AMD64 preview image
+      - name: Build & push preview (amd64)
         run: |
           docker buildx build \
-            --platform linux/amd64,linux/arm64 \
+            --platform linux/amd64 \
             -f docker/Dockerfile.preview \
             --target final_preview \
-            -t ${{ env.PREVIEW_IMAGE }}:${{ steps.prepare.outputs.DOCKER_TAG }} \
+            -t ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-amd64 \
             --push \
             .
 
-      # ----------------------------
-      # Build & Push Migration Runner
-      # ----------------------------
-      - name: Build & push migration-runner (amd64+arm64)
+      # Build and push AMD64 migration runner
+      - name: Build & push migration-runner (amd64)
         run: |
           docker buildx build \
-            --platform linux/amd64,linux/arm64 \
+            --platform linux/amd64 \
             -f docker/Dockerfile.preview \
             --target onlyoffice-migration-runner \
-            -t ${{ env.MIGRATION_IMAGE }}:${{ steps.prepare.outputs.DOCKER_TAG }} \
+            -t ${{ env.MIGRATION_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-amd64 \
             --push \
             .
 
-      # ----------------------------
-      # Cleanup
-      # ----------------------------
-      - name: Cleanup Docker
-        if: always()
+# ------------------------------------------------------------
+# 3️⃣ BUILD ARM64 IMAGE
+# Isolated job to prevent freezing the amd64 build
+# ------------------------------------------------------------
+  build_arm64:
+    name: Build arm64
+    needs: prepare
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/docker-dev-run
+          fetch-depth: 0
+
+      - name: Init submodules
         run: |
-          docker buildx prune -af || true
-          docker system prune -af --volumes || true
+          set -eux
+          git config -f .gitmodules --get-regexp '^submodule\..*\.url$' \
+          | while read -r key url; do
+              if [[ "$url" == ../*.git ]]; then
+                repo="${url#../}"
+                git config -f .gitmodules "$key" "https://github.com/ONLYOFFICE/${repo}"
+              fi
+            done
+          git submodule sync --recursive
+          git submodule update --init --recursive
+
+      - name: Free Disk Space
+        run: |
+          sudo bash ./buildtools/.github/scripts/free-disk-space-linux.sh
           df -h
+
+      # QEMU is REQUIRED for arm64 build on amd64 runner
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Build and push ARM64 preview
+      - name: Build & push preview (arm64)
+        run: |
+          docker buildx build \
+            --platform linux/arm64 \
+            -f docker/Dockerfile.preview \
+            --target final_preview \
+            -t ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-arm64 \
+            --push \
+            .
+
+      # Build and push ARM64 migration runner
+      - name: Build & push migration-runner (arm64)
+        run: |
+          docker buildx build \
+            --platform linux/arm64 \
+            -f docker/Dockerfile.preview \
+            --target onlyoffice-migration-runner \
+            -t ${{ env.MIGRATION_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-arm64 \
+            --push \
+            .
+
+# ------------------------------------------------------------
+# 4️⃣ CREATE MULTI-ARCH MANIFEST TAG
+# This creates ONE final tag containing both architectures
+# ------------------------------------------------------------
+  manifest:
+    name: Create multi-arch tag
+    needs: [prepare, build_amd64, build_arm64]
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Create multi-arch preview tag
+      - name: Create preview manifest
+        run: |
+          docker buildx imagetools create \
+            -t ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }} \
+            ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-amd64 \
+            ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-arm64
+
+      # Create multi-arch migration-runner tag
+      - name: Create migration-runner manifest
+        run: |
+          docker buildx imagetools create \
+            -t ${{ env.MIGRATION_IMAGE }}:${{ needs.prepare.outputs.docker_tag }} \
+            ${{ env.MIGRATION_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-amd64 \
+            ${{ env.MIGRATION_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-arm64
+
+      - name: Inspect result
+        run: |
+          docker buildx imagetools inspect ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}
+          
