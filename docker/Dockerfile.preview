@@ -277,13 +277,16 @@ RUN set -eux; \
     echo "BUILDPLATFORM=$BUILDPLATFORM TARGETPLATFORM=$TARGETPLATFORM TARGETARCH=$TARGETARCH"; \
     rid="linux-${TARGETARCH}"; \
     \
-    dotnet restore ASC.Web.slnf; \
-    dotnet restore ASC.Migrations.sln; \
+    # Restore with the target RID to ensure assets include the correct runtime
+    dotnet restore ASC.Web.slnf -r "$rid"; \
+    dotnet restore ASC.Migrations.sln -r "$rid"; \
     \
-    dotnet build ASC.Web.slnf -c Release --no-restore -m:1; \
-    dotnet build ASC.Migrations.sln -c Release --no-restore -m:1 \
+    # Build with the RID
+    dotnet build ASC.Web.slnf -c Release --no-restore -m:1 -r "$rid"; \
+    dotnet build ASC.Migrations.sln -c Release --no-restore -m:1 -r "$rid" \
       --property:OutputPath=${SRC_PATH}/publish/ASC.Migration.Runner/service/; \
     \
+    # Publish with the RID
     dotnet publish ASC.Web.slnf -c Release --no-build --no-restore \
       -r "$rid" --self-contained false \
       -p PublishProfile=ReleaseProfile \
@@ -309,7 +312,7 @@ RUN set -eux; \
     rm -rf ${SRC_PATH}/publish/services; \
     find ${SRC_PATH} -type d \( -name bin -o -name obj \) -prune -exec rm -rf {} + || true; \
     rm -rf /root/.nuget/packages /root/.local/share/NuGet /tmp/* /var/tmp/*
-
+    
 # ============================================================
 # Final runtime image Ubuntu 22.04 + .NET runtime
 # + OpenResty (Lua in router) + Node (binary only) + supervisor
