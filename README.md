@@ -57,7 +57,7 @@ Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SASS, i18next, We
 ```bash
 git clone --recurse-submodules https://github.com/ONLYOFFICE/DocSpace && \
 cd "$(basename "$_" .git)" && \
-git submodule foreach "git checkout master"
+git submodule foreach "git checkout develop"
 ```
 
 2. Run Docker Images:
