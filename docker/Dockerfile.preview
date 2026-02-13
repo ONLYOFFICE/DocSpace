@@ -256,20 +256,37 @@ RUN echo "--- build/publish ASC.Socket.IO ---" && \
     yarn install --immutable
 
 #----------------------------------
-# .NET build sevices
-#----------------------------------   
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-dotnet
+# .NET build services
+#----------------------------------
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build-dotnet
 ARG DEBIAN_FRONTEND
 ARG SRC_PATH
+ARG TARGETARCH
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
 
 WORKDIR ${SRC_PATH}/server
 COPY ./server/ .
 
-RUN echo "--- build/publishh docspace-server .net 10.0 ---" && \
-    dotnet build ASC.Web.slnf && \
-    dotnet build ASC.Migrations.sln --property:OutputPath=${SRC_PATH}/publish/ASC.Migration.Runner/service/ && \
-    dotnet publish ASC.Web.slnf -p PublishProfile=ReleaseProfile \
-                                -p:DebugType=None -p:DebugSymbols=false
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    DOTNET_NOLOGO=1 \
+    MSBUILDDISABLENODEREUSE=1
+
+RUN set -eux; \
+    echo "--- build/publish (.NET 10) ---"; \
+    echo "BUILDPLATFORM=$BUILDPLATFORM TARGETPLATFORM=$TARGETPLATFORM TARGETARCH=$TARGETARCH"; \
+    rid="linux-${TARGETARCH}"; \
+    \
+    dotnet restore ASC.Web.slnf; \
+    \
+    dotnet build ASC.Web.slnf -c Release --no-restore -m:1; \
+    dotnet build ASC.Migrations.sln -c Release --no-restore -m:1 \
+      --property:OutputPath=${SRC_PATH}/publish/ASC.Migration.Runner/service/; \
+    \
+    dotnet publish ASC.Web.slnf -c Release --no-build --no-restore \
+      -r "$rid" --self-contained false \
+      -p PublishProfile=ReleaseProfile \
+      -p:DebugType=None -p:DebugSymbols=false -p:UseAppHost=false
 
 RUN set -eux; \
     mkdir -p ${SRC_PATH}/publish/backend/; \
