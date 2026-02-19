@@ -1,9 +1,10 @@
-name: Build DocSpace Preview Images (multiarch, split jobs)
+name: Build DocSpace Preview Images 
 
 on:
   workflow_dispatch: {}
   push:
     branches:
+      #- develop
       - feature/docker-dev-run
   schedule:
     # Every night at 03:00 UTC
@@ -12,8 +13,7 @@ on:
 env:
   REPO: onlyoffice
   PREVIEW_IMAGE: onlyoffice/4testing-docspace-preview
-  MIGRATION_IMAGE: onlyoffice/4testing-docspace-migration-runner
-  PRODUCT_VERSION: preview
+  PRODUCT_VERSION: develop
 
 # ------------------------------------------------------------
 # 1️⃣ PREPARE JOB
@@ -22,6 +22,7 @@ env:
 jobs:
   prepare:
     if: github.ref == 'refs/heads/feature/docker-dev-run'
+      #if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-22.04
     outputs:
       docker_tag: ${{ steps.prepare.outputs.DOCKER_TAG }}
@@ -36,7 +37,6 @@ jobs:
 
 # ------------------------------------------------------------
 # 2️⃣ BUILD AMD64 IMAGE
-# This runs alone, so arm64 won't affect it
 # ------------------------------------------------------------
   build_amd64:
     name: Build amd64
@@ -90,20 +90,8 @@ jobs:
             --push \
             .
 
-      # Build and push AMD64 migration runner
-      - name: Build & push migration-runner (amd64)
-        run: |
-          docker buildx build \
-            --platform linux/amd64 \
-            -f docker/Dockerfile.preview \
-            --target onlyoffice-migration-runner \
-            -t ${{ env.MIGRATION_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-amd64 \
-            --push \
-            .
-
 # ------------------------------------------------------------
 # 3️⃣ BUILD ARM64 IMAGE
-# Isolated job to prevent freezing the amd64 build
 # ------------------------------------------------------------
   build_arm64:
     name: Build arm64
@@ -155,23 +143,14 @@ jobs:
             --push \
             .
 
-      # Build and push ARM64 migration runner
-      - name: Build & push migration-runner (arm64)
-        run: |
-          docker buildx build \
-            --platform linux/arm64 \
-            -f docker/Dockerfile.preview \
-            --target onlyoffice-migration-runner \
-            -t ${{ env.MIGRATION_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-arm64 \
-            --push \
-            .
-
 # ------------------------------------------------------------
-# 4️⃣ CREATE MULTI-ARCH MANIFEST TAG
-# This creates ONE final tag containing both architectures
+# 4️⃣ CREATE MULTI-ARCH MANIFEST TAGS
+# Creates:
+#   - develop.<run_number> (multi-arch)
+#   - latest (same manifest content)
 # ------------------------------------------------------------
   manifest:
-    name: Create multi-arch tag
+    name: Create multi-arch tags
     needs: [prepare, build_amd64, build_arm64]
     runs-on: ubuntu-22.04
 
@@ -183,23 +162,24 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Create multi-arch preview tag
-      - name: Create preview manifest
+      # Create multi-arch preview tag: develop.<run_number>
+      - name: Create preview manifest (develop.<run_number>)
         run: |
           docker buildx imagetools create \
             -t ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }} \
             ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-amd64 \
             ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-arm64
 
-      # Create multi-arch migration-runner tag
-      - name: Create migration-runner manifest
+      # Create multi-arch preview tag: latest (points to same images)
+      - name: Create preview manifest (latest)
         run: |
           docker buildx imagetools create \
-            -t ${{ env.MIGRATION_IMAGE }}:${{ needs.prepare.outputs.docker_tag }} \
-            ${{ env.MIGRATION_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-amd64 \
-            ${{ env.MIGRATION_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-arm64
+            -t ${{ env.PREVIEW_IMAGE }}:latest \
+            ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-amd64 \
+            ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-arm64
 
       - name: Inspect result
         run: |
           docker buildx imagetools inspect ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}
-          
+          docker buildx imagetools inspect ${{ env.PREVIEW_IMAGE }}:latest
+

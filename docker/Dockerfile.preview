@@ -106,6 +106,7 @@ RUN set -eux; \
     mkdir -p /var/log/${COMPANY} /app/${COMPANY}/data; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
+      mysql-client \
       ca-certificates \
       curl \
       wget \
@@ -172,7 +173,8 @@ RUN set -eux; \
 # ------------------------------------------------------------
 COPY --chown=${COMPANY}:${COMPANY} ./buildtools/config/ ${SRC_PATH}/buildtools/config/
 COPY --chown=${COMPANY}:${COMPANY} ./docker/docker-entrypoint.sh /docker-entrypoint.sh
-COPY --chown=${COMPANY}:${COMPANY} ./docker/supervisord/supervisord.preview.conf /etc/supervisor/conf.d/supervisord.conf
+COPY --chown=${COMPANY}:${COMPANY} ./docker/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#COPY --chown=${COMPANY}:${COMPANY} ./docker/supervisord/supervisord.preview.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR ${SRC_PATH}/buildtools/config
 RUN <<EOF
@@ -210,14 +212,17 @@ COPY client/package.json \
      ./
 
 # workspace package manifests 
-COPY client/packages/login/package.json       ./packages/login/
+COPY client/packages/login/package.json        ./packages/login/
 #COPY client/packages/sdk/package.json         ./packages/sdk/
 #COPY client/packages/management/package.json  ./packages/management/
-COPY client/packages/client/package.json      ./packages/client/
-COPY client/packages/client/onlyoffice-docspace-plugin-sdk-2.1.0.tgz ./packages/client/
+COPY client/packages/client/package.json       ./packages/client/
+#COPY client/packages/client/onlyoffice-docspace-plugin-sdk-2.1.0.tgz ./packages/client/
 COPY client/packages/doceditor/package.json   ./packages/doceditor/
-COPY client/packages/shared/package.json      ./packages/shared/
-
+COPY client/packages/shared/package.json       ./packages/shared/
+COPY client/libs/ui-kit/package.json           ./libs/ui-kit/
+#COPY client/libs/ui-kit/onlyoffice-docspace-api-sdk-3.6.0.tgz ./libs/ui-kit/
+COPY client/packages/client/*.tgz ./packages/client/
+COPY client/libs/ui-kit/*.tgz ./libs/ui-kit/
 
 RUN corepack enable && corepack prepare pnpm@10.0.0 --activate 
 RUN --mount=type=cache,target=/pnpm-store \
@@ -276,30 +281,59 @@ RUN set -eux; \
     echo "--- build/publish (.NET 10) ---"; \
     echo "BUILDPLATFORM=$BUILDPLATFORM TARGETPLATFORM=$TARGETPLATFORM TARGETARCH=$TARGETARCH"; \
     \
+    # Map TARGETARCH to RID
+    if [ "$TARGETARCH" = "amd64" ]; then \
+        RID="linux-x64"; \
+    elif [ "$TARGETARCH" = "arm64" ]; then \
+        RID="linux-arm64"; \
+    else \
+        echo "Unsupported architecture: $TARGETARCH"; \
+        exit 1; \
+    fi; \
+    echo "Using RID: $RID for TARGETARCH: $TARGETARCH"; \ 
+    \
     # restore/build solutions (no RID)
     dotnet restore ASC.Web.slnf; \
     dotnet restore ASC.Migrations.sln; \
-    dotnet build ASC.Web.slnf -c Release --no-restore -m:1; \
-    dotnet build ASC.Migrations.sln -c Release --no-restore -m:1 \
-      --property:OutputPath=${SRC_PATH}/publish/ASC.Migration.Runner/service/; \
     \
-    # publish with RID (RID-specific restore happens here)
-    rid="linux-${TARGETARCH}"; \
+    # publish with RID
     dotnet publish ASC.Web.slnf -c Release \
-      -r "$rid" --self-contained false \
+      -r "$RID" \
+      --self-contained false \
       -p PublishProfile=ReleaseProfile \
-      -p:DebugType=None -p:DebugSymbols=false -p:UseAppHost=false
+      -p:DebugType=None \
+      -p:DebugSymbols=false \
+      -p:UseAppHost=false; \
+    \
+    dotnet publish ASC.Migrations.sln -c Release \
+      -r "$RID" \
+      --self-contained false \
+      -p:DebugType=None \
+      -p:DebugSymbols=false \
+      -p:UseAppHost=false \
+      -p:PublishDir=${SRC_PATH}/publish/services/ASC.Migration.Runner/service/
 
 # Copy services as before
 RUN set -eux; \
     mkdir -p ${SRC_PATH}/publish/backend/; \
     for svc in \
+        # \
+        ASC.AI.Worker \
+        ASC.TelegramService \
+        ASC.Data.Backup.Worker \
+        ASC.ApiSystem \
+        ASC.ClearEvents \
+        ASC.Data.Backup \
+        ASC.Notify \
+        ASC.Studio.Notify \
+        # \
         ASC.Web.Studio \
         ASC.AI \
         ASC.Web.Api \
         ASC.People \
         ASC.Files.Worker \
-        ASC.Files; \
+        ASC.Files \
+        ASC.Migration.Runner; \
     do \
         src="${SRC_PATH}/publish/services/${svc}/service"; \
         [ -d "$src" ] && cp -a "$src/." "${SRC_PATH}/publish/backend/" || true; \
@@ -352,7 +386,8 @@ RUN set -eux; \
     cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}-story.conf /etc/nginx/conf.d/; \
     \
     sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/${COMPANY}.conf; \
-    sed -i "/map \$scheme \$doceditor_url {/,/}/ s|default \"http://[^\"]*\";|default \"http://${COMPANY}-document-server\";|" \
+    #sed -i "/map \$scheme \$document_server {/,/}/ s|default \"http://[^\"]*\";|default \"http://${COMPANY}-document-server\";|" \
+    sed -i "/map \$scheme \$document_server {/,/}/ s|default \"http://[^\"]*\";|default \$document_server_vs_path;|" \
     /etc/nginx/conf.d/${COMPANY}.conf; \
     sed -i '/client_body_temp_path/ i \ \ \ \ $MAP_HASH_BUCKET_SIZE' /etc/nginx/nginx.conf.template; \
     sed -i 's/\(worker_connections\).*;/\1 $COUNT_WORKER_CONNECTIONS;/' /etc/nginx/nginx.conf.template; \
@@ -363,6 +398,9 @@ RUN set -eux; \
     rm -rf ${SRC_PATH}/campaigns; \
     \
     chown -R ${COMPANY}:${COMPANY} /etc/nginx/ /var/log/${COMPANY} /var/log/nginx/ ${BUILD_PATH}/public/campaigns
+
+# Copy proxy configuration for OpenResty
+COPY --chown=${COMPANY}:${COMPANY} ./docker/config/nginx/conf.d/onlyoffice-proxy.conf /etc/nginx/conf.d/
  
 RUN mkdir -p ${BUILD_PATH}/build/doceditor/static/chunks && \
     mv ${BUILD_PATH}/editor/packages/doceditor/.next/static/chunks ${BUILD_PATH}/build/doceditor/static/ && \
@@ -391,30 +429,6 @@ RUN set -eux; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/*
 
-EXPOSE  5007 5009 5004 5000 5157 5003 5013 5011 9899 8092 8080
+EXPOSE  5007 5009 5004 5000 5157 5003 5013 5011 9899 8092 8080 5032 5010 5027 5012 5005 5006 5124 5075
 
 ENTRYPOINT  [ "/docker-entrypoint.sh" ]
-
-## ASC.Migration.Runner ##
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble AS onlyoffice-migration-runner
-ARG SRC_PATH
-ARG BUILD_PATH
-ARG PRODUCT
-ARG COMPANY=${PRODUCT}
-ARG COMPANY_UID=1004
-ARG COMPANY_GID=107
-
-RUN set -eux; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends \
-            adduser; \
-    # ---- ${COMPANY} user/group ----
-    addgroup --system --gid ${COMPANY_GID} ${COMPANY}; \
-    adduser --uid ${COMPANY_UID} --quiet --home /var/www/${COMPANY} --system --gid ${COMPANY_GID} ${COMPANY};
-
-WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
-
-COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/docker-migration-entrypoint.sh ./docker-migration-entrypoint.sh
-COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/ASC.Migration.Runner/service/ .
-
-ENTRYPOINT ["./docker-migration-entrypoint.sh"]

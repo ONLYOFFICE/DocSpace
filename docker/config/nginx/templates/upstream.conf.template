@@ -1,6 +1,6 @@
 resolver $DNS_NAMESERVER valid=30s;
 
-map "$DOCUMENT_SERVER_URL_EXTERNAL" "$document_server" {
+map "$DOCUMENT_SERVER_URL_EXTERNAL" "$document_server_vs_path" {
     volatile;
     default "$DOCUMENT_SERVER_URL_EXTERNAL";
     "" "http://$DOCUMENT_CONTAINER_NAME";

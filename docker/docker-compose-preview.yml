@@ -51,6 +51,9 @@ services:
     volumes:
       - ${VOLUMES_DIR:+${VOLUMES_DIR}/}app_data:/app/onlyoffice/data
       - ${VOLUMES_DIR:+${VOLUMES_DIR}/}log_data:/var/log/onlyoffice
+      -  certbot:/var/www/certbot
+    ports:
+      - "80:80"
     cap_add:
       - SYS_NICE
     tty: true
@@ -63,17 +66,6 @@ services:
       target: final_preview
     container_name: ${DOCSPACE_PREVIEW_NAME}
     image: "${REGISTRY}${REPO}/${DOCKER_IMAGE_PREFIX}-preview:${DOCKER_TAG}"
-
-  onlyoffice-proxy:
-    image: ${REGISTRY}${PROXY_IMAGE_NAME}
-    container_name: ${PROXY_NAME}
-    ports:
-      - "80:80"
-    volumes:
-      - ./config/nginx/conf.d/onlyoffice-proxy.conf:/etc/nginx/conf.d/default.conf
-      -  certbot:/var/www/certbot
-    depends_on:
-      - onlyoffice-docspace-preview
 
   onlyoffice-redis:
     image: ${REGISTRY}${REDIS_IMAGE_NAME}
@@ -164,25 +156,6 @@ services:
       retries: 5
       start_period: 60s
       timeout: 10s      
-
-  onlyoffice-migration-runner:
-    image: "${REGISTRY}${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${MIGRATION_TAG}"
-    container_name: ${MIGRATION_RUNNER_NAME}
-    user: root
-    build:
-      context: ..
-      dockerfile: ./docker/Dockerfile.preview
-      target: onlyoffice-migration-runner
-    depends_on:
-      onlyoffice-mysql-server:
-        condition: service_healthy
-    restart: "on-failure"
-    environment:
-      MYSQL_CONTAINER_NAME: ${MYSQL_CONTAINER_NAME}
-      MYSQL_PORT: ${MYSQL_PORT}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
 volumes:
   log_data:
