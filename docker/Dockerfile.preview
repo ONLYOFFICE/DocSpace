@@ -434,6 +434,9 @@ RUN set -eux; \
     \
     chown -R ${COMPANY}:${COMPANY} /etc/nginx/ /var/log/${COMPANY} /var/log/nginx/ ${BUILD_PATH}/public/campaigns
 
+# Copy  DocStore
+COPY --chown=${COMPANY}:${COMPANY} ./server/common/resources/DocStore/ ${SRC_PATH}/publish/services/backend/DocStore/
+
 # Copy proxy configuration for OpenResty
 COPY --chown=${COMPANY}:${COMPANY} ./docker/config/nginx/conf.d/onlyoffice-proxy.conf /etc/nginx/conf.d/
 
