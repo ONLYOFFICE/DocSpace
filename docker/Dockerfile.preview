@@ -174,7 +174,6 @@ RUN set -eux; \
 COPY --chown=${COMPANY}:${COMPANY} ./buildtools/config/ ${SRC_PATH}/buildtools/config/
 COPY --chown=${COMPANY}:${COMPANY} ./docker/docker-entrypoint.sh /docker-entrypoint.sh
 COPY --chown=${COMPANY}:${COMPANY} ./docker/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-#COPY --chown=${COMPANY}:${COMPANY} ./docker/supervisord/supervisord.preview.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR ${SRC_PATH}/buildtools/config
 RUN <<EOF
@@ -190,9 +189,9 @@ EOF
 #--------------------------------------
 FROM node:24-bookworm AS build-nodejs-client
 ARG SRC_PATH
+ARG BUILD_PATH
 ARG DEBIAN_FRONTEND
-ARG BUILD_ARGS="build:lite"
-ARG DEPLOY_ARGS="deploy:lite"
+ARG DEPLOY_ARGS="deploy:preview"
 
 ENV PNPM_HOME=/tmp/pnpm \
     CI=1 
@@ -213,14 +212,12 @@ COPY client/package.json \
 
 # workspace package manifests 
 COPY client/packages/login/package.json        ./packages/login/
-#COPY client/packages/sdk/package.json         ./packages/sdk/
-#COPY client/packages/management/package.json  ./packages/management/
+COPY client/packages/sdk/package.json         ./packages/sdk/
+COPY client/packages/management/package.json  ./packages/management/
 COPY client/packages/client/package.json       ./packages/client/
-#COPY client/packages/client/onlyoffice-docspace-plugin-sdk-2.1.0.tgz ./packages/client/
 COPY client/packages/doceditor/package.json   ./packages/doceditor/
 COPY client/packages/shared/package.json       ./packages/shared/
 COPY client/libs/ui-kit/package.json           ./libs/ui-kit/
-#COPY client/libs/ui-kit/onlyoffice-docspace-api-sdk-3.6.0.tgz ./libs/ui-kit/
 COPY client/packages/client/*.tgz ./packages/client/
 COPY client/libs/ui-kit/*.tgz ./libs/ui-kit/
 
@@ -233,7 +230,26 @@ RUN --mount=type=cache,target=/pnpm-store \
 COPY client/ ./
 
 # build / deploy
-RUN pnpm ${BUILD_ARGS} && pnpm run ${DEPLOY_ARGS}
+#RUN pnpm ${BUILD_ARGS} && pnpm run ${DEPLOY_ARGS}
+RUN pnpm run ${DEPLOY_ARGS}
+
+# copy .next static (chunks, css, media)
+RUN mkdir -p ${BUILD_PATH}/build/doceditor/static && \
+    mv ${SRC_PATH}/publish/web/apps/packages/doceditor/.next/static/chunks ${BUILD_PATH}/build/doceditor/static/ && \
+    mv ${SRC_PATH}/publish/web/apps/packages/doceditor/.next/static/css ${BUILD_PATH}/build/doceditor/static/ && \
+    mv ${SRC_PATH}/publish/web/apps/packages/doceditor/.next/static/media ${BUILD_PATH}/build/doceditor/static/ && \
+    mkdir -p ${BUILD_PATH}/build/login/static && \
+    mv ${SRC_PATH}/publish/web/apps/packages/login/.next/static/chunks ${BUILD_PATH}/build/login/static/ && \
+    mv ${SRC_PATH}/publish/web/apps/packages/login/.next/static/css ${BUILD_PATH}/build/login/static/ && \
+    mv ${SRC_PATH}/publish/web/apps/packages/login/.next/static/media ${BUILD_PATH}/build/login/static/ && \
+    mkdir -p ${BUILD_PATH}/build/sdk/static && \
+    mv ${SRC_PATH}/publish/web/apps/packages/sdk/.next/static/chunks ${BUILD_PATH}/build/sdk/static/ && \
+    mv ${SRC_PATH}/publish/web/apps/packages/sdk/.next/static/css ${BUILD_PATH}/build/sdk/static/ && \
+    mv ${SRC_PATH}/publish/web/apps/packages/sdk/.next/static/media ${BUILD_PATH}/build/sdk/static/ && \
+    mkdir -p ${BUILD_PATH}/build/management/static && \
+    mv ${SRC_PATH}/publish/web/apps/packages/management/.next/static/chunks ${BUILD_PATH}/build/management/static/ && \
+    mv ${SRC_PATH}/publish/web/apps/packages/management/.next/static/css ${BUILD_PATH}/build/management/static/ && \
+    mv ${SRC_PATH}/publish/web/apps/packages/management/.next/static/media ${BUILD_PATH}/build/management/static/
 
 # build plugins
 RUN git clone -b "master" --depth 1 https://github.com/ONLYOFFICE/docspace-plugins.git ${SRC_PATH}/plugins;
@@ -252,13 +268,34 @@ FROM node:22.12.0 AS build-nodejs-server
 ARG DEBIAN_FRONTEND
 ARG SRC_PATH
 
-# build services Socket, SsoAuth from DocSpace-server 
-WORKDIR ${SRC_PATH}/server
-COPY ./server/common/ASC.Socket.IO ./common/ASC.Socket.IO
+# build services Socket 
+WORKDIR ${SRC_PATH}/server/common/ASC.Socket.IO
 
-RUN echo "--- build/publish ASC.Socket.IO ---" && \ 
-    cd ${SRC_PATH}/server/common/ASC.Socket.IO &&\
+# Copy package.json and yarn.lock files
+COPY ./server/common/ASC.Socket.IO/package.json ./
+COPY ./server/common/ASC.Socket.IO/yarn.lock ./
+COPY ./server/common/ASC.Socket.IO/.yarnrc.yml ./
+COPY ./server/common/ASC.Socket.IO/.yarn ./.yarn
+
+# Install dependencies
+RUN echo "--- build/publish ASC.Socket.IO ---" && \
     yarn install --immutable
+
+COPY ./server/common/ASC.Socket.IO ./
+
+# build services SsoAuth
+WORKDIR ${SRC_PATH}/server/common/ASC.SsoAuth
+
+# Copy package.json and yarn.lock files
+COPY ./server/common/ASC.SsoAuth/package.json ./
+COPY ./server/common/ASC.SsoAuth/yarn.lock ./
+COPY ./server/common/ASC.SsoAuth/.yarnrc.yml ./
+COPY ./server/common/ASC.SsoAuth/.yarn ./.yarn
+
+# Install dependencies
+RUN yarn install --immutable
+
+COPY ./server/common/ASC.SsoAuth ./
 
 #----------------------------------
 # .NET build services
@@ -363,14 +400,12 @@ COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/prepare-nginx-rou
 COPY --chown=${COMPANY}:${COMPANY} ./buildtools/install/docker/config/nginx/docker-entrypoint.sh /nginx/docker-entrypoint.sh
 
 COPY --from=build-nodejs-client --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/web/ ${BUILD_PATH}/
+COPY --from=build-nodejs-client --chown=${COMPANY}:${COMPANY} ${BUILD_PATH}/build ${BUILD_PATH}/build
 COPY --from=build-nodejs-client --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/plugins/publish/ ${APP_STORAGE_ROOT}/Studio/webplugins
-
-# Disabled: migration service moved to preview image.
-# Re-enable if migration is bundled back into this image.
-# COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/ASC.Migration.Runner/service ${SRC_PATH}/publish/services/migration
 
 COPY --from=build-dotnet --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/publish/backend/ ${SRC_PATH}/publish/services/backend/
 COPY --from=build-nodejs-server --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/server/common/ASC.Socket.IO ${SRC_PATH}/publish/services/ASC.Socket.IO
+COPY --from=build-nodejs-server --chown=${COMPANY}:${COMPANY} ${SRC_PATH}/server/common/ASC.SsoAuth ${SRC_PATH}/publish/services/ASC.SsoAuth
 
 # ---- nginx/openresty config + templates + campaigns (merged from your snippets) ----
 RUN set -eux; \
@@ -382,7 +417,7 @@ RUN set -eux; \
     \
     cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}.conf /etc/nginx/conf.d/; \
     cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}-client.conf /etc/nginx/conf.d/; \
-    cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}-management.conf /etc/nginx/conf.d/; \
+    #cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}-management.conf /etc/nginx/conf.d/; \
     cp -f ${SRC_PATH}/buildtools/config/nginx/${COMPANY}-story.conf /etc/nginx/conf.d/; \
     \
     sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/${COMPANY}.conf; \
@@ -401,19 +436,6 @@ RUN set -eux; \
 
 # Copy proxy configuration for OpenResty
 COPY --chown=${COMPANY}:${COMPANY} ./docker/config/nginx/conf.d/onlyoffice-proxy.conf /etc/nginx/conf.d/
- 
-RUN mkdir -p ${BUILD_PATH}/build/doceditor/static/chunks && \
-    mv ${BUILD_PATH}/editor/packages/doceditor/.next/static/chunks ${BUILD_PATH}/build/doceditor/static/ && \
-    mkdir -p ${BUILD_PATH}/build/doceditor/static/css && \
-    mv ${BUILD_PATH}/editor/packages/doceditor/.next/static/css ${BUILD_PATH}/build/doceditor/static/ && \
-    mkdir -p ${BUILD_PATH}/build/doceditor/static/media && \
-    mv ${BUILD_PATH}/editor/packages/doceditor/.next/static/media ${BUILD_PATH}/build/doceditor/static/ && \
-    mkdir -p ${BUILD_PATH}/build/login/static/chunks && \
-    mv ${BUILD_PATH}/login/packages/login/.next/static/chunks ${BUILD_PATH}/build/login/static/ && \
-    mkdir -p ${BUILD_PATH}/build/login/static/css && \
-    mv ${BUILD_PATH}/login/packages/login/.next/static/css ${BUILD_PATH}/build/login/static/ && \
-    mkdir -p ${BUILD_PATH}/build/login/static/media && \
-    mv ${BUILD_PATH}/login/packages/login/.next/static/media ${BUILD_PATH}/build/login/static/ 
 
 # ---- normalize scripts line-endings + permissions ----
 WORKDIR /
@@ -429,6 +451,6 @@ RUN set -eux; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/*
 
-EXPOSE  5007 5009 5004 5000 5157 5003 5013 5011 9899 8092 8080 5032 5010 5027 5012 5005 5006 5124 5075
+EXPOSE  5007 5009 5004 5000 5157 5003 5013 5011 9899 8092 8080 5032 5010 5027 5012 5005 5006 5124 5075 5015 5099 9834
 
 ENTRYPOINT  [ "/docker-entrypoint.sh" ]

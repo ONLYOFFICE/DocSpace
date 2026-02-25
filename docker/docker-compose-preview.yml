@@ -80,20 +80,6 @@ services:
       start_period: 10s
       timeout: 10s
 
-  onlyoffice-rabbitmq:
-    image: ${REGISTRY}${RABBITMQ_IMAGE_NAME}
-    container_name: ${RABBIT_CONTAINER_NAME}
-    restart: always
-    expose:
-      - "5672"
-      - "80"
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "status"]
-      interval: 10s
-      retries: 3
-      start_period: 10s
-      timeout: 10s
-
   onlyoffice-mysql-server:
     image: ${REGISTRY}${MYSQL_IMAGE}
     cap_add:
@@ -132,12 +118,12 @@ services:
       - JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET}
       - JWT_HEADER=${DOCUMENT_SERVER_JWT_HEADER}
       - JWT_IN_BODY=true
-      - AMQP_URI=${RABBIT_PROTOCOL}://${RABBIT_USER_NAME}:${RABBIT_PASSWORD}@${RABBIT_CONTAINER_NAME}:${RABBIT_PORT}${RABBIT_VIRTUAL_HOST}
-      - REDIS_SERVER_HOST=${REDIS_HOST:-${REDIS_CONTAINER_NAME}}
-      - REDIS_SERVER_PORT=${REDIS_PORT:-6379}
-      - REDIS_SERVER_USER=${REDIS_USER_NAME}
-      - REDIS_SERVER_PASS=${REDIS_PASSWORD}
-      - REDIS_SERVER_DB=${REDIS_DB}
+        #- AMQP_URI=${RABBIT_PROTOCOL}://${RABBIT_USER_NAME}:${RABBIT_PASSWORD}@${RABBIT_CONTAINER_NAME}:${RABBIT_PORT}${RABBIT_VIRTUAL_HOST}
+        #- REDIS_SERVER_HOST=${REDIS_HOST:-${REDIS_CONTAINER_NAME}}
+        #- REDIS_SERVER_PORT=${REDIS_PORT:-6379}
+        #- REDIS_SERVER_USER=${REDIS_USER_NAME}
+        #- REDIS_SERVER_PASS=${REDIS_PASSWORD}
+        #- REDIS_SERVER_DB=${REDIS_DB}
     volumes:
       #- ${CERTIFICATE_PATH}:/var/www/onlyoffice/Data/certs/extra-ca-certs.pem
       - ${VOLUMES_DIR:+${VOLUMES_DIR}/}app_data:/var/www/onlyoffice/Data

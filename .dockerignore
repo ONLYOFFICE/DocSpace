@@ -13,3 +13,9 @@
 
 **/*.log
 **/*.tmp
+
+**/Dockerfile*
+**/docker-compose*
+
+LICENSE
+README.md
