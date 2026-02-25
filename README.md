@@ -72,23 +72,6 @@ docker compose -f docker-compose-preview.yml up -d
 
 3. Open your web browser (Chrome, Opera, etc.) and run: http://localhost
 
-4. If you need SSL
-
-> **Note:** You must ensure that:
-> Each domain/subdomain you use (e.g., portal.domain.example, sub.portal.domain.example) has a valid DNS A record (or AAAA for IPv6)
-> The DNS record points to the public IP address of your server
-> ❌ If DNS is not set correctly, Let's Encrypt will fail to validate the domain and no certificate will be issued.
-
-```bash
-# Make the Script Executable
-chmod +x init_ssl.sh
-# Run the script with your domain(s) and email: ./init_ssl.sh --domain "${domain(s)}" --email "${email}" 
-./init_ssl.sh --domain "portal.domain.example,sub_portal.portal.domain.example" --email "your_email@domain.example"
-# --domain: A comma-separated list of domains and subdomains
-# --email: Your email address for Let's Encrypt registration and renewal notices
-```
-Open your web browser (Chrome, Opera, etc.) and run: https://portal.domain.example
-
 ## Production-Ready Versions
 
 Deploy with confidence using the official enterprise-grade solutions:
