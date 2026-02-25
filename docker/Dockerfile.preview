@@ -233,6 +233,9 @@ COPY client/ ./
 #RUN pnpm ${BUILD_ARGS} && pnpm run ${DEPLOY_ARGS}
 RUN pnpm run ${DEPLOY_ARGS}
 
+# delete .map files
+RUN find ${SRC_PATH}/publish -name "*.js.map" -type f -delete
+
 # copy .next static (chunks, css, media)
 RUN mkdir -p ${BUILD_PATH}/build/doceditor/static && \
     mv ${SRC_PATH}/publish/web/apps/packages/doceditor/.next/static/chunks ${BUILD_PATH}/build/doceditor/static/ && \
@@ -296,6 +299,9 @@ COPY ./server/common/ASC.SsoAuth/.yarn ./.yarn
 RUN yarn install --immutable
 
 COPY ./server/common/ASC.SsoAuth ./
+
+# delete .map files
+RUN find ${SRC_PATH}/server/common -name "*.js.map" -type f -delete
 
 #----------------------------------
 # .NET build services
