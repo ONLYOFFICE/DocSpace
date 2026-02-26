@@ -59,6 +59,7 @@ services:
     tty: true
     extra_hosts:
       - "localhost:host-gateway"
+      - "host.docker.internal:host-gateway"
     user: root
     build:
       context: ..
@@ -132,7 +133,9 @@ services:
     expose:
       - '80'
     extra_hosts:
-      - "${EXTRA_HOSTS:-placeholder.local:127.0.0.1}"
+      #- "${EXTRA_HOSTS:-placeholder.local:127.0.0.1}"
+      #- "localhost:host-gateway"
+       - "host.docker.internal:host-gateway"
     stdin_open: true
     restart: always
     stop_grace_period: 60s
