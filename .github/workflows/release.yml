@@ -429,17 +429,48 @@ jobs:
         env:
           BRANCH: ${{ github.ref_name }}
         run: |
-          GITEA_API_URL="https://${{ secrets.GITEA_HOST }}/api/v1/repos/${{ github.repository_owner }}/${{ matrix.repo }}/branches/${BRANCH//\//%2F}"
-          if curl -sfH "Authorization: token ${{ secrets.GITEA_TOKEN }}" "${GITEA_API_URL}" -o /dev/null; then
-            RESPONSE=$(curl -s -w "%{http_code}" -o /tmp/delete_branch.json \
-              -X DELETE -H "Authorization: token ${{ secrets.GITEA_TOKEN }}" "${GITEA_API_URL}")
+          API_BASE="https://${{ secrets.GITEA_HOST }}/api/v1/repos/${{ github.repository_owner }}/${{ matrix.repo }}"
+          AUTH_HEADER="Authorization: token ${{ secrets.GITEA_TOKEN }}"
+          urlencode() { python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "$1"; }
 
-            if [ "$RESPONSE" = "204" ]; then
+          PROTECTIONS=$(curl -sf -H "${AUTH_HEADER}" "${API_BASE}/branch_protections" || echo "[]")
+          SAVED=()
+          while IFS= read -r RULE; do
+            [[ -z "${RULE}" ]] && continue
+            if [[ "${BRANCH}" == ${RULE} ]]; then
+              CONFIG=$(jq -c --arg r "${RULE}" '.[] | select((.rule_name // .branch_name) == $r) | del(.id, .repo_id, .created_at, .updated_at)' <<< "${PROTECTIONS}")
+              if [[ -z "${CONFIG}" ]]; then
+                echo "::warning:: Could not extract config for rule '${RULE}', skipping" >&2
+                continue
+              fi
+              if curl -sf -X DELETE -H "${AUTH_HEADER}" "${API_BASE}/branch_protections/$(urlencode "${RULE}")" -o /dev/null; then
+                SAVED+=("${CONFIG}")
+                echo "Temporarily removed protection rule: '${RULE}'"
+              else
+                echo "::warning:: Failed to remove protection rule: '${RULE}'" >&2
+              fi
+            fi
+          done < <(jq -r '.[] | (.rule_name // .branch_name)' <<< "${PROTECTIONS}")
+
+          BRANCH_URL="${API_BASE}/branches/$(urlencode "${BRANCH}")"
+          if curl -sf -H "${AUTH_HEADER}" "${BRANCH_URL}" -o /dev/null; then
+            HTTP_CODE=$(curl -s -w "%{http_code}" -o /tmp/delete_branch.json -X DELETE -H "${AUTH_HEADER}" "${BRANCH_URL}")
+            if [ "${HTTP_CODE}" = "204" ]; then
               echo "Branch '${BRANCH}' successfully deleted in ${{ matrix.repo }}."
             else
-              MESSAGE=$(jq -r '.message // empty' /tmp/delete_branch.json 2>/dev/null)
-              echo "::error:: Failed to delete branch '${BRANCH}' in ${{ matrix.repo }} (HTTP $RESPONSE): ${MESSAGE:-Unknown error}" >&2
+              echo "::error:: Failed to delete branch '${BRANCH}' in ${{ matrix.repo }} (HTTP ${HTTP_CODE}): $(jq -r '.message // empty' /tmp/delete_branch.json 2>/dev/null)" >&2
             fi
           else
             echo "::warning:: Branch '${BRANCH}' not found in ${{ matrix.repo }}." >&2
+          fi
+
+          if [[ ${#SAVED[@]} -gt 0 ]]; then
+            for CONFIG in "${SAVED[@]}"; do
+              RULE=$(jq -r '.rule_name // .branch_name' <<< "${CONFIG}")
+              if curl -sf -X POST -H "${AUTH_HEADER}" -H "Content-Type: application/json" -d "${CONFIG}" "${API_BASE}/branch_protections" -o /dev/null; then
+                echo "Restored protection rule: '${RULE}'"
+              else
+                echo "::warning:: Failed to restore protection rule: '${RULE}'" >&2
+              fi
+            done
           fi
