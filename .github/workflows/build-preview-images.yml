@@ -84,7 +84,7 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64 \
-            -f buildtools/install/docker/Dockerfile.preview \
+            -f buildtools/install/docker/preview/Dockerfile.preview \
             --target final_preview \
             -t ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-amd64 \
             --push \
@@ -137,7 +137,7 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/arm64 \
-            -f buildtools/install/docker/Dockerfile.preview \
+            -f buildtools/install/docker/preview/Dockerfile.preview \
             --target final_preview \
             -t ${{ env.PREVIEW_IMAGE }}:${{ needs.prepare.outputs.docker_tag }}-arm64 \
             --push \
