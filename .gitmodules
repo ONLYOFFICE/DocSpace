@@ -16,15 +16,15 @@
 [submodule "tests/e2e-tests"]
 	path = tests/e2e-tests
 	url = ../DocSpace-e2e-tests.git
-        branch = main
-	update = merge
+	branch = main
+	update = checkout
 [submodule "tests/stress-tests"]
 	path = tests/stress-tests
 	url = ../DocSpace-stress-tests.git
-        branch = develop
-	update = merge
+	branch = develop
+	update = checkout
 [submodule "tests/api-tests"]
 	path = tests/api-tests
 	url = ../DocSpace-api-tests.git
-	branch = main
-	update = merge
+	branch = master
+	update = checkout
