@@ -1,5 +1,382 @@
 # Change log
 
+## 3.7.0
+
+### New features
+
+#### General changes
+
+* Updated Node.js to v24 (LTS)
+* Updated the following packages: `react`, `react-dom`, `react-router`,
+  `express`, `qs`, `nx`, `pnpm`, `serve`, `biome`, `cross-env`, `shx`, `next`, `terser`,
+  `vitest`, `axios`
+* Rewrote the Profile section using SCSS modules
+* Made the header stick when scrolling up on smartphones
+* Added owner change information to the History section in the Info panel
+* Optimized tooltips and replaced all system tooltips with custom ones
+* Added the ability to choose the DocSpace start section. The My documents
+  section is not available as a start section for guests
+* Added an email notification when an API key expires
+* Added and updated notifications related to AI agents
+* Removed custom timezone handling logic on the server. Standard `.NET`
+  methods are now used instead
+* Redesigned badges and system banners
+* Redesigned and improved the document template library
+* Rewrote DocEditor components using SCSS
+* Added the new parameter `--app.hostname` for starting Next.js
+  applications
+* Switched from `ChunkedUploaderHandler` to `Upload Controller`
+* Added the new `DocSpace/client/libs/ui-kit` submodule and moved many UI
+  components there
+* Added room grouping. Rooms can now be grouped, and group tags are
+  displayed under the search field. The setting is enabled by default
+* Migrated the `@docspace/client` builder from Webpack to Vite v8
+* Disabled the side advertising banner in SaaS and installations
+* Moved owner search to a separate filter field
+* The owner now returns `isAdmin=false` according to the updated logic
+* Added a new `apisystem` route for portal registration:
+  `POST apisystem/portal/provision`
+* Added SSL certificate creation for the *.dev.localhost domain in
+  Aspire. After installation, the start portal can be opened at
+  `https://docspace.dev.localhost`
+* Replaced the welcome modal shown when creating a portal with an
+  additional panel in the `EmptyScreen` Rooms view
+* Added analytics improvements:
+  - Key portal actions are now pushed to `window.dataLayer`
+  - `event.detail` is now added to CustomEvents
+  - The submit button ID pattern in creation dialogs is unified
+  - Localized `data-testid` values in creation dialogs are now always in
+    Latin characters
+  - Latin `name` attributes were added for input elements in forms
+
+#### Settings
+
+* Moved plugin enums and types to the `docspace-plugin-sdk` package
+* Added support for plugin customization using CSS
+* Added the ability to replace files used for creating new documents
+* Added correct display of information for temporary licenses:
+  - New rooms and users cannot be added until a new license is uploaded
+  - After the Grace period expires, the portal is blocked
+* Updated benefits display for licenses
+* Added the ability to stop backup execution
+* Added a warning dialog in Integration → Plugin when re-uploading a
+  plugin of the same version because of caching
+* Added new features for DocSpace plugins:
+  - Plugin localization support
+  - The ability to add actions to the bulk menu for files, folders, and
+    rooms
+  - The ability to show custom selectors: basic, file, room, grouped,
+    and user selectors
+  - The ability to show custom operations with custom icons in the
+    floating progress button
+  - New sidebar slots (article) sized 32x32, up to 5 items
+  - New components: `IconButton`, `Link`
+  - The Plugins section in settings was rewritten using SCSS modules
+  - The ability to embed into the media viewer
+  - The ability to display plugin actions in the context menu for a
+    specific file, folder, or room
+* Updated Billing and Services pages:
+  - all payment-related functionality is now grouped under Billing
+  - payment method and payer information were moved to a separate tab
+  - if no card is linked yet, users are prompted to add a payment method
+  - if no payer is found, owners and payers still have a Stripe link,
+    while non-payers do not
+  - warnings are shown if there are issues with the card
+  - the payment method display was changed in the wallet top-up dialog
+  - service cards now show when a storage service could not renew due to
+    insufficient funds
+  - a warning is shown if the wallet balance is insufficient to make at
+    least one backup
+  - non-payers see a tooltip explanation on service card hover
+  - if funds are sufficient to make a backup, corresponding information
+    is displayed
+  - a separate Storage page was added with transaction history and tariff
+    details
+  - tariff cancellation is now done through a separate action
+  - when cancelling a tariff, an information block is shown and tariff
+    disabling is blocked
+  - the storage change dialog was updated to use manual value input
+  - when increasing storage, the page now shows the additional storage
+    amount, wallet remainder, next billing date, immediate payment, and
+    new monthly total
+  - when decreasing storage, the page shows the reduction amount,
+    reduction date, resulting price from that date, and zero immediate
+    payment
+  - when decreasing storage, informational text is shown and the toggle
+    is disabled
+  - the Backup service now has a dedicated page with transaction history
+    and an estimate of how many backups can be made based on the current
+    wallet balance
+  - a separate logic for free backups was added for the Business tariff
+  - if the backup service is turned off, the backup count is replaced by
+    a button that behaves like the top toggle and opens a confirmation
+    dialog
+  - if wallet funds are insufficient, this is explicitly shown
+* Added connection of a third-party database in Integration → Third-party
+  services for collecting form filling results from Form Filling Rooms
+* Moved Billing from the client to ui-kit
+* Added information on the tariff page when the card is unlinked
+* Added a pending auto top-up indicator with text and spinning icon
+* Added the ability to update the payment method
+* Added model selection when connecting an AI provider
+* Changed the wallet top-up flow. Added a simplified first top-up dialog.
+  Stripe now opens in a neighboring tab, after which the user is taken
+  to a page showing the top-up process. Once the wallet is topped up,
+  the dialog in the previous tab closes. In Services, this also affects
+  backup and storage toggle flows
+- Added the ability for administrators to prohibit the creation of
+  external links
+- Updated the welcome email
+- Simplified disk storage upgrade when the selected tariff exceeds the
+  current wallet balance. Top-up and upgrade are now completed in one
+  step
+
+#### Login and confirmation pages
+
+- Rewrote the Login section using SCSS modules
+- Changed the language selection button on login pages. It now shows
+  both the flag and the language name
+- Added the ability to sign in via Nextcloud
+- When registering via third-party services, the user's last name can
+  now be empty. The `displayName` field is now mapped to the user's name
+  if the external service does not explicitly provide first and last
+  names
+
+#### Documents
+
+* Added the ability to open the context menu using hotkeys and navigate
+  through it
+* Fixed navigation in the language combobox
+* Hide blocked users from the selector and participant list
+* Updated the context menu
+* Removed the border from the "New" badge
+* Added a tooltip showing users who are currently editing a document
+* Added settings to restrict "Invite via link"
+* Added a banner when the quota is exceeded during saving of an edited
+  document. The first save beyond the allocated quota succeeds, but
+  further saves are blocked
+* If the quota is reached, documents are opened in view mode and a
+  banner is shown
+* Added the ability to quickly add, remove, and edit tags
+* Added bulk room deletion
+* Updated Form Filling Room:
+  - Added the ability to create and edit PDF forms directly in a Form
+    Room
+  - Changed the form filling start mechanism. To begin filling, a form
+    must first be switched to "Start filling" mode
+  - Once a form is switched to filling mode, it becomes available for
+    filling to all room participants
+  - In edit mode, all room participants except users with the Form
+    filler role can modify the form. For Form fillers, the form is
+    hidden from the general list
+  - When starting filling from the Documents section, after selecting a
+    room, the form automatically switches to filling mode
+  - In filling mode, the "Edit" action remains available, but selecting it
+    shows a warning that the form will leave filling mode and become
+    hidden for the Form filler role
+  - Added new webhook events: "Form Submitted", "Form Filled Out",
+    "Form Stopped"
+  - Added "Connect Database" integration for connecting third-party
+    databases, as well as related settings during Form Room creation
+  - Added "Update XLSX data" functionality
+  - Improved Form Room synchronization and added promotional elements and
+  indicators
+* Added a quota overflow block in the room header when a quota is set
+  and exceeded
+* Restored the ability to lock a file in My documents
+* Optimized document content search. It now searches by the beginning of
+  a word instead of partial match using a two-sided wildcard
+
+#### Management
+
+* Rewrote the Management section using SCSS modules
+
+#### Contacts
+
+* Added a "Me" label for the current user in Contacts, the Info panel, and
+  people selectors
+* Simplified invitation link creation in Contacts. The user type is now
+  selected directly from the menu instead of a combobox in the panel,
+  and each type has its own shared link visible to all admins
+
+#### AI
+
+* Added 3 new providers: DeepSeek, Google, and xAI
+* Added a mechanism for setting a default provider. The default provider
+  and model are automatically suggested when creating an agent
+* Added propagation of the default provider from the portal to the
+  editor, provided that providers are configured or the built-in AI
+  billing service is enabled
+* Added DOCX, PDF Form, and PPTX generation in the AI agent chat.
+  This works only when `Automation API` is enabled for editors. File
+  display inside the message was also added
+* Added image upload to the AI agent chat
+* Added the AI services management option in settings for disabling AI
+  in DocSpace
+* Added the "Extended thinking" option in chat. The thinking block is not
+  always shown and depends on request complexity
+* Added a hint about the recommended model in chat when a form is
+  attached, and in agent editing at all times
+
+#### Developer Tools
+
+* Removed Developer Tools from Settings and moved it to a separate block
+* Added a JavaScript SDK example for configuring the Uploader with the
+  ability to specify a save location and set various file and folder
+  upload parameters
+* Added AI and form-related event checkboxes to Webhooks settings:
+  - AI Agent created
+  - AI Agent updated
+  - AI Agent deleted
+  - Form Submitted
+  - Form Filled Out
+  - Form Stopped
+
+### Fixes
+
+#### General changes
+
+* For analytics, the `file_created` event pushed to `window.dataLayer`
+  after file creation now includes the new `file_type` field containing
+  the extension of the created file. `user_id` (the portal owner
+  identifier) is passed to `dataLayer` before `GTM` injection
+* Fixed the "DocSpace" brand translation in Chinese when the language was
+  not detected correctly
+* Optimized data handling for improved stability and performance in AI Forms 
+* Optimized loading and performance after the migration to Vite, which
+  had increased the number of static files in the client build
+* Reduced the number of requests during the first load
+
+#### Documents
+
+* For PDF forms in Public, Custom, and Collaboration rooms,
+  removed the Quick Sharing and share fill options. Users can no
+  longer create quick access links for filling out forms in these room
+  types
+
+## 3.7.0
+
+* No public release.
+
+## 3.6.1
+
+### New features
+
+#### General changes
+* Added an email to support (the `support@onlyoffice.com` mailbox from the
+  config) when a user deletes a paid SaaS portal
+
+#### AI Agents
+
+* Added the new GPT-5.2 model for OpenAI and OpenRouter
+
+### Fixes
+
+#### General changes
+
+* Updated Next.js from 16.0.1 to 16.0.10 due to critical vulnerabilities
+  (CVE-2025-66478, CVE-2025-55184)
+* Fixed an issue with token exchange between regions in Identity
+
+#### Settings
+* In the SMTP settings, the password field was changed to `PasswordInput`
+* In the Data import section, the block with broken files is no longer
+  displayed if there are no such files
+
+#### Documents
+
+* Fixed the context menu behavior in the Favorites and Recent sections
+
+#### AI Agents
+
+* Updated the chat input styles in the dark theme. A border matching the
+  background color was added so that the input does not blend into the
+  code block
+
+## 3.6.0
+
+### New features
+
+#### General changes
+- Updated core frontend libraries to the latest versions: `react`,
+  `react-dom`, `next`, `typescript`
+- Added the ability to convert presentations to TXT
+- Added support for the HTML format
+- Changes in the payment system. Price requests and purchases of the
+  Wallet services (backup) are now performed by `serviceName`, not by ID
+- A mechanism for limiting the number of selectable elements in the
+  multiple selection mode has been added to the selector component
+- Telegram settings now can be configured in a profile on the Startup
+  plan
+
+#### Settings
+
+* Changed Data Import:
+  - At the "Select users" stage, there is no longer a limit on admins;
+    all users are transferred to the free User type
+  - The limit on admins has been moved to the "Select user types"
+    stage. If the admin limit is exceeded, an error will appear and the
+    button for proceeding to the next stage will be blocked
+  - At the "Data import" stage, all items for selecting data have been
+    changed. If the "Personal files" item is disabled, the "Shared
+    files and folders" item is also disabled, i.e. you can't transfer
+    shared files unless you transfer personal files
+* Removed Products/Module/General entities in the "Location" field of
+  the Audit trail report. Trash/My documents, Rooms, Contacts,
+  Settings are now used
+* Added a notification in case of failure during backup
+* Added the ability to remove system plugins in the server version, if
+  the configuration and settings allow it
+* Added a new "AI Settings" section in the cloud and server versions. It
+  allows configuring AI providers, MCP servers, Web Search, and
+  document vectorization in the Knowledge section
+* Added the "AI Agents" section to the file/folder selector
+* Added a warning during the backup process if a file was deleted from
+  documents or rooms, and then from the Trash
+* Added the ability to set a quota for AI agents
+* Facebook and Telegram integrations are now available on the Startup
+  plan
+
+#### Login and confirmation pages
+
+* Added redirects to the login/signup via social networks methods when
+  working through Desktop Editors (when it is not possible to open a
+  popup window with a social network page)
+
+#### Documents
+
+* Added the ability to upload empty files
+* Added information about the media file resolution to the Info panel
+* Changes in the priority of access rights when sharing:
+  - Personal rights are the strongest
+  - Group rights are stronger than link rights
+  - Link rights are the weakest
+* The "Actions" button menu in the "My documents" section closes when
+  you click the button again
+* Significantly improved performance of the selection area and
+  optimized re-rendering of lists during selection
+* Changes in the Shared with me section:
+  - Added the "Shared by" column to the table
+  - Added the "Shared by" filter. Users and Guests cannot use this
+    filter because they do not have permission to view contacts
+  - Added the "Author", "Shared by", "Access level" fields to the
+    "Details" tab of the Info panel
+  - Guests who have Full access cannot re-share the file/folder because
+    they do not have access to contacts
+  - Updated display of the list of users in the "Share" tab
+  - Added the file Owner indicator in the list of users
+* Changed the order of sections in the left menu
+
+#### AI Agents
+
+* Added a new AI agents section
+* Added a new "Ask AI" item to the context menu for all files that can
+  be attached to a chat. Clicking it opens a selection of AI agents.
+  Once selected, an agent will open in the chat tab with the attached
+  file
+* In the file selector, added a message about the recommended number
+  of files added to the chat
+
 ## 3.5.0
 
 ### New features
@@ -143,7 +520,7 @@
   change list for a user or guest
 * Added the ability to delete rooms
 * Redesigned file/folder deletion dialogs
-* Removed the 'New' badge from the room creation dialog and the context menu
+* Removed the "New" badge from the room creation dialog and the context menu
   for Templates
 * Disabled saving the selected filter in rooms (only sorting remains)
 
@@ -632,7 +1009,7 @@
 * Added a message when trying to edit PDF forms on mobile devices
 * Twitter has been replaced by X
 * Fixed creation of a new CSV report after deleting it in the form filling room
-* Fixed the appearance of the new badge for the room owner when filling out the form
+* Fixed the appearance of the badge "New" for the room owner when filling out the form
 * Fixed display of diacritic characters on the groups tab
 * Removed the role of filler forms in the custom room
 * Added the ability to connect Egnyte as a third-party storage via WebDav
