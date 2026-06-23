@@ -321,15 +321,15 @@ jobs:
 
       - name: Checkout repository ${{ matrix.repo }}
         run: |
-          git clone https://${{ secrets.GITEA_TOKEN }}@${{ secrets.GITEA_HOST }}/${{ github.repository_owner }}/${{ matrix.repo }} --recurse-submodules
+          git clone https://${{ secrets.GITEA_TOKEN }}@${{ secrets.GITEA_HOST }}/${{ github.repository_owner }}/${{ matrix.repo }}
           cd ${{ matrix.repo }}
 
       - name: Update submodules (DocSpace only)
         if: ${{ matrix.repo == 'DocSpace' }}
         working-directory: ${{ matrix.repo }}
         run: |
-          git pull --recurse-submodules
-          git submodule update --remote --merge
+          git submodule update --init -- buildtools client server
+          git submodule update --init --remote --checkout -- tests/api-tests tests/e2e-tests tests/stress-tests
           if [ -n "$(git status --porcelain)" ]; then
             git config --global user.name "github-actions[bot]"
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
