@@ -1,6 +1,6 @@
 # Change log
 
-## 3.7.0
+## 3.7.1
 
 ### New features
 
