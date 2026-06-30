@@ -328,7 +328,7 @@ jobs:
         if: ${{ matrix.repo == 'DocSpace' }}
         working-directory: ${{ matrix.repo }}
         run: |
-          git submodule update --init -- buildtools client server
+          git submodule update --init --remote --checkout -- buildtools client server
           git submodule update --init --remote --checkout -- tests/api-tests tests/e2e-tests tests/stress-tests
           if [ -n "$(git status --porcelain)" ]; then
             git config --global user.name "github-actions[bot]"
