@@ -52,7 +52,7 @@ jobs:
       - id: set
         name: Set repos list
         run: |
-          echo 'repos=["DocSpace","DocSpace-buildtools","DocSpace-client","DocSpace-server"]' >> "$GITHUB_OUTPUT"
+          echo 'repos=["DocSpace","DocSpace-buildtools","DocSpace-client","DocSpace-server","docspace-ui-kit-react"]' >> "$GITHUB_OUTPUT"
 
       - id: extract
         name: Extract & validate version
