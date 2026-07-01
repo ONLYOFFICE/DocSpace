@@ -42,12 +42,18 @@ on:
         default: true
 
 jobs:
-  extract-version:
-    name: Version retrieval
+  config:
+    name: Configuration
     runs-on: ubuntu-latest
     outputs:
+      repos: ${{ steps.set.outputs.repos }}
       version: ${{ steps.extract.outputs.version }}
     steps:
+      - id: set
+        name: Set repos list
+        run: |
+          echo 'repos=["DocSpace","DocSpace-buildtools","DocSpace-client","DocSpace-server"]' >> "$GITHUB_OUTPUT"
+
       - id: extract
         name: Extract & validate version
         shell: bash
@@ -71,12 +77,12 @@ jobs:
     if: ${{ github.event.inputs.trigger_docker_release == 'true' }}
     name: Trigger Docker release
     runs-on: ubuntu-latest
-    needs: [release, extract-version]
+    needs: [ config, release ]
     outputs:
       docker_run_id: ${{ steps.docker_release.outputs.docker_run_id }}
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      VERSION: ${{ needs.extract-version.outputs.version }}
+      VERSION: ${{ needs.config.outputs.version }}
     steps:
       - name: Trigger Docker release
         id: docker_release
@@ -101,7 +107,7 @@ jobs:
     if: ${{ github.event.inputs.trigger_packages_release == 'true' }}
     name: Trigger Packages release
     runs-on: ubuntu-latest
-    needs: [release, extract-version]
+    needs: [ config, release ]
     outputs:
       deb_build_number: ${{ steps.package_release.outputs.deb_build_number }}
       rpm_build_number: ${{ steps.package_release.outputs.rpm_build_number }}
@@ -109,7 +115,7 @@ jobs:
     env:
       JENKINS_URL: ${{ secrets.JENKINS_URL }}
       JENKINS_TOKEN: ${{ secrets.JENKINS_TOKEN }}
-      VERSION: ${{ needs.extract-version.outputs.version }}
+      VERSION: ${{ needs.config.outputs.version }}
     steps:
       - name: Trigger Packages release
         id: package_release
@@ -136,10 +142,10 @@ jobs:
   create_and_merge_pr:
     name: Create/merge PRs ${{ matrix.repo }}
     runs-on: ubuntu-latest
-    needs: extract-version
+    needs: [ config ]
     strategy:
       matrix:
-        repo: [ "DocSpace", "DocSpace-buildtools", "DocSpace-client", "DocSpace-server" ]
+        repo: ${{ fromJson(needs.config.outputs.repos) }}
     steps:
       - name: Set up Gitea CLI
         run: |
@@ -270,13 +276,13 @@ jobs:
     if: ${{ github.event.inputs.trigger_release == 'true' }}
     name: Release ${{ matrix.repo }}
     runs-on: ubuntu-latest
-    needs: [create_and_merge_pr, extract-version]
+    needs: [ config, create_and_merge_pr ]
     env:
-      VERSION: ${{ needs.extract-version.outputs.version }}
+      VERSION: ${{ needs.config.outputs.version }}
     strategy:
       fail-fast: false
       matrix:
-        repo: [ "DocSpace", "DocSpace-buildtools", "DocSpace-client", "DocSpace-server" ]
+        repo: ${{ fromJson(needs.config.outputs.repos) }}
     steps:
       - name: Set up Gitea CLI
         run: |
@@ -286,7 +292,7 @@ jobs:
 
       - name: Wait for all PR merges across repositories
         env:
-          REPOS: "DocSpace DocSpace-client DocSpace-server DocSpace-buildtools"
+          REPOS: ${{ join(fromJson(needs.config.outputs.repos), ' ') }}
         run: |
           echo "Waiting for PR merges in all repositories..."
 
@@ -367,15 +373,15 @@ jobs:
   notify:
     name: Notify Release
     runs-on: ubuntu-latest
-    needs: [ release, extract-version, trigger_docker_release, trigger_packages_release ]
+    needs: [ config, release, trigger_docker_release, trigger_packages_release ]
     if: ${{ github.event.inputs.trigger_notify == 'true' }}
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - name: Notify Release
         env:
-          VERSION: ${{ needs.extract-version.outputs.version }}
-          REPOS: "DocSpace DocSpace-client DocSpace-server DocSpace-buildtools"
+          VERSION: ${{ needs.config.outputs.version }}
+          REPOS: ${{ join(fromJson(needs.config.outputs.repos), ' ') }}
           DOCKER_RUN_ID: ${{ needs.trigger_docker_release.outputs.docker_run_id }}
           DEB_BUILD_NUMBER: ${{ needs.trigger_packages_release.outputs.deb_build_number }}
           RPM_BUILD_NUMBER: ${{ needs.trigger_packages_release.outputs.rpm_build_number }}
@@ -418,12 +424,12 @@ jobs:
 
   delete-branch:
     name: Delete release branch
-    needs: [ release, notify ]
+    needs: [ config, release, notify ]
     if: ${{ github.event.inputs.delete_branch == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        repo: [ "DocSpace", "DocSpace-buildtools", "DocSpace-client", "DocSpace-server" ]
+        repo: ${{ fromJson(needs.config.outputs.repos) }}
     steps:
       - name: Delete release branch
         env:
