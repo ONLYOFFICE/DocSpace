@@ -90,7 +90,7 @@ jobs:
           DOCKER_VERSION="${VERSION#v}.1"
 
           WORKFLOW_ID=$(gh api repos/${{ github.repository }}-buildtools/actions/workflows \
-            --jq '.workflows[] | select(.path == ".github/workflows/release-docspace.yaml") | .id')
+            --jq '.workflows[] | select(.path == ".github/workflows/release-docker.yaml") | .id')
 
           gh api /repos/${{ github.repository }}-buildtools/actions/workflows/${WORKFLOW_ID}/dispatches -X POST \
             -f "ref=${{ github.ref_name }}" -f "inputs[release_version]=${DOCKER_VERSION}" -f "inputs[source_version]=${VERSION#v}.${{ github.event.inputs.docker_version }}"
@@ -418,7 +418,7 @@ jobs:
           if "${{ github.event.inputs.trigger_release }}" = "true" && ${{ github.event.inputs.trigger_docker_release == 'true' }} && ${{ github.event.inputs.trigger_packages_release == 'true' }}; then
             RELEASE_NOTIFICATION_CHAT_RESPONSE=$(curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
               -d chat_id=${{ secrets.TELEGRAM_RELEASE_NOTIFICATION_CHAT_ID }} -d parse_mode=Markdown \
-              -d "text=ONLYOFFICE DocSpace [${{ env.VERSION }}](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) for Docker, Linux and Windows has been released")
+              -d "text=ONLYOFFICE Apps [${{ env.VERSION }}](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) for Docker, Linux and Windows has been released")
             echo "${RELEASE_NOTIFICATION_CHAT_RESPONSE}" | jq -e '.ok' > /dev/null || { echo "::error:: Error sending to RELEASE NOTIFICATION CHAT - $(echo "${RELEASE_NOTIFICATION_CHAT_RESPONSE}" | jq -r '.description')" >&2; exit 1; }
           fi
 
