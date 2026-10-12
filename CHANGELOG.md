@@ -1,5 +1,303 @@
 # Change log
 
+## 4.0.0
+
+### New features
+
+#### General changes
+
+* Rebranded ONLYOFFICE DocSpace to ONLYOFFICE Apps:
+  - Replaced the product logo with the ONLYOFFICE logo
+  - Renamed the DocSpace admin role to Full admin
+  - Renamed portal (space) to workspace
+* Redesigned the sidebar (article) and the main section:
+  - The sidebar is now divided into modules, and each module has its own
+    Recent, Favorites, and Trash sections
+  - The Actions button was moved to the main section next to the filter
+  - Added Quick actions and the AI Chat button to the main section
+* Added the Overview section
+* Added promo dialogs describing each module when it is opened from the
+  Overview section
+* Added tours for all modules. A tour can be started from the module
+  promo dialog
+* Renamed the My documents section to Files
+* Added the ability to hide Quick actions
+* Added Home to the Default Homepage options. Home is now the default page
+  for users who have not selected one before
+* Added a toolbar to the History tab in the Info panel:
+  - Filtering the activity feed by a selected day
+  - The Export history button for downloading the entire history or a
+    selected date range in the XLSX format. The report is generated
+    asynchronously with a progress indicator
+  - The toolbar is available in all room types to all users except guests
+    and anonymous users
+* Added an expand chevron for sidebar sections with nested items on mobile
+  devices. Tapping the chevron expands the submenu in place, and tapping
+  the section opens it and closes the panel
+* Changed content loading in selectors. During long loading, the current
+  content is dimmed until new data is loaded
+* Added an email notification about a suspicious sign-in. Each successful
+  sign-in is compared with the user's previous sign-ins by device (browser
+  and OS), country, and number of failed sign-in attempts. The email is
+  sent when at least two of these criteria are met
+* Added the Docs Admin Panel item to the Profile menu in the server version
+  for returning to the Document Server admin panel. The item is available
+  to administrators in the Enterprise and Developer editions
+* Added link previews for messengers
+* Migrated client MobX stores from JavaScript to TypeScript and updated
+  `mobx` and `mobx-react` (to v9)
+* Completely removed the `styled-components` dependency from the `client`
+  and `shared` packages. The remaining components, including the Info
+  panel, were rewritten using SCSS modules
+* Moved shared UI components to the separate `onlyoffice-apps-ui-kit`
+  library with its own documentation
+* Updated Open Sans fonts to v44
+* Updated the OAuth services:
+  - Migrated to Java 25
+  - Updated to Spring Boot 4, Spring Authorization Server 7, and Spring
+    Security 7
+  - Added GraalVM builds
+  - Switched to generational caching
+  - Added caching to the authorization service
+  - Added Circuit Breaker and SingleFlight to the gRPC client used for
+    requests to the clients API
+  - Updated liveness and readiness probes
+
+#### Settings
+
+* Rewrote the Settings section using SCSS modules
+* Moved billing to a separate page and added a dashboard showing:
+  - spending for the current month and upcoming payments
+  - detailed payment method information
+  - active add-ons with usage statistics (for add-ons with a limit) or
+    monthly spending (for add-ons without a limit)
+  - the amount required for the first upcoming payment in the current month
+* Added grace period warnings to the dashboard
+* Moved AI search to a separate add-on:
+  - Added a dedicated page with transaction history, usage history, and an
+    option to enable or disable the service
+  - Enabling AI search while AI features are disabled shows a warning.
+    After confirmation, both AI features and AI search are enabled
+  - AI search can be disabled independently of AI features
+* Added the Docs Connect service:
+  - A separate service page with user activity statistics for the last
+    month (editors and viewers, internal and external users), the number
+    of remaining licenses, and usage report export
+  - A Docs Connect card in Billing → Add-ons with the subscription status
+    (trial, active, expired, canceled) and the ability to enable or
+    disable the service from the billing page
+  - A subscription purchase panel with price calculation, the optional
+    Dev Pack (Automation API and rebranding), wallet top-up, and payment
+    via Stripe. Supported scenarios include purchasing from the trial,
+    changing the plan, adding or disabling Dev Pack, canceling, and
+    reactivating the subscription
+* Allowed admins, not only the payer, to enable and disable services:
+  - Only the payer can top up the wallet, so an admin cannot enable a
+    service if the wallet balance is insufficient
+  - The payer information banner and the disabled top-up buttons are now
+    shown only in the Wallet section
+  - Added insufficient balance errors when purchasing a service if the
+    balance was spent by another admin while the dialog was open
+* Allowed all admins to create backups without enabling the Backup service
+  directly:
+  - If the wallet balance is insufficient for one backup, backup creation
+    is disabled for admins and a warning is shown. The payer can top up
+    the wallet and create a backup immediately
+  - A payment card can now be added directly on the Backup page if no
+    card has been added yet
+* If a disk storage subscription payment fails due to insufficient wallet
+  balance, the page now shows full information about the previous tariff.
+  This information can be hidden by clicking Remove subscription
+* Added banners and email notifications when the wallet balance falls
+  below $1
+* Renamed the Bonus page to Upgrade and changed its design
+* Added the ability to choose the file format when downloading the login
+  history in Security → Login History
+* Added forwarding of audit events and login history to an external syslog
+  server for integration with SIEM systems
+* Added new features for plugins:
+  - The ability to add custom sections
+  - The ability to build the plugin interface using React components with
+    the shared UI kit and API client
+  - The plugin core was rewritten in TypeScript
+  - Long plugin descriptions in Integration → Plugins are collapsed to
+    2 lines and can be expanded using the Show / Hide link
+  - Plugin error display. A plugin that does not work due to a script
+    error remains in the list with an error description and can be
+    removed. A working plugin in which a function failed with an
+    unhandled error stays enabled and is marked with a warning. The error
+    cause is shown immediately after adding the plugin
+
+#### Documents
+
+* Moved forms to a separate root section:
+  - Form Filling Rooms were moved to the Forms section (`/forms`) with its
+    own Recent, Favorites, and Trash
+  - Form Filling Room is no longer available among room types in the
+    Rooms section
+  - Form templates are now separated from room templates
+* Unified the context menu and header menu in the Recent and Favorites
+  sections and added the Move to and Copy actions. Added the Remove from
+  list action to Shared with me
+* Redesigned empty screens in Files, Rooms, and Forms:
+  - Added the AI Chat button
+  - Updated welcome titles and subtitles in Rooms and Forms
+  - Removed the workspace data panel from Rooms, as it is now shown in
+    Overview
+* Redesigned the template gallery
+* Allowed a small excess of the workspace storage quota when saving a file
+  from the editor. When the storage quota is exhausted, the editor opens in
+  view mode
+
+#### AI
+
+* Added the new AI Chat, implemented as the separate `onlyoffice-ai-chat`
+  library with a new AI back-end service and shared across ONLYOFFICE
+  products, including Document Server:
+  - The chat is available in any room or folder, not only in AI agent
+    rooms. Threads, the assigned model, and AI search settings depend on
+    the current location
+  - The chat is available only in the Files, Rooms, and document sections
+    and is disabled for guests and anonymous users
+  - Responses are streamed as they are generated, and the Analyzing
+    indicator is shown while the model is responding
+  - During generation, the send button turns into Stop, which interrupts
+    generation and keeps the already generated part
+  - Assistant responses can be regenerated using the same model
+  - Assistant responses can be copied as Markdown or saved as files,
+    including DOCX. User messages can be copied
+  - Responses are rendered as Markdown, including code blocks with syntax
+    highlighting and a copy button, and LaTeX formulas
+  - Added the extended thinking toggle. When it is enabled and supported
+    by the model, a collapsible Thinking block shows the reasoning. The
+    toggle state is saved for each room or section
+  - Before calling a tool, the model briefly describes the intended
+    action, and the technical tool call card is hidden
+  - Provider errors (invalid key, unavailable model, exceeded limit,
+    timeout) are shown as localized messages, and the thread remains
+    usable
+  - Added a welcome screen with suggestion chips and a scroll-to-bottom
+    button
+* Added attachments in AI Chat:
+  - Local files (converted to text) and images can be attached using "+"
+    or by drag and drop. DOCX, PDF, and XLSX files are added using Add
+    files from DocSpace
+  - Upload from device uploads a file to the current location (or to Files
+    if there are not enough permissions) and attaches it to the message.
+    Archives are not supported
+  - Up to 5 files and 5 images can be attached to one message. Attachments
+    have previews and can be removed. Unsent attachments are cleared when
+    switching threads
+  - Attached images can be described (Vision) or recognized (OCR) by
+    models that support images
+* Added image generation in AI Chat. It is available when an image model is
+  selected in Model assignment. Generated images are saved to the current
+  section or to Files if there are not enough permissions. The loader
+  animation respects the system reduced motion setting
+* Added tools for creating documents, forms, and presentations. The created
+  file opens after the tool call is confirmed
+* When a document is open in the editor, the chat uses the editor tools
+* Added thread management:
+  - A new thread is created after the first message is sent, and its title
+    is generated automatically
+  - Each thread keeps its own history and selected model
+  - Threads can be renamed, deleted, cleared, and exported to a file
+  - Threads are grouped by date and can be searched by title
+  - Threads are bound to the current room, folder, or agent
+* Added saved prompts:
+  - Prompts can be created from a message, edited, deleted, and inserted
+    into the input field
+  - Prompts can be organized into folders. A read-only folder with
+    built-in prompts is available
+* Added AI profiles that combine a provider, a model, and a key or URL:
+  - Supported providers include OpenAI, Anthropic, Google, Mistral, and
+    local providers such as Ollama, LM Studio, and GPT4All. Local
+    providers work without a key
+  - The first created profile becomes the default model
+  - The model list shows capability icons. An invalid key or URL is
+    highlighted in the corresponding field
+  - Profiles can be assigned to separate tasks in Model assignment: chat,
+    summarization, translation, text analysis, OCR, vision, and image
+    generation. Only models with the required capabilities are listed
+  - Until a profile is added, the chat shows the Connect AI model screen,
+    and the Model assignment, MCP servers, and AI search tabs are
+    unavailable
+  - In the server version, AI is considered ready when at least one AI
+    profile is added
+  - The model picker is available in the composer and is hidden in AI
+    agent rooms, where the model is set by the agent
+* Added cache read and write prices to the AI models list and request
+  caching statistics to the AI features transaction history
+* Updated MCP server and tool management:
+  - External MCP servers can be connected using a JSON configuration.
+    Individual tools and servers can be enabled or disabled
+  - Tool calls require confirmation in the Allow / Deny dialog with the
+    Always allow option
+  - Added tool confirmation modes: Ask every time, Auto approve, Allow
+    without asking
+  - If a tool or server is disabled during a conversation or does not
+    exist, the chat continues. A failed server shows an error icon with
+    an expandable log
+* Added AI search providers: Exa and ONLYOFFICE. Responses include a list
+  of clickable sources. A confirmation toast is shown when AI search
+  settings are saved
+* Updated AI agents:
+  - An AI agent can be selected in the composer picker outside agent
+    rooms. The agent name is shown in the header, and the agent's model,
+    tools, and room context are used. The selected agent is restored when
+    the thread is reopened
+  - On SaaS workspaces, an AI model must be selected in the agent creation
+    and editing dialog
+  - When AI features are disabled, the chat panel shows an activation
+    screen, and creating an agent opens the activation dialog
+  - Added a dialog for existing agents describing the changes in model
+    handling
+* Added support for skills stored in the `.ai` folder of a room. The skill
+  name and description are added to the prompt, and the chat reads the
+  full skill instructions using a tool when needed
+
+#### Developer Tools
+
+* Moved Developer Tools from the sidebar menu to a separate banner. In the
+  collapsed sidebar, it is shown as an icon with a tooltip
+* Added the Docs Connect section for connecting cloud document,
+  spreadsheet, presentation, and PDF editors to a third-party platform
+  using an API key without installing a server. A 30-day trial is
+  available, followed by a paid subscription:
+  - The Settings tab for configuring the JWT header and secret key, WOPI,
+    anonymous access, file size limit, and IP filtering rules (allow or
+    deny by IP address, range, or host) with the Reset button
+  - The Preview tab with a live preview of the embedded editor and sample
+    integration code
+* Added the OAuth mode for the SDK in an iframe. When initialized with the
+  `?auth=oauth` parameter, API requests use a Bearer token requested from
+  the parent window via `postMessage`, with a retry on 401. Added a
+  separate OAuth version of the room selector page
+* Updated texts and section links on the Developer Tools page and improved
+  the connectors section in JavaScript SDK
+
+### Fixes
+
+#### General changes
+
+* Fixed a page crash caused by the AI agents option in the Default
+  Homepage list when AI agents are disabled in settings. The option is no
+  longer shown in this case
+* Fixed hanging OAuth authorizations when clients are deleted in other
+  workspaces
+
+#### Settings
+
+* Fixed premature renewal failure emails for tariff and subscription
+  auto-renewal via the wallet. If the billing service times out or reports
+  that the tariff was not renewed, the email is now sent only after an
+  additional waiting period
+
+#### Documents
+
+* Fixed the cursor disappearing from the search field after a search
+  returned no results
+
 ## 3.7.1
 
 ### New features

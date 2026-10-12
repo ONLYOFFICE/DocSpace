@@ -1,4 +1,4 @@
-﻿# ONLYOFFICE DocSpace
+# ONLYOFFICE DocSpace
 
 <p align="center">
   <a href="https://www.onlyoffice.com/docspace?utm_source=github&utm_medium=cpc&utm_campaign=GitHubDocSpace">
@@ -7,7 +7,7 @@
 </p>
 
 [![Release Notes](https://img.shields.io/github/release/ONLYOFFICE/DocSpace?style=flat-square)](https://github.com/ONLYOFFICE/DocSpace/releases)
-[![License](https://img.shields.io/badge/license-AGPLv3-orange)](https://opensource.org/license/agpl-v3)
+[![License](https://img.shields.io/badge/license-AGPLv3-orange)](https://docspace.onlyoffice.com/s/gnC2xcxWjHhHmsM)
 [![GitHub stars](https://img.shields.io/github/stars/ONLYOFFICE/DocSpace?style=flat-square)](https://star-history.com/#ONLYOFFICE/DocSpace)
 [![Open Issues](https://img.shields.io/github/issues-raw/ONLYOFFICE/DocSpace?style=flat-square)](https://github.com/ONLYOFFICE/DocSpace/issues)
 [![DocSpace Forum](https://img.shields.io/badge/DocSpace%20Forum-Discuss-white?style=social&logo=onlyoffice&color=white)](https://forum.onlyoffice.com/c/docspace/46)
@@ -209,7 +209,11 @@ This will launch minimal Docker-based setup
 
 To completely remove Docker artifacts, see the [Server README](https://github.com/ONLYOFFICE/DocSpace-server#clear-aspire-docker-artifacts).
 
-## **💡 Need help or have an idea?**
+## The lightweight installation option
+
+The lightweight build of ONLYOFFICE DocSpace Community is intended for quick evaluation and testing. Unlike the standard multi-container deployment, it combines all DocSpace services into a single container. [Check the instructions ➡️](https://github.com/ONLYOFFICE/DocSpace-buildtools/tree/master/install/docker/community)
+
+## 💡 Need help or have an idea?
 
 We ❤️ community contributions!
 
@@ -217,7 +221,7 @@ We ❤️ community contributions!
 * **❓ Have a question?** Ask our community and developers on the [ONLYOFFICE Forum](https://community.onlyoffice.com/).
 * **🥷 Want to be a power user?** Visit our [YouTube channel](https://www.youtube.com/onlyofficeTV) and [Help Center](https://helpcenter.onlyoffice.com/docspace?utm_source=github&utm_medium=cpc&utm_campaign=GitHubDocSpace).
 * **👨‍💻 Need help for developers?** Check our [API documentation](https://api.onlyoffice.com/?utm_source=github&utm_medium=cpc&utm_campaign=GitHubDocSpace).
-* **💡 Want to suggest a feature?** Share your ideas on our [feedback platform](https://feedback.onlyoffice.com/forums/966080-your-voice-matters).
+* **💡 Want to suggest a feature?** Share your ideas [here](https://community.onlyoffice.com/c/suggestions/40).
 
 ---
 <p align="center"> Made with ❤️ by the ONLYOFFICE Team </p>
