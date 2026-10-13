@@ -41,6 +41,8 @@ on:
         required: true
         default: true
 
+permissions: {}
+
 jobs:
   config:
     name: Configuration
@@ -48,6 +50,7 @@ jobs:
     outputs:
       repos: ${{ steps.set.outputs.repos }}
       version: ${{ steps.extract.outputs.version }}
+      target_branches: ${{ steps.validate.outputs.target_branches }}
     steps:
       - id: set
         name: Set repos list
@@ -73,6 +76,43 @@ jobs:
 
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
+      - id: validate
+        name: Validate inputs
+        shell: bash
+        env:
+          TARGET_BRANCHES: ${{ github.event.inputs.target_branches }}
+          TRIGGER_DOCKER_RELEASE: ${{ github.event.inputs.trigger_docker_release }}
+          DOCKER_VERSION: ${{ github.event.inputs.docker_version }}
+          TRIGGER_PACKAGES_RELEASE: ${{ github.event.inputs.trigger_packages_release }}
+          PACKAGE_BUILD_NUMBERS: ${{ github.event.inputs.package_build_numbers }}
+        run: |
+          # Normalize target branches: strip spaces, drop empty items, allow safe characters only
+          IFS=',' read -ra RAW_BRANCHES <<< "${TARGET_BRANCHES}"
+          BRANCHES=()
+          for BRANCH in "${RAW_BRANCHES[@]}"; do
+            BRANCH="${BRANCH//[[:space:]]/}"
+            [[ -z "${BRANCH}" ]] && continue
+            [[ "${BRANCH}" =~ ^[A-Za-z0-9._/-]+$ ]] || { echo "::error::Invalid target branch: ${BRANCH}"; exit 1; }
+            BRANCHES+=("${BRANCH}")
+          done
+          [[ ${#BRANCHES[@]} -gt 0 ]] || { echo "::error::Target branches list is empty"; exit 1; }
+
+          if [[ "${TRIGGER_DOCKER_RELEASE}" == "true" && ! "${DOCKER_VERSION}" =~ ^[0-9]+$ ]]; then
+            echo "::error::Invalid Docker build number (expected digits only)"
+            exit 1
+          fi
+
+          if [[ "${TRIGGER_PACKAGES_RELEASE}" == "true" ]]; then
+            SLASHES="${PACKAGE_BUILD_NUMBERS//[^\/]/}"
+            [[ ${#SLASHES} -eq 2 ]] || { echo "::error::Invalid package build numbers (expected DEB/RPM/EXE, e.g. 123/456/789)"; exit 1; }
+            IFS='/' read -r -a PACKAGE_PARTS <<< "${PACKAGE_BUILD_NUMBERS}"
+            for PART in "${PACKAGE_PARTS[@]}"; do
+              [[ "${PART}" =~ ^[[:space:]]*([0-9]+|none)?[[:space:]]*$ ]] || { echo "::error::Invalid package build number (expected digits, 0, none or empty per type)"; exit 1; }
+            done
+          fi
+
+          echo "target_branches=$(IFS=,; echo "${BRANCHES[*]}")" >> "$GITHUB_OUTPUT"
+
   trigger_docker_release:
     if: ${{ github.event.inputs.trigger_docker_release == 'true' }}
     name: Trigger Docker release
@@ -83,6 +123,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       VERSION: ${{ needs.config.outputs.version }}
+      DOCKER_BUILD_NUMBER: ${{ github.event.inputs.docker_version }}
     steps:
       - name: Trigger Docker release
         id: docker_release
@@ -93,7 +134,7 @@ jobs:
             --jq '.workflows[] | select(.path == ".github/workflows/release-docker.yaml") | .id')
 
           gh api /repos/${{ github.repository }}-buildtools/actions/workflows/${WORKFLOW_ID}/dispatches -X POST \
-            -f "ref=${{ github.ref_name }}" -f "inputs[release_version]=${DOCKER_VERSION}" -f "inputs[source_version]=${VERSION#v}.${{ github.event.inputs.docker_version }}"
+            -f "ref=${{ github.ref_name }}" -f "inputs[release_version]=${DOCKER_VERSION}" -f "inputs[source_version]=${VERSION#v}.${DOCKER_BUILD_NUMBER}"
 
           until [ -n "${DOCKER_RUN_ID}" ]; do
             DOCKER_RUN_ID=$(gh api repos/${{ github.repository }}-buildtools/actions/runs \
@@ -119,30 +160,59 @@ jobs:
     steps:
       - name: Trigger Packages release
         id: package_release
+        env:
+          PACKAGE_BUILD_NUMBERS: ${{ github.event.inputs.package_build_numbers }}
         run: |
-          declare -A NUM; IFS='/' read -r -a A <<< ""${{ github.event.inputs.package_build_numbers }}""; NUM=([deb]="${A[0]}" [rpm]="${A[1]}" [exe]="${A[2]}")
+          # Trigger a Jenkins job and print the number of the exact build created from its queue item
+          trigger_build(){
+            local URL="$1" HEADERS ITEM_ID RESPONSE BUILD_NUMBER DEADLINE
+            HEADERS=$(curl -fsS -D - -o /dev/null -X POST -H "Content-Length: 0" -u "${JENKINS_TOKEN}" "${URL}") || return 1
+            ITEM_ID=$(grep -ioE '/queue/item/[0-9]+' <<< "${HEADERS}" | grep -oE '[0-9]+' | head -n 1)
+            [[ -n "${ITEM_ID}" ]] || { echo "Queue item is missing in the response headers" >&2; return 1; }
+
+            DEADLINE=$((SECONDS + 300))
+            while (( SECONDS < DEADLINE )); do
+              RESPONSE=$(curl -fsS -u "${JENKINS_TOKEN}" "${JENKINS_URL}/queue/item/${ITEM_ID}/api/json") || return 1
+              [[ $(jq -r '.cancelled // false' <<< "${RESPONSE}") == true ]] && { echo "Queue item ${ITEM_ID} was cancelled" >&2; return 1; }
+              BUILD_NUMBER=$(jq -r '.executable.number // empty' <<< "${RESPONSE}")
+              [[ -n "${BUILD_NUMBER}" ]] && { echo "${BUILD_NUMBER}"; return 0; }
+              sleep 5
+            done
+            echo "Queue item ${ITEM_ID} did not start within 300s" >&2
+            return 1
+          }
+
+          declare -A NUM; IFS='/' read -r -a PARTS <<< "${PACKAGE_BUILD_NUMBERS}"; NUM=([deb]="${PARTS[0]}" [rpm]="${PARTS[1]}" [exe]="${PARTS[2]}")
+          FAILED=0
 
           for TYPE in deb rpm exe; do
-            BUILD_NUM=${NUM[${TYPE}]}
-            [[ -z "${BUILD_NUM//[[:space:]]/}" || "$BUILD_NUM" == 0 || "$BUILD_NUM" == "none" ]] && { echo "::warning::[${TYPE}] BUILD_NUM is empty/0/none/spaces, skip"; continue; }
+            BUILD_NUM=${NUM[${TYPE}]//[[:space:]]/}
+            [[ -z "${BUILD_NUM}" || "$BUILD_NUM" == 0 || "$BUILD_NUM" == "none" ]] && { echo "::warning::[${TYPE}] BUILD_NUM is empty/0/none/spaces, skip"; continue; }
             
             PUBLISH_JOB=$([ "$TYPE" = "exe" ] && echo "production.docspace.${TYPE}.publish" || echo "production.${TYPE}.publish")
 
-            curl -s -S -X POST -H "Content-Length: 0" -u "${JENKINS_TOKEN}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/toggleLogKeep" -o /dev/null
-            [[ $(jq -r '.keepLog' <<< "$(curl -s -u "${JENKINS_TOKEN}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/api/json")") == true ]] || echo "::error:: [${TYPE}] LogKeep not applied"
-            curl -s -S -X POST -u "${JENKINS_TOKEN}" -d "description=${VERSION}.${BUILD_NUM}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/submitDescription" -o /dev/null
-            [[ $(jq -r '.description' <<< "$(curl -s -u "${JENKINS_TOKEN}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/api/json")") != "" ]] || echo "::error:: [${TYPE}] Description not set"
+            curl -fsS -X POST -H "Content-Length: 0" -u "${JENKINS_TOKEN}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/toggleLogKeep" -o /dev/null
+            [[ $(jq -r '.keepLog' <<< "$(curl -fsS -u "${JENKINS_TOKEN}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/api/json")") == true ]] || echo "::error:: [${TYPE}] LogKeep not applied"
+            curl -fsS -X POST -u "${JENKINS_TOKEN}" -d "description=${VERSION}.${BUILD_NUM}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/submitDescription" -o /dev/null
+            [[ $(jq -r '.description' <<< "$(curl -fsS -u "${JENKINS_TOKEN}" "${JENKINS_URL}/job/appserver.${TYPE}/${BUILD_NUM}/api/json")") != "" ]] || echo "::error:: [${TYPE}] Description not set"
 
-            curl -s -S -X POST -H "Content-Length: 0" -u "${JENKINS_TOKEN}" "${JENKINS_URL}/job/${PUBLISH_JOB}/$([ "${TYPE}" = "exe" ] && echo "build" || echo "buildWithParameters")" -o /dev/null
-            sleep 10
-            [[ $(jq -r '.building' <<< "$(curl -s -u "${JENKINS_TOKEN}" "${JENKINS_URL}/job/${PUBLISH_JOB}/lastBuild/api/json")") == true ]] && echo "[${TYPE}] Build started" || echo "::error:: [${TYPE}] Build not started"
-            echo "${TYPE}_build_number=$(curl -s -S -L -u "${JENKINS_TOKEN}" "${JENKINS_URL}/job/${PUBLISH_JOB}/lastBuild/api/json" | jq '.number')" >> "$GITHUB_OUTPUT"
+            if PUBLISH_BUILD_NUMBER=$(trigger_build "${JENKINS_URL}/job/${PUBLISH_JOB}/$([ "${TYPE}" = "exe" ] && echo "build" || echo "buildWithParameters")"); then
+              echo "[${TYPE}] Build #${PUBLISH_BUILD_NUMBER} started"
+              echo "${TYPE}_build_number=${PUBLISH_BUILD_NUMBER}" >> "$GITHUB_OUTPUT"
+            else
+              echo "::error:: [${TYPE}] Build not started"
+              FAILED=1
+            fi
           done
+
+          [ "${FAILED}" -eq 0 ]
 
   create_and_merge_pr:
     name: Create/merge PRs ${{ matrix.repo }}
     runs-on: ubuntu-latest
     needs: [ config ]
+    env:
+      TARGET_BRANCHES: ${{ needs.config.outputs.target_branches }}
     strategy:
       matrix:
         repo: ${{ fromJson(needs.config.outputs.repos) }}
@@ -163,7 +233,7 @@ jobs:
             [[ ${1} == changelog/* ]] && echo "CHANGELOG_BRANCH=${BRANCH_NAME}" >> "$GITHUB_ENV" || true
           }
 
-          IFS=',' read -ra BRANCHES <<< "${{ github.event.inputs.target_branches }}"
+          IFS=',' read -ra BRANCHES <<< "${TARGET_BRANCHES}"
           for BRANCH in "${{ github.ref_name }}" "${BRANCHES[@]}"; do
             check_branch "$BRANCH" || exit 1
           done
@@ -184,7 +254,7 @@ jobs:
           }
 
           sanitize(){ sed -E 's/[^[:alnum:]_]+/_/g;s/^[0-9]/_&/;s/.*/\U&/'; }
-          IFS=',' read -ra BRANCHES <<< "${{ github.event.inputs.target_branches }}"
+          IFS=',' read -ra BRANCHES <<< "${TARGET_BRANCHES}"
           for BRANCH in "${BRANCHES[@]}"; do
             check_commits_difference "${{ github.ref_name }}" "${BRANCH}" "SKIP_PR_$(sanitize <<<"$BRANCH")"
           done
@@ -217,7 +287,7 @@ jobs:
           }
 
           sanitize(){ sed -E 's/[^[:alnum:]_]+/_/g;s/^[0-9]/_&/;s/.*/\U&/'; }
-          IFS=, read -ra BRANCHES <<< "${{ github.event.inputs.target_branches }}"
+          IFS=, read -ra BRANCHES <<< "${TARGET_BRANCHES}"
           for BASE in "${BRANCHES[@]}"; do
             create_pr "${{ github.ref_name }}" "$BASE" "SKIP_PR_$(sanitize <<<"$BASE")"
           done
@@ -263,7 +333,7 @@ jobs:
           }
 
           sanitize(){ sed -E 's/[^[:alnum:]_]+/_/g;s/^[0-9]/_&/;s/.*/\U&/'; }
-          IFS=, read -ra BRANCHES <<<"${{ github.event.inputs.target_branches }}"
+          IFS=, read -ra BRANCHES <<<"${TARGET_BRANCHES}"
           for BASE in "${BRANCHES[@]}"; do
             merge "${{ github.ref_name }}" "$BASE" "SKIP_PR_$(sanitize <<<"$BASE")"
           done
@@ -279,6 +349,7 @@ jobs:
     needs: [ config, create_and_merge_pr ]
     env:
       VERSION: ${{ needs.config.outputs.version }}
+      TARGET_BRANCHES: ${{ needs.config.outputs.target_branches }}
     strategy:
       fail-fast: false
       matrix:
@@ -297,7 +368,7 @@ jobs:
           echo "Waiting for PR merges in all repositories..."
 
           sanitize(){ sed -E 's/[^[:alnum:]_]+/_/g;s/^[0-9]/_&/;s/.*/\U&/'; }
-          IFS=, read -ra BRANCHES <<<"${{ github.event.inputs.target_branches }}"
+          IFS=, read -ra BRANCHES <<<"${TARGET_BRANCHES}"
           for BASE in "${BRANCHES[@]}"; do
             FLAG="SKIP_PR_$(sanitize <<<"$BASE")"
             [[ "${!FLAG}" == "true" ]] && { echo "↷ Skip ${{ github.ref_name }} → ${BASE} (${FLAG}=true)"; continue; }
@@ -377,6 +448,7 @@ jobs:
     if: ${{ github.event.inputs.trigger_notify == 'true' }}
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      TARGET_BRANCHES: ${{ needs.config.outputs.target_branches }}
     steps:
       - name: Notify Release
         env:
@@ -396,7 +468,7 @@ jobs:
             STATUS+=$'\n'"${EMOJI} [${REPO}](${{ github.server_url }}/${{ github.repository_owner }}/${REPO})"
           done
 
-          MESSAGE="\[${SUCCESS:-0}/$(echo $REPOS | wc -w)] ${{ github.ref_name }} → ${{ github.event.inputs.target_branches }} ${STATUS}"
+          MESSAGE="\[${SUCCESS:-0}/$(echo $REPOS | wc -w)] ${{ github.ref_name }} → ${TARGET_BRANCHES} ${STATUS}"
           if ${{ github.event.inputs.trigger_docker_release == 'true' }} || ${{ github.event.inputs.trigger_packages_release == 'true' }}; then
             MESSAGE+=$'\n'$'\n''Releases: '
             if ${{ github.event.inputs.trigger_docker_release == 'true' }}; then
@@ -415,7 +487,7 @@ jobs:
             -H "Content-Type: application/json" -d "${JSON_PAYLOAD}")
           echo "${TEAM_CHAT_RESPONSE}" | jq -e '.ok' > /dev/null || { echo "::error:: Error sending to TEAM CHAT - $(echo "${TEAM_CHAT_RESPONSE}" | jq -r '.description')" >&2; exit 1; }
 
-          if "${{ github.event.inputs.trigger_release }}" = "true" && ${{ github.event.inputs.trigger_docker_release == 'true' }} && ${{ github.event.inputs.trigger_packages_release == 'true' }}; then
+          if [[ "${{ github.event.inputs.trigger_release }}" == "true" && "${{ github.event.inputs.trigger_docker_release }}" == "true" && "${{ github.event.inputs.trigger_packages_release }}" == "true" ]]; then
             RELEASE_NOTIFICATION_CHAT_RESPONSE=$(curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
               -d chat_id=${{ secrets.TELEGRAM_RELEASE_NOTIFICATION_CHAT_ID }} -d parse_mode=Markdown \
               -d "text=ONLYOFFICE Apps [${{ env.VERSION }}](${{ github.server_url }}/${{ github.repository }}/blob/master/CHANGELOG.md) for Docker, Linux and Windows has been released")
