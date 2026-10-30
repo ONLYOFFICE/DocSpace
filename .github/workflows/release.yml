@@ -375,24 +375,34 @@ jobs:
             BASE_BRANCHES+=("${BASE}")
           done
           
+          PREVIOUS_STATUS=""
           while :; do
             MERGED=0
+            STATUS=""
             TOTAL=$(( $(set -- ${REPOS}; echo $#) * ${#BASE_BRANCHES[@]} ))
             for REPO in ${REPOS}; do
-              echo "├ ${REPO}"
+              STATUS+="├ ${REPO}"$'\n'
               for BASE in "${BASE_BRANCHES[@]}"; do
                 PR_JSON=$(tea pr list --login ${{ secrets.GITEA_HOST }} --repo ${{ github.repository_owner }}/${REPO} \
                   --state all --fields head,base,state,url --output json \
                   | jq -c --arg head "${{ github.ref_name }}" --arg base "${BASE}" \
                   '[.[]|select(.head==$head and .base==$base)] | if length>0 then .[0] else {state: "not_found", url: ""} end')
-                PR_STATE=$(echo "${PR_JSON}" | jq -r '.state') 
+                PR_STATE=$(echo "${PR_JSON}" | jq -r '.state')
 
-                [[ "${PR_STATE}" == merged || "${PR_STATE}" == "closed" ]] && { MERGED=$((MERGED + 1)); echo "│  ├ ${BASE} ✅ ${PR_STATE}"; } || { echo "│  ├ ${BASE} ❌ ${PR_STATE}"; }
+                [[ "${PR_STATE}" == merged || "${PR_STATE}" == "closed" ]] && { MERGED=$((MERGED + 1)); STATUS+="│  ├ ${BASE} ✅ ${PR_STATE}"$'\n'; } || STATUS+="│  ├ ${BASE} ❌ ${PR_STATE}"$'\n'
                 [ "${PR_STATE}" = "not_found" ] && TOTAL=$(( TOTAL - 1 ));
               done
             done
-            [ "${MERGED}" -eq "${TOTAL}" ] && break || echo "${MERGED}/${TOTAL} PR(s) merged. Waiting for the rest..."
-            printf '%.0s-' {1..48}; echo
+
+            # Print the status only when it changes to keep the live log small
+            if [[ "${STATUS}" != "${PREVIOUS_STATUS}" ]]; then
+              printf '%s' "${STATUS}"
+              echo "${MERGED}/${TOTAL} PR(s) merged"
+              printf '%.0s-' {1..48}; echo
+              PREVIOUS_STATUS="${STATUS}"
+            fi
+
+            [ "${MERGED}" -eq "${TOTAL}" ] && break
             sleep 5
           done
 
