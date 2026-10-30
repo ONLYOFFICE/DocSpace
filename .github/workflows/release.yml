@@ -445,7 +445,7 @@ jobs:
     name: Notify Release
     runs-on: ubuntu-latest
     needs: [ config, release, trigger_docker_release, trigger_packages_release ]
-    if: ${{ github.event.inputs.trigger_notify == 'true' }}
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && github.event.inputs.trigger_notify == 'true' }}
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       TARGET_BRANCHES: ${{ needs.config.outputs.target_branches }}
@@ -497,7 +497,7 @@ jobs:
   delete-branch:
     name: Delete release branch
     needs: [ config, release, notify ]
-    if: ${{ github.event.inputs.delete_branch == 'true' }}
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && github.event.inputs.delete_branch == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
