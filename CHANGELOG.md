@@ -1,5 +1,15 @@
 # Change log
 
+## 4.0.1
+
+### Fixes
+
+#### General changes
+
+* Updated Node.js to v24.22.1 due to vulnerabilities (CVE-2026-105481,
+  CVE-2026-105482, CVE-2026-105483, CVE-2026-106069, CVE-2026-106072,
+  CVE-2026-106073, CVE-2026-106074, CVE-2026-111497)
+
 ## 4.0.0
 
 ### New features
