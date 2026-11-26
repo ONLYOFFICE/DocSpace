@@ -534,6 +534,21 @@ jobs:
 
           PROTECTIONS=$(curl -sf -H "${AUTH_HEADER}" "${API_BASE}/branch_protections" || echo "[]")
           SAVED=()
+          # Put the removed protection rules back however the step ends, a failed restore fails the job
+          restore_protections() {
+            local STATUS=$? CONFIG RULE
+            for CONFIG in "${SAVED[@]}"; do
+              RULE=$(jq -r '.rule_name // .branch_name' <<< "${CONFIG}")
+              if curl -sf -X POST -H "${AUTH_HEADER}" -H "Content-Type: application/json" -d "${CONFIG}" "${API_BASE}/branch_protections" -o /dev/null; then
+                echo "Restored protection rule: '${RULE}'"
+              else
+                echo "::error:: Failed to restore protection rule: '${RULE}'" >&2
+                STATUS=1
+              fi
+            done
+            exit "${STATUS}"
+          }
+          trap restore_protections EXIT
           while IFS= read -r RULE; do
             [[ -z "${RULE}" ]] && continue
             if [[ "${BRANCH}" == ${RULE} ]]; then
@@ -561,15 +576,4 @@ jobs:
             fi
           else
             echo "::warning:: Branch '${BRANCH}' not found in ${{ matrix.repo }}." >&2
-          fi
-
-          if [[ ${#SAVED[@]} -gt 0 ]]; then
-            for CONFIG in "${SAVED[@]}"; do
-              RULE=$(jq -r '.rule_name // .branch_name' <<< "${CONFIG}")
-              if curl -sf -X POST -H "${AUTH_HEADER}" -H "Content-Type: application/json" -d "${CONFIG}" "${API_BASE}/branch_protections" -o /dev/null; then
-                echo "Restored protection rule: '${RULE}'"
-              else
-                echo "::warning:: Failed to restore protection rule: '${RULE}'" >&2
-              fi
-            done
           fi
