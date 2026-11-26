@@ -114,6 +114,7 @@ jobs:
     if: ${{ github.event.inputs.trigger_docker_release == 'true' }}
     name: Trigger Docker release
     runs-on: ubuntu-latest
+    environment: release
     needs: [ config, release ]
     outputs:
       docker_run_id: ${{ steps.docker_release.outputs.docker_run_id }}
@@ -145,6 +146,7 @@ jobs:
     if: ${{ github.event.inputs.trigger_packages_release == 'true' }}
     name: Trigger Packages release
     runs-on: ubuntu-latest
+    environment: release
     needs: [ config, release ]
     outputs:
       deb_build_number: ${{ steps.package_release.outputs.deb_build_number }}
@@ -207,6 +209,7 @@ jobs:
   create_and_merge_pr:
     name: Create/merge PRs ${{ matrix.repo }}
     runs-on: ubuntu-latest
+    environment: release
     needs: [ config ]
     env:
       TARGET_BRANCHES: ${{ needs.config.outputs.target_branches }}
@@ -343,6 +346,7 @@ jobs:
     if: ${{ github.event.inputs.trigger_release == 'true' }}
     name: Release ${{ matrix.repo }}
     runs-on: ubuntu-latest
+    environment: release
     needs: [ config, create_and_merge_pr ]
     env:
       VERSION: ${{ needs.config.outputs.version }}
@@ -451,6 +455,7 @@ jobs:
   notify:
     name: Notify Release
     runs-on: ubuntu-latest
+    environment: release
     needs: [ config, release, trigger_docker_release, trigger_packages_release ]
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && github.event.inputs.trigger_notify == 'true' }}
     env:
@@ -506,6 +511,7 @@ jobs:
     needs: [ config, release, notify ]
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && github.event.inputs.delete_branch == 'true' }}
     runs-on: ubuntu-latest
+    environment: release
     strategy:
       matrix:
         repo: ${{ fromJson(needs.config.outputs.repos) }}
