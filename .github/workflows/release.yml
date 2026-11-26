@@ -219,8 +219,12 @@ jobs:
     steps:
       - name: Set up Gitea CLI
         run: |
-          sudo curl -sL "https://dl.gitea.com/tea/0.11.1/tea-0.11.1-linux-amd64" -o /usr/bin/tea
-          sudo chmod +x /usr/bin/tea
+          # Pinned tea release, checked against its published sha256 before it gets the Gitea token
+          TEA_VERSION=0.11.1
+          TEA_SHA256=254b50cee2635715aa3bb4e121e6f722f318fcc0ae860c80ca3269049027d3fb
+          curl -fsSL --max-time 120 "https://dl.gitea.com/tea/${TEA_VERSION}/tea-${TEA_VERSION}-linux-amd64" -o "${RUNNER_TEMP}/tea"
+          echo "${TEA_SHA256}  ${RUNNER_TEMP}/tea" | sha256sum -c -
+          sudo install -m 0755 "${RUNNER_TEMP}/tea" /usr/bin/tea
           tea login add --url ${{ secrets.GITEA_HOST }} --token ${{ secrets.GITEA_TOKEN }}
 
       - name: Check branch existence
@@ -358,8 +362,12 @@ jobs:
     steps:
       - name: Set up Gitea CLI
         run: |
-          sudo curl -sL "https://dl.gitea.com/tea/0.11.1/tea-0.11.1-linux-amd64" -o /usr/bin/tea
-          sudo chmod +x /usr/bin/tea
+          # Pinned tea release, checked against its published sha256 before it gets the Gitea token
+          TEA_VERSION=0.11.1
+          TEA_SHA256=254b50cee2635715aa3bb4e121e6f722f318fcc0ae860c80ca3269049027d3fb
+          curl -fsSL --max-time 120 "https://dl.gitea.com/tea/${TEA_VERSION}/tea-${TEA_VERSION}-linux-amd64" -o "${RUNNER_TEMP}/tea"
+          echo "${TEA_SHA256}  ${RUNNER_TEMP}/tea" | sha256sum -c -
+          sudo install -m 0755 "${RUNNER_TEMP}/tea" /usr/bin/tea
           tea login add --url ${{ secrets.GITEA_HOST }} --token ${{ secrets.GITEA_TOKEN }}
 
       - name: Wait for all PR merges across repositories
