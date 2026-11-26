@@ -63,14 +63,11 @@ jobs:
         env:
           BRANCH: ${{ github.ref_name }}
         run: |
-          if [[ "${BRANCH}" == "master" || "${BRANCH}" == "develop" ]]; then
-            echo "::error::Please use a release branch (e.g., release/1.2.3) for this workflow"
-            exit 1
-          fi
-          if [[ "${BRANCH##*/}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            version="${BASH_REMATCH[0]}"
+          # Only release/vX.X.X and hotfix/vX.X.X may publish; the whole name is checked, not only its last part
+          if [[ "${BRANCH}" =~ ^(release|hotfix)/(v[0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            version="${BASH_REMATCH[2]}"
           else
-            echo "::error::Invalid version: ${BRANCH##*/} (expected vX.X.X)"
+            echo "::error::Please use a release or hotfix branch (e.g., release/v1.2.3), not ${BRANCH}"
             exit 1
           fi
 
